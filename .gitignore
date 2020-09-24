@@ -10,5 +10,12 @@
 !/README.md
 !/requirements.yml
 
+!/files/
+!/files/20auto-upgrades
+!/files/50unattended-upgrades
+
 !/tasks/
 !/tasks/basic_setup.yml
+
+!/vars/
+!/vars/basics.yml
