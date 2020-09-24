@@ -1,0 +1,8 @@
+- hosts: dev
+
+  roles:
+    - name: geerlingguy.docker
+      become: yes
+
+  tasks:
+    - include_tasks: tasks/basic_setup.yml
