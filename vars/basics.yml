@@ -1,5 +1,12 @@
-# Docker
-docker_users:
-    - jens
+# Security
+security_ssh_password_authentication: "yes"
+security_autoupdate_reboot: true
+security_autoupdate_reboot_time: "05:00"
 
 # Firewall
+firewall_allowed_tcp_ports:
+  - "22"
+
+# Docker
+docker_users:
+  - jens
