@@ -1,0 +1,14 @@
+# Blacklist all
+/**
+
+# Whitelist allowed
+!/.gitignore
+!/ansible.cfg
+!/hosts.ini
+!/LICENCE
+!/main.yml
+!/README.md
+!/requirements.yml
+
+!/tasks/
+!/tasks/basic_setup.yml
