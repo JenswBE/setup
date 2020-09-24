@@ -4,6 +4,12 @@
     - vars/basics.yml
 
   roles:
+    - name: geerlingguy.security
+      become: yes
+
+    - name: geerlingguy.firewall
+      become: yes
+
     - name: geerlingguy.docker
       become: yes
 

@@ -5,19 +5,6 @@
       name: "{{ item }}"
   with_items:
     - htop
-    - unattended-upgrades
-
-- name: Configure unattended-upgrades
-  become: yes
-  copy:
-    src: "../files/{{ item }}"
-    dest: "/etc/apt/apt.conf.d/{{ item }}"
-    owner: root
-    group: root
-    mode: 0644
-  with_items:
-    - 20auto-upgrades
-    - 50unattended-upgrades
 
 - name: Create opt directories
   become: yes
