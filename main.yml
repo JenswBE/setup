@@ -1,5 +1,8 @@
 - hosts: dev
 
+  vars_files:
+    - vars/basics.yml
+
   roles:
     - name: geerlingguy.docker
       become: yes
