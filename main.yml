@@ -1,7 +1,14 @@
-- hosts: dev
+- hosts: all
 
   vars_files:
     - vars/basics.yml
+
+  pre_tasks:
+    - name: Use of limit arg is mandatory
+      fail:
+        msg: "you must use -l or --limit - when you really want to use all hosts, use -l 'all'"
+      when: ansible_limit is not defined
+      run_once: true
 
   roles:
     - name: geerlingguy.security
