@@ -1,7 +1,19 @@
+# General
+general_domain_default: jensw.be
+general_mail_admin: admin
+general_path_appdata: "/opt/appdata"
+general_timezone: "Europe/Brussels"
+general_user: jens
+
+# Packages
+packages_base:
+  - htop
+  - rsync
+
 # Security
-security_ssh_password_authentication: "yes"
-security_autoupdate_reboot: true
 security_autoupdate_reboot_time: "05:00"
+security_autoupdate_reboot: true
+security_ssh_password_authentication: "yes"
 
 # Firewall
 firewall_allowed_tcp_ports:

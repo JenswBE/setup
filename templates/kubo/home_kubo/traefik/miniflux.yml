@@ -1,0 +1,9 @@
+http:
+    routers:
+        miniflux:
+            entrypoints: ["websecure"]
+            rule: "Host(`feed.{{ general_domain_default }}`)"
+            tls:
+                certresolver: le-tls
+            middlewares:
+                - secure-https

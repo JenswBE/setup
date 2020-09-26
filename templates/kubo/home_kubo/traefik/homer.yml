@@ -1,0 +1,9 @@
+http:
+    routers:
+        homer:
+            entrypoints: ["websecure"]
+            rule: "Host(`{{ ansible_hostname }}.{{ general_domain_default }}`)"
+            tls:
+                certresolver: le-tls
+            middlewares:
+                - secure-https

@@ -1,0 +1,8 @@
+# Load host specific vars
+- include_vars: "{{ ansible_hostname }}.secret.yml"
+
+- name: Copy home_kubo templates
+  include_tasks: tasks/helpers/copy_templates_folder.yml
+  vars:
+    - templates_folder: home_kubo
+    - destination_folder: "{{ ansible_user_dir }}/{{ ansible_hostname }}"
