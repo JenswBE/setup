@@ -1,0 +1,203 @@
+version: '3.7'
+
+#################################################################
+#                            SERVICES                           #
+#################################################################
+services:
+  # =========================
+  # =         PROXY         =
+  # =========================
+  traefik:
+    image: traefik:latest
+    container_name: traefik
+    restart: always
+    command:
+      # - "--log.level=DEBUG"
+      - "--providers.file.directory=/conf"
+      - "--providers.file.watch=true"
+      - "--providers.docker=true"
+      - "--providers.docker.defaultRule="
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.websecure.address=:443"
+      - "--entrypoints.websecure.http.middlewares=secure-https@file"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.web.http.redirections.entryPoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entryPoint.scheme=https"
+      - "--certificatesresolvers.le-tls.acme.tlsChallenge=true"
+      - "--certificatesresolvers.le-tls.acme.email={{ general_mail_admin }}@{{ general_domain_default }}"
+      - "--certificatesresolvers.le-tls.acme.storage=/letsencrypt/acme.json"
+      - "--api=true"
+      - "--ping.manualrouting=true"
+    ports:
+      - 80:80
+      - 443:443
+    networks:
+      - traefik
+    volumes:
+      - ./conf/traefik:/conf
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - traefik-cert:/letsencrypt/
+    environment:
+      - "TZ={{ general_timezone }}"
+    labels:
+      - "traefik.enable=true"
+
+  # =========================
+  # =         HOMER         =
+  # =========================
+  homer:
+    image: b4bz/homer:latest
+    container_name: homer
+    restart: always
+    networks:
+      - traefik
+    volumes:
+      - ./conf/homer/config.yml:/www/assets/config.yml
+    environment:
+      - "TZ={{ general_timezone }}"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik"
+      - "traefik.http.services.homer.loadbalancer.server.port=8080"
+
+  # =========================
+  # =    UNIFI CONTROLLER   =
+  # =========================
+  unifi-controller:
+    image: linuxserver/unifi-controller:latest
+    container_name: unifi-controller
+    restart: always
+    environment:
+      - "TZ={{ general_timezone }}"
+      - "PUID=1000"
+      - "PGID=1000"
+      - "MEM_LIMIT=512M"
+    volumes:
+      - "{{ general_path_appdata }}/unifi-controller/config:/config"
+    ports:
+      - "3478:3478/udp"
+      - "10001:10001/udp"
+      - "8080:8080"
+      - "8081:8081"
+      - "8443:8443"
+      - "8843:8843"
+      - "8880:8880"
+      - "6789:6789"
+
+  # =========================
+  # =    HOME AUTOMATION    =
+  # =========================
+  ha-mosquitto:
+    image: eclipse-mosquitto:latest
+    container_name: ha-mosquitto
+    restart: always
+    networks:
+      - home-automation
+    volumes:
+      - "{{ general_path_appdata }}/ha-mosquitto/data:/mosquitto/data"
+      - "{{ general_path_appdata }}/ha-mosquitto/log:/mosquitto/log"
+    environment:
+      - "TZ={{ general_timezone }}"
+
+  zigbee2mqtt:
+    image: koenkk/zigbee2mqtt:latest
+    container_name: zigbee2mqtt
+    restart: always
+    privileged: true
+    networks:
+      - home-automation
+    depends_on:
+      - ha-mosquitto
+    volumes:
+      - "{{ general_path_appdata }}/zigbee2mqtt:/app/data"
+      - "/run/udev:/run/udev:ro"
+    devices:
+      - "/dev/ttyUSB0:/dev/ttyUSB0"
+    environment:
+      - "TZ={{ general_timezone }}"
+
+  node-red:
+    image: nodered/node-red:latest
+    container_name: node-red
+    restart: always
+    networks:
+      - home-automation
+    depends_on:
+      - ha-mosquitto
+    volumes:
+      - "{{ general_path_appdata }}/node-red:/data"
+    ports:
+      - "1880:1880"
+    environment:
+      - "TZ={{ general_timezone }}"
+
+  # =========================
+  # =        MINIFLUX       =
+  # =========================
+  miniflux:
+    image: miniflux/miniflux:latest
+    container_name: miniflux
+    restart: always
+    networks:
+      - traefik
+      - miniflux
+    depends_on:
+      - miniflux-db
+    environment:
+      - "TZ={{ general_timezone }}"
+      - "DATABASE_URL=postgres://miniflux:{{ app_miniflux_admin_user }}@miniflux-db/miniflux?sslmode=disable"
+      - "RUN_MIGRATIONS=1"
+      - "CREATE_ADMIN=1"
+      - "ADMIN_USERNAME={{ app_miniflux_admin_user }}"
+      - "ADMIN_PASSWORD={{ app_miniflux_admin_user }}"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik"
+      - "traefik.http.services.miniflux.loadbalancer.server.port=8080"
+
+  miniflux-db:
+    image: postgres:12-alpine
+    container_name: miniflux-db
+    restart: always
+    networks:
+      - miniflux
+    volumes:
+      - "{{ general_path_appdata }}/miniflux/db:/var/lib/postgresql/data"
+      - "miniflux-db-dump:/backup"
+    environment:
+      - "TZ={{ general_timezone }}"
+      - "POSTGRES_USER=miniflux"
+      - "POSTGRES_PASSWORD={{ app_miniflux_admin_user }}"
+
+  # =========================
+  # =     AUTO-UPDATER      =
+  # =========================
+  watchtower:
+    image: containrrr/watchtower:latest
+    container_name: watchtower
+    restart: always
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: --schedule "0 0 4 * * *" --cleanup
+    environment:
+      - "TZ={{ general_timezone }}"
+
+#################################################################
+#                            NETWORKS                           #
+#################################################################
+networks:  
+  home-automation:
+    name: home-automation
+
+  miniflux:
+    name: miniflux
+
+  traefik:
+    name: traefik
+
+#################################################################
+#                            VOLUMES                            #
+#################################################################
+volumes:
+  miniflux-db-dump:
+  traefik-cert:

@@ -1,0 +1,38 @@
+- name: Create temporary dir
+  tempfile:
+    state: directory
+    suffix: ".{{ ansible_hostname }}-{{ templates_folder }}"
+  register: tmp_dir
+
+- name: Create directory structure in temporary dir
+  file:
+    path: "{{ tmp_dir.path }}/{{ item.path }}"
+    state: directory
+    owner: '{{ ansible_real_user_id }}'
+    group: '{{ ansible_real_group_id }}'
+    mode: 0700
+  with_filetree: templates/{{ ansible_hostname }}/{{ templates_folder }}
+  when: item.state == 'directory'
+
+- name: Generate template files to temporary dir
+  template:
+    src: '{{ item.root }}/{{ item.path }}'
+    dest: "{{ tmp_dir.path }}/{{ item.path }}"
+    owner: '{{ ansible_real_user_id }}'
+    group: '{{ ansible_real_group_id }}'
+    mode: 0600
+  with_filetree: templates/{{ ansible_hostname }}/{{ templates_folder }}
+  when: item.state == 'file'
+
+- name: Sync temporary dir to destination
+  synchronize:
+    src: "{{ tmp_dir.path }}/"
+    dest: "{{ destination_folder }}"
+    archive: yes
+    delete: yes
+  delegate_to: "{{ inventory_hostname }}"
+
+- name: Delete temporary folder
+  file:
+    path: "{{ tmp_dir.path }}"
+    state: absent
