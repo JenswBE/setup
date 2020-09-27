@@ -31,6 +31,7 @@
     archive: yes
     delete: yes
   delegate_to: "{{ inventory_hostname }}"
+  become: true
 
 - name: Delete temporary folder
   file:

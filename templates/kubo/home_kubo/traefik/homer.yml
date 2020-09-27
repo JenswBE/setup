@@ -3,6 +3,7 @@ http:
         homer:
             entrypoints: ["websecure"]
             rule: "Host(`{{ ansible_hostname }}.{{ general_domain_default }}`)"
+            service: homer-{{ ansible_hostname }}@docker
             tls:
                 certresolver: le-tls
             middlewares:

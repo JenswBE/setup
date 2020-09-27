@@ -14,6 +14,4 @@
     group: "root"
     mode: 0700
   with_items:
-    - bin
-    - conf
     - appdata

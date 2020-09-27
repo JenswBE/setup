@@ -3,6 +3,7 @@ http:
         miniflux:
             entrypoints: ["websecure"]
             rule: "Host(`feed.{{ general_domain_default }}`)"
+            service: miniflux-{{ ansible_hostname }}@docker
             tls:
                 certresolver: le-tls
             middlewares:
