@@ -34,7 +34,7 @@ services:
     networks:
       - traefik
     volumes:
-      - ./conf/traefik:/conf
+      - ./traefik:/conf
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - traefik-cert:/letsencrypt/
     environment:
@@ -52,13 +52,13 @@ services:
     networks:
       - traefik
     volumes:
-      - ./conf/homer/config.yml:/www/assets/config.yml
+      - ./homer/config.yml:/www/assets/config.yml
     environment:
       - "TZ={{ general_timezone }}"
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=traefik"
-      - "traefik.http.services.homer.loadbalancer.server.port=8080"
+      - "traefik.http.services.homer-{{ ansible_hostname }}.loadbalancer.server.port=8080"
 
   # =========================
   # =    UNIFI CONTROLLER   =
@@ -145,15 +145,15 @@ services:
       - miniflux-db
     environment:
       - "TZ={{ general_timezone }}"
-      - "DATABASE_URL=postgres://miniflux:{{ app_miniflux_admin_user }}@miniflux-db/miniflux?sslmode=disable"
+      - "DATABASE_URL=postgres://miniflux:{{ app_miniflux_db_pass }}@miniflux-db/miniflux?sslmode=disable"
       - "RUN_MIGRATIONS=1"
       - "CREATE_ADMIN=1"
       - "ADMIN_USERNAME={{ app_miniflux_admin_user }}"
-      - "ADMIN_PASSWORD={{ app_miniflux_admin_user }}"
+      - "ADMIN_PASSWORD={{ app_miniflux_admin_pass }}"
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=traefik"
-      - "traefik.http.services.miniflux.loadbalancer.server.port=8080"
+      - "traefik.http.services.miniflux-{{ ansible_hostname }}.loadbalancer.server.port=8080"
 
   miniflux-db:
     image: postgres:12-alpine
@@ -167,7 +167,7 @@ services:
     environment:
       - "TZ={{ general_timezone }}"
       - "POSTGRES_USER=miniflux"
-      - "POSTGRES_PASSWORD={{ app_miniflux_admin_user }}"
+      - "POSTGRES_PASSWORD={{ app_miniflux_db_pass }}"
 
   # =========================
   # =     AUTO-UPDATER      =

@@ -9,6 +9,7 @@ general_user: jens
 packages_base:
   - htop
   - rsync
+  - vim
 
 # Security
 security_autoupdate_reboot_time: "05:00"
