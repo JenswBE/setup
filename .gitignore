@@ -10,6 +10,9 @@
 !/README.md
 !/requirements.yml
 
+!/docs/
+!/docs/olaf.md
+
 !/files/
 !/files/systemd-mailjet
 
@@ -49,25 +52,43 @@
 
 !/templates/
 !/templates/olaf/
-!/templates/olaf/home_olaf/
-!/templates/olaf/home_olaf/docker-compose.yml
+!/templates/olaf/etc/
+!/templates/olaf/etc/systemd/
+!/templates/olaf/etc/systemd/network/
+!/templates/olaf/etc/systemd/network/10-lan0.link
+!/templates/olaf/etc/systemd/network/10-wan0.link
+!/templates/olaf/etc/systemd/network/20-dhcp-wan.network
+!/templates/olaf/etc/systemd/network/20-static-lan.network
 
-!/templates/olaf/home_olaf/borgmatic/
-!/templates/olaf/home_olaf/borgmatic/borgmatic.d/
-!/templates/olaf/home_olaf/borgmatic/borgmatic.d/config.yaml
-!/templates/olaf/home_olaf/borgmatic/borgmatic.d/crontab.txt
+!/templates/olaf/etc/systemd/system/
+!/templates/olaf/etc/systemd/system/btrfs-scrub.service
+!/templates/olaf/etc/systemd/system/btrfs-scrub.timer
+!/templates/olaf/etc/systemd/system/media-backup.mount
+!/templates/olaf/etc/systemd/system/media-data.mount
+!/templates/olaf/etc/systemd/system/unit-fail-mail@.service
 
-!/templates/olaf/home_olaf/borgmatic/ssh/
-!/templates/olaf/home_olaf/borgmatic/ssh/.gitkeep
+!/templates/olaf/home/
+!/templates/olaf/home/_user_/
+!/templates/olaf/home/_user_/olaf/
+!/templates/olaf/home/_user_/olaf/docker-compose.yml
 
-!/templates/olaf/home_olaf/traefik/
-!/templates/olaf/home_olaf/traefik/common.yml
-!/templates/olaf/home_olaf/traefik/tmm.yml
-!/templates/olaf/home_olaf/traefik/traefik.yml
-!/templates/olaf/home_olaf/traefik/transmission.yml
+!/templates/olaf/home/_user_/olaf/borgmatic/
+!/templates/olaf/home/_user_/olaf/borgmatic/borgmatic.d/
+!/templates/olaf/home/_user_/olaf/borgmatic/borgmatic.d/config.yaml
+!/templates/olaf/home/_user_/olaf/borgmatic/borgmatic.d/crontab.txt
 
-!/templates/olaf/opt_conf/
-!/templates/olaf/opt_conf/systemd-mailjet.conf
+!/templates/olaf/home/_user_/olaf/borgmatic/ssh/
+!/templates/olaf/home/_user_/olaf/borgmatic/ssh/.gitkeep
+
+!/templates/olaf/home/_user_/olaf/traefik/
+!/templates/olaf/home/_user_/olaf/traefik/common.yml
+!/templates/olaf/home/_user_/olaf/traefik/tmm.yml
+!/templates/olaf/home/_user_/olaf/traefik/traefik.yml
+!/templates/olaf/home/_user_/olaf/traefik/transmission.yml
+
+!/templates/olaf/opt/
+!/templates/olaf/opt/conf/
+!/templates/olaf/opt/conf/systemd-mailjet.conf
 
 !/vars/
 !/vars/basics.yml

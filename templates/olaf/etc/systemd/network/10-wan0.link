@@ -1,0 +1,7 @@
+[Match]
+MACAddress=40:8d:5c:a4:55:ad
+
+[Link]
+Description=WAN
+MACAddressPolicy=persistent
+Name=wan0

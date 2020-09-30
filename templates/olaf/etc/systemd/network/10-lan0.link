@@ -1,0 +1,7 @@
+[Match]
+MACAddress=40:8d:5c:a4:55:ae
+
+[Link]
+Description=LAN
+MACAddressPolicy=persistent
+Name=lan0
