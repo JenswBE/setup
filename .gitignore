@@ -52,6 +52,10 @@
 !/templates/kubo/home/_user_/kubo/traefik/miniflux.yml
 !/templates/kubo/home/_user_/kubo/traefik/traefik.yml
 
+!/templates/kubo/opt/
+!/templates/kubo/opt/conf/
+!/templates/kubo/opt/conf/systemd-mailjet.conf
+
 !/templates/
 !/templates/olaf/
 !/templates/olaf/etc/
