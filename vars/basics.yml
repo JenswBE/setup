@@ -17,8 +17,7 @@ security_autoupdate_reboot: true
 security_ssh_password_authentication: "yes"
 
 # Firewall
-firewall_allowed_tcp_ports:
-  - "22"
+firewall_ssh_port: 22
 
 # Docker
 docker_users:

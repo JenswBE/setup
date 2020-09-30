@@ -15,16 +15,15 @@
       become: yes
       tags: ["setup"]
 
-    - name: geerlingguy.firewall
-      become: yes
-      tags: ["setup"]
-
     - name: geerlingguy.docker
       become: yes
       tags: ["setup"]
 
   tasks:
     - include_tasks: tasks/basic_setup.yml
+      tags: ["setup"]
+
+    - include_tasks: tasks/firewall.yml
       tags: ["setup"]
 
     - include_tasks: "tasks/hosts/{{ ansible_hostname }}.yml"
