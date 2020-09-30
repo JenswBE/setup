@@ -174,8 +174,8 @@ services:
       # Backup locations
       - "/media/data/media/000. Plex/Photos:/mnt/source/plex/photos:ro"
       # Config and cache
-      - "./conf/borgmatic/borgmatic.d:/etc/borgmatic.d"
-      - "./conf/borgmatic/ssh:/root/.ssh"
+      - "./borgmatic/borgmatic.d:/etc/borgmatic.d"
+      - "./borgmatic/ssh:/root/.ssh"
       - "{{ general_path_appdata }}/borgmatic/config:/root/.config/borg"
       - "{{ general_path_appdata }}/borgmatic/cache:/root/.cache/borg"
       - "{{ general_path_appdata }}/borgmatic/restore:/mnt/restore"
