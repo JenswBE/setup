@@ -1,0 +1,24 @@
+- name: Setup mail on failed systemd unit
+  become: yes
+  block:
+    - name: Add user systemd-mailjet
+      user:
+        name: systemd-mailjet
+        system: true
+
+    - name: Copy systemd-mailjet binary
+      copy:
+        src: systemd-mailjet
+        dest: /opt/bin/systemd-mailjet
+        owner: systemd-mailjet
+        group: systemd-mailjet
+        mode: 0500
+
+    - name: Set systemd-mailjet config
+      template:
+        src: "{{ ansible_hostname }}/opt_conf/systemd-mailjet.conf"
+        dest: /opt/conf/systemd-mailjet.conf
+        owner: systemd-mailjet
+        group: systemd-mailjet
+        mode: 0400
+

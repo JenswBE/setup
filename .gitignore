@@ -24,6 +24,7 @@
 !/tasks/
 !/tasks/basic_setup.yml
 !/tasks/firewall.yml
+!/tasks/mail_on_failed_unit.yml
 
 !/tasks/helpers/
 !/tasks/helpers/copy_templates_folder.yml
@@ -51,11 +52,22 @@
 !/templates/olaf/home_olaf/
 !/templates/olaf/home_olaf/docker-compose.yml
 
+!/templates/olaf/home_olaf/borgmatic/
+!/templates/olaf/home_olaf/borgmatic/borgmatic.d/
+!/templates/olaf/home_olaf/borgmatic/borgmatic.d/config.yaml
+!/templates/olaf/home_olaf/borgmatic/borgmatic.d/crontab.txt
+
+!/templates/olaf/home_olaf/borgmatic/ssh/
+!/templates/olaf/home_olaf/borgmatic/ssh/.gitkeep
+
 !/templates/olaf/home_olaf/traefik/
 !/templates/olaf/home_olaf/traefik/common.yml
 !/templates/olaf/home_olaf/traefik/tmm.yml
 !/templates/olaf/home_olaf/traefik/traefik.yml
 !/templates/olaf/home_olaf/traefik/transmission.yml
+
+!/templates/olaf/opt_conf/
+!/templates/olaf/opt_conf/systemd-mailjet.conf
 
 !/vars/
 !/vars/basics.yml
