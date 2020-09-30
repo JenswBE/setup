@@ -8,9 +8,9 @@
   file:
     path: "{{ tmp_dir.path }}/{{ item.path }}"
     state: directory
-    owner: '{{ ansible_real_user_id }}'
-    group: '{{ ansible_real_group_id }}'
-    mode: 0700
+    owner: '{{ destination_owner }}'
+    group: '{{ destination_group }}'
+    mode: '{{ destination_mode_dirs }}'
   with_filetree: templates/{{ ansible_hostname }}/{{ templates_folder }}
   when: item.state == 'directory'
 
@@ -18,9 +18,9 @@
   template:
     src: '{{ item.root }}/{{ item.path }}'
     dest: "{{ tmp_dir.path }}/{{ item.path }}"
-    owner: '{{ ansible_real_user_id }}'
-    group: '{{ ansible_real_group_id }}'
-    mode: 0600
+    owner: '{{ destination_owner }}'
+    group: '{{ destination_group }}'
+    mode: '{{ destination_mode_files }}'
   with_filetree: templates/{{ ansible_hostname }}/{{ templates_folder }}
   when: item.state == 'file'
 
@@ -28,8 +28,8 @@
   synchronize:
     src: "{{ tmp_dir.path }}/"
     dest: "{{ destination_folder }}"
-    archive: yes
-    delete: yes
+    archive: true
+    delete: "{{ destination_delete_extra }}"
   delegate_to: "{{ inventory_hostname }}"
   become: true
 

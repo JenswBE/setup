@@ -38,17 +38,19 @@
 
 !/templates/
 !/templates/kubo/
-!/templates/kubo/home_kubo/
-!/templates/kubo/home_kubo/docker-compose.yml
+!/templates/kubo/home/
+!/templates/kubo/home/_user_/
+!/templates/kubo/home/_user_/kubo/
+!/templates/kubo/home/_user_/kubo/docker-compose.yml
 
-!/templates/kubo/home_kubo/homer/
-!/templates/kubo/home_kubo/homer/config.yml
+!/templates/kubo/home/_user_/kubo/homer/
+!/templates/kubo/home/_user_/kubo/homer/config.yml
 
-!/templates/kubo/home_kubo/traefik/
-!/templates/kubo/home_kubo/traefik/common.yml
-!/templates/kubo/home_kubo/traefik/homer.yml
-!/templates/kubo/home_kubo/traefik/miniflux.yml
-!/templates/kubo/home_kubo/traefik/traefik.yml
+!/templates/kubo/home/_user_/kubo/traefik/
+!/templates/kubo/home/_user_/kubo/traefik/common.yml
+!/templates/kubo/home/_user_/kubo/traefik/homer.yml
+!/templates/kubo/home/_user_/kubo/traefik/miniflux.yml
+!/templates/kubo/home/_user_/kubo/traefik/traefik.yml
 
 !/templates/
 !/templates/olaf/
