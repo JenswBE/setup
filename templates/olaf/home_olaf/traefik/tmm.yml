@@ -1,0 +1,16 @@
+http:
+    middlewares:
+        tmm-auth:
+            basicauth:
+                users: "{{ app_tmm_users }}"
+
+    routers:
+        tmm:
+            entrypoints: ["websecure"]
+            rule: "Host(`tmm.{{ general_domain_default }}`)"
+            service: tmm-{{ ansible_hostname }}@docker
+            tls:
+                certresolver: le-tls
+            middlewares:
+                - secure-https
+                - tmm-auth

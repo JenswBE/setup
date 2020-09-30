@@ -1,0 +1,197 @@
+version: '3.7'
+
+#################################################################
+#                            SERVICES                           #
+#################################################################
+services:
+# =========================
+# =         PROXY         =
+# =========================
+  traefik:
+    image: traefik:latest
+    container_name: traefik
+    restart: always
+    command:
+      # - "--log.level=DEBUG"
+      - "--providers.file.directory=/conf"
+      - "--providers.file.watch=true"
+      - "--providers.docker=true"
+      - "--providers.docker.defaultRule="
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.websecure.address=:443"
+      - "--entrypoints.websecure.http.middlewares=secure-https@file"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.web.http.redirections.entryPoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entryPoint.scheme=https"
+      - "--certificatesresolvers.le-tls.acme.tlsChallenge=true"
+      - "--certificatesresolvers.le-tls.acme.email={{ general_mail_admin }}@{{ general_domain_default }}"
+      - "--certificatesresolvers.le-tls.acme.storage=/letsencrypt/acme.json"
+      - "--api=true"
+      - "--ping.manualrouting=true"
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      - traefik
+    volumes:
+      - "./traefik:/conf"
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "traefik-cert:/letsencrypt/"
+    environment:
+      - "TZ={{ general_timezone }}"
+    labels:
+      - "traefik.enable=true"
+
+# =========================
+# =    Cloudflare DDNS    =
+# =========================
+  cloudflare-ddns:
+    image: oznu/cloudflare-ddns:latest
+    container_name: cloudflare-ddns
+    restart: always
+    environment:
+      - "TZ={{ general_timezone }}"
+      - "EMAIL={{ app_cloudflare_email }}"
+      - "API_KEY={{ app_cloudflare_api_key }}"
+      - "ZONE={{ app_cloudflare_zone }}"
+      - "SUBDOMAIN={{ app_cloudflare_subdomain }}"
+    dns:
+      - "1.1.1.1"
+      - "1.0.0.1"
+
+# =========================
+# =     AUTO-UPDATER      =
+# =========================
+  watchtower:
+    image: containrrr/watchtower:latest
+    container_name: watchtower
+    restart: always
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    command: --schedule "0 0 4 * * *" --cleanup
+    environment:
+      - "TZ={{ general_timezone }}"
+
+# =========================
+# =        TORRENT        =
+# =========================
+  transmission:
+    image: linuxserver/transmission:latest
+    container_name: transmission
+    restart: always
+    networks:
+      - traefik
+    ports:
+      - "51413:51413"
+      - "51413:51413/udp"
+    environment:
+      - "TZ={{ general_timezone }}"
+      - "PUID=233"
+      - "PGID=233"
+      - "TRANSMISSION_WEB_HOME=/combustion-release/"
+      - "USER={{ app_transmission_user }}"
+      - "PASS={{ app_transmission_password }}"
+    volumes:
+      - "/media/data/services/transmission/:/downloads/incomplete"
+      - "/media/data/media/000. Plex/Nazien:/downloads/complete"
+      - "{{ general_path_appdata }}/transmission:/config"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik"
+      - "traefik.http.services.transmission-{{ ansible_hostname }}.loadbalancer.server.port=9091"
+
+# =========================
+# =         SAMBA         =
+# =========================
+  samba:
+    image: dperson/samba:latest
+    container_name: samba
+    restart: always
+    ports:
+      - "{{ machine_local_ip }}:139:139"
+      - "{{ machine_local_ip }}:445:445"
+    volumes:
+      - "/media/data/media:/mnt/media"
+    environment:
+      - "TZ={{ general_timezone }}"
+      - "USERID=233"
+      - "GROUPID=233"
+    command: >
+      samba.sh -S
+      -u "nas;{{ app_samba_nas_password }}"
+      -u "scanner;{{ app_samba_scanner_password }}"
+      -s "media;/mnt/media;yes;no;no;nas"
+      -s "scans;/mnt/media/Scans;yes;no;no;scanner"
+
+# =========================
+# =          PLEX         =
+# =========================
+  plex:
+    image: plexinc/pms-docker:latest
+    container_name: plex
+    restart: always
+    network_mode: "host"
+    volumes:
+      - "/media/data/media/000. Plex:/data/media"
+      - "/media/data/services/plex/optimized:/data/optimized"
+      - "{{ general_path_appdata }}/plex/config:/config"
+      - "{{ general_path_appdata }}/plex/transcode:/transcode"
+    environment:
+      - "TZ={{ general_timezone }}"
+      - "PLEX_CLAIM={{ app_plex_claim_token }}"
+      - "PLEX_UID=233"
+      - "PLEX_GID=233"
+
+# =========================
+# =   TINY MEDIA MANAGER  =
+# =========================
+  tmm:
+    image: romancin/tinymediamanager:latest
+    container_name: tmm
+    restart: always
+    networks:
+      - traefik
+    volumes:
+      - "/media/data/media/000. Plex:/media"
+      - "{{ general_path_appdata }}/tmm/config:/config"
+    environment:
+      - "TZ={{ general_timezone }}"
+      - "GROUP_ID=0"
+      - "USER_ID=0"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik"
+      - "traefik.http.services.tmm-{{ ansible_hostname }}.loadbalancer.server.port=5800"
+
+# =========================
+# =         BACKUP        =
+# =========================
+  borgmatic:
+    image: b3vis/borgmatic:latest
+    container_name: borgmatic
+    restart: always
+    volumes:
+      # Backup locations
+      - "/media/data/media/000. Plex/Photos:/mnt/source/plex/photos:ro"
+      # Config and cache
+      - "./conf/borgmatic/borgmatic.d:/etc/borgmatic.d"
+      - "./conf/borgmatic/ssh:/root/.ssh"
+      - "{{ general_path_appdata }}/borgmatic/config:/root/.config/borg"
+      - "{{ general_path_appdata }}/borgmatic/cache:/root/.cache/borg"
+      - "{{ general_path_appdata }}/borgmatic/restore:/mnt/restore"
+    environment:
+      - "TZ={{ general_timezone }}"
+      - "BORG_PASSPHRASE={{ app_borgmatic_borg_passphrase }}"
+
+# #################################################################
+# #                            VOLUMES                            #
+# #################################################################
+volumes:
+  traefik-cert:
+
+# #################################################################
+# #                            NETWORKS                           #
+# #################################################################
+networks:
+  traefik:
+    name: traefik
