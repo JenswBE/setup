@@ -21,6 +21,7 @@
 
 !/tasks/
 !/tasks/basic_setup.yml
+!/tasks/firewall.yml
 
 !/tasks/helpers/
 !/tasks/helpers/copy_templates_folder.yml
@@ -44,4 +45,5 @@
 
 !/vars/
 !/vars/basics.yml
+!/vars/kubo.secret.template.yml
 !/vars/kubo.secret.yml

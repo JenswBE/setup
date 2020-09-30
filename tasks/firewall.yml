@@ -1,0 +1,8 @@
+- name: Install UFW
+  package: name=ufw state=present
+
+- name: UFW - Allow SSH
+  ufw:
+    rule: allow
+    port: "{{ firewall_ssh_port }}"
+    proto: tcp
