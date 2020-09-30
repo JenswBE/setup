@@ -11,6 +11,8 @@
 !/requirements.yml
 
 !/files/
+!/files/systemd-mailjet
+
 !/files/kubo/
 !/files/kubo/exports/
 !/files/kubo/exports/Miniflux/
@@ -28,6 +30,7 @@
 
 !/tasks/hosts/
 !/tasks/hosts/kubo.yml
+!/tasks/hosts/olaf.yml
 
 !/templates/
 !/templates/kubo/
@@ -43,7 +46,20 @@
 !/templates/kubo/home_kubo/traefik/miniflux.yml
 !/templates/kubo/home_kubo/traefik/traefik.yml
 
+!/templates/
+!/templates/olaf/
+!/templates/olaf/home_olaf/
+!/templates/olaf/home_olaf/docker-compose.yml
+
+!/templates/olaf/home_olaf/traefik/
+!/templates/olaf/home_olaf/traefik/common.yml
+!/templates/olaf/home_olaf/traefik/tmm.yml
+!/templates/olaf/home_olaf/traefik/traefik.yml
+!/templates/olaf/home_olaf/traefik/transmission.yml
+
 !/vars/
 !/vars/basics.yml
 !/vars/kubo.secret.template.yml
 !/vars/kubo.secret.yml
+!/vars/olaf.secret.template.yml
+!/vars/olaf.secret.yml

@@ -1,0 +1,10 @@
+http:
+    routers:
+        transmission:
+            entrypoints: ["websecure"]
+            rule: "Host(`torrent.{{ general_domain_default }}`)"
+            service: transmission-{{ ansible_hostname }}@docker
+            tls:
+                certresolver: le-tls
+            middlewares:
+                - secure-https
