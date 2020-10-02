@@ -1,7 +1,8 @@
 - hosts: all
 
   vars_files:
-    - vars/basics.yml
+    - vars/basics.public.yml
+    - vars/basics.secret.yml
 
   pre_tasks:
     - name: Use of limit arg is mandatory
@@ -20,6 +21,9 @@
       tags: ["setup"]
 
   tasks:
+    - name: Load host specific vars
+      include_vars: "{{ ansible_hostname }}.secret.yml"
+
     - include_tasks: tasks/basic_setup.yml
       tags: ["setup"]
 
