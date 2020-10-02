@@ -11,5 +11,9 @@ ansible-playbook main.yml --ask-vault-pass --ask-become-pass --limit <HOSTNAME>
 ansible-playbook main.yml --ask-vault-pass --ask-become-pass --skip-tags setup --limit <HOSTNAME>
 ```
 
+## Basic setup
+Download the latest LTS version of [Ubuntu Server](https://ubuntu.com/download/server) and install.
+Next, run the commands above.
+
 ## Host specific configuration
 - [Olaf](docs/olaf.md)
