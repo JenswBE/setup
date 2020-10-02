@@ -1,8 +1,9 @@
 - name: Create temporary dir
   tempfile:
     state: directory
-    suffix: ".{{ ansible_hostname }}-{{ templates_folder }}"
+    suffix: ".{{ ansible_hostname }}"
   register: tmp_dir
+  changed_when: false
 
 - name: Create directory structure in temporary dir
   file:
@@ -13,6 +14,7 @@
     mode: '{{ destination_mode_dirs }}'
   with_filetree: templates/{{ ansible_hostname }}/{{ templates_folder }}
   when: item.state == 'directory'
+  changed_when: false
 
 - name: Generate template files to temporary dir
   template:
@@ -23,12 +25,18 @@
     mode: '{{ destination_mode_files }}'
   with_filetree: templates/{{ ansible_hostname }}/{{ templates_folder }}
   when: item.state == 'file'
+  changed_when: false
 
 - name: Sync temporary dir to destination
   synchronize:
     src: "{{ tmp_dir.path }}/"
     dest: "{{ destination_folder }}"
-    archive: true
+    archive: false
+    checksum: true
+    group: true
+    owner: true
+    perms: true
+    recursive: true
     delete: "{{ destination_delete_extra }}"
   delegate_to: "{{ inventory_hostname }}"
   become: true
@@ -37,3 +45,4 @@
   file:
     path: "{{ tmp_dir.path }}"
     state: absent
+  changed_when: false
