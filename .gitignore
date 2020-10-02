@@ -97,7 +97,9 @@
 !/templates/olaf/opt/conf/systemd-mailjet.conf
 
 !/vars/
-!/vars/basics.yml
+!/vars/basics.public.yml
+!/vars/basics.secret.template.yml
+!/vars/basics.secret.yml
 !/vars/kubo.secret.template.yml
 !/vars/kubo.secret.yml
 !/vars/olaf.secret.template.yml

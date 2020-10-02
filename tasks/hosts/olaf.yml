@@ -1,6 +1,3 @@
-# Load host specific vars
-- include_vars: "{{ ansible_hostname }}.secret.yml"
-
 - name: Copy home/_user_/olaf templates
   include_tasks: tasks/helpers/copy_templates_folder.yml
   vars:
