@@ -40,6 +40,11 @@
     delete: "{{ destination_delete_extra }}"
   delegate_to: "{{ inventory_hostname }}"
   become: true
+  register: rsync_output
+
+- name: Show rsync logs
+  debug:
+    var: rsync_output.stdout_lines
 
 - name: Delete temporary folder
   file:
