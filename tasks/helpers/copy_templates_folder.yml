@@ -1,11 +1,11 @@
 - name: Create temporary dir
   tempfile:
     state: directory
-    suffix: ".{{ ansible_hostname }}"
   register: tmp_dir
   changed_when: false
 
 - name: Create directory structure in temporary dir
+  become: true
   file:
     path: "{{ tmp_dir.path }}/{{ item.path }}"
     state: directory
@@ -17,6 +17,7 @@
   changed_when: false
 
 - name: Generate template files to temporary dir
+  become: true
   template:
     src: '{{ item.root }}/{{ item.path }}'
     dest: "{{ tmp_dir.path }}/{{ item.path }}"
@@ -28,18 +29,19 @@
   changed_when: false
 
 - name: Sync temporary dir to destination
+  become: true
   synchronize:
     src: "{{ tmp_dir.path }}/"
     dest: "{{ destination_folder }}"
     archive: false
     checksum: true
+    compress: false
     group: true
     owner: true
     perms: true
     recursive: true
     delete: "{{ destination_delete_extra }}"
   delegate_to: "{{ inventory_hostname }}"
-  become: true
   register: rsync_output
 
 - name: Show rsync logs
