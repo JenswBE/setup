@@ -28,6 +28,7 @@
 !/tasks/basic_setup.yml
 !/tasks/firewall.yml
 !/tasks/mail_on_failed_unit.yml
+!/tasks/powertop.yml
 
 !/tasks/helpers/
 !/tasks/helpers/copy_templates_folder.yml
@@ -37,6 +38,8 @@
 !/tasks/hosts/olaf.yml
 
 !/templates/
+!/templates/powertop.service
+
 !/templates/kubo/
 !/templates/kubo/home/
 !/templates/kubo/home/_user_/

@@ -1,0 +1,25 @@
+- name: Setup powertop
+  become: yes
+  block:
+    - name: Install powertop
+      package:
+        state: present
+        name: powertop
+
+    - name: Setup powertop service file
+      template:
+        src: powertop.service
+        dest: "/etc/systemd/system/powertop.service"
+        owner: root
+        group: root
+        mode: 0644
+
+    - name: Force systemd reload
+      systemd:
+        daemon_reload: yes
+
+    - name: Enable automatic powertop tuning
+      systemd:
+        name: powertop
+        state: started
+        enabled: yes

@@ -1,0 +1,10 @@
+# Based on https://wiki.archlinux.org/index.php/Powertop
+[Unit]
+Description=Powertop tunings
+
+[Service]
+Type=oneshot
+ExecStart=/usr/sbin/powertop --auto-tune
+
+[Install]
+WantedBy=multi-user.target
