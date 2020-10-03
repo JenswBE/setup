@@ -12,7 +12,7 @@
     owner: '{{ destination_owner }}'
     group: '{{ destination_group }}'
     mode: '{{ destination_mode_dirs }}'
-  with_filetree: templates/{{ ansible_hostname }}/{{ templates_folder }}
+  with_filetree: templates/{{ templates_folder }}
   when: item.state == 'directory'
   changed_when: false
 
@@ -23,7 +23,7 @@
     owner: '{{ destination_owner }}'
     group: '{{ destination_group }}'
     mode: '{{ destination_mode_files }}'
-  with_filetree: templates/{{ ansible_hostname }}/{{ templates_folder }}
+  with_filetree: templates/{{ templates_folder }}
   when: item.state == 'file'
   changed_when: false
 
