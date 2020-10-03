@@ -9,17 +9,6 @@
     - destination_mode_dirs: 0700
     - destination_delete_extra: true
 
-- name: Copy systemd network templates
-  include_tasks: tasks/helpers/copy_templates_folder.yml
-  vars:
-    - templates_folder: "{{ ansible_hostname }}/etc/systemd/network"
-    - destination_folder: "/etc/systemd/network"
-    - destination_owner: root
-    - destination_group: root
-    - destination_mode_files: 0600
-    - destination_mode_dirs: 0700
-    - destination_delete_extra: true
-
 - name: Copy systemd system unit templates
   include_tasks: tasks/helpers/copy_templates_folder.yml
   vars:

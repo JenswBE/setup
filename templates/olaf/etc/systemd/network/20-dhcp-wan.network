@@ -1,5 +1,0 @@
-[Match]
-Name=wan0
-
-[Network]
-DHCP = no
