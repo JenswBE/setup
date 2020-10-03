@@ -1,7 +1,7 @@
 - name: Copy home/_user_/olaf templates
   include_tasks: tasks/helpers/copy_templates_folder.yml
   vars:
-    - templates_folder: "home/_user_/olaf"
+    - templates_folder: "{{ ansible_hostname }}/home/_user_/olaf"
     - destination_folder: "{{ ansible_user_dir }}/{{ ansible_hostname }}"
     - destination_owner: '{{ ansible_real_user_id }}'
     - destination_group: '{{ ansible_real_group_id }}'
@@ -12,7 +12,7 @@
 - name: Copy systemd network templates
   include_tasks: tasks/helpers/copy_templates_folder.yml
   vars:
-    - templates_folder: "etc/systemd/network"
+    - templates_folder: "{{ ansible_hostname }}/etc/systemd/network"
     - destination_folder: "/etc/systemd/network"
     - destination_owner: root
     - destination_group: root
@@ -23,7 +23,7 @@
 - name: Copy systemd system unit templates
   include_tasks: tasks/helpers/copy_templates_folder.yml
   vars:
-    - templates_folder: "etc/systemd/system"
+    - templates_folder: "{{ ansible_hostname }}/etc/systemd/system"
     - destination_folder: "/etc/systemd/system"
     - destination_owner: root
     - destination_group: root
