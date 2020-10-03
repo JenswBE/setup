@@ -7,7 +7,7 @@
     - name: UFW - Allow SSH
       ufw:
         rule: allow
-        port: "{{ firewall_ssh_port }}"
+        port: "{{ firewall_ssh_port | string }}"
         proto: tcp
 
     - name: UFW - Enable firewall
