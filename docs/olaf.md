@@ -40,7 +40,7 @@ Go to https://app.plex.tv to setup following libraries:
 - None
 
 ### Continuous
-- Every 15 mins: Update IP in DNS (olaf-clc.yml => cloudflare-dyndns.timer)
+- Every 5 mins: Update IP in DNS (`templates/olaf/home/_user_/olaf/docker-compose.yml: cloudflare-ddns`)
 
 ### 01:00 Daily application jobs
 - None
@@ -49,11 +49,11 @@ Go to https://app.plex.tv to setup following libraries:
 - None
 
 ### 03:00 Perform backup
-- Run Borgmatic (conf/borgmatic/borgmatic.d/crontab.txt)
+- Run Borgmatic (`templates/olaf/home/_user_/olaf/borgmatic/borgmatic.d/crontab.txt`)
 
 ### 04:00 Perform application updates
-- Run Watchtower (docker-compose.yml)
+- Run Watchtower (`templates/olaf/home/_user_/olaf/docker-compose.yml: watchtower`)
 
 ### System tasks
 - 05:00 Update and restart (unattended updates)
-- 06:00 First of month: Scrub BTRFS filesystem (olaf-clc.yml => btrfs-scrub.timer)
+- 06:00 First of month: Scrub BTRFS filesystem (`templates/olaf/etc/systemd/system/btrfs-scrub.timer`)
