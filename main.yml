@@ -23,9 +23,11 @@
   tasks:
     - name: Load public host specific vars
       include_vars: "{{ ansible_hostname }}.public.yml"
+      tags: ["always"]
 
     - name: Load secret host specific vars
       include_vars: "{{ ansible_hostname }}.secret.yml"
+      tags: ["always"]
 
     - include_tasks: tasks/basic_setup.yml
       tags: ["setup"]
@@ -37,6 +39,9 @@
       tags: ["setup"]
 
     - include_tasks: tasks/powertop.yml
+      tags: ["setup"]
+
+    - include_tasks: tasks/elk_beats.yml
       tags: ["setup"]
 
     - include_tasks: "tasks/hosts/{{ ansible_hostname }}.yml"

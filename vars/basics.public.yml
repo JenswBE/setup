@@ -5,6 +5,16 @@ general_path_appdata: "/opt/appdata"
 general_timezone: "Europe/Brussels"
 general_user: jens
 
+# Application specific
+app_elasticsearch_master_hostname: kubo
+
+# Docker
+docker_users:
+  - jens
+
+# Firewall
+firewall_ssh_port: 22
+
 # Packages
 packages_base:
   - htop
@@ -15,10 +25,3 @@ packages_base:
 security_autoupdate_reboot_time: "05:00"
 security_autoupdate_reboot: true
 security_ssh_password_authentication: "yes"
-
-# Firewall
-firewall_ssh_port: 22
-
-# Docker
-docker_users:
-  - jens

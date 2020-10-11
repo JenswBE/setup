@@ -1,0 +1,10 @@
+http:
+    routers:
+        kibana:
+            entrypoints: ["websecure"]
+            rule: "Host(`kibana.{{ general_domain_default }}`)"
+            service: kibana-{{ ansible_hostname }}@docker
+            tls:
+                certresolver: le-tls
+            middlewares:
+                - secure-https
