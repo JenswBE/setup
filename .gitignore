@@ -103,7 +103,9 @@
 !/vars/basics.public.yml
 !/vars/basics.secret.template.yml
 !/vars/basics.secret.yml
+!/vars/kubo.public.yml
 !/vars/kubo.secret.template.yml
 !/vars/kubo.secret.yml
+!/vars/olaf.public.yml
 !/vars/olaf.secret.template.yml
 !/vars/olaf.secret.yml

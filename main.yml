@@ -21,7 +21,10 @@
       tags: ["setup"]
 
   tasks:
-    - name: Load host specific vars
+    - name: Load public host specific vars
+      include_vars: "{{ ansible_hostname }}.public.yml"
+
+    - name: Load secret host specific vars
       include_vars: "{{ ansible_hostname }}.secret.yml"
 
     - include_tasks: tasks/basic_setup.yml
