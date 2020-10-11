@@ -6,11 +6,9 @@ Config for my home NAS
 1. Execute `docker exec -it borgmatic sh -c "ssh -p <PORT> <BORG_USER>@<BORG_HOST>"`, check and accept the host key
 2. Execute `ssh-keygen` and create a new ssh key with blank passphrase in `conf/borgmatic/ssh`
 3. Add public key to allowed ssh keys at remote host (depending on service)
-4. Copy from template and edit `conf/borgmatic/borgmatic.d/config.yaml`
-5. Change permissions with `chmod 600 config.yaml`
-6. Init repo if required with `docker exec borgmatic sh -c "borgmatic --init --encryption repokey-blake2"`
-7. Perform a backup to test the setup with `docker exec borgmatic sh -c "borgmatic --verbosity 1"`
-8. Optional: Backup your repo key file with `docker exec borgmatic sh -c "BORG_RSH=\"ssh -i /root/.ssh/<NAME_OF_SSH_KEY>\" borg key export --qr-html <FULL_REPO_NAME> /root/.ssh/repokey.html"`. Your file is available at `conf/borgmatic/ssh/repokey.html`.
+4. Init repo if required with `docker exec borgmatic sh -c "borgmatic --init --encryption repokey-blake2"`
+5. Perform a backup to test the setup with `docker exec borgmatic sh -c "borgmatic --verbosity 1"`
+6. Optional: Backup your repo key file with `docker exec borgmatic sh -c "BORG_RSH=\"ssh -i /root/.ssh/<NAME_OF_SSH_KEY>\" borg key export --qr-html <FULL_REPO_NAME> /root/.ssh/repokey.html"`. Your file is available at `conf/borgmatic/ssh/repokey.html`.
 
 ### Transmission
 1. Set correct permission with `sudo chown 233:233 /media/data/services/transmission/`
