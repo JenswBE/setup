@@ -10,6 +10,13 @@
         port: "{{ firewall_ssh_port | string }}"
         proto: tcp
 
+    - name: UFW - Allow additional ports
+      ufw:
+        rule: allow
+        port: "{{ item.port | string }}"
+        proto: "{{ item.proto }}"
+      with_items: "{{ firewall_additional_ports }}"
+
     - name: UFW - Enable firewall
       ufw:
         state: enabled

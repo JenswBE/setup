@@ -1,0 +1,4 @@
+# Firewall
+firewall_additional_ports:
+    - port: 32400
+      proto: tcp
