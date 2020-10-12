@@ -170,54 +170,6 @@ services:
       - "POSTGRES_PASSWORD={{ app_miniflux_db_pass }}"
 
   # =========================
-  # =          ELK          =
-  # =========================
-  # https://www.elastic.co/guide/en/elastic-stack-get-started/current/get-started-docker.html
-
-  elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.9.2
-    container_name: elasticsearch
-    environment:
-      - "bootstrap.memory_lock=true"
-      - "cluster.name=docker-cluster"
-      - "discovery.type=single-node"
-      - "network.host=0.0.0.0"
-      - "xpack.license.self_generated.type=basic"
-      - "xpack.security.enabled=true"
-      - "xpack.security.authc.api_key.enabled=true"
-      - "xpack.monitoring.collection.enabled=true"
-      - "ES_JAVA_OPTS=-Xms256m -Xmx256m"
-      - "ELASTIC_PASSWORD={{ app_elasticsearch_password }}"
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-    volumes:
-      - "elasticsearch-data:/usr/share/elasticsearch/data"
-    ports:
-      - "9200:9200"
-    networks:
-      - elk
-
-  kibana:
-    image: docker.elastic.co/kibana/kibana:7.9.2
-    container_name: kibana
-    environment:
-      - "ELASTICSEARCH_URL=http://elasticsearch:9200"
-      - "ELASTICSEARCH_HOSTS=http://elasticsearch:9200"
-      - "ELASTICSEARCH_USERNAME=elastic"
-      - "ELASTICSEARCH_PASSWORD={{ app_elasticsearch_password }}"
-      - "TELEMETRY_ENABLED=false"
-      - "XPACK_SECURITY_ENABLED=true"
-    networks:
-      - traefik
-      - elk
-    labels:
-      - "traefik.enable=true"
-      - "traefik.docker.network=traefik"
-      - "traefik.http.services.kibana-{{ ansible_hostname }}.loadbalancer.server.port=5601"
-
-  # =========================
   # =     AUTO-UPDATER      =
   # =========================
   watchtower:
@@ -234,9 +186,6 @@ services:
 #                            NETWORKS                           #
 #################################################################
 networks:  
-  elk:
-    name: elk
-
   home-automation:
     name: home-automation
 
@@ -250,6 +199,5 @@ networks:
 #                            VOLUMES                            #
 #################################################################
 volumes:
-  elasticsearch-data:
   miniflux-db-dump:
   traefik-cert:
