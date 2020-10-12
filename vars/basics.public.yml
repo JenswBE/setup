@@ -5,9 +5,6 @@ general_path_appdata: "/opt/appdata"
 general_timezone: "Europe/Brussels"
 general_user: jens
 
-# Application specific
-app_elasticsearch_master_hostname: kubo
-
 # Docker
 docker_users:
   - jens

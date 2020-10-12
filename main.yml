@@ -41,8 +41,5 @@
     - include_tasks: tasks/powertop.yml
       tags: ["setup"]
 
-    - include_tasks: tasks/elk_beats.yml
-      tags: ["setup"]
-
     - include_tasks: "tasks/hosts/{{ ansible_hostname }}.yml"
       tags: ["config"]
