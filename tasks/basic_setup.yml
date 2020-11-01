@@ -5,7 +5,7 @@
       name: "{{ item }}"
   with_items: "{{ packages_base }}"
 
-- name: Create opt directories
+- name: Create opt directories - Root access only
   become: yes
   file:
     path: "/opt/{{ item }}"
@@ -15,5 +15,15 @@
     mode: 0700
   with_items:
     - appdata
-    - bin
     - conf
+
+- name: Create opt directories - Read access
+  become: yes
+  file:
+    path: "/opt/{{ item }}"
+    state: directory
+    owner: "root"
+    group: "root"
+    mode: 0755
+  with_items:
+    - bin
