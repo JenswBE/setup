@@ -8,7 +8,7 @@ location:
 storage:
     compression: lz4
     archive_name_format: "backup-{now}"
-    ssh_command: "ssh -i /root/.ssh/{{ app_borgmatic_ssh_key_name }} -p {{ app_borgmatic_ssh_port }}"
+    ssh_command: "ssh -i /root/.ssh/Gandalf -p {{ app_borgmatic_ssh_port }}"
 
 retention:
     keep_daily: 7
