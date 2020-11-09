@@ -1,0 +1,10 @@
+http:
+    routers:
+        minio-media:
+            entrypoints: ["websecure"]
+            rule: "Host(`minio-media.{{ general_domain_default }}`)"
+            service: minio-media-{{ ansible_hostname }}@docker
+            tls:
+                certresolver: le-tls
+            middlewares:
+                - secure-https
