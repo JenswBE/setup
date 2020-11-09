@@ -1,3 +1,8 @@
+- name: Set timezone
+  become: yes
+  timezone:
+    name: "{{ general_timezone }}"
+
 - name: Install base packages
   become: yes
   package:
