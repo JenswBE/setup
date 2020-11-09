@@ -93,7 +93,7 @@ services:
       - "PASS={{ app_transmission_password }}"
     volumes:
       - "/media/data/services/transmission/:/downloads/incomplete"
-      - "/media/data/media/000. Plex/Nazien:/downloads/complete"
+      - "/media/data/media/000. Plex/nazien:/downloads/complete"
       - "{{ general_path_appdata }}/transmission:/config"
     labels:
       - "traefik.enable=true"
@@ -164,6 +164,33 @@ services:
       - "traefik.http.services.tmm-{{ ansible_hostname }}.loadbalancer.server.port=5800"
 
 # =========================
+# =         MINIO         =
+# =========================
+  minio-media:
+    image: minio/minio:latest
+    container_name: minio-media
+    restart: always
+    user: "233:233"
+    command: server /data
+    networks:
+      - traefik
+    volumes:
+      - "/media/data/media/000. Plex:/data"
+    environment:
+      - "TZ={{ general_timezone }}"
+      - "MINIO_ACCESS_KEY={{ app_minio_media_access_key }}"
+      - "MINIO_SECRET_KEY={{ app_minio_media_secret_key }}"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik"
+      - "traefik.http.services.minio-media-{{ ansible_hostname }}.loadbalancer.server.port=9000"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+
+# =========================
 # =         BACKUP        =
 # =========================
   borgmatic:
@@ -172,7 +199,8 @@ services:
     restart: always
     volumes:
       # Backup locations
-      - "/media/data/media/000. Plex/Photos:/mnt/source/plex/photos:ro"
+      - "/media/data/media/000. Plex/photos:/mnt/source/plex/photos:ro"
+      - "/media/data/media/000. Plex/music:/mnt/source/plex/music:ro"
       # Config and cache
       - "./borgmatic/borgmatic.d:/etc/borgmatic.d"
       - "./borgmatic/ssh:/root/.ssh"
