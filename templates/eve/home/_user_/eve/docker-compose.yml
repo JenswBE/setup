@@ -214,7 +214,7 @@ services:
     container_name: imap-alerter
     restart: always
     volumes:
-      - ./conf/imap-alerter:/app/config
+      - ./imap-alerter:/app/config
       - "${PATH_APPDATA}/imap-alerter/data:/app/data"
     environment:
       - "TZ={{ general_timezone }}"
