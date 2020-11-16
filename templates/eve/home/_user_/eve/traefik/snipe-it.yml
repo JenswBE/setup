@@ -1,0 +1,10 @@
+http:
+    routers:
+        snipe-it:
+            entrypoints: ["websecure"]
+            rule: "Host(`assets.{{ general_domain_default }}`)"
+            service: snipe-it-{{ ansible_hostname }}@docker
+            tls:
+                certresolver: le-tls
+            middlewares:
+                - secure-https

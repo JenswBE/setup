@@ -1,0 +1,22 @@
+http:
+    routers:
+        nginx-tuinfeest-beta:
+            entrypoints: ["websecure"]
+            rule: "Host(`beta.{{ general_domain_tuinfeest }}`)"
+            service: nginx-tuinfeest-beta-{{ ansible_hostname }}@docker
+            tls:
+                certresolver: le-tls
+
+        nginx-tuinfeest-archive-2019:
+            entrypoints: ["websecure"]
+            rule: "Host(`2019.{{ general_domain_tuinfeest }}`)"
+            service: nginx-tuinfeest-archive-2019-{{ ansible_hostname }}@docker
+            tls:
+                certresolver: le-tls
+
+        nginx-tuinfeest-archive-2020:
+            entrypoints: ["websecure"]
+            rule: "Host(`2020.{{ general_domain_tuinfeest }}`)"
+            service: nginx-tuinfeest-archive-2020-{{ ansible_hostname }}@docker
+            tls:
+                certresolver: le-tls

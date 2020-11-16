@@ -87,7 +87,7 @@ services:
       - backend-nextcloud
       - backup-nc-db
     volumes:
-      - "${PATH_APPDATA}/nextcloud/mariadb/data:/var/lib/mysql"
+      - "{{ general_path_appdata }}/nextcloud/mariadb/data:/var/lib/mysql"
       - nc-db-dump:/backup
     environment:
       - "TZ={{ general_timezone }}"
@@ -108,42 +108,42 @@ services:
   # =========================
   # =         NGINX         =
   # =========================
-  nginx-beta-tf:
+  nginx-tuinfeest-beta:
     image: nginx:latest
-    container_name: nginx-beta-tf
+    container_name: nginx-tuinfeest-beta
     restart: always
     networks:
       - traefik
     volumes:
-      - "./nginx-beta-tf:/usr/share/nginx/html"
+      - "{{ general_path_appdata }}/nginx/tuinfeest-beta:/usr/share/nginx/html"
     environment:
       - "TZ={{ general_timezone }}"
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=traefik"
 
-  nginx-tf-archive-2019:
+  nginx-tuinfeest-archive-2019:
     image: nginx:latest
     container_name: nginx-tf-archive-2019
     restart: always
     networks:
       - traefik
     volumes:
-      - "./nginx-tf-archive/2019:/usr/share/nginx/html"
+      - "{{ general_path_appdata }}/nginx/tuinfeest-archive/2019:/usr/share/nginx/html"
     environment:
       - "TZ={{ general_timezone }}"
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=traefik"
 
-  nginx-tf-archive-2020:
+  nginx-tuinfeest-archive-2020:
     image: nginx:latest
     container_name: nginx-tf-archive-2020
     restart: always
     networks:
       - traefik
     volumes:
-      - "./nginx-tf-archive/2020:/usr/share/nginx/html"
+      - "{{ general_path_appdata }}/nginx/tuinfeest-archive/2020:/usr/share/nginx/html"
     environment:
       - "TZ={{ general_timezone }}"
     labels:
@@ -183,28 +183,12 @@ services:
     networks:
       - backend-passit
     volumes:
-      - "${PATH_APPDATA}/passit/db:/var/lib/postgresql/data"
+      - "{{ general_path_appdata }}/passit/db:/var/lib/postgresql/data"
       - passit-db-dump:/backup
     environment:
       - "TZ={{ general_timezone }}"
       - "POSTGRES_USER=passit"
       - "POSTGRES_PASSWORD=${PASSIT_DB_PASS}"
-
-  # =========================
-  # =        OPENVPN        =
-  # =========================
-  openvpn:
-    image: kylemanna/openvpn:latest
-    container_name: openvpn
-    restart: always
-    cap_add:
-      - NET_ADMIN
-    ports:
-      - "1194:1194/udp"
-    volumes:
-      - "${PATH_APPDATA}/openvpn/config:/etc/openvpn"
-    environment:
-      - "TZ={{ general_timezone }}"
 
   # =========================
   # =      IMAP-ALERTER     =
@@ -215,7 +199,7 @@ services:
     restart: always
     volumes:
       - ./imap-alerter:/app/config
-      - "${PATH_APPDATA}/imap-alerter/data:/app/data"
+      - "{{ general_path_appdata }}/imap-alerter/data:/app/data"
     environment:
       - "TZ={{ general_timezone }}"
 
@@ -275,7 +259,7 @@ services:
       - traefik
       - backend-snipe-it
     volumes:
-      - "${PATH_APPDATA}/snipe-it/snipe-it/config:/config"
+      - "{{ general_path_appdata }}/snipe-it/snipe-it/config:/config"
     environment:
       - "TZ={{ general_timezone }}"
       - "APP_URL=https://assets.jensw.be"
@@ -297,7 +281,7 @@ services:
     networks:
       - backend-snipe-it
     volumes:
-      - "${PATH_APPDATA}/snipe-it/mariadb/data:/var/lib/mysql"
+      - "{{ general_path_appdata }}/snipe-it/mariadb/data:/var/lib/mysql"
       - "snipe-it-db-dump:/backup"
     environment:
       - "TZ={{ general_timezone }}"
