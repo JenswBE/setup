@@ -1,0 +1,27 @@
+# https://github.com/JenswBE/imap-alerter
+
+polling_time: 60 # Timeout in minutes
+default_folder: "INBOX"
+
+accounts:
+  watch:
+    username: "{{ app_imap_alerter_watch_user }}"
+    password: "{{ app_imap_alerter_watch_pass }}"
+    imap_host: "{{ app_imap_alerter_watch_host }}"
+    imap_port: "{{ app_imap_alerter_watch_port }}"
+    imap_ssl: true
+
+  notify:
+    username: "{{ mailjet_username }}"
+    password: "{{ mailjet_password }}"
+    smtp_from: "imap-alerter@{{ general_domain_default }}"
+    smtp_host: "{{ mailjet_host }}"
+    smtp_port: "{{ mailjet_port }}"
+    smtp_tls: true
+
+alerts:
+ - monitor: watch
+   sender: notify
+   alert:
+     - "imap-alerter@{{ general_domain_default }}"
+   subject: New mail on GS
