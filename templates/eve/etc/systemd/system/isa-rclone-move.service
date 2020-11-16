@@ -3,4 +3,4 @@ Description=IMAP Save Attachments - Move files
 OnFailure=unit-fail-mail@%n.service
 
 [Service]
-ExecStart=/usr/local/bin/docker-compose -f {{ ansible_user_dir }}/{{ ansible_hostname }}/docker-compose.yml run isa-rclone move /data/ nextcloud:{{ app_isa_rclone_dav_path }} --delete-empty-src-dirs
+ExecStart=/usr/local/bin/docker-compose -f {{ ansible_user_dir }}/{{ ansible_hostname }}/docker-compose.yml run --rm isa-rclone move /data/ nextcloud:{{ app_isa_rclone_dav_path }} --delete-empty-src-dirs
