@@ -1,5 +1,9 @@
 # General
 
+## App data naming convention
+`<CATEGORY>/<SERVICE>/<FOLDER>`
+E.g. `nextcloud/mariadb/data`
+
 ## Borgmatic
 ```bash
 # Export repo key to ~/eve/borgmatic/borgmatic.d/repokey.html

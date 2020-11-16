@@ -1,14 +1,3 @@
-- name: Copy home/_user_/olaf templates
-  include_tasks: tasks/helpers/copy_templates_folder.yml
-  vars:
-    - templates_folder: "{{ ansible_hostname }}/home/_user_/olaf"
-    - destination_folder: "{{ ansible_user_dir }}/{{ ansible_hostname }}"
-    - destination_owner: '{{ ansible_real_user_id }}'
-    - destination_group: '{{ ansible_real_group_id }}'
-    - destination_mode_files: 0600
-    - destination_mode_dirs: 0700
-    - destination_delete_extra: true
-
 - name: Copy systemd system unit templates
   include_tasks: tasks/helpers/copy_templates_folder.yml
   vars:
@@ -35,3 +24,14 @@
     - btrfs-scrub.timer
     - media-backup.mount
     - media-data.mount
+
+- name: Copy home/_user_/olaf templates
+  include_tasks: tasks/helpers/copy_templates_folder.yml
+  vars:
+    - templates_folder: "{{ ansible_hostname }}/home/_user_/olaf"
+    - destination_folder: "{{ ansible_user_dir }}/{{ ansible_hostname }}"
+    - destination_owner: '{{ ansible_real_user_id }}'
+    - destination_group: '{{ ansible_real_group_id }}'
+    - destination_mode_files: 0600
+    - destination_mode_dirs: 0700
+    - destination_delete_extra: true

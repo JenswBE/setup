@@ -2,14 +2,14 @@ http:
     routers:
         question-queen-frontend:
             entryPoints: ["websecure"]
-            rule: Host(\`qq.{{ general_domain_default }}\`)
+            rule: Host(`qq.{{ general_domain_default }}`)
             service: question-queen-frontend-{{ ansible_hostname }}@docker
             tls:
                 certResolver: le-tls
 
         question-queen-backend:
             entryPoints: ["websecure"]
-            rule: Host(\`qq-backend.{{ general_domain_default }}\`)
+            rule: Host(`qq-backend.{{ general_domain_default }}`)
             service: question-queen-backend-{{ ansible_hostname }}@docker
             tls:
                 certResolver: le-tls
