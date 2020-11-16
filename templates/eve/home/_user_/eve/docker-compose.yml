@@ -1,0 +1,449 @@
+version: "3.7"
+
+# #################################################################
+# #                            SERVICES                           #
+# #################################################################
+services:
+  # =========================
+  # =         PROXY         =
+  # =========================
+  traefik:
+    image: traefik:latest
+    container_name: traefik
+    restart: always
+    command:
+      # - "--log.level=DEBUG"
+      - "--providers.file.directory=/conf"
+      - "--providers.file.watch=true"
+      - "--providers.docker=true"
+      - "--providers.docker.defaultRule="
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.websecure.address=:443"
+      - "--entrypoints.websecure.http.middlewares=SecureHttps@file"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.web.http.redirections.entryPoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entryPoint.scheme=https"
+      - "--certificatesresolvers.le-tls.acme.tlsChallenge=true"
+      - "--certificatesresolvers.le-tls.acme.email=${ADMIN_MAIL}"
+      - "--certificatesresolvers.le-tls.acme.storage=/letsencrypt/acme.json"
+      - "--api=true"
+      - "--ping.manualrouting=true"
+    ports:
+      - 80:80
+      - 443:443
+    networks:
+      - traefik
+    volumes:
+      - ./conf/traefik:/conf
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - traefik-cert:/letsencrypt/
+    environment:
+      - "TZ=${DEFAULT_TIMEZONE}"
+
+  # =========================
+  # =     AUTO-UPDATER      =
+  # =========================
+  watchtower:
+    image: containrrr/watchtower:latest
+    container_name: watchtower
+    restart: always
+    command: --schedule "0 0 4 * * *" --cleanup
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - "TZ=${DEFAULT_TIMEZONE}"
+
+  # =========================
+  # =       NEXTCLOUD       =
+  # =========================
+  nextcloud:
+    image: nextcloud:19
+    container_name: nextcloud
+    hostname: nextcloud
+    restart: always
+    networks:
+      - traefik
+      - backend-nextcloud
+    depends_on:
+      - nc-db
+    volumes:
+      - "${NEXTCLOUD_PATH_CONFIG}:/var/www/html"
+      - "${NEXTCLOUD_PATH_DATA}:/var/www/html/data"
+    environment:
+      - "TZ=${DEFAULT_TIMEZONE}"
+      - "MYSQL_DATABASE=nextcloud"
+      - "MYSQL_USER=nextcloud"
+      - "MYSQL_PASSWORD=${NEXTCLOUD_DB_PASS_NEXTCLOUD}"
+      - "MYSQL_HOST=nc-db"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik"
+
+  nc-db:
+    image: mariadb:10
+    container_name: nc-db
+    restart: always
+    networks:
+      - backend-nextcloud
+      - backup-nc-db
+    volumes:
+      - "${PATH_APPDATA}/nextcloud/mariadb/data:/var/lib/mysql"
+      - nc-db-dump:/backup
+    environment:
+      - "TZ=${DEFAULT_TIMEZONE}"
+      - "MYSQL_ROOT_PASSWORD=${NEXTCLOUD_DB_PASS_ROOT}"
+      - "MYSQL_PASSWORD=${NEXTCLOUD_DB_PASS_NEXTCLOUD}"
+      - "MYSQL_DATABASE=nextcloud"
+      - "MYSQL_USER=nextcloud"
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "mysqladmin -u $$MYSQL_USER --password=$$MYSQL_PASSWORD ping || exit 1",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # =========================
+  # =         NGINX         =
+  # =========================
+  nginx-beta-tf:
+    image: nginx:latest
+    container_name: nginx-beta-tf
+    restart: always
+    networks:
+      - traefik
+    volumes:
+      - "./conf/nginx-beta-tf:/usr/share/nginx/html"
+    environment:
+      - "TZ=${DEFAULT_TIMEZONE}"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik"
+
+  nginx-tf-archive-2019:
+    image: nginx:latest
+    container_name: nginx-tf-archive-2019
+    restart: always
+    networks:
+      - traefik
+    volumes:
+      - "./conf/nginx-tf-archive/2019:/usr/share/nginx/html"
+    environment:
+      - "TZ=${DEFAULT_TIMEZONE}"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik"
+
+  nginx-tf-archive-2020:
+    image: nginx:latest
+    container_name: nginx-tf-archive-2020
+    restart: always
+    networks:
+      - traefik
+    volumes:
+      - "./conf/nginx-tf-archive/2020:/usr/share/nginx/html"
+    environment:
+      - "TZ=${DEFAULT_TIMEZONE}"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik"
+
+  # =========================
+  # =         PASSIT        =
+  # =========================
+  passit:
+    image: passit/passit:stable
+    container_name: passit
+    restart: always
+    networks:
+      - traefik
+      - backend-passit
+    environment:
+      - "TZ=${DEFAULT_TIMEZONE}"
+      - "DATABASE_SERVICE_NAME=passit-db"
+      - "DATABASE_NAME=passit"
+      - "DATABASE_USER=passit"
+      - "DATABASE_PASSWORD=${PASSIT_DB_PASS}"
+      - "DEFAULT_FROM_EMAIL=passit@${PASSIT_BASE_DOMAIN}"
+      - "EMAIL_CONFIRMATION_HOST=${PASSIT_DOMAIN}"
+      - "IS_PRIVATE_ORG_MODE=False"
+      - "PRIVATE_ORG_MODE_DOMAIN_WHITELIST=${PASSIT_BASE_DOMAIN}"
+      - "SECRET_KEY=${PASSIT_SECRET_KEY}"
+      - "EMAIL_URL=smtp+tls://${MAIL_USER}:${MAIL_PASS}@${MAIL_HOSTNAME}:${MAIL_PORT}"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik"
+
+  passit-db:
+    image: postgres:12-alpine
+    container_name: passit-db
+    restart: always
+    networks:
+      - backend-passit
+    volumes:
+      - "${PATH_APPDATA}/passit/db:/var/lib/postgresql/data"
+      - passit-db-dump:/backup
+    environment:
+      - "TZ=${DEFAULT_TIMEZONE}"
+      - "POSTGRES_USER=passit"
+      - "POSTGRES_PASSWORD=${PASSIT_DB_PASS}"
+
+  # =========================
+  # =        OPENVPN        =
+  # =========================
+  openvpn:
+    image: kylemanna/openvpn:latest
+    container_name: openvpn
+    restart: always
+    cap_add:
+      - NET_ADMIN
+    ports:
+      - "1194:1194/udp"
+    volumes:
+      - "${PATH_APPDATA}/openvpn/config:/etc/openvpn"
+    environment:
+      - "TZ=${DEFAULT_TIMEZONE}"
+
+  # =========================
+  # =      IMAP-ALERTER     =
+  # =========================
+  imap-alerter:
+    image: jenswbe/imap-alerter:latest
+    container_name: imap-alerter
+    restart: always
+    volumes:
+      - ./conf/imap-alerter:/app/config
+      - "${PATH_APPDATA}/imap-alerter/data:/app/data"
+    environment:
+      - "TZ=${DEFAULT_TIMEZONE}"
+
+  # =========================
+  # = IMAP SAVE ATTACHMENTS =
+  # =========================
+  isa-fetchmail:
+    image: jenswbe/imap-save-attachments:latest
+    container_name: isa-fetchmail
+    restart: always
+    volumes:
+      - ./conf/isa/fetchmailrc:/config/.fetchmailrc
+      - isa-output:/output
+    environment:
+      - "TZ=${DEFAULT_TIMEZONE}"
+      - "CRON_SCHEDULE=*/15 * * * *"
+
+  isa-rclone:
+    image: tynor88/rclone:latest
+    container_name: isa-rclone
+    restart: always
+    volumes:
+      - ./conf/isa/rclone.conf:/config/.rclone.conf
+      - isa-output:/data
+    environment:
+      - "TZ=${DEFAULT_TIMEZONE}"
+      - "PUID=0"
+      - "PGID=0"
+      - "CRON_SCHEDULE=5-59/15 * * * *"
+      - "SYNC_DESTINATION=nextcloud"
+      - "SYNC_DESTINATION_SUBPATH=Tuinfeest/Inbox"
+      - "SYNC_COMMAND=rclone move /data/ $$SYNC_DESTINATION:/$$SYNC_DESTINATION_SUBPATH --delete-empty-src-dirs"
+
+  # ===========================================================================
+  # =   DEAD LINK CHECKER                                                     =
+  # =   https://github.com/JenswBE/python-dead-link-checker                   =
+  # ===========================================================================
+  delic:
+    image: jenswbe/dead-link-checker:latest
+    container_name: delic
+    restart: always
+    volumes:
+      - "./conf/delic/config.yml:/config.yml"
+    environment:
+      - "TZ=${DEFAULT_TIMEZONE}"
+
+  # ===========================================================================
+  # =   Snipe-IT Asset Management                                             =
+  # =   https://snipeitapp.com/                                               =
+  # ===========================================================================
+  snipe-it:
+    image: linuxserver/snipe-it:latest
+    container_name: snipe-it
+    restart: always
+    depends_on:
+      - snipe-it-db
+    networks:
+      - traefik
+      - backend-snipe-it
+    volumes:
+      - "${PATH_APPDATA}/snipe-it/snipe-it/config:/config"
+    environment:
+      - "TZ=${DEFAULT_TIMEZONE}"
+      - "APP_URL=https://assets.jensw.be"
+      - "MYSQL_PORT_3306_TCP_ADDR=snipe-it-db"
+      - "MYSQL_PORT_3306_TCP_PORT=3306"
+      - "MYSQL_DATABASE=snipe"
+      - "MYSQL_USER=snipe"
+      - "MYSQL_PASSWORD=${SNIPE_IT_DB_PASS_SNIPE}"
+      - "PGID=1000"
+      - "PUID=1000"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik"
+
+  snipe-it-db:
+    image: mariadb:10
+    container_name: snipe-it-db
+    restart: always
+    networks:
+      - backend-snipe-it
+    volumes:
+      - "${PATH_APPDATA}/snipe-it/mariadb/data:/var/lib/mysql"
+      - "snipe-it-db-dump:/backup"
+    environment:
+      - "TZ=${DEFAULT_TIMEZONE}"
+      - "MYSQL_ROOT_PASSWORD=${SNIPE_IT_DB_PASS_ROOT}"
+      - "MYSQL_PASSWORD=${SNIPE_IT_DB_PASS_SNIPE}"
+      - "MYSQL_DATABASE=snipe"
+      - "MYSQL_USER=snipe"
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "mysqladmin -u $$MYSQL_USER --password=$$MYSQL_PASSWORD ping || exit 1",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # ===========================================================================
+  # =   QUESTION QUEEN                                                        =
+  # =   https://github.com/JenswBE/nuxtjs-question-queen-frontend             =
+  # =   https://github.com/JenswBE/rust-question-queen-backend/               =
+  # ===========================================================================
+  question-queen-frontend:
+    image: jenswbe/question-queen-frontend:latest
+    container_name: question-queen-frontend
+    depends_on:
+      - question-queen-backend
+    restart: always
+    networks:
+      - traefik
+      - question-queen
+    environment:
+      - "BASE_URL=http://question-queen-backend"
+      - "BROWSER_BASE_URL=https://qq-backend.${DEFAULT_DOMAIN}"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik"
+
+  question-queen-backend:
+    image: jenswbe/question-queen-backend:latest
+    container_name: question-queen-backend
+    restart: always
+    networks:
+      - traefik
+      - question-queen
+    volumes:
+      - "./qq.yml:/data/data.yml"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik"
+
+  # =========================
+  # =      MAINTENANCE      =
+  # =========================
+  maintenance:
+    image: everydayhero/maintenance:latest
+    container_name: maintenance
+    restart: always
+    networks:
+      - traefik
+    volumes:
+      - "./conf/maintenance:/usr/share/nginx/html"
+    environment:
+      - "TZ=${DEFAULT_TIMEZONE}"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik"
+
+  # =========================
+  # =         BACKUP        =
+  # =========================
+  nc-calcardbackup:
+    image: waja/calcardbackup:latest
+    container_name: nc-calcardbackup
+    restart: always
+    networks:
+      - backup-nc-db
+    depends_on:
+      - nc-db
+    volumes:
+      - "${NEXTCLOUD_PATH_CONFIG}/config:/nextcloud/config:ro"
+      - nc-calcardbackup:/backup
+    environment:
+      - "TZ=${DEFAULT_TIMEZONE}"
+      # Disable cron
+      - CRON_TIME="#"
+
+  borgmatic:
+    image: b3vis/borgmatic:latest
+    container_name: borgmatic
+    restart: always
+    devices: ["/dev/fuse:/dev/fuse"]
+    cap_add: ["SYS_ADMIN"]
+    volumes:
+      # Backup locations
+      - nc-db-dump:/mnt/source/nextcloud/dbdump:ro
+      - nc-calcardbackup:/mnt/source/nextcloud/calcardbackup:ro
+      - "${NEXTCLOUD_PATH_DATA}:/mnt/source/nextcloud/data:ro"
+      - "${NEXTCLOUD_PATH_CONFIG}:/mnt/source/nextcloud/config:ro"
+      - passit-db-dump:/mnt/source/passit/dbdump:ro
+      - snipe-it-db-dump:/mnt/source/snipe-it/dbdump:ro
+      # Config and cache
+      - "./borgmatic/borgmatic.d:/etc/borgmatic.d"
+      - "./borgmatic/ssh:/root/.ssh"
+      - "{{ general_path_appdata }}/borgmatic/config:/root/.config/borg"
+      - "{{ general_path_appdata }}/borgmatic/cache:/root/.cache/borg"
+      - "{{ general_path_appdata }}/borgmatic/restore:/mnt/restore"
+    environment:
+      - "TZ=${DEFAULT_TIMEZONE}"
+      - "BORG_PASSPHRASE=${BORGMATIC_PASSPHRASE}"
+      - "MAIL_RELAY_HOST=${MAIL_HOSTNAME}"
+      - "MAIL_PORT=${MAIL_PORT}"
+      - "MAIL_USER=${MAIL_USER}"
+      - "MAIL_PASSWORD=${MAIL_PASS}"
+      - "MAIL_FROM=${HOSTNAME}.borgmatic"
+
+# #################################################################
+# #                            VOLUMES                            #
+# #################################################################
+volumes:
+  traefik-cert:
+  nc-db-dump:
+  nc-calcardbackup:
+  isa-output:
+  passit-db-dump:
+  snipe-it-db-dump:
+
+# #################################################################
+# #                            NETWORKS                           #
+# #################################################################
+networks:
+  traefik:
+    name: traefik
+
+  backend-nextcloud:
+    name: backend-nextcloud
+
+  backend-passit:
+    name: backend-passit
+
+  backend-snipe-it:
+    name: backend-snipe-it
+
+  backup-nc-db:
+    name: backup-nc-db
+
+  question-queen:
+    name: question-queen

@@ -1,0 +1,11 @@
+[Unit]
+Description=Poke docker to force start
+After=default.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/docker version
+RemainAfterExit=yes
+
+[Install]
+WantedBy=default.target
