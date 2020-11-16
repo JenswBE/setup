@@ -1,0 +1,23 @@
+# https://github.com/JenswBE/python-dead-link-checker
+
+verbose: False
+workers_per_site: 8
+
+cron: "0 13 * * *"
+
+sites:
+  - https://jensw.be
+  - https://klokracing.be
+  - https://tuinfeestbeerse.be
+
+notify:
+  provider: email
+  data:
+    host: "{{ mailjet_host }}"
+    port: "{{ mailjet_port }}"
+    tls: True
+    username: "{{ mailjet_username }}"
+    password: "{{ mailjet_password }}"
+    from: "DeLiC <delic@{{ general_domain_default }}>"
+    to: "{{ general_mail_admin }}@{{ general_domain_default }}"
+    subject: Broken links found

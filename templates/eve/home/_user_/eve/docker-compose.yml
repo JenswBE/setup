@@ -24,7 +24,7 @@ services:
       - "--entrypoints.web.http.redirections.entryPoint.to=websecure"
       - "--entrypoints.web.http.redirections.entryPoint.scheme=https"
       - "--certificatesresolvers.le-tls.acme.tlsChallenge=true"
-      - "--certificatesresolvers.le-tls.acme.email=${ADMIN_MAIL}"
+      - "--certificatesresolvers.le-tls.acme.email={{ general_mail_admin }}@{{ general_domain_default }}"
       - "--certificatesresolvers.le-tls.acme.storage=/letsencrypt/acme.json"
       - "--api=true"
       - "--ping.manualrouting=true"
@@ -38,7 +38,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - traefik-cert:/letsencrypt/
     environment:
-      - "TZ=${DEFAULT_TIMEZONE}"
+      - "TZ={{ general_timezone }}"
 
   # =========================
   # =     AUTO-UPDATER      =
@@ -51,7 +51,7 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
-      - "TZ=${DEFAULT_TIMEZONE}"
+      - "TZ={{ general_timezone }}"
 
   # =========================
   # =       NEXTCLOUD       =
@@ -70,7 +70,7 @@ services:
       - "${NEXTCLOUD_PATH_CONFIG}:/var/www/html"
       - "${NEXTCLOUD_PATH_DATA}:/var/www/html/data"
     environment:
-      - "TZ=${DEFAULT_TIMEZONE}"
+      - "TZ={{ general_timezone }}"
       - "MYSQL_DATABASE=nextcloud"
       - "MYSQL_USER=nextcloud"
       - "MYSQL_PASSWORD=${NEXTCLOUD_DB_PASS_NEXTCLOUD}"
@@ -90,7 +90,7 @@ services:
       - "${PATH_APPDATA}/nextcloud/mariadb/data:/var/lib/mysql"
       - nc-db-dump:/backup
     environment:
-      - "TZ=${DEFAULT_TIMEZONE}"
+      - "TZ={{ general_timezone }}"
       - "MYSQL_ROOT_PASSWORD=${NEXTCLOUD_DB_PASS_ROOT}"
       - "MYSQL_PASSWORD=${NEXTCLOUD_DB_PASS_NEXTCLOUD}"
       - "MYSQL_DATABASE=nextcloud"
@@ -117,7 +117,7 @@ services:
     volumes:
       - "./conf/nginx-beta-tf:/usr/share/nginx/html"
     environment:
-      - "TZ=${DEFAULT_TIMEZONE}"
+      - "TZ={{ general_timezone }}"
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=traefik"
@@ -131,7 +131,7 @@ services:
     volumes:
       - "./conf/nginx-tf-archive/2019:/usr/share/nginx/html"
     environment:
-      - "TZ=${DEFAULT_TIMEZONE}"
+      - "TZ={{ general_timezone }}"
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=traefik"
@@ -145,7 +145,7 @@ services:
     volumes:
       - "./conf/nginx-tf-archive/2020:/usr/share/nginx/html"
     environment:
-      - "TZ=${DEFAULT_TIMEZONE}"
+      - "TZ={{ general_timezone }}"
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=traefik"
@@ -161,7 +161,7 @@ services:
       - traefik
       - backend-passit
     environment:
-      - "TZ=${DEFAULT_TIMEZONE}"
+      - "TZ={{ general_timezone }}"
       - "DATABASE_SERVICE_NAME=passit-db"
       - "DATABASE_NAME=passit"
       - "DATABASE_USER=passit"
@@ -186,7 +186,7 @@ services:
       - "${PATH_APPDATA}/passit/db:/var/lib/postgresql/data"
       - passit-db-dump:/backup
     environment:
-      - "TZ=${DEFAULT_TIMEZONE}"
+      - "TZ={{ general_timezone }}"
       - "POSTGRES_USER=passit"
       - "POSTGRES_PASSWORD=${PASSIT_DB_PASS}"
 
@@ -204,7 +204,7 @@ services:
     volumes:
       - "${PATH_APPDATA}/openvpn/config:/etc/openvpn"
     environment:
-      - "TZ=${DEFAULT_TIMEZONE}"
+      - "TZ={{ general_timezone }}"
 
   # =========================
   # =      IMAP-ALERTER     =
@@ -217,7 +217,7 @@ services:
       - ./conf/imap-alerter:/app/config
       - "${PATH_APPDATA}/imap-alerter/data:/app/data"
     environment:
-      - "TZ=${DEFAULT_TIMEZONE}"
+      - "TZ={{ general_timezone }}"
 
   # =========================
   # = IMAP SAVE ATTACHMENTS =
@@ -230,7 +230,7 @@ services:
       - ./conf/isa/fetchmailrc:/config/.fetchmailrc
       - isa-output:/output
     environment:
-      - "TZ=${DEFAULT_TIMEZONE}"
+      - "TZ={{ general_timezone }}"
       - "CRON_SCHEDULE=*/15 * * * *"
 
   isa-rclone:
@@ -241,7 +241,7 @@ services:
       - ./conf/isa/rclone.conf:/config/.rclone.conf
       - isa-output:/data
     environment:
-      - "TZ=${DEFAULT_TIMEZONE}"
+      - "TZ={{ general_timezone }}"
       - "PUID=0"
       - "PGID=0"
       - "CRON_SCHEDULE=5-59/15 * * * *"
@@ -258,9 +258,9 @@ services:
     container_name: delic
     restart: always
     volumes:
-      - "./conf/delic/config.yml:/config.yml"
+      - "./delic/config.yml:/config.yml"
     environment:
-      - "TZ=${DEFAULT_TIMEZONE}"
+      - "TZ={{ general_timezone }}"
 
   # ===========================================================================
   # =   Snipe-IT Asset Management                                             =
@@ -278,7 +278,7 @@ services:
     volumes:
       - "${PATH_APPDATA}/snipe-it/snipe-it/config:/config"
     environment:
-      - "TZ=${DEFAULT_TIMEZONE}"
+      - "TZ={{ general_timezone }}"
       - "APP_URL=https://assets.jensw.be"
       - "MYSQL_PORT_3306_TCP_ADDR=snipe-it-db"
       - "MYSQL_PORT_3306_TCP_PORT=3306"
@@ -301,7 +301,7 @@ services:
       - "${PATH_APPDATA}/snipe-it/mariadb/data:/var/lib/mysql"
       - "snipe-it-db-dump:/backup"
     environment:
-      - "TZ=${DEFAULT_TIMEZONE}"
+      - "TZ={{ general_timezone }}"
       - "MYSQL_ROOT_PASSWORD=${SNIPE_IT_DB_PASS_ROOT}"
       - "MYSQL_PASSWORD=${SNIPE_IT_DB_PASS_SNIPE}"
       - "MYSQL_DATABASE=snipe"
@@ -362,7 +362,7 @@ services:
     volumes:
       - "./conf/maintenance:/usr/share/nginx/html"
     environment:
-      - "TZ=${DEFAULT_TIMEZONE}"
+      - "TZ={{ general_timezone }}"
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=traefik"
@@ -382,7 +382,7 @@ services:
       - "${NEXTCLOUD_PATH_CONFIG}/config:/nextcloud/config:ro"
       - nc-calcardbackup:/backup
     environment:
-      - "TZ=${DEFAULT_TIMEZONE}"
+      - "TZ={{ general_timezone }}"
       # Disable cron
       - CRON_TIME="#"
 
@@ -407,13 +407,8 @@ services:
       - "{{ general_path_appdata }}/borgmatic/cache:/root/.cache/borg"
       - "{{ general_path_appdata }}/borgmatic/restore:/mnt/restore"
     environment:
-      - "TZ=${DEFAULT_TIMEZONE}"
-      - "BORG_PASSPHRASE=${BORGMATIC_PASSPHRASE}"
-      - "MAIL_RELAY_HOST=${MAIL_HOSTNAME}"
-      - "MAIL_PORT=${MAIL_PORT}"
-      - "MAIL_USER=${MAIL_USER}"
-      - "MAIL_PASSWORD=${MAIL_PASS}"
-      - "MAIL_FROM=${HOSTNAME}.borgmatic"
+      - "TZ={{ general_timezone }}"
+      - "BORG_PASSPHRASE={{ app_borgmatic_borg_passphrase }}"
 
 # #################################################################
 # #                            VOLUMES                            #
