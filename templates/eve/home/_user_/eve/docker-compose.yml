@@ -218,19 +218,14 @@ services:
       - "CRON_SCHEDULE=*/15 * * * *"
 
   isa-rclone:
-    image: tynor88/rclone:latest
+    image: rclone/rclone:latest
     container_name: isa-rclone
-    restart: always
+    restart: "no"  # Will be called by systemd timer
     volumes:
-      - ./isa/rclone.conf:/config/.rclone.conf
+      - ./isa/rclone:/config/rclone
       - isa-output:/data
     environment:
       - "TZ={{ general_timezone }}"
-      - "PUID=0"
-      - "PGID=0"
-      - "CRON_SCHEDULE=5-59/15 * * * *"
-      - "SYNC_COMMAND=rclone move /data/ nextcloud:/{{ app_isa_rclone_dav_path }} --delete-empty-src-dirs"
-      - "RCLONE_VERSION=true"
 
   # ===========================================================================
   # =   DEAD LINK CHECKER                                                     =
