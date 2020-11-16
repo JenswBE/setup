@@ -1,0 +1,28 @@
+http:
+    middlewares:
+        nextcloud-redirect-dav:
+            redirectRegex:
+                regex: https://(.*)/.well-known/(card|cal)dav
+                replacement: https://\$1/remote.php/dav/
+                permanent: true
+
+    routers:
+        nextcloud:
+            entrypoints: ["websecure"]
+            rule: "Host(`nextcloud.{{ general_domain_default }}`)"
+            service: nextcloud-{{ ansible_hostname }}@docker
+            tls:
+                certresolver: le-tls
+            middlewares:
+                - secure-https
+                - nextcloud-redirect-dav
+
+        nextcloud-tf:
+            entrypoints: ["websecure"]
+            rule: "Host(`bestanden.{{ general_domain_tuinfeest }}`)"
+            service: nextcloud-{{ ansible_hostname }}@docker
+            tls:
+                certresolver: le-tls
+            middlewares:
+                - secure-https
+                - nextcloud-redirect-dav
