@@ -12,7 +12,6 @@ http:
             tls:
                 certresolver: le-tls
             middlewares:
-                - secure-https
                 - api-auth
 
         ping:

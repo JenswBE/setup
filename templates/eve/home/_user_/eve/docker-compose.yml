@@ -19,7 +19,7 @@ services:
       - "--providers.docker.defaultRule="
       - "--providers.docker.exposedbydefault=false"
       - "--entrypoints.websecure.address=:443"
-      - "--entrypoints.websecure.http.middlewares=SecureHttps@file"
+      - "--entrypoints.websecure.http.middlewares=secure-https@file"
       - "--entrypoints.web.address=:80"
       - "--entrypoints.web.http.redirections.entryPoint.to=websecure"
       - "--entrypoints.web.http.redirections.entryPoint.scheme=https"
@@ -29,14 +29,14 @@ services:
       - "--api=true"
       - "--ping.manualrouting=true"
     ports:
-      - 80:80
-      - 443:443
+      - "80:80"
+      - "443:443"
     networks:
       - traefik
     volumes:
-      - ./traefik:/conf
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-      - traefik-cert:/letsencrypt/
+      - "./traefik:/conf"
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "traefik-cert:/letsencrypt/"
     environment:
       - "TZ={{ general_timezone }}"
 
@@ -63,17 +63,17 @@ services:
     restart: always
     networks:
       - traefik
-      - backend-nextcloud
+      - nextcloud
     depends_on:
       - nc-db
     volumes:
-      - "${NEXTCLOUD_PATH_CONFIG}:/var/www/html"
-      - "${NEXTCLOUD_PATH_DATA}:/var/www/html/data"
+      - "{{ general_path_appdata }}/nextcloud/nextcloud/config:/var/www/html"
+      - "{{ general_path_appdata }}/nextcloud/nextcloud/data:/var/www/html/data"
     environment:
       - "TZ={{ general_timezone }}"
       - "MYSQL_DATABASE=nextcloud"
       - "MYSQL_USER=nextcloud"
-      - "MYSQL_PASSWORD=${NEXTCLOUD_DB_PASS_NEXTCLOUD}"
+      - "MYSQL_PASSWORD={{ app_nextcloud_db_pass_nextcloud }}"
       - "MYSQL_HOST=nc-db"
     labels:
       - "traefik.enable=true"
@@ -84,15 +84,15 @@ services:
     container_name: nc-db
     restart: always
     networks:
-      - backend-nextcloud
+      - nextcloud
       - backup-nc-db
     volumes:
       - "{{ general_path_appdata }}/nextcloud/mariadb/data:/var/lib/mysql"
       - nc-db-dump:/backup
     environment:
       - "TZ={{ general_timezone }}"
-      - "MYSQL_ROOT_PASSWORD=${NEXTCLOUD_DB_PASS_ROOT}"
-      - "MYSQL_PASSWORD=${NEXTCLOUD_DB_PASS_NEXTCLOUD}"
+      - "MYSQL_ROOT_PASSWORD={{ app_nextcloud_db_pass_root }}"
+      - "MYSQL_PASSWORD={{ app_nextcloud_db_pass_nextcloud }}"
       - "MYSQL_DATABASE=nextcloud"
       - "MYSQL_USER=nextcloud"
     healthcheck:
@@ -159,19 +159,19 @@ services:
     restart: always
     networks:
       - traefik
-      - backend-passit
+      - passit
     environment:
       - "TZ={{ general_timezone }}"
       - "DATABASE_SERVICE_NAME=passit-db"
       - "DATABASE_NAME=passit"
       - "DATABASE_USER=passit"
-      - "DATABASE_PASSWORD=${PASSIT_DB_PASS}"
-      - "DEFAULT_FROM_EMAIL=passit@${PASSIT_BASE_DOMAIN}"
-      - "EMAIL_CONFIRMATION_HOST=${PASSIT_DOMAIN}"
+      - "DATABASE_PASSWORD={{ app_passit_db_pass }}"
+      - "DEFAULT_FROM_EMAIL=passit@{{ general_domain_tuinfeest }}"
+      - "EMAIL_CONFIRMATION_HOST=passit.{{ general_domain_tuinfeest }}"
       - "IS_PRIVATE_ORG_MODE=False"
-      - "PRIVATE_ORG_MODE_DOMAIN_WHITELIST=${PASSIT_BASE_DOMAIN}"
-      - "SECRET_KEY=${PASSIT_SECRET_KEY}"
-      - "EMAIL_URL=smtp+tls://${MAIL_USER}:${MAIL_PASS}@${MAIL_HOSTNAME}:${MAIL_PORT}"
+      - "PRIVATE_ORG_MODE_DOMAIN_WHITELIST={{ general_domain_tuinfeest }}"
+      - "SECRET_KEY={{ app_passit_secret_key }}"
+      - "EMAIL_URL=smtp+tls://{{ mailjet_username }}:{{ mailjet_password }}@{{ mailjet_host }}:{{ mailjet_port }}"
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=traefik"
@@ -181,14 +181,14 @@ services:
     container_name: passit-db
     restart: always
     networks:
-      - backend-passit
+      - passit
     volumes:
-      - "{{ general_path_appdata }}/passit/db:/var/lib/postgresql/data"
+      - "{{ general_path_appdata }}/passit/postgres/data:/var/lib/postgresql/data"
       - passit-db-dump:/backup
     environment:
       - "TZ={{ general_timezone }}"
       - "POSTGRES_USER=passit"
-      - "POSTGRES_PASSWORD=${PASSIT_DB_PASS}"
+      - "POSTGRES_PASSWORD={{ app_passit_db_pass }}"
 
   # =========================
   # =      IMAP-ALERTER     =
@@ -199,7 +199,7 @@ services:
     restart: always
     volumes:
       - ./imap-alerter:/app/config
-      - "{{ general_path_appdata }}/imap-alerter/data:/app/data"
+      - "{{ general_path_appdata }}/imap-alerter/imap-alerter/data:/app/data"
     environment:
       - "TZ={{ general_timezone }}"
 
@@ -257,7 +257,7 @@ services:
       - snipe-it-db
     networks:
       - traefik
-      - backend-snipe-it
+      - snipe-it
     volumes:
       - "{{ general_path_appdata }}/snipe-it/snipe-it/config:/config"
     environment:
@@ -267,7 +267,7 @@ services:
       - "MYSQL_PORT_3306_TCP_PORT=3306"
       - "MYSQL_DATABASE=snipe"
       - "MYSQL_USER=snipe"
-      - "MYSQL_PASSWORD=${SNIPE_IT_DB_PASS_SNIPE}"
+      - "MYSQL_PASSWORD={{ app_snipe_it_db_pass_snipe }}"
       - "PGID=1000"
       - "PUID=1000"
     labels:
@@ -279,14 +279,14 @@ services:
     container_name: snipe-it-db
     restart: always
     networks:
-      - backend-snipe-it
+      - snipe-it
     volumes:
       - "{{ general_path_appdata }}/snipe-it/mariadb/data:/var/lib/mysql"
       - "snipe-it-db-dump:/backup"
     environment:
       - "TZ={{ general_timezone }}"
-      - "MYSQL_ROOT_PASSWORD=${SNIPE_IT_DB_PASS_ROOT}"
-      - "MYSQL_PASSWORD=${SNIPE_IT_DB_PASS_SNIPE}"
+      - "MYSQL_ROOT_PASSWORD={{ app_snipe_it_db_pass_root }}"
+      - "MYSQL_PASSWORD={{ app_snipe_it_db_pass_snipe }}"
       - "MYSQL_DATABASE=snipe"
       - "MYSQL_USER=snipe"
     healthcheck:
@@ -315,7 +315,7 @@ services:
       - question-queen
     environment:
       - "BASE_URL=http://question-queen-backend"
-      - "BROWSER_BASE_URL=https://qq-backend.${DEFAULT_DOMAIN}"
+      - "BROWSER_BASE_URL=https://qq-backend.{{ general_domain_default }}"
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=traefik"
@@ -328,7 +328,7 @@ services:
       - traefik
       - question-queen
     volumes:
-      - "./qq.yml:/data/data.yml"
+      - "./question-queen/questions.yml:/data/data.yml"
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=traefik"
@@ -362,7 +362,7 @@ services:
     depends_on:
       - nc-db
     volumes:
-      - "${NEXTCLOUD_PATH_CONFIG}/config:/nextcloud/config:ro"
+      - "{{ general_path_appdata }}/nextcloud/nextcloud/config/config:/nextcloud/config:ro"
       - nc-calcardbackup:/backup
     environment:
       - "TZ={{ general_timezone }}"
@@ -379,16 +379,16 @@ services:
       # Backup locations
       - nc-db-dump:/mnt/source/nextcloud/dbdump:ro
       - nc-calcardbackup:/mnt/source/nextcloud/calcardbackup:ro
-      - "${NEXTCLOUD_PATH_DATA}:/mnt/source/nextcloud/data:ro"
-      - "${NEXTCLOUD_PATH_CONFIG}:/mnt/source/nextcloud/config:ro"
+      - "{{ general_path_appdata }}/nextcloud/nextcloud/data:/mnt/source/nextcloud/data:ro"
+      - "{{ general_path_appdata }}/nextcloud/nextcloud/config:/mnt/source/nextcloud/config:ro"
       - passit-db-dump:/mnt/source/passit/dbdump:ro
       - snipe-it-db-dump:/mnt/source/snipe-it/dbdump:ro
       # Config and cache
       - "./borgmatic/borgmatic.d:/etc/borgmatic.d"
       - "./borgmatic/ssh:/root/.ssh"
-      - "{{ general_path_appdata }}/borgmatic/config:/root/.config/borg"
-      - "{{ general_path_appdata }}/borgmatic/cache:/root/.cache/borg"
-      - "{{ general_path_appdata }}/borgmatic/restore:/mnt/restore"
+      - "{{ general_path_appdata }}/borgmatic/borgmatic/config:/root/.config/borg"
+      - "{{ general_path_appdata }}/borgmatic/borgmatic/cache:/root/.cache/borg"
+      - "{{ general_path_appdata }}/borgmatic/borgmatic/restore:/mnt/restore"
     environment:
       - "TZ={{ general_timezone }}"
       - "BORG_PASSPHRASE={{ app_borgmatic_borg_passphrase }}"
@@ -397,31 +397,31 @@ services:
 # #                            VOLUMES                            #
 # #################################################################
 volumes:
-  traefik-cert:
+  isa-output:
   nc-db-dump:
   nc-calcardbackup:
-  isa-output:
   passit-db-dump:
   snipe-it-db-dump:
+  traefik-cert:
 
 # #################################################################
 # #                            NETWORKS                           #
 # #################################################################
 networks:
-  traefik:
-    name: traefik
-
-  backend-nextcloud:
-    name: backend-nextcloud
-
-  backend-passit:
-    name: backend-passit
-
-  backend-snipe-it:
-    name: backend-snipe-it
-
   backup-nc-db:
     name: backup-nc-db
 
+  nextcloud:
+    name: nextcloud
+
+  passit:
+    name: passit
+
   question-queen:
     name: question-queen
+
+  snipe-it:
+    name: snipe-it
+
+  traefik:
+    name: traefik

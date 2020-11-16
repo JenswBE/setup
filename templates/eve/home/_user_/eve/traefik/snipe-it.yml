@@ -6,5 +6,3 @@ http:
             service: snipe-it-{{ ansible_hostname }}@docker
             tls:
                 certresolver: le-tls
-            middlewares:
-                - secure-https
