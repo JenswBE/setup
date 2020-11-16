@@ -1,0 +1,35 @@
+location:
+    source_directories:
+        - /mnt/source
+
+    repositories:
+        - "{{ app_borgmatic_ssh_user }}@{{ app_borgmatic_ssh_host }}:{{ app_borgmatic_remote_folder }}"
+
+storage:
+    compression: lz4
+    archive_name_format: "backup-{now}"
+    ssh_command: "ssh -i /root/.ssh/BorgHost -p {{ app_borgmatic_ssh_port }}"
+
+retention:
+    keep_daily: 7
+    keep_weekly: 4
+    keep_monthly: 12
+    keep_yearly: 2
+    prefix: "backup-"
+
+consistency:
+    checks:
+        - repository
+        - archives
+    check_last: 3
+    prefix: "backup-"
+
+hooks:
+    before_backup:
+        - "echo $(date): Borgmatic - Backup started"
+    after_backup:
+        - "echo $(date): Borgmatic - Send ping to Healthchecks.io"
+        - "wget https://hc-ping.com/{{ app_borgmatic_ping_id }} -T 10 -t 5 -O /dev/null"
+        - "echo $(date): Borgmatic - Backup finished"
+    on_error:
+        - "echo $(date): Borgmatic - Backup failed"

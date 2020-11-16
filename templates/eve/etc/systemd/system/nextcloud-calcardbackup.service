@@ -1,0 +1,6 @@
+[Unit]
+Description=Backup all Nextcloud calendars and contacts
+OnFailure=unit-fail-mail@%n.service
+
+[Service]
+ExecStart=/usr/bin/docker exec nc-calcardbackup sh -c "/opt/calcardbackup/calcardbackup /nextcloud/ --output /backup/ -i -x -d '_overwrite'"

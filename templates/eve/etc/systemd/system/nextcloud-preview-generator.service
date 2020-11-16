@@ -1,0 +1,5 @@
+[Unit]
+Description=Nextcloud generate previews
+
+[Service]
+ExecStart=/usr/bin/docker exec --user www-data nextcloud php occ preview:pre-generate
