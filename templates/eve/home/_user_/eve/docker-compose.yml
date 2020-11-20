@@ -351,7 +351,7 @@ services:
   # =      MAINTENANCE      =
   # =========================
   maintenance:
-    image: everydayhero/maintenance:latest
+    image: nginx:latest
     container_name: maintenance
     restart: always
     user: "{{ ansible_real_user_id }}"
