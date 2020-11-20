@@ -177,7 +177,7 @@ services:
       - "DATABASE_PASSWORD={{ app_passit_db_pass }}"
       - "DEFAULT_FROM_EMAIL=passit@{{ general_domain_tuinfeest }}"
       - "EMAIL_CONFIRMATION_HOST=passit.{{ general_domain_tuinfeest }}"
-      - "IS_PRIVATE_ORG_MODE=False"
+      - "IS_PRIVATE_ORG_MODE=True"
       - "PRIVATE_ORG_MODE_DOMAIN_WHITELIST={{ general_domain_tuinfeest }}"
       - "SECRET_KEY={{ app_passit_secret_key }}"
       - "EMAIL_URL=smtp+tls://{{ mailjet_username }}:{{ mailjet_password }}@{{ mailjet_host }}:{{ mailjet_port }}"
