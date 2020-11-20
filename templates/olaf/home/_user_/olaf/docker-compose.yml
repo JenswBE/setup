@@ -16,7 +16,7 @@ services:
       - "--providers.file.directory=/conf"
       - "--providers.file.watch=true"
       - "--providers.docker=true"
-      - "--providers.docker.defaultRule="
+      - "--providers.docker.network=traefik"
       - "--providers.docker.exposedbydefault=false"
       - "--entrypoints.websecure.address=:443"
       - "--entrypoints.websecure.http.middlewares=secure-https@file"
@@ -39,8 +39,6 @@ services:
       - "traefik-cert:/letsencrypt/"
     environment:
       - "TZ={{ general_timezone }}"
-    labels:
-      - "traefik.enable=true"
 
 # =========================
 # =    Cloudflare DDNS    =
@@ -97,7 +95,9 @@ services:
       - "{{ general_path_appdata }}/transmission:/config"
     labels:
       - "traefik.enable=true"
-      - "traefik.docker.network=traefik"
+      - "traefik.http.routers.transmission.entrypoints=websecure"
+      - "traefik.http.routers.transmission.rule=Host(`torrent.{{ general_domain_default }}`)"
+      - "traefik.http.routers.transmission.tls.certresolver=le-tls"
       - "traefik.http.services.transmission-{{ ansible_hostname }}.loadbalancer.server.port=9091"
 
 # =========================
@@ -159,7 +159,10 @@ services:
       - "USER_ID=0"
     labels:
       - "traefik.enable=true"
-      - "traefik.docker.network=traefik"
+      - "traefik.http.routers.tmm.entrypoints=websecure"
+      - "traefik.http.routers.tmm.rule=Host(`tmm.{{ general_domain_default }}`)"
+      - "traefik.http.routers.tmm.tls.certresolver=le-tls"
+      - "traefik.http.routers.tmm.middlewares=tmm-auth@file"
       - "traefik.http.services.tmm-{{ ansible_hostname }}.loadbalancer.server.port=5800"
 
 # =========================
