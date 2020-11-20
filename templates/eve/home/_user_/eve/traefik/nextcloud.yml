@@ -3,24 +3,22 @@ http:
         nextcloud-redirect-dav:
             redirectRegex:
                 regex: https://(.*)/.well-known/(card|cal)dav
-                replacement: https://\$1/remote.php/dav/
+                replacement: https://$1/remote.php/dav/
+                permanent: true
+
+        nextcloud-redirect-webfinger:
+            redirectRegex:
+                regex: https://(.*)/.well-known/webfinger
+                replacement: https://$1/public.php?service=webfinger
                 permanent: true
 
     routers:
         nextcloud:
             entrypoints: ["websecure"]
-            rule: "Host(`nextcloud.{{ general_domain_default }}`)"
+            rule: "Host(`nextcloud.{{ general_domain_default }}`, `bestanden.{{ general_domain_tuinfeest }}`)"
             service: nextcloud-{{ ansible_hostname }}@docker
             tls:
                 certresolver: le-tls
             middlewares:
                 - nextcloud-redirect-dav
-
-        nextcloud-tf:
-            entrypoints: ["websecure"]
-            rule: "Host(`bestanden.{{ general_domain_tuinfeest }}`)"
-            service: nextcloud-{{ ansible_hostname }}@docker
-            tls:
-                certresolver: le-tls
-            middlewares:
-                - nextcloud-redirect-dav
+                - nextcloud-redirect-webfinger

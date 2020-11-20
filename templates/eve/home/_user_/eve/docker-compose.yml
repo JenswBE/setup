@@ -16,7 +16,7 @@ services:
       - "--providers.file.directory=/conf"
       - "--providers.file.watch=true"
       - "--providers.docker=true"
-      - "--providers.docker.defaultRule="
+      - "--providers.docker.defaultRule=Host(`{{ normalize .Name }}.localhost`)"
       - "--providers.docker.exposedbydefault=false"
       - "--entrypoints.websecure.address=:443"
       - "--entrypoints.websecure.http.middlewares=secure-https@file"
