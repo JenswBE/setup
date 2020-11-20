@@ -11,14 +11,3 @@ http:
                 regex: https://(.*)/.well-known/webfinger
                 replacement: https://$1/public.php?service=webfinger
                 permanent: true
-
-    routers:
-        nextcloud:
-            entrypoints: ["websecure"]
-            rule: "Host(`nextcloud.{{ general_domain_default }}`, `bestanden.{{ general_domain_tuinfeest }}`)"
-            service: nextcloud-{{ ansible_hostname }}@docker
-            tls:
-                certresolver: le-tls
-            middlewares:
-                - nextcloud-redirect-dav
-                - nextcloud-redirect-webfinger

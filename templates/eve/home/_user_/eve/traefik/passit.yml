@@ -1,8 +1,0 @@
-http:
-  routers:
-    passit:
-      entryPoints: ["websecure"]
-      rule: Host(`wachtwoorden.{{ general_domain_tuinfeest }}`)
-      service: passit-{{ ansible_hostname }}@docker
-      tls:
-        certResolver: le-tls
