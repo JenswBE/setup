@@ -354,10 +354,12 @@ services:
     image: everydayhero/maintenance:latest
     container_name: maintenance
     restart: always
+    user: "{{ ansible_real_user_id }}"
     networks:
       - traefik
     volumes:
-      - "./maintenance:/usr/share/nginx/html"
+      - "./maintenance/public:/usr/share/nginx/html"
+      - "./maintenance/nginx.conf:/etc/nginx/nginx.conf"
     environment:
       - "TZ={{ general_timezone }}"
     labels:
@@ -365,6 +367,7 @@ services:
       - "traefik.http.routers.maintenance.entrypoints=websecure"
       - "traefik.http.routers.maintenance.rule=Host(`maintenance.{{ general_domain_default }}`)"
       - "traefik.http.routers.maintenance.tls.certresolver=le-tls"
+      - "traefik.http.services.maintenance-{{ ansible_hostname }}.loadbalancer.server.port=8080"
 
   # =========================
   # =         BACKUP        =
