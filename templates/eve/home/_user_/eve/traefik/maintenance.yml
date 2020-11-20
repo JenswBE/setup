@@ -1,8 +1,0 @@
-http:
-    routers:
-        maintenance:
-            entrypoints: ["websecure"]
-            rule: "Host(`maintenance.{{ general_domain_default }}`)"
-            service: maintenance-{{ ansible_hostname }}@docker
-            tls:
-                certresolver: le-tls

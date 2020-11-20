@@ -16,7 +16,7 @@ services:
       - "--providers.file.directory=/conf"
       - "--providers.file.watch=true"
       - "--providers.docker=true"
-      - "{% raw %}--providers.docker.defaultRule=Host(`{{ normalize .Name }}.localhost`){% endraw %}"
+      - "--providers.docker.network=traefik"
       - "--providers.docker.exposedbydefault=false"
       - "--entrypoints.websecure.address=:443"
       - "--entrypoints.websecure.http.middlewares=secure-https@file"
@@ -77,7 +77,10 @@ services:
       - "MYSQL_HOST=nc-db"
     labels:
       - "traefik.enable=true"
-      - "traefik.docker.network=traefik"
+      - "traefik.http.routers.nextcloud.entrypoints=websecure"
+      - "traefik.http.routers.nextcloud.rule=Host(`nextcloud.{{ general_domain_default }}`, `bestanden.{{ general_domain_tuinfeest }}`)"
+      - "traefik.http.routers.nextcloud.tls.certresolver=le-tls"
+      - "traefik.http.routers.nextcloud.middlewares=nextcloud-redirect-dav@file, nextcloud-redirect-webfinger@file"
 
   nc-db:
     image: mariadb:10
@@ -120,7 +123,9 @@ services:
       - "TZ={{ general_timezone }}"
     labels:
       - "traefik.enable=true"
-      - "traefik.docker.network=traefik"
+      - "traefik.http.routers.nginx-tuinfeest-beta.entrypoints=websecure"
+      - "traefik.http.routers.nginx-tuinfeest-beta.rule=Host(`beta.{{ general_domain_tuinfeest }}`)"
+      - "traefik.http.routers.nginx-tuinfeest-beta.tls.certresolver=le-tls"
 
   nginx-tuinfeest-archive-2019:
     image: nginx:latest
@@ -134,7 +139,9 @@ services:
       - "TZ={{ general_timezone }}"
     labels:
       - "traefik.enable=true"
-      - "traefik.docker.network=traefik"
+      - "traefik.http.routers.nginx-tuinfeest-archive-2019.entrypoints=websecure"
+      - "traefik.http.routers.nginx-tuinfeest-archive-2019.rule=Host(`2019.{{ general_domain_tuinfeest }}`)"
+      - "traefik.http.routers.nginx-tuinfeest-archive-2019.tls.certresolver=le-tls"
 
   nginx-tuinfeest-archive-2020:
     image: nginx:latest
@@ -148,7 +155,9 @@ services:
       - "TZ={{ general_timezone }}"
     labels:
       - "traefik.enable=true"
-      - "traefik.docker.network=traefik"
+      - "traefik.http.routers.nginx-tuinfeest-archive-2020.entrypoints=websecure"
+      - "traefik.http.routers.nginx-tuinfeest-archive-2020.rule=Host(`2020.{{ general_domain_tuinfeest }}`)"
+      - "traefik.http.routers.nginx-tuinfeest-archive-2020.tls.certresolver=le-tls"
 
   # =========================
   # =         PASSIT        =
@@ -174,7 +183,9 @@ services:
       - "EMAIL_URL=smtp+tls://{{ mailjet_username }}:{{ mailjet_password }}@{{ mailjet_host }}:{{ mailjet_port }}"
     labels:
       - "traefik.enable=true"
-      - "traefik.docker.network=traefik"
+      - "traefik.http.routers.passit.entrypoints=websecure"
+      - "traefik.http.routers.passit.rule=Host(`wachtwoorden.{{ general_domain_tuinfeest }}`)"
+      - "traefik.http.routers.passit.tls.certresolver=le-tls"
 
   passit-db:
     image: postgres:12-alpine
@@ -267,7 +278,9 @@ services:
       - "PUID=1000"
     labels:
       - "traefik.enable=true"
-      - "traefik.docker.network=traefik"
+      - "traefik.http.routers.snipe-it.entrypoints=websecure"
+      - "traefik.http.routers.snipe-it.rule=Host(`assets.{{ general_domain_default }}`)"
+      - "traefik.http.routers.snipe-it.tls.certresolver=le-tls"
 
   snipe-it-db:
     image: mariadb:10
@@ -313,7 +326,9 @@ services:
       - "BROWSER_BASE_URL=https://qq-backend.{{ general_domain_default }}"
     labels:
       - "traefik.enable=true"
-      - "traefik.docker.network=traefik"
+      - "traefik.http.routers.question-queen-frontend.entrypoints=websecure"
+      - "traefik.http.routers.question-queen-frontend.rule=Host(`qq.{{ general_domain_default }}`)"
+      - "traefik.http.routers.question-queen-frontend.tls.certresolver=le-tls"
 
   question-queen-backend:
     image: jenswbe/question-queen-backend:latest
@@ -326,7 +341,9 @@ services:
       - "./question-queen/questions.yml:/data/data.yml"
     labels:
       - "traefik.enable=true"
-      - "traefik.docker.network=traefik"
+      - "traefik.http.routers.question-queen-backend.entrypoints=websecure"
+      - "traefik.http.routers.question-queen-backend.rule=Host(`qq-backend.{{ general_domain_default }}`)"
+      - "traefik.http.routers.question-queen-backend.tls.certresolver=le-tls"
 
   # =========================
   # =      MAINTENANCE      =
@@ -343,7 +360,9 @@ services:
       - "TZ={{ general_timezone }}"
     labels:
       - "traefik.enable=true"
-      - "traefik.docker.network=traefik"
+      - "traefik.http.routers.maintenance.entrypoints=websecure"
+      - "traefik.http.routers.maintenance.rule=Host(`maintenance.{{ general_domain_default }}`)"
+      - "traefik.http.routers.maintenance.tls.certresolver=le-tls"
 
   # =========================
   # =         BACKUP        =
