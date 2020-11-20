@@ -16,7 +16,7 @@ services:
       - "--providers.file.directory=/conf"
       - "--providers.file.watch=true"
       - "--providers.docker=true"
-      - "--providers.docker.defaultRule="
+      - "--providers.docker.network=traefik"
       - "--providers.docker.exposedbydefault=false"
       - "--entrypoints.websecure.address=:443"
       - "--entrypoints.websecure.http.middlewares=secure-https@file"
@@ -39,8 +39,6 @@ services:
       - traefik-cert:/letsencrypt/
     environment:
       - "TZ={{ general_timezone }}"
-    labels:
-      - "traefik.enable=true"
 
   # =========================
   # =         HOMER         =
@@ -57,7 +55,9 @@ services:
       - "TZ={{ general_timezone }}"
     labels:
       - "traefik.enable=true"
-      - "traefik.docker.network=traefik"
+      - "traefik.http.routers.homer.entrypoints=websecure"
+      - "traefik.http.routers.homer.rule=Host(`{{ ansible_hostname }}.{{ general_domain_default }}`)"
+      - "traefik.http.routers.homer.tls.certresolver=le-tls"
       - "traefik.http.services.homer-{{ ansible_hostname }}.loadbalancer.server.port=8080"
 
   # =========================
@@ -152,7 +152,9 @@ services:
       - "ADMIN_PASSWORD={{ app_miniflux_admin_pass }}"
     labels:
       - "traefik.enable=true"
-      - "traefik.docker.network=traefik"
+      - "traefik.http.routers.miniflux.entrypoints=websecure"
+      - "traefik.http.routers.miniflux.rule=Host(`feed.{{ general_domain_default }}`)"
+      - "traefik.http.routers.miniflux.tls.certresolver=le-tls"
       - "traefik.http.services.miniflux-{{ ansible_hostname }}.loadbalancer.server.port=8080"
 
   miniflux-db:
