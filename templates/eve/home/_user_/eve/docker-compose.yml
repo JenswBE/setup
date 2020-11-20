@@ -231,7 +231,7 @@ services:
   isa-rclone:
     image: rclone/rclone:latest
     container_name: isa-rclone
-    command: "move /data/ nextcloud:{{ app_isa_rclone_dav_path }} --delete-empty-src-dirs"
+    command: "move /data/ nextcloud:{{ app_isa_rclone_dav_path }} --delete-empty-src-dirs --verbose"
     restart: "no"  # Will be called by systemd timer
     volumes:
       - ./isa/rclone:/config/rclone
