@@ -53,6 +53,8 @@ services:
       - ./homer/config.yml:/www/assets/config.yml
     environment:
       - "TZ={{ general_timezone }}"
+      - "UID={{ ansible_real_user_id }}"
+      - "GID={{ ansible_real_group_id }}"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.homer.entrypoints=websecure"
