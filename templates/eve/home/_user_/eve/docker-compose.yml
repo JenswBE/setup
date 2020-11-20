@@ -231,12 +231,14 @@ services:
   isa-rclone:
     image: rclone/rclone:latest
     container_name: isa-rclone
+    command: "move /data/ nextcloud:{{ app_isa_rclone_dav_path }} --delete-empty-src-dirs"
     restart: "no"  # Will be called by systemd timer
     volumes:
       - ./isa/rclone:/config/rclone
       - isa-output:/data
     environment:
       - "TZ={{ general_timezone }}"
+    
 
   # ===========================================================================
   # =   DEAD LINK CHECKER                                                     =

@@ -1,5 +1,5 @@
 [Unit]
-Description=IMAP Save Attachments - Move files every 15 minutes
+Description=IMAP Save Attachments - Execute every 15 minutes
 
 [Timer]
 OnCalendar=*-*-* *:5..59/15:00

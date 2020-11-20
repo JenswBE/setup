@@ -1,0 +1,6 @@
+[Unit]
+Description=IMAP Save Attachments
+OnFailure=unit-fail-mail@%n.service
+
+[Service]
+ExecStart=/usr/local/bin/docker-compose -f {{ ansible_user_dir }}/{{ ansible_hostname }}/docker-compose.yml up -d isa-rclone
