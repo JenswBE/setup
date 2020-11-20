@@ -23,7 +23,7 @@
     state: started
     enabled: yes
   with_items:
-    - isa-rclone-move.timer
+    - isa-rclone.timer
     - nextcloud-calcardbackup.timer
     - nextcloud-cron.timer
     - nextcloud-dump-db.timer
