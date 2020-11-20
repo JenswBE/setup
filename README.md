@@ -1,5 +1,9 @@
 # Personal Ansible Stuff
 
+## Conventions
+##  naming convention
+- App data: `<CATEGORY>/<SERVICE>/<FOLDER>` E.g. `nextcloud/mariadb/data`
+
 ## Basic setup
 Download the latest LTS version of [Ubuntu Server](https://ubuntu.com/download/server) and install. Next, run following steps:
 ```bash
@@ -42,3 +46,4 @@ ansible-playbook main.yml --ask-vault-pass --ask-become-pass --skip-tags setup -
 
 ## Host specific configuration
 - [Olaf](docs/olaf.md)
+- [Eve](docs/eve.md)

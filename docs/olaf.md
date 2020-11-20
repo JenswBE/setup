@@ -8,7 +8,13 @@ Config for my home NAS
 3. Add public key to allowed ssh keys at remote host (depending on service)
 4. Init repo if required with `docker exec borgmatic sh -c "borgmatic --init --encryption repokey-blake2"`
 5. Perform a backup to test the setup with `docker exec borgmatic sh -c "borgmatic --verbosity 1"`
-6. Optional: Backup your repo key file with `docker exec borgmatic sh -c "BORG_RSH=\"ssh -i /root/.ssh/<NAME_OF_SSH_KEY>\" borg key export --qr-html <FULL_REPO_NAME> /root/.ssh/repokey.html"`. Your file is available at `conf/borgmatic/ssh/repokey.html`.
+6. Optional: Backup your repo key file with below command. Your file will be available at `conf/borgmatic/ssh/repokey.html`.
+```bash
+# Export repo key to ~/eve/borgmatic/borgmatic.d/repokey.html
+docker exec borgmatic sh -c "BORG_RSH=\"ssh -p${BORGMATIC_PORT:?} -i /root/.ssh/BorgHost\" \
+                             borg key export --qr-html ${BORGMATIC_USER:?}@${BORGMATIC_HOST:?}:${BORGMATIC_PATH:?} \
+                             /etc/borgmatic.d/repokey.html"
+```
 
 ### Transmission
 1. Set correct permission with `sudo chown 233:233 /media/data/services/transmission/`
