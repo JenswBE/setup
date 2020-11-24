@@ -1,12 +1,12 @@
-version: '3.7'
+version: "3.7"
 
 #################################################################
 #                            SERVICES                           #
 #################################################################
 services:
-# =========================
-# =         PROXY         =
-# =========================
+  # =========================
+  # =         PROXY         =
+  # =========================
   traefik:
     image: traefik:latest
     container_name: traefik
@@ -40,9 +40,9 @@ services:
     environment:
       - "TZ={{ general_timezone }}"
 
-# =========================
-# =    Cloudflare DDNS    =
-# =========================
+  # =========================
+  # =    Cloudflare DDNS    =
+  # =========================
   cloudflare-ddns:
     image: oznu/cloudflare-ddns:latest
     container_name: cloudflare-ddns
@@ -57,9 +57,9 @@ services:
       - "1.1.1.1"
       - "1.0.0.1"
 
-# =========================
-# =     AUTO-UPDATER      =
-# =========================
+  # =========================
+  # =     AUTO-UPDATER      =
+  # =========================
   watchtower:
     image: containrrr/watchtower:latest
     container_name: watchtower
@@ -70,9 +70,9 @@ services:
     environment:
       - "TZ={{ general_timezone }}"
 
-# =========================
-# =        TORRENT        =
-# =========================
+  # =========================
+  # =        TORRENT        =
+  # =========================
   transmission:
     image: linuxserver/transmission:latest
     container_name: transmission
@@ -100,9 +100,9 @@ services:
       - "traefik.http.routers.transmission.tls.certresolver=le-tls"
       - "traefik.http.services.transmission-{{ ansible_hostname }}.loadbalancer.server.port=9091"
 
-# =========================
-# =         SAMBA         =
-# =========================
+  # =========================
+  # =         SAMBA         =
+  # =========================
   samba:
     image: dperson/samba:latest
     container_name: samba
@@ -123,9 +123,9 @@ services:
       -s "media;/mnt/media;yes;no;no;nas"
       -s "scans;/mnt/media/Scans;yes;no;no;scanner"
 
-# =========================
-# =          PLEX         =
-# =========================
+  # =========================
+  # =          PLEX         =
+  # =========================
   plex:
     image: plexinc/pms-docker:latest
     container_name: plex
@@ -136,14 +136,17 @@ services:
       - "/media/data/services/plex/optimized:/data/optimized"
       - "{{ general_path_appdata }}/plex/config:/config"
       - "{{ general_path_appdata }}/plex/transcode:/transcode"
+    devices:
+      - "/dev/dri/card0:/dev/dri/card0"
+      - "/dev/dri/renderD128:/dev/dri/renderD128"
     environment:
       - "TZ={{ general_timezone }}"
       - "PLEX_UID=233"
       - "PLEX_GID=233"
 
-# =========================
-# =   TINY MEDIA MANAGER  =
-# =========================
+  # =========================
+  # =   TINY MEDIA MANAGER  =
+  # =========================
   tmm:
     image: romancin/tinymediamanager:latest
     container_name: tmm
@@ -165,9 +168,9 @@ services:
       - "traefik.http.routers.tmm.middlewares=tmm-auth@file"
       - "traefik.http.services.tmm-{{ ansible_hostname }}.loadbalancer.server.port=5800"
 
-# =========================
-# =          SFTP         =
-# =========================
+  # =========================
+  # =          SFTP         =
+  # =========================
   sftp:
     image: atmoz/sftp:alpine
     container_name: sftp
@@ -182,9 +185,9 @@ services:
     environment:
       - "TZ={{ general_timezone }}"
 
-# =========================
-# =         BACKUP        =
-# =========================
+  # =========================
+  # =         BACKUP        =
+  # =========================
   borgmatic:
     image: b3vis/borgmatic:latest
     container_name: borgmatic
