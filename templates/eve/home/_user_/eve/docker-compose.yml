@@ -232,13 +232,12 @@ services:
     image: rclone/rclone:latest
     container_name: isa-rclone
     command: "move /data/ nextcloud:{{ app_isa_rclone_dav_path }} --delete-empty-src-dirs --verbose"
-    restart: "no"  # Will be called by systemd timer
+    restart: "no" # Will be called by systemd timer
     volumes:
       - ./isa/rclone:/config/rclone
       - isa-output:/data
     environment:
       - "TZ={{ general_timezone }}"
-    
 
   # ===========================================================================
   # =   DEAD LINK CHECKER                                                     =
@@ -324,6 +323,7 @@ services:
       - traefik
       - question-queen
     environment:
+      - "TZ={{ general_timezone }}"
       - "BASE_URL=http://question-queen-backend"
       - "BROWSER_BASE_URL=https://qq-backend.{{ general_domain_default }}"
     labels:
@@ -341,11 +341,87 @@ services:
       - question-queen
     volumes:
       - "./question-queen/questions.yml:/data/data.yml"
+    environment:
+      - "TZ={{ general_timezone }}"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.question-queen-backend.entrypoints=websecure"
       - "traefik.http.routers.question-queen-backend.rule=Host(`qq-backend.{{ general_domain_default }}`)"
       - "traefik.http.routers.question-queen-backend.tls.certresolver=le-tls"
+
+  # ===========================================================================
+  # =   BJOETIEK Y                                                            =
+  # =   https://github.com/JenswBE/bjoetiek-y-frontend                        =
+  # =   https://github.com/JenswBE/bjoetiek-y-admin                           =
+  # =   https://github.com/JenswBE/bjoetiek-y-backend                         =
+  # ===========================================================================
+  bjoetiek-frontend:
+    image: nginx:latest
+    container_name: bjoetiek-frontend
+    depends_on:
+      - bjoetiek-backend
+    restart: always
+    networks:
+      - traefik
+    environment:
+      - "TZ={{ general_timezone }}"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.bjoetiek-frontend.entrypoints=websecure"
+      - "traefik.http.routers.bjoetiek-frontend.rule=Host(`bjoetiek-y.be`)"
+      - "traefik.http.routers.bjoetiek-frontend.tls.certresolver=le-tls"
+
+  bjoetiek-admin:
+    image: jenswbe/bjoetiek-y-admin:latest
+    container_name: bjoetiek-admin
+    depends_on:
+      - bjoetiek-backend
+    restart: always
+    networks:
+      - traefik
+    environment:
+      - "TZ={{ general_timezone }}"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.bjoetiek-admin.entrypoints=websecure"
+      - "traefik.http.routers.bjoetiek-admin.rule=Host(`beheer.bjoetiek-y.be`)"
+      - "traefik.http.routers.bjoetiek-admin.tls.certresolver=le-tls"
+      - "traefik.http.services.bjoetiek-admin-{{ ansible_hostname }}.loadbalancer.server.port=8080"
+
+  bjoetiek-backend:
+    image: jenswbe/bjoetiek-y-backend:latest
+    container_name: bjoetiek-backend
+    depends_on:
+      - bjoetiek-db
+    restart: always
+    networks:
+      - traefik
+      - bjoetiek
+    environment:
+      - "TZ={{ general_timezone }}"
+      - "ADMIN_USERNAME={{ app_bjoetiek_admin_user }}"
+      - "ADMIN_PASSWORD={{ app_bjoetiek_admin_pass }}"
+      - "DATABASE_URL=postgres://bjoetiek:{{ app_bjoetiek_db_pass }}@bjoetiek-db/bjoetiek"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.bjoetiek-backend.entrypoints=websecure"
+      - "traefik.http.routers.bjoetiek-backend.rule=Host(`backend.bjoetiek-y.be`)"
+      - "traefik.http.routers.bjoetiek-backend.tls.certresolver=le-tls"
+      - "traefik.http.routers.bjoetiek-backend.middlewares=bjoetiek-fix-cors@file"
+
+  bjoetiek-db:
+    image: postgres:13-alpine
+    container_name: bjoetiek-db
+    restart: always
+    networks:
+      - bjoetiek
+    volumes:
+      - "{{ general_path_appdata }}/bjoetiek/postgres/data:/var/lib/postgresql/data"
+      - bjoetiek-db-dump:/backup
+    environment:
+      - "TZ={{ general_timezone }}"
+      - "POSTGRES_USER=bjoetiek"
+      - "POSTGRES_PASSWORD={{ app_bjoetiek_db_pass }}"
 
   # =========================
   # =      MAINTENANCE      =
@@ -396,6 +472,7 @@ services:
     cap_add: ["SYS_ADMIN"]
     volumes:
       # Backup locations
+      - bjoetiek-db-dump:/mnt/source/bjoetiek/dbdump:ro
       - nc-db-dump:/mnt/source/nextcloud/dbdump:ro
       - nc-calcardbackup:/mnt/source/nextcloud/calcardbackup:ro
       - "{{ general_path_appdata }}/nextcloud/nextcloud/data:/mnt/source/nextcloud/data:ro"
@@ -416,6 +493,7 @@ services:
 # #                            VOLUMES                            #
 # #################################################################
 volumes:
+  bjoetiek-db-dump:
   isa-output:
   nc-db-dump:
   nc-calcardbackup:
@@ -427,6 +505,9 @@ volumes:
 # #                            NETWORKS                           #
 # #################################################################
 networks:
+  bjoetiek:
+    name: bjoetiek
+
   backup-nc-db:
     name: backup-nc-db
 
