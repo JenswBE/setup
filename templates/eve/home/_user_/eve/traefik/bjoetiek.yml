@@ -1,0 +1,6 @@
+http:
+  middlewares:
+    bjoetiek-fix-cors:
+      headers:
+        customResponseHeaders:
+          Access-Control-Allow-Credentials: "true"
