@@ -397,11 +397,14 @@ services:
     networks:
       - traefik
       - bjoetiek
+    volumes:
+      - "{{ general_path_appdata }}/bjoetiek/backend/images:/images"
     environment:
       - "TZ={{ general_timezone }}"
       - "ADMIN_USERNAME={{ app_bjoetiek_admin_user }}"
       - "ADMIN_PASSWORD={{ app_bjoetiek_admin_pass }}"
       - "DATABASE_URL=postgres://bjoetiek:{{ app_bjoetiek_db_pass }}@bjoetiek-db/bjoetiek"
+      - "IMAGES_PATH=/images"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.bjoetiek-backend.entrypoints=websecure"
