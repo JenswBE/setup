@@ -355,9 +355,9 @@ services:
   # =   https://github.com/JenswBE/bjoetiek-y-admin                           =
   # =   https://github.com/JenswBE/bjoetiek-y-backend                         =
   # ===========================================================================
-  bjoetiek-frontend:
+  bjoetiek-frontend-placeholder:
     image: nginx:latest
-    container_name: bjoetiek-frontend
+    container_name: bjoetiek-frontend-placeholder
     depends_on:
       - bjoetiek-backend
     restart: always
@@ -367,8 +367,25 @@ services:
       - "TZ={{ general_timezone }}"
     labels:
       - "traefik.enable=true"
+      - "traefik.http.routers.bjoetiek-frontend-placeholder.entrypoints=websecure"
+      - "traefik.http.routers.bjoetiek-frontend-placeholder.rule=Host(`bjoetiek-y.be`)"
+      - "traefik.http.routers.bjoetiek-frontend-placeholder.tls.certresolver=le-tls"
+
+  bjoetiek-frontend:
+    image: jenswbe/bjoetiek-y-frontend:latest
+    container_name: bjoetiek-frontend
+    depends_on:
+      - bjoetiek-backend
+    restart: always
+    networks:
+      - traefik
+      - bjoetiek
+    environment:
+      - "TZ={{ general_timezone }}"
+    labels:
+      - "traefik.enable=true"
       - "traefik.http.routers.bjoetiek-frontend.entrypoints=websecure"
-      - "traefik.http.routers.bjoetiek-frontend.rule=Host(`bjoetiek-y.be`)"
+      - "traefik.http.routers.bjoetiek-frontend.rule=Host(`test.bjoetiek-y.be`)"
       - "traefik.http.routers.bjoetiek-frontend.tls.certresolver=le-tls"
 
   bjoetiek-admin:
