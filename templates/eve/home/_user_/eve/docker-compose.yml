@@ -363,6 +363,8 @@ services:
     restart: always
     networks:
       - traefik
+    volumes:
+      - "{{ general_path_appdata }}/bjoetiek/placeholder:/usr/share/nginx/html"
     environment:
       - "TZ={{ general_timezone }}"
     labels:
