@@ -384,6 +384,7 @@ services:
       - bjoetiek
     environment:
       - "TZ={{ general_timezone }}"
+      - "BACKEND_URL=http://bjoetiek-backend:8090/public/"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.bjoetiek-frontend.entrypoints=websecure"
