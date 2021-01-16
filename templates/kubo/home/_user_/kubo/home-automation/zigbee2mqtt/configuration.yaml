@@ -1,0 +1,27 @@
+homeassistant: true
+permit_join: false
+mqtt:
+  base_topic: zigbee2mqtt
+  server: "mqtt://ha-mosquitto"
+serial:
+  port: /dev/ttyACM0
+devices:
+  "0xec1bbdfffe9f5aaa":
+    friendly_name: button_bedroom_bed
+    legacy: false
+  "0xec1bbdfffe9c3b0e":
+    friendly_name: button_bedroom_living
+    legacy: false
+  "0xec1bbdfffe239446":
+    friendly_name: button_bedroom_bathroom
+    legacy: false
+  "0xccccccfffebe8ff8":
+    friendly_name: lamp_rgb
+  "0x5c0272fffe38e917":
+    friendly_name: lamp_warm_white
+  "0x000d6ffffe9a72c0":
+    friendly_name: repeater
+  "0x842e14fffe65e2bd":
+    friendly_name: socket_tv
+  "0xbc33acfffe2f0bad":
+    friendly_name: socket_table

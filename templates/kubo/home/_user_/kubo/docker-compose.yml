@@ -1,4 +1,4 @@
-version: '3.7'
+version: "3.7"
 
 #################################################################
 #                            SERVICES                           #
@@ -41,28 +41,6 @@ services:
       - "TZ={{ general_timezone }}"
 
   # =========================
-  # =         HOMER         =
-  # =========================
-  homer:
-    image: b4bz/homer:latest
-    container_name: homer
-    restart: always
-    networks:
-      - traefik
-    volumes:
-      - ./homer/config.yml:/www/assets/config.yml
-    environment:
-      - "TZ={{ general_timezone }}"
-      - "UID={{ ansible_real_user_id }}"
-      - "GID={{ ansible_real_group_id }}"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.homer.entrypoints=websecure"
-      - "traefik.http.routers.homer.rule=Host(`{{ ansible_hostname }}.{{ general_domain_default }}`)"
-      - "traefik.http.routers.homer.tls.certresolver=le-tls"
-      - "traefik.http.services.homer-{{ ansible_hostname }}.loadbalancer.server.port=8080"
-
-  # =========================
   # =    UNIFI CONTROLLER   =
   # =========================
   unifi-controller:
@@ -89,21 +67,27 @@ services:
   # =========================
   # =    HOME AUTOMATION    =
   # =========================
-  ha-mosquitto:
-    image: eclipse-mosquitto:latest
-    container_name: ha-mosquitto
+  ha:
+    image: homeassistant/home-assistant:stable
+    container_name: ha
     restart: always
     networks:
+      - traefik
       - home-automation
     volumes:
-      - "{{ general_path_appdata }}/ha-mosquitto/data:/mosquitto/data"
-      - "{{ general_path_appdata }}/ha-mosquitto/log:/mosquitto/log"
+      - "{{ general_path_appdata }}/home-automation/home-assistant/config:/config"
     environment:
       - "TZ={{ general_timezone }}"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.ha.entrypoints=websecure"
+      - "traefik.http.routers.ha.rule=Host(`ha.{{ general_domain_local }}`)"
+      - "traefik.http.routers.ha.tls=true"
+      - "traefik.http.services.ha-{{ ansible_hostname }}.loadbalancer.server.port=8123"
 
-  zigbee2mqtt:
+  ha-zigbee2mqtt:
     image: koenkk/zigbee2mqtt:latest
-    container_name: zigbee2mqtt
+    container_name: ha-zigbee2mqtt
     restart: always
     privileged: true
     networks:
@@ -111,25 +95,23 @@ services:
     depends_on:
       - ha-mosquitto
     volumes:
-      - "{{ general_path_appdata }}/zigbee2mqtt:/app/data"
+      - "{{ general_path_appdata }}/home-automation/zigbee2mqtt:/app/data"
+      - "./home-automation/zigbee2mqtt/configuration.yaml:/app/data/configuration.yaml"
       - "/run/udev:/run/udev:ro"
     devices:
       - "/dev/ttyUSB0:/dev/ttyUSB0"
     environment:
       - "TZ={{ general_timezone }}"
 
-  node-red:
-    image: nodered/node-red:latest
-    container_name: node-red
+  ha-mosquitto:
+    image: eclipse-mosquitto:latest
+    container_name: ha-mosquitto
     restart: always
     networks:
       - home-automation
-    depends_on:
-      - ha-mosquitto
     volumes:
-      - "{{ general_path_appdata }}/node-red:/data"
-    ports:
-      - "1880:1880"
+      - "{{ general_path_appdata }}/home-automation/mosquitto/data:/mosquitto/data"
+      - "{{ general_path_appdata }}/home-automation/mosquitto/log:/mosquitto/log"
     environment:
       - "TZ={{ general_timezone }}"
 
@@ -189,7 +171,7 @@ services:
 #################################################################
 #                            NETWORKS                           #
 #################################################################
-networks:  
+networks:
   home-automation:
     name: home-automation
 
