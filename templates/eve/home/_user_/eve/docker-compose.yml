@@ -491,8 +491,6 @@ services:
     image: b3vis/borgmatic:latest
     container_name: borgmatic
     restart: always
-    devices: ["/dev/fuse:/dev/fuse"]
-    cap_add: ["SYS_ADMIN"]
     volumes:
       # Backup locations
       - bjoetiek-db-dump:/mnt/source/bjoetiek/dbdump:ro
