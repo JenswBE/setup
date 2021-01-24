@@ -188,7 +188,7 @@ services:
       - "traefik.http.routers.passit.tls.certresolver=le-tls"
 
   passit-db:
-    image: postgres:12-alpine
+    image: postgres:13-alpine
     container_name: passit-db
     restart: always
     networks:
