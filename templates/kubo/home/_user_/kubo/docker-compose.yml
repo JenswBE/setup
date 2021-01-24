@@ -142,7 +142,7 @@ services:
       - "traefik.http.services.miniflux-{{ ansible_hostname }}.loadbalancer.server.port=8080"
 
   miniflux-db:
-    image: postgres:12-alpine
+    image: postgres:13-alpine
     container_name: miniflux-db
     restart: always
     networks:
