@@ -390,6 +390,7 @@ services:
       - "traefik.http.routers.bjoetiek-frontend.entrypoints=websecure"
       - "traefik.http.routers.bjoetiek-frontend.rule=Host(`test.bjoetiek-y.be`)"
       - "traefik.http.routers.bjoetiek-frontend.tls.certresolver=le-tls"
+      - "traefik.http.services.bjoetiek-frontend-{{ ansible_hostname }}.loadbalancer.server.port=8080"
 
   bjoetiek-admin:
     image: jenswbe/bjoetiek-y-admin:latest
