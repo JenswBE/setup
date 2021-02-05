@@ -110,8 +110,7 @@ services:
     networks:
       - home-automation
     volumes:
-      - "{{ general_path_appdata }}/home-automation/mosquitto/data:/mosquitto/data"
-      - "{{ general_path_appdata }}/home-automation/mosquitto/log:/mosquitto/log"
+      - "./home-automation/mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro"
     environment:
       - "TZ={{ general_timezone }}"
 
