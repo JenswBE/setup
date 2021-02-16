@@ -169,21 +169,29 @@ services:
       - "traefik.http.services.tmm-{{ ansible_hostname }}.loadbalancer.server.port=5800"
 
   # =========================
-  # =          SFTP         =
+  # =       SYNCTHING       =
   # =========================
-  sftp:
-    image: atmoz/sftp:alpine
-    container_name: sftp
+  syncthing:
+    image: syncthing/syncthing:1
+    container_name: syncthing
     restart: always
-    command: "{{ app_sftp_user }}:{{ app_sftp_password }}:233:233"
+    networks:
+      - traefik
     ports:
-      - "2222:22"
+      - "22000:22000"
     volumes:
-      - "/etc/ssh/ssh_host_ed25519_key:/etc/ssh/ssh_host_ed25519_key"
-      - "/etc/ssh/ssh_host_rsa_key:/etc/ssh/ssh_host_rsa_key"
-      - "/media/data/media/000. Plex:/home/{{ app_sftp_user }}/plex:ro"
+      - "{{ general_path_appdata }}/syncthing/config:/var/syncthing"
+      - "/media/data/media/000. Plex/Music:/data/music"
     environment:
-      - "TZ={{ general_timezone }}"
+      - "TZ=Europe/Brussels"
+      - "PUID=233"
+      - "PGID=233"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.syncthing.entrypoints=websecure"
+      - "traefik.http.routers.syncthing.rule=Host(`syncthing-{{ ansible_hostname }}.{{ general_domain_default }}`)"
+      - "traefik.http.routers.syncthing.tls.certresolver=le-tls"
+      - "traefik.http.services.syncthing-{{ ansible_hostname }}.loadbalancer.server.port=8384"
 
   # =========================
   # =         BACKUP        =
