@@ -155,6 +155,29 @@ services:
       - "POSTGRES_PASSWORD={{ app_miniflux_db_pass }}"
 
   # =========================
+  # =       SYNCTHING       =
+  # =========================
+  syncthing:
+    image: syncthing/syncthing:1
+    container_name: syncthing
+    restart: always
+    networks:
+      - traefik
+    ports:
+      - "22000:22000"
+    volumes:
+      - "{{ general_path_appdata }}/syncthing/config:/var/syncthing"
+      - "/data/syncthing:/data"
+    environment:
+      - "TZ=Europe/Brussels"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.syncthing.entrypoints=websecure"
+      - "traefik.http.routers.syncthing.rule=Host(`syncthing-{{ ansible_hostname }}.{{ general_domain_default }}`)"
+      - "traefik.http.routers.syncthing.tls.certresolver=le-tls"
+      - "traefik.http.services.syncthing-{{ ansible_hostname }}.loadbalancer.server.port=8384"
+
+  # =========================
   # =         BACKUP        =
   # =========================
   borgmatic:

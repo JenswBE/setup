@@ -45,3 +45,11 @@ Go to https://app.plex.tv to setup following libraries:
   - /data/media/Photos
 - Muziek
   - /data/media/Music
+
+### Syncthing
+
+- Settings => General => Set `Device Name`
+- Settings => General => Set `Default Folder Path` to `/data/`
+- Settings => GUI => Set `GUI Authentication User`
+- Settings => GUI => Set `GUI Authentication Password`
+- Settings => GUI => Set `GUI Theme` to `Dark`
