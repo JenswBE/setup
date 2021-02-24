@@ -6,7 +6,23 @@
     owner: root
     group: root
     mode: "0644"
-  tags: ["setup"]
+  tags: ["config"]
+
+- name: Set grub option intel_idle.max_cstate to fix freezing
+  become: yes
+  register: grub_config
+  ansible.builtin.lineinfile:
+    state: present
+    dest: /etc/default/grub
+    regexp: "^GRUB_CMDLINE_LINUX="
+    line: 'GRUB_CMDLINE_LINUX="intel_idle.max_cstate=1"'
+  tags: ["config"]
+
+- name: Update grub if config changed
+  become: yes
+  when: grub_config.changed
+  ansible.builtin.command: "update-grub"
+  tags: ["config"]
 
 - name: Copy systemd system unit templates
   include_tasks: tasks/helpers/copy_templates_folder.yml
@@ -43,8 +59,8 @@
   vars:
     - templates_folder: "{{ ansible_hostname }}/home/_user_/olaf"
     - destination_folder: "{{ ansible_user_dir }}/{{ ansible_hostname }}"
-    - destination_owner: '{{ ansible_real_user_id }}'
-    - destination_group: '{{ ansible_real_group_id }}'
+    - destination_owner: "{{ ansible_real_user_id }}"
+    - destination_group: "{{ ansible_real_group_id }}"
     - destination_mode_files: 0600
     - destination_mode_dirs: 0700
     - destination_delete_extra: true
