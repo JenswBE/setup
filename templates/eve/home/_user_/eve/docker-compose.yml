@@ -57,7 +57,7 @@ services:
   # =       NEXTCLOUD       =
   # =========================
   nextcloud:
-    image: nextcloud:20
+    image: nextcloud:21
     container_name: nextcloud
     hostname: nextcloud
     restart: always
