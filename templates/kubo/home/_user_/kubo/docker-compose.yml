@@ -1,6 +1,19 @@
 version: "3.7"
 
 #################################################################
+#                            LOGGING                            #
+#################################################################
+x-defaults: &defaults
+  restart: always
+  extra_hosts:
+    - "host.docker.internal:host-gateway"
+  logging:
+    driver: loki
+    options:
+      loki-url: http://host.docker.internal:3100/loki/api/v1/push
+      loki-timeout: 2m
+
+#################################################################
 #                            SERVICES                           #
 #################################################################
 services:
@@ -8,9 +21,9 @@ services:
   # =         PROXY         =
   # =========================
   traefik:
+    <<: *defaults
     image: traefik:latest
     container_name: traefik
-    restart: always
     command:
       # - "--log.level=DEBUG"
       - "--providers.file.directory=/conf"
@@ -44,9 +57,9 @@ services:
   # =    UNIFI CONTROLLER   =
   # =========================
   unifi-controller:
+    <<: *defaults
     image: linuxserver/unifi-controller:latest
     container_name: unifi-controller
-    restart: always
     environment:
       - "TZ={{ general_timezone }}"
       - "PUID=1000"
@@ -68,9 +81,9 @@ services:
   # =    HOME AUTOMATION    =
   # =========================
   ha:
+    <<: *defaults
     image: homeassistant/home-assistant:stable
     container_name: ha
-    restart: always
     networks:
       - traefik
       - home-automation
@@ -86,9 +99,9 @@ services:
       - "traefik.http.services.ha-{{ ansible_hostname }}.loadbalancer.server.port=8123"
 
   ha-zigbee2mqtt:
+    <<: *defaults
     image: koenkk/zigbee2mqtt:latest
     container_name: ha-zigbee2mqtt
-    restart: always
     privileged: true
     networks:
       - home-automation
@@ -104,9 +117,9 @@ services:
       - "TZ={{ general_timezone }}"
 
   ha-mosquitto:
+    <<: *defaults
     image: eclipse-mosquitto:latest
     container_name: ha-mosquitto
-    restart: always
     networks:
       - home-automation
     volumes:
@@ -118,9 +131,9 @@ services:
   # =        MINIFLUX       =
   # =========================
   miniflux:
+    <<: *defaults
     image: miniflux/miniflux:latest
     container_name: miniflux
-    restart: always
     networks:
       - traefik
       - miniflux
@@ -141,9 +154,9 @@ services:
       - "traefik.http.services.miniflux-{{ ansible_hostname }}.loadbalancer.server.port=8080"
 
   miniflux-db:
+    <<: *defaults
     image: postgres:13-alpine
     container_name: miniflux-db
-    restart: always
     networks:
       - miniflux
     volumes:
@@ -158,9 +171,9 @@ services:
   # =       SYNCTHING       =
   # =========================
   syncthing:
+    <<: *defaults
     image: syncthing/syncthing:1
     container_name: syncthing
-    restart: always
     networks:
       - traefik
     ports:
@@ -178,12 +191,44 @@ services:
       - "traefik.http.services.syncthing-{{ ansible_hostname }}.loadbalancer.server.port=8384"
 
   # =========================
+  # =         LOGGING        =
+  # =========================
+  loki:
+    <<: *defaults
+    image: grafana/loki:2.2.0
+    container_name: loki
+    ports:
+      - "3100:3100"
+    command: -config.file=/etc/loki/local-config.yaml
+    networks:
+      - loki
+
+  promtail:
+    <<: *defaults
+    image: grafana/promtail:2.2.0
+    container_name: promtail
+    volumes:
+      - /var/log:/var/log
+    command: -config.file=/etc/promtail/config.yml
+    networks:
+      - loki
+
+  grafana:
+    <<: *defaults
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    networks:
+      - loki
+
+  # =========================
   # =         BACKUP        =
   # =========================
   borgmatic:
+    <<: *defaults
     image: b3vis/borgmatic:latest
     container_name: borgmatic
-    restart: always
     volumes:
       # Backup locations
       - "{{ general_path_appdata }}/home-automation/home-assistant/config:/mnt/source/home-automation/home-assistant/config:ro"
@@ -201,9 +246,9 @@ services:
   # =     AUTO-UPDATER      =
   # =========================
   watchtower:
+    <<: *defaults
     image: containrrr/watchtower:latest
     container_name: watchtower
-    restart: always
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     command: --schedule "0 0 4 * * *" --cleanup
@@ -222,6 +267,9 @@ networks:
 
   traefik:
     name: traefik
+
+  loki:
+    name: loki
 
 #################################################################
 #                            VOLUMES                            #
