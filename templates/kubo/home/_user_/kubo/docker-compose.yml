@@ -181,7 +181,7 @@ services:
       - "{{ general_path_appdata }}/syncthing/config:/var/syncthing"
       - "/data/syncthing:/data"
     environment:
-      - "TZ=Europe/Brussels"
+      - "TZ={{ general_timezone }}"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.syncthing.entrypoints=websecure"
@@ -202,7 +202,7 @@ services:
     volumes:
       - "{{ general_path_appdata }}/grafana/data:/var/lib/grafana"
     environment:
-      - "TZ=Europe/Brussels"
+      - "TZ={{ general_timezone }}"
       - "GF_SECURITY_ADMIN_USER={{ app_grafana_username }}"
       - "GF_SECURITY_ADMIN_PASSWORD={{ app_grafana_password }}"
       - "GF_SECURITY_DISABLE_GRAVATAR=true"
@@ -234,7 +234,7 @@ services:
       - ./loki/config.yml:/etc/loki/config.yml:ro
       - "{{ general_path_appdata }}/loki/data:/loki"
     environment:
-      - "TZ=Europe/Brussels"
+      - "TZ={{ general_timezone }}"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.loki.entrypoints=websecure"
@@ -258,7 +258,7 @@ services:
     networks:
       - loki
     environment:
-      - "TZ=Europe/Brussels"
+      - "TZ={{ general_timezone }}"
 
   # =========================
   # =         BACKUP        =
