@@ -8,10 +8,9 @@ x-defaults: &defaults
   extra_hosts:
     - "host.docker.internal:host-gateway"
   logging:
-    driver: loki
+    driver: syslog
     options:
-      loki-url: http://host.docker.internal:3100/loki/api/v1/push
-      loki-timeout: 2m
+      tag: "{{ 'docker-{{.Name}}' }}"
 
 #################################################################
 #                            SERVICES                           #
