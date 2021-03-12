@@ -1,7 +1,7 @@
 version: "3.7"
 
 #################################################################
-#                            LOGGING                            #
+#                            DEFAULTS                           #
 #################################################################
 x-defaults: &defaults
   restart: always
@@ -190,7 +190,7 @@ services:
       - "traefik.http.services.syncthing-{{ ansible_hostname }}.loadbalancer.server.port=8384"
 
   # =========================
-  # =         LOGGING        =
+  # =        LOGGING        =
   # =========================
   grafana:
     <<: *defaults
