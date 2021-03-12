@@ -199,10 +199,25 @@ services:
     networks:
       - traefik
       - loki
-    ports:
-      - "3000:3000"
+    volumes:
+      - "{{ general_path_appdata }}/grafana/data:/var/lib/grafana"
     environment:
       - "TZ=Europe/Brussels"
+      - "GF_SECURITY_ADMIN_USER={{ app_grafana_username }}"
+      - "GF_SECURITY_ADMIN_PASSWORD={{ app_grafana_password }}"
+      - "GF_SECURITY_DISABLE_GRAVATAR=true"
+      - "GF_SMTP_ENABLED=true"
+      - "GF_SMTP_HOST={{ mailjet_host }}:{{ mailjet_port }}"
+      - "GF_SMTP_USER={{ mailjet_username }}"
+      - "GF_SMTP_PASSWORD={{ mailjet_password }}"
+      - "GF_SMTP_FROM_ADDRESS=grafana@{{ general_domain_default }}"
+      - "GF_SMTP_FROM_NAME=Grafana - JenswBE"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.grafana.entrypoints=websecure"
+      - "traefik.http.routers.grafana.rule=Host(`grafana.{{ general_domain_default }}`)"
+      - "traefik.http.routers.grafana.tls.certresolver=le-tls"
+      - "traefik.http.services.grafana-{{ ansible_hostname }}.loadbalancer.server.port=3000"
 
   loki:
     <<: *defaults
