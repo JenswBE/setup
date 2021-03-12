@@ -1,0 +1,28 @@
+- name: Setup rsyslog for Docker containers
+  become: yes
+  block:
+    - name: Copy rsyslog config
+      become: yes
+      register: rsyslog_config
+      ansible.builtin.copy:
+        src: rsyslog-40-docker.conf
+        dest: /etc/rsyslog.d/40-docker.conf
+        owner: root
+        group: root
+        mode: 0644
+
+    - name: Create logging directories
+      become: yes
+      ansible.builtin.file:
+        path: /var/log/containers
+        state: directory
+        owner: syslog
+        group: adm
+        mode: 0775
+
+    - name: Restart rsyslog if config was changed
+      become: yes
+      when: rsyslog_config.changed
+      ansible.builtin.service:
+        name: rsyslog
+        state: restarted
