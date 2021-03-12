@@ -195,7 +195,7 @@ services:
       - "{{ general_path_appdata }}/syncthing/config:/var/syncthing"
       - "/media/data/media/000. Plex/Music:/data/music"
     environment:
-      - "TZ=Europe/Brussels"
+      - "TZ={{ general_timezone }}"
       - "PUID=233"
       - "PGID=233"
     labels:
@@ -218,7 +218,7 @@ services:
       - promtail-positions:/positions
       - /var/log:/var/log:ro
     environment:
-      - "TZ=Europe/Brussels"
+      - "TZ={{ general_timezone }}"
 
   # =========================
   # =         BACKUP        =

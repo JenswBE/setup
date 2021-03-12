@@ -1,16 +1,28 @@
 version: "3.7"
 
-# #################################################################
-# #                            SERVICES                           #
-# #################################################################
+#################################################################
+#                            DEFAULTS                           #
+#################################################################
+x-defaults: &defaults
+  restart: always
+  extra_hosts:
+    - "host.docker.internal:host-gateway"
+  logging:
+    driver: syslog
+    options:
+      tag: "{{ 'docker-{{.Name}}' }}"
+
+#################################################################
+#                            SERVICES                           #
+#################################################################
 services:
   # =========================
   # =         PROXY         =
   # =========================
   traefik:
+    <<: *defaults
     image: traefik:latest
     container_name: traefik
-    restart: always
     command:
       # - "--log.level=DEBUG"
       - "--providers.file.directory=/conf"
@@ -44,9 +56,9 @@ services:
   # =     AUTO-UPDATER      =
   # =========================
   watchtower:
+    <<: *defaults
     image: containrrr/watchtower:latest
     container_name: watchtower
-    restart: always
     command: --schedule "0 0 4 * * *" --cleanup
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
@@ -57,10 +69,10 @@ services:
   # =       NEXTCLOUD       =
   # =========================
   nextcloud:
+    <<: *defaults
     image: nextcloud:21
     container_name: nextcloud
     hostname: nextcloud
-    restart: always
     networks:
       - traefik
       - nextcloud
@@ -83,9 +95,9 @@ services:
       - "traefik.http.routers.nextcloud.middlewares=nextcloud-redirect-dav@file, nextcloud-redirect-webfinger@file"
 
   nc-db:
+    <<: *defaults
     image: mariadb:10
     container_name: nc-db
-    restart: always
     networks:
       - nextcloud
       - backup-nc-db
@@ -112,9 +124,9 @@ services:
   # =         NGINX         =
   # =========================
   nginx-tuinfeest-beta:
+    <<: *defaults
     image: nginx:latest
     container_name: nginx-tuinfeest-beta
-    restart: always
     networks:
       - traefik
     volumes:
@@ -128,9 +140,9 @@ services:
       - "traefik.http.routers.nginx-tuinfeest-beta.tls.certresolver=le-tls"
 
   nginx-tuinfeest-archive-2019:
+    <<: *defaults
     image: nginx:latest
     container_name: nginx-tf-archive-2019
-    restart: always
     networks:
       - traefik
     volumes:
@@ -144,9 +156,9 @@ services:
       - "traefik.http.routers.nginx-tuinfeest-archive-2019.tls.certresolver=le-tls"
 
   nginx-tuinfeest-archive-2020:
+    <<: *defaults
     image: nginx:latest
     container_name: nginx-tf-archive-2020
-    restart: always
     networks:
       - traefik
     volumes:
@@ -163,9 +175,9 @@ services:
   # =         PASSIT        =
   # =========================
   passit:
+    <<: *defaults
     image: passit/passit:stable
     container_name: passit
-    restart: always
     networks:
       - traefik
       - passit
@@ -188,9 +200,9 @@ services:
       - "traefik.http.routers.passit.tls.certresolver=le-tls"
 
   passit-db:
+    <<: *defaults
     image: postgres:13-alpine
     container_name: passit-db
-    restart: always
     networks:
       - passit
     volumes:
@@ -205,9 +217,9 @@ services:
   # =      IMAP-ALERTER     =
   # =========================
   imap-alerter:
+    <<: *defaults
     image: jenswbe/imap-alerter:latest
     container_name: imap-alerter
-    restart: always
     volumes:
       - ./imap-alerter:/app/config
       - "{{ general_path_appdata }}/imap-alerter/imap-alerter/data:/app/data"
@@ -218,9 +230,9 @@ services:
   # = IMAP SAVE ATTACHMENTS =
   # =========================
   isa-fetchmail:
+    <<: *defaults
     image: jenswbe/imap-save-attachments:latest
     container_name: isa-fetchmail
-    restart: always
     volumes:
       - ./isa/fetchmailrc:/config/.fetchmailrc
       - isa-output:/output
@@ -229,6 +241,7 @@ services:
       - "CRON_SCHEDULE=*/15 * * * *"
 
   isa-rclone:
+    <<: *defaults
     image: rclone/rclone:latest
     container_name: isa-rclone
     command: "move /data/ nextcloud:{{ app_isa_rclone_dav_path }} --delete-empty-src-dirs --verbose"
@@ -244,9 +257,9 @@ services:
   # =   https://github.com/JenswBE/python-dead-link-checker                   =
   # ===========================================================================
   delic:
+    <<: *defaults
     image: jenswbe/dead-link-checker:latest
     container_name: delic
-    restart: always
     volumes:
       - "./delic/config.yml:/config.yml"
     environment:
@@ -257,9 +270,9 @@ services:
   # =   https://snipeitapp.com/                                               =
   # ===========================================================================
   snipe-it:
+    <<: *defaults
     image: linuxserver/snipe-it:latest
     container_name: snipe-it
-    restart: always
     depends_on:
       - snipe-it-db
     networks:
@@ -284,9 +297,9 @@ services:
       - "traefik.http.routers.snipe-it.tls.certresolver=le-tls"
 
   snipe-it-db:
+    <<: *defaults
     image: mariadb:10
     container_name: snipe-it-db
-    restart: always
     networks:
       - snipe-it
     volumes:
@@ -314,11 +327,11 @@ services:
   # =   https://github.com/JenswBE/rust-question-queen-backend/               =
   # ===========================================================================
   question-queen-frontend:
+    <<: *defaults
     image: jenswbe/question-queen-frontend:latest
     container_name: question-queen-frontend
     depends_on:
       - question-queen-backend
-    restart: always
     networks:
       - traefik
       - question-queen
@@ -333,9 +346,9 @@ services:
       - "traefik.http.routers.question-queen-frontend.tls.certresolver=le-tls"
 
   question-queen-backend:
+    <<: *defaults
     image: jenswbe/question-queen-backend:latest
     container_name: question-queen-backend
-    restart: always
     networks:
       - traefik
       - question-queen
@@ -356,11 +369,11 @@ services:
   # =   https://github.com/JenswBE/bjoetiek-y-backend                         =
   # ===========================================================================
   bjoetiek-frontend-placeholder:
+    <<: *defaults
     image: nginx:latest
     container_name: bjoetiek-frontend-placeholder
     depends_on:
       - bjoetiek-backend
-    restart: always
     networks:
       - traefik
     volumes:
@@ -374,11 +387,11 @@ services:
       - "traefik.http.routers.bjoetiek-frontend-placeholder.tls.certresolver=le-tls"
 
   bjoetiek-frontend:
+    <<: *defaults
     image: jenswbe/bjoetiek-y-frontend:latest
     container_name: bjoetiek-frontend
     depends_on:
       - bjoetiek-backend
-    restart: always
     networks:
       - traefik
       - bjoetiek
@@ -392,11 +405,11 @@ services:
       - "traefik.http.services.bjoetiek-frontend-{{ ansible_hostname }}.loadbalancer.server.port=8080"
 
   bjoetiek-admin:
+    <<: *defaults
     image: jenswbe/bjoetiek-y-admin:latest
     container_name: bjoetiek-admin
     depends_on:
       - bjoetiek-backend
-    restart: always
     networks:
       - traefik
     environment:
@@ -409,11 +422,11 @@ services:
       - "traefik.http.services.bjoetiek-admin-{{ ansible_hostname }}.loadbalancer.server.port=8080"
 
   bjoetiek-backend:
+    <<: *defaults
     image: jenswbe/bjoetiek-y-backend:latest
     container_name: bjoetiek-backend
     depends_on:
       - bjoetiek-db
-    restart: always
     networks:
       - traefik
       - bjoetiek
@@ -433,9 +446,9 @@ services:
       - "traefik.http.routers.bjoetiek-backend.middlewares=bjoetiek-fix-cors@file"
 
   bjoetiek-db:
+    <<: *defaults
     image: postgres:13-alpine
     container_name: bjoetiek-db
-    restart: always
     networks:
       - bjoetiek
     volumes:
@@ -450,9 +463,9 @@ services:
   # =      MAINTENANCE      =
   # =========================
   maintenance:
+    <<: *defaults
     image: nginx:latest
     container_name: maintenance
-    restart: always
     user: "{{ ansible_real_user_id }}"
     networks:
       - traefik
@@ -469,12 +482,27 @@ services:
       - "traefik.http.services.maintenance-{{ ansible_hostname }}.loadbalancer.server.port=8080"
 
   # =========================
+  # =        LOGGING        =
+  # =========================
+  promtail:
+    <<: *defaults
+    image: grafana/promtail:2.2.0
+    container_name: promtail
+    command: -config.file=/etc/promtail/config.yml
+    volumes:
+      - ./promtail/config.yml:/etc/promtail/config.yml:ro
+      - promtail-positions:/positions
+      - /var/log:/var/log:ro
+    environment:
+      - "TZ={{ general_timezone }}"
+
+  # =========================
   # =         BACKUP        =
   # =========================
   nc-calcardbackup:
+    <<: *defaults
     image: waja/calcardbackup:latest
     container_name: nc-calcardbackup
-    restart: always
     networks:
       - backup-nc-db
     depends_on:
@@ -488,9 +516,9 @@ services:
       - CRON_TIME="#"
 
   borgmatic:
+    <<: *defaults
     image: b3vis/borgmatic:latest
     container_name: borgmatic
-    restart: always
     volumes:
       # Backup locations
       - bjoetiek-db-dump:/mnt/source/bjoetiek/dbdump:ro
@@ -519,6 +547,7 @@ volumes:
   nc-db-dump:
   nc-calcardbackup:
   passit-db-dump:
+  promtail-positions:
   snipe-it-db-dump:
   traefik-cert:
 
