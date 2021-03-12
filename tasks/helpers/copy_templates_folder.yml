@@ -3,30 +3,33 @@
     state: directory
   register: tmp_dir
   changed_when: false
+  tags: ["always"]
 
 - name: Create directory structure in temporary dir
   become: true
   file:
     path: "{{ tmp_dir.path }}/{{ item.path }}"
     state: directory
-    owner: '{{ destination_owner }}'
-    group: '{{ destination_group }}'
-    mode: '{{ destination_mode_dirs }}'
+    owner: "{{ destination_owner }}"
+    group: "{{ destination_group }}"
+    mode: "{{ destination_mode_dirs }}"
   with_filetree: templates/{{ templates_folder }}
   when: item.state == 'directory'
   changed_when: false
+  tags: ["always"]
 
 - name: Generate template files to temporary dir
   become: true
   template:
-    src: '{{ item.root }}/{{ item.path }}'
+    src: "{{ item.root }}/{{ item.path }}"
     dest: "{{ tmp_dir.path }}/{{ item.path }}"
-    owner: '{{ destination_owner }}'
-    group: '{{ destination_group }}'
-    mode: '{{ destination_mode_files }}'
+    owner: "{{ destination_owner }}"
+    group: "{{ destination_group }}"
+    mode: "{{ destination_mode_files }}"
   with_filetree: templates/{{ templates_folder }}
   when: item.state == 'file'
   changed_when: false
+  tags: ["always"]
 
 - name: Sync temporary dir to destination
   become: true
@@ -43,13 +46,16 @@
     delete: "{{ destination_delete_extra }}"
   delegate_to: "{{ inventory_hostname }}"
   register: rsync_output
+  tags: ["always"]
 
 - name: Show rsync logs
   debug:
     var: rsync_output.stdout_lines
+  tags: ["always"]
 
 - name: Delete temporary folder
   file:
     path: "{{ tmp_dir.path }}"
     state: absent
   changed_when: false
+  tags: ["always"]

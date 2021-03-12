@@ -1,0 +1,21 @@
+server:
+  disable: true
+
+clients:
+  - url: http://loki:3100/loki/api/v1/push
+
+positions:
+  filename: /positions/positions.yml
+
+scrape_configs:
+  - job_name: system
+    static_configs:
+      - labels:
+          __path__: /var/log/*log
+          hostname: "{{ ansible_hostname }}"
+          job: varlogs
+
+      - labels:
+          __path__: /var/log/containers/*log
+          hostname: "{{ ansible_hostname }}"
+          job: containers

@@ -45,4 +45,4 @@
       tags: ["setup"]
 
     - include_tasks: "tasks/hosts/{{ ansible_hostname }}.yml"
-      tags: ["config"]
+      tags: ["always"]

@@ -1,8 +1,8 @@
 # Firewall
 firewall_additional_ports:
-    - port: 80
-      proto: tcp
-    - port: 443
-      proto: tcp
-    - port: 32400
-      proto: tcp
+  - port: 80
+    proto: tcp
+  - port: 443
+    proto: tcp
+  - port: 32400
+    proto: tcp
