@@ -192,34 +192,58 @@ services:
   # =========================
   # =         LOGGING        =
   # =========================
+  grafana:
+    <<: *defaults
+    image: grafana/grafana:latest
+    container_name: grafana
+    networks:
+      - traefik
+      - loki
+    ports:
+      - "3000:3000"
+    environment:
+      - "TZ=Europe/Brussels"
+
   loki:
     <<: *defaults
     image: grafana/loki:2.2.0
     container_name: loki
+    command: -config.file=/etc/loki/config.yml
+    user: "{{ ansible_real_user_id }}"
+    networks:
+      - traefik
+      - loki
     ports:
       - "3100:3100"
-    command: -config.file=/etc/loki/local-config.yaml
-    networks:
-      - loki
+    volumes:
+      - ./loki/config.yml:/etc/loki/config.yml:ro
+      - "{{ general_path_appdata }}/loki/data:/loki"
+    environment:
+      - "TZ=Europe/Brussels"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.loki.entrypoints=websecure"
+      - "traefik.http.routers.loki.rule=Host(`loki.{{ general_domain_default }}`)"
+      - "traefik.http.routers.loki.tls.certresolver=le-tls"
+      - "traefik.http.routers.loki.middlewares=loki-auth@file"
+      - "traefik.http.routers.loki-ready.entrypoints=websecure"
+      - "traefik.http.routers.loki-ready.rule=Host(`loki.{{ general_domain_default }}`) && PathPrefix(`/ready`)"
+      - "traefik.http.routers.loki-ready.tls.certresolver=le-tls"
+      - "traefik.http.services.loki-{{ ansible_hostname }}.loadbalancer.server.port=3100"
 
   promtail:
     <<: *defaults
     image: grafana/promtail:2.2.0
     container_name: promtail
-    volumes:
-      - /var/log:/var/log
     command: -config.file=/etc/promtail/config.yml
+    volumes:
+      - ./promtail/config.yml:/etc/promtail/config.yml:ro
+      - promtail-positions:/positions
+      - /var/log:/var/log:ro
     networks:
       - loki
-
-  grafana:
-    <<: *defaults
-    image: grafana/grafana:latest
-    container_name: grafana
-    ports:
-      - "3000:3000"
-    networks:
-      - loki
+    environment:
+      - "TZ=Europe/Brussels"
 
   # =========================
   # =         BACKUP        =
@@ -275,4 +299,5 @@ networks:
 #################################################################
 volumes:
   miniflux-db-dump:
+  promtail-positions:
   traefik-cert:
