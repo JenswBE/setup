@@ -368,16 +368,15 @@ services:
   # =   https://github.com/JenswBE/bjoetiek-y-admin                           =
   # =   https://github.com/JenswBE/bjoetiek-y-backend                         =
   # ===========================================================================
-  bjoetiek-frontend-placeholder:
+  bjoetiek-frontend:
     <<: *defaults
-    image: nginx:latest
-    container_name: bjoetiek-frontend-placeholder
+    image: jenswbe/bjoetiek-y-frontend:v1.0.0
+    container_name: bjoetiek-frontend
     depends_on:
       - bjoetiek-backend
     networks:
       - traefik
-    volumes:
-      - "{{ general_path_appdata }}/bjoetiek/placeholder:/usr/share/nginx/html"
+      - bjoetiek
     environment:
       - "TZ={{ general_timezone }}"
     labels:
@@ -386,10 +385,10 @@ services:
       - "traefik.http.routers.bjoetiek-frontend-placeholder.rule=Host(`bjoetiek-y.be`)"
       - "traefik.http.routers.bjoetiek-frontend-placeholder.tls.certresolver=le-tls"
 
-  bjoetiek-frontend:
+  bjoetiek-frontend-test:
     <<: *defaults
     image: jenswbe/bjoetiek-y-frontend:latest
-    container_name: bjoetiek-frontend
+    container_name: bjoetiek-frontend-test
     depends_on:
       - bjoetiek-backend
     networks:
@@ -406,7 +405,7 @@ services:
 
   bjoetiek-admin:
     <<: *defaults
-    image: jenswbe/bjoetiek-y-admin:latest
+    image: jenswbe/bjoetiek-y-admin:v1.0.0
     container_name: bjoetiek-admin
     depends_on:
       - bjoetiek-backend
@@ -423,7 +422,7 @@ services:
 
   bjoetiek-backend:
     <<: *defaults
-    image: jenswbe/bjoetiek-y-backend:latest
+    image: jenswbe/bjoetiek-y-backend:v1.0.0
     container_name: bjoetiek-backend
     depends_on:
       - bjoetiek-db
