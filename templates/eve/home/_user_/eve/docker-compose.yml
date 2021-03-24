@@ -405,7 +405,7 @@ services:
 
   bjoetiek-admin:
     <<: *defaults
-    image: jenswbe/bjoetiek-y-admin:v1.0.0
+    image: jenswbe/bjoetiek-y-admin:v1.0.1
     container_name: bjoetiek-admin
     depends_on:
       - bjoetiek-backend
@@ -422,7 +422,7 @@ services:
 
   bjoetiek-backend:
     <<: *defaults
-    image: jenswbe/bjoetiek-y-backend:v1.0.0
+    image: jenswbe/bjoetiek-y-backend:v1.0.1
     container_name: bjoetiek-backend
     depends_on:
       - bjoetiek-db
