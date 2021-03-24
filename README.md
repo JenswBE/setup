@@ -45,11 +45,14 @@ Without this option, the playbook will fail.
 # Run complete setup for a host
 ansible-playbook main.yml --ask-vault-pass --ask-become-pass --limit <HOSTNAME>
 
-# To only run config steps
-ansible-playbook main.yml --ask-vault-pass --ask-become-pass --skip-tags setup --limit <HOSTNAME>
+# To only run Docker steps
+ansible-playbook main.yml --ask-vault-pass --ask-become-pass --tags docker --limit <HOSTNAME>
 
-# To only run config Docker steps
-ansible-playbook main.yml --ask-vault-pass --ask-become-pass --skip-tags setup,systemd --limit <HOSTNAME>
+# Available tags:
+#   - setup
+#   - config
+#   - systemd
+#   - docker
 ```
 
 ## Host specific configuration
