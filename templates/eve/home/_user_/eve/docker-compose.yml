@@ -370,7 +370,7 @@ services:
   # ===========================================================================
   bjoetiek-frontend:
     <<: *defaults
-    image: jenswbe/bjoetiek-y-frontend:v1.0.0
+    image: jenswbe/bjoetiek-y-frontend:v1.1.0
     container_name: bjoetiek-frontend
     depends_on:
       - bjoetiek-backend
@@ -405,7 +405,7 @@ services:
 
   bjoetiek-admin:
     <<: *defaults
-    image: jenswbe/bjoetiek-y-admin:v1.0.1
+    image: jenswbe/bjoetiek-y-admin:v1.0.2
     container_name: bjoetiek-admin
     depends_on:
       - bjoetiek-backend
