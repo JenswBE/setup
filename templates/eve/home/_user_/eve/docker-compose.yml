@@ -520,13 +520,14 @@ services:
     container_name: borgmatic
     volumes:
       # Backup locations
-      - bjoetiek-db-dump:/mnt/source/bjoetiek/dbdump:ro
-      - nc-db-dump:/mnt/source/nextcloud/dbdump:ro
-      - nc-calcardbackup:/mnt/source/nextcloud/calcardbackup:ro
+      - "bjoetiek-db-dump:/mnt/source/bjoetiek/dbdump:ro"
+      - "{{ general_path_appdata }}/bjoetiek/backend:/mnt/source/bjoetiek/backend:ro"
+      - "nc-db-dump:/mnt/source/nextcloud/dbdump:ro"
+      - "nc-calcardbackup:/mnt/source/nextcloud/calcardbackup:ro"
       - "{{ general_path_appdata }}/nextcloud/nextcloud/data:/mnt/source/nextcloud/data:ro"
       - "{{ general_path_appdata }}/nextcloud/nextcloud/config:/mnt/source/nextcloud/config:ro"
-      - passit-db-dump:/mnt/source/passit/dbdump:ro
-      - snipe-it-db-dump:/mnt/source/snipe-it/dbdump:ro
+      - "passit-db-dump:/mnt/source/passit/dbdump:ro"
+      - "snipe-it-db-dump:/mnt/source/snipe-it/dbdump:ro"
       # Config and cache
       - "./borgmatic/borgmatic.d:/etc/borgmatic.d"
       - "./borgmatic/ssh:/root/.ssh"
