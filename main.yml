@@ -41,7 +41,7 @@
     - include_tasks: tasks/powertop.yml
       tags: ["setup"]
 
-    - include_tasks: tasks/rsyslog_docker.yml
+    - include_tasks: tasks/docker_logging.yml
       tags: ["setup"]
 
     - include_tasks: "tasks/hosts/{{ ansible_hostname }}.yml"

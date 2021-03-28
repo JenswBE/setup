@@ -23,3 +23,11 @@
       ansible.builtin.service:
         name: rsyslog
         state: restarted
+
+    - name: Copy logrotate config
+      ansible.builtin.copy:
+        src: logrotate-docker
+        dest: /etc/logrotate.d/docker
+        owner: root
+        group: root
+        mode: 0644
