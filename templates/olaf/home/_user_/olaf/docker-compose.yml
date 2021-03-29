@@ -53,21 +53,16 @@ services:
       - "TZ={{ general_timezone }}"
 
   # =========================
-  # =    Cloudflare DDNS    =
+  # =          DDNS         =
   # =========================
-  cloudflare-ddns:
+  ddclient:
     <<: *defaults
-    image: oznu/cloudflare-ddns:latest
-    container_name: cloudflare-ddns
+    image: ghcr.io/linuxserver/ddclient
+    container_name: ddclient
     environment:
       - "TZ={{ general_timezone }}"
-      - "EMAIL={{ app_cloudflare_email }}"
-      - "API_KEY={{ app_cloudflare_api_key }}"
-      - "ZONE={{ app_cloudflare_zone }}"
-      - "SUBDOMAIN={{ app_cloudflare_subdomain }}"
-    dns:
-      - "1.1.1.1"
-      - "1.0.0.1"
+    volumes:
+      - ./ddclient:/config
 
   # =========================
   # =     AUTO-UPDATER      =
@@ -227,9 +222,9 @@ services:
     <<: *defaults
     image: b3vis/borgmatic:latest
     container_name: borgmatic
-    privileged: true   # Required for borg mount
+    privileged: true # Required for borg mount
     cap_add:
-      - SYS_ADMIN  # Required for borg mount
+      - SYS_ADMIN # Required for borg mount
     volumes:
       # Backup locations
       - "/media/data/media/000. Plex/Photos:/mnt/source/plex/photos:ro"
@@ -241,7 +236,7 @@ services:
       - "{{ general_path_appdata }}/borgmatic/cache:/root/.cache/borg"
       - "{{ general_path_appdata }}/borgmatic/restore:/mnt/restore"
     devices:
-      - "/dev/fuse:/dev/fuse"  # Required for borg mount
+      - "/dev/fuse:/dev/fuse" # Required for borg mount
     environment:
       - "TZ={{ general_timezone }}"
       - "BORG_PASSPHRASE={{ app_borgmatic_borg_passphrase }}"
