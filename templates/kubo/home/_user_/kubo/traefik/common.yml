@@ -4,3 +4,8 @@ http:
       headers:
         stsSeconds: 15552000
         sslredirect: true
+
+tls:
+  certificates:
+    - certFile: /conf/certs/ha.crt
+      keyFile: /conf/certs/ha.key
