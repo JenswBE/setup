@@ -6,6 +6,7 @@ workers_per_site: 8
 cron: "0 13 * * *"
 
 sites:
+  - https://bjoetiek-y.be
   - https://jensw.be
   - https://klokracing.be
   - https://tuinfeestbeerse.be
