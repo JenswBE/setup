@@ -1,0 +1,8 @@
+[Unit]
+Description=Update all Docker containers
+OnFailure=unit-fail-mail@%n.service
+
+[Service]
+WorkingDirectory={{ ansible_user_dir }}/{{ ansible_hostname }}
+ExecStartPre=/usr/local/bin/docker-compose pull
+ExecStart=/usr/local/bin/docker-compose up -d

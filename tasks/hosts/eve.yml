@@ -24,6 +24,7 @@
     enabled: yes
   with_items:
     - bjoetiek-dump-db.timer
+    - docker-update-containers.timer
     - isa-rclone.timer
     - nextcloud-calcardbackup.timer
     - nextcloud-cron.timer

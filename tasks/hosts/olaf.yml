@@ -50,6 +50,7 @@
     enabled: yes
   with_items:
     - btrfs-scrub.timer
+    - docker-update-containers.timer
     - media-backup.mount
     - media-data.mount
   tags: ["systemd"]
