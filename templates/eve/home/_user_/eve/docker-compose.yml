@@ -53,19 +53,6 @@ services:
       - "TZ={{ general_timezone }}"
 
   # =========================
-  # =     AUTO-UPDATER      =
-  # =========================
-  watchtower:
-    <<: *defaults
-    image: containrrr/watchtower:latest
-    container_name: watchtower
-    command: --schedule "0 0 4 * * *" --cleanup
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    environment:
-      - "TZ={{ general_timezone }}"
-
-  # =========================
   # =       NEXTCLOUD       =
   # =========================
   nextcloud:
