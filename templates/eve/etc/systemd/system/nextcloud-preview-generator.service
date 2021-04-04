@@ -1,5 +1,6 @@
 [Unit]
 Description=Nextcloud generate previews
+OnFailure=unit-fail-mail@%n.service
 
 [Service]
 ExecStart=/usr/bin/docker exec --user www-data nextcloud php occ preview:pre-generate
