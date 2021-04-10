@@ -186,6 +186,25 @@ services:
       - "traefik.http.services.syncthing-{{ ansible_hostname }}.loadbalancer.server.port=8384"
 
   # =========================
+  # =         SAMBA         =
+  # =========================
+  samba:
+    <<: *defaults
+    image: dperson/samba:latest
+    container_name: samba
+    ports:
+      - "445:445"
+    volumes:
+      - "{{ general_path_appdata }}/samba/data:/data"
+    environment:
+      - "TZ={{ general_timezone }}"
+      - "USERID={{ ansible_real_user_id }}"
+      - "GROUPID={{ ansible_real_user_id }}"
+    command: >
+      samba.sh -S
+      -s "ps2;/data/ps2;yes;no;yes"
+
+  # =========================
   # =        LOGGING        =
   # =========================
   grafana:
@@ -263,9 +282,9 @@ services:
     <<: *defaults
     image: b3vis/borgmatic:latest
     container_name: borgmatic
-    privileged: true   # Required for borg mount
+    privileged: true # Required for borg mount
     cap_add:
-      - SYS_ADMIN  # Required for borg mount
+      - SYS_ADMIN # Required for borg mount
     volumes:
       # Backup locations
       - "{{ general_path_appdata }}/home-automation/home-assistant/config:/mnt/source/home-automation/home-assistant/config:ro"
@@ -276,7 +295,7 @@ services:
       - "{{ general_path_appdata }}/borgmatic/borgmatic/cache:/root/.cache/borg"
       - "{{ general_path_appdata }}/borgmatic/borgmatic/restore:/mnt/restore"
     devices:
-      - "/dev/fuse:/dev/fuse"  # Required for borg mount
+      - "/dev/fuse:/dev/fuse" # Required for borg mount
     environment:
       - "TZ={{ general_timezone }}"
       - "BORG_PASSPHRASE={{ app_borgmatic_borg_passphrase }}"
