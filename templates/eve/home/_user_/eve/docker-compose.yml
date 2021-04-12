@@ -353,7 +353,7 @@ services:
   # ===========================================================================
   bjoetiek-frontend:
     <<: *defaults
-    image: jenswbe/bjoetiek-y-frontend:v1.1.0
+    image: jenswbe/bjoetiek-y-frontend:v1.2.0
     container_name: bjoetiek-frontend
     depends_on:
       - bjoetiek-backend
@@ -364,9 +364,9 @@ services:
       - "TZ={{ general_timezone }}"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.bjoetiek-frontend-placeholder.entrypoints=websecure"
-      - "traefik.http.routers.bjoetiek-frontend-placeholder.rule=Host(`bjoetiek-y.be`)"
-      - "traefik.http.routers.bjoetiek-frontend-placeholder.tls.certresolver=le-tls"
+      - "traefik.http.routers.bjoetiek-frontend.entrypoints=websecure"
+      - "traefik.http.routers.bjoetiek-frontend.rule=Host(`bjoetiek-y.be`)"
+      - "traefik.http.routers.bjoetiek-frontend.tls.certresolver=le-tls"
 
   bjoetiek-frontend-test:
     <<: *defaults
@@ -381,10 +381,9 @@ services:
       - "TZ={{ general_timezone }}"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.bjoetiek-frontend.entrypoints=websecure"
-      - "traefik.http.routers.bjoetiek-frontend.rule=Host(`test.bjoetiek-y.be`)"
-      - "traefik.http.routers.bjoetiek-frontend.tls.certresolver=le-tls"
-      - "traefik.http.services.bjoetiek-frontend-{{ ansible_hostname }}.loadbalancer.server.port=8080"
+      - "traefik.http.routers.bjoetiek-frontend-test.entrypoints=websecure"
+      - "traefik.http.routers.bjoetiek-frontend-test.rule=Host(`test.bjoetiek-y.be`)"
+      - "traefik.http.routers.bjoetiek-frontend-test.tls.certresolver=le-tls"
 
   bjoetiek-admin:
     <<: *defaults
@@ -501,9 +500,9 @@ services:
     <<: *defaults
     image: b3vis/borgmatic:latest
     container_name: borgmatic
-    privileged: true   # Required for borg mount
+    privileged: true # Required for borg mount
     cap_add:
-      - SYS_ADMIN  # Required for borg mount
+      - SYS_ADMIN # Required for borg mount
     volumes:
       # Backup locations
       - "bjoetiek-db-dump:/mnt/source/bjoetiek/dbdump:ro"
@@ -521,7 +520,7 @@ services:
       - "{{ general_path_appdata }}/borgmatic/borgmatic/cache:/root/.cache/borg"
       - "{{ general_path_appdata }}/borgmatic/borgmatic/restore:/mnt/restore"
     devices:
-      - "/dev/fuse:/dev/fuse"  # Required for borg mount
+      - "/dev/fuse:/dev/fuse" # Required for borg mount
     environment:
       - "TZ={{ general_timezone }}"
       - "BORG_PASSPHRASE={{ app_borgmatic_borg_passphrase }}"
