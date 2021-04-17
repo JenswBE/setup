@@ -305,47 +305,6 @@ services:
       retries: 5
 
   # ===========================================================================
-  # =   QUESTION QUEEN                                                        =
-  # =   https://github.com/JenswBE/nuxtjs-question-queen-frontend             =
-  # =   https://github.com/JenswBE/rust-question-queen-backend/               =
-  # ===========================================================================
-  question-queen-frontend:
-    <<: *defaults
-    image: jenswbe/question-queen-frontend:latest
-    container_name: question-queen-frontend
-    depends_on:
-      - question-queen-backend
-    networks:
-      - traefik
-      - question-queen
-    environment:
-      - "TZ={{ general_timezone }}"
-      - "BASE_URL=http://question-queen-backend"
-      - "BROWSER_BASE_URL=https://qq-backend.{{ general_domain_default }}"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.question-queen-frontend.entrypoints=websecure"
-      - "traefik.http.routers.question-queen-frontend.rule=Host(`qq.{{ general_domain_default }}`)"
-      - "traefik.http.routers.question-queen-frontend.tls.certresolver=le-tls"
-
-  question-queen-backend:
-    <<: *defaults
-    image: jenswbe/question-queen-backend:latest
-    container_name: question-queen-backend
-    networks:
-      - traefik
-      - question-queen
-    volumes:
-      - "./question-queen/questions.yml:/data/data.yml"
-    environment:
-      - "TZ={{ general_timezone }}"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.question-queen-backend.entrypoints=websecure"
-      - "traefik.http.routers.question-queen-backend.rule=Host(`qq-backend.{{ general_domain_default }}`)"
-      - "traefik.http.routers.question-queen-backend.tls.certresolver=le-tls"
-
-  # ===========================================================================
   # =   BJOETIEK Y                                                            =
   # =   https://github.com/JenswBE/bjoetiek-y-frontend                        =
   # =   https://github.com/JenswBE/bjoetiek-y-admin                           =
@@ -553,9 +512,6 @@ networks:
 
   passit:
     name: passit
-
-  question-queen:
-    name: question-queen
 
   snipe-it:
     name: snipe-it
