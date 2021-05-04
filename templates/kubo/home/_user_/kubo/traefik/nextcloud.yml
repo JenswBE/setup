@@ -1,0 +1,13 @@
+http:
+    middlewares:
+        nextcloud-redirect-dav:
+            redirectRegex:
+                regex: https://(.*)/.well-known/(card|cal)dav
+                replacement: https://$1/remote.php/dav/
+                permanent: true
+
+        nextcloud-redirect-webfinger:
+            redirectRegex:
+                regex: https://(.*)/.well-known/webfinger
+                replacement: https://$1/public.php?service=webfinger
+                permanent: true

@@ -6,7 +6,8 @@ Home NAS
 
 ### Continuous
 
-- None
+- Every 5 mins: Nextcloud cron.php (`templates/eve/etc/systemd/system/nextcloud-cron.timer`)
+- Every 10 mins: Nextcloud generate previews (`templates/eve/etc/systemd/system/nextcloud-preview-generator.timer`)
 
 ### 01:00 Daily application jobs
 
@@ -14,7 +15,7 @@ Home NAS
 
 ### 02:00 Prepare backup
 
-- None
+- Dump Nextcloud DB (`templates/eve/etc/systemd/system/nextcloud-dump-db.timer`)
 
 ### 03:00 Perform backup
 
@@ -22,7 +23,8 @@ Home NAS
 
 ### 04:00 Perform application updates
 
-- Run Watchtower (`templates/kubo/home/_user_/kubo/docker-compose.yml: watchtower`)
+- 04:00 Update all Docker containers (`templates/kubo/etc/systemd/system/docker-update-containers.timer`)
+- 04:30 Update all Nextcloud apps (`templates/eve/etc/systemd/system/nextcloud-update-apps.timer`)
 
 ### System tasks
 

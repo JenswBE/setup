@@ -1,0 +1,9 @@
+[Unit]
+Description=Dump Nextcloud every night for backup
+
+[Timer]
+OnCalendar=*-*-* 02:00:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target

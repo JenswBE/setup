@@ -24,6 +24,10 @@
     enabled: yes
   with_items:
     - docker-update-containers.timer
+    - nextcloud-cron.timer
+    - nextcloud-dump-db.timer
+    - nextcloud-preview-generator.timer
+    - nextcloud-update-apps.timer
   tags: ["systemd"]
 
 - name: Copy home/_user_/kubo templates
