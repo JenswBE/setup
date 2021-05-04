@@ -28,7 +28,7 @@ Hetzner VPS
 
 ### 04:00 Perform application updates
 
-- 04:00 Run Watchtower (`templates/eve/home/_user_/eve/docker-compose.yml: watchtower`)
+- 04:00 Update all Docker containers (`templates/eve/etc/systemd/system/docker-update-containers.timer`)
 - 04:30 Update all Nextcloud apps (`templates/eve/etc/systemd/system/nextcloud-update-apps.timer`)
 
 ### System tasks

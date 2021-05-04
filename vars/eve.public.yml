@@ -4,3 +4,7 @@ firewall_additional_ports:
     proto: tcp
   - port: 443
     proto: tcp
+
+# Nextcloud
+app_nextcloud_apps_disable: "firstrunwizard"
+app_nextcloud_apps_install: "contacts,calendar,tasks,notes,groupfolders,quota_warning,previewgenerator,apporder"

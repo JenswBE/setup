@@ -6,7 +6,7 @@ Home NAS
 
 ### Continuous
 
-- Every 5 mins: Update IP in DNS (`templates/olaf/home/_user_/olaf/docker-compose.yml: cloudflare-ddns`)
+- Automatically: Update IP in DNS (`templates/olaf/home/_user_/olaf/docker-compose.yml: ddclient`)
 
 ### 01:00 Daily application jobs
 
@@ -22,7 +22,7 @@ Home NAS
 
 ### 04:00 Perform application updates
 
-- Run Watchtower (`templates/olaf/home/_user_/olaf/docker-compose.yml: watchtower`)
+- 04:00 Update all Docker containers (`templates/olaf/etc/systemd/system/docker-update-containers.timer`)
 
 ### System tasks
 

@@ -205,6 +205,60 @@ services:
       -s "ps2;/data/ps2;yes;no;yes"
 
   # =========================
+  # =       NEXTCLOUD       =
+  # =========================
+  nextcloud:
+    <<: *defaults
+    image: nextcloud:21
+    container_name: nextcloud
+    hostname: nextcloud
+    networks:
+      - traefik
+      - nextcloud
+    depends_on:
+      - nc-db
+    volumes:
+      - "{{ general_path_appdata }}/nextcloud/nextcloud/config:/var/www/html"
+      - "{{ general_path_appdata }}/nextcloud/nextcloud/data:/var/www/html/data"
+    environment:
+      - "TZ={{ general_timezone }}"
+      - "MYSQL_DATABASE=nextcloud"
+      - "MYSQL_USER=nextcloud"
+      - "MYSQL_PASSWORD={{ app_nextcloud_db_pass_nextcloud }}"
+      - "MYSQL_HOST=nc-db"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.nextcloud.entrypoints=websecure"
+      - "traefik.http.routers.nextcloud.rule=Host(`nextcloud-media.{{ general_domain_default }}`)"
+      - "traefik.http.routers.nextcloud.tls.certresolver=le-tls"
+      - "traefik.http.routers.nextcloud.middlewares=nextcloud-redirect-dav@file, nextcloud-redirect-webfinger@file"
+
+  nc-db:
+    <<: *defaults
+    image: mariadb:10
+    container_name: nc-db
+    networks:
+      - nextcloud
+    volumes:
+      - "{{ general_path_appdata }}/nextcloud/mariadb/data:/var/lib/mysql"
+      - nc-db-dump:/backup
+    environment:
+      - "TZ={{ general_timezone }}"
+      - "MYSQL_ROOT_PASSWORD={{ app_nextcloud_db_pass_root }}"
+      - "MYSQL_PASSWORD={{ app_nextcloud_db_pass_nextcloud }}"
+      - "MYSQL_DATABASE=nextcloud"
+      - "MYSQL_USER=nextcloud"
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "mysqladmin -u $$MYSQL_USER --password=$$MYSQL_PASSWORD ping || exit 1",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # =========================
   # =        LOGGING        =
   # =========================
   grafana:
@@ -288,6 +342,9 @@ services:
     volumes:
       # Backup locations
       - "{{ general_path_appdata }}/home-automation/home-assistant/config:/mnt/source/home-automation/home-assistant/config:ro"
+      - "nc-db-dump:/mnt/source/nextcloud/dbdump:ro"
+      - "{{ general_path_appdata }}/nextcloud/nextcloud/data:/mnt/source/nextcloud/data:ro"
+      - "{{ general_path_appdata }}/nextcloud/nextcloud/config:/mnt/source/nextcloud/config:ro"
       # Config and cache
       - "./borgmatic/borgmatic.d:/etc/borgmatic.d"
       - "./borgmatic/ssh:/root/.ssh"
@@ -310,6 +367,9 @@ networks:
   miniflux:
     name: miniflux
 
+  nextcloud:
+    name: nextcloud
+
   traefik:
     name: traefik
 
@@ -321,5 +381,6 @@ networks:
 #################################################################
 volumes:
   miniflux-db-dump:
+  nc-db-dump:
   promtail-positions:
   traefik-cert:
