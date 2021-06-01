@@ -399,6 +399,24 @@ services:
       - "POSTGRES_USER=bjoetiek"
       - "POSTGRES_PASSWORD={{ app_bjoetiek_db_pass }}"
 
+  # ===========================================================================
+  # =   SNOEP PROTOTYPE                                                       =
+  # =   https://github.com/JenswBE/charlotte-frontend                         =
+  # ===========================================================================
+  snoep-frontend:
+    <<: *defaults
+    image: jenswbe/charlotte-frontend:latest
+    container_name: snoep-frontend
+    networks:
+      - traefik
+    environment:
+      - "TZ={{ general_timezone }}"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.snoep-frontend.entrypoints=websecure"
+      - "traefik.http.routers.snoep-frontend.rule=Host(`snoep.{{ general_domain_default }}`)"
+      - "traefik.http.routers.snoep-frontend.tls.certresolver=le-tls"
+
   # =========================
   # =      MAINTENANCE      =
   # =========================
