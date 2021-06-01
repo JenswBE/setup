@@ -312,7 +312,7 @@ services:
   # ===========================================================================
   bjoetiek-frontend:
     <<: *defaults
-    image: jenswbe/bjoetiek-y-frontend:v1.2.2
+    image: jenswbe/bjoetiek-y-frontend:v1.2.3
     container_name: bjoetiek-frontend
     depends_on:
       - bjoetiek-backend
