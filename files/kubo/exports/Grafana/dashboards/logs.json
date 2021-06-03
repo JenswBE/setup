@@ -1,0 +1,84 @@
+{
+    "__inputs": [],
+    "__requires": [
+      {
+        "type": "grafana",
+        "id": "grafana",
+        "name": "Grafana",
+        "version": "7.5.7"
+      },
+      {
+        "type": "panel",
+        "id": "logs",
+        "name": "Logs",
+        "version": ""
+      }
+    ],
+    "annotations": {
+      "list": [
+        {
+          "builtIn": 1,
+          "datasource": "-- Grafana --",
+          "enable": true,
+          "hide": true,
+          "iconColor": "rgba(0, 211, 255, 1)",
+          "name": "Annotations & Alerts",
+          "type": "dashboard"
+        }
+      ]
+    },
+    "editable": true,
+    "gnetId": null,
+    "graphTooltip": 0,
+    "id": null,
+    "links": [],
+    "panels": [
+      {
+        "datasource": null,
+        "description": "Filter based on https://grafana.com/docs/grafana/latest/packages_api/data/loglevel/",
+        "fieldConfig": {
+          "defaults": {},
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 23,
+          "w": 24,
+          "x": 0,
+          "y": 0
+        },
+        "id": 2,
+        "options": {
+          "dedupStrategy": "numbers",
+          "showLabels": false,
+          "showTime": false,
+          "sortOrder": "Descending",
+          "wrapLogMessage": true
+        },
+        "pluginVersion": "7.5.7",
+        "targets": [
+          {
+            "expr": "{job=\"containers\"} |~ \"alert|crit|emerg|err|fatal\" != \"level=info\"",
+            "refId": "A"
+          }
+        ],
+        "title": "Error logs",
+        "transformations": [],
+        "type": "logs"
+      }
+    ],
+    "schemaVersion": 27,
+    "style": "dark",
+    "tags": [],
+    "templating": {
+      "list": []
+    },
+    "time": {
+      "from": "now-6h",
+      "to": "now"
+    },
+    "timepicker": {},
+    "timezone": "",
+    "title": "Logs",
+    "uid": "QmKixceGk",
+    "version": 2
+  }
