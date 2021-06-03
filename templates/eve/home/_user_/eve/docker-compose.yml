@@ -418,6 +418,26 @@ services:
       - "traefik.http.routers.snoep-frontend.tls.certresolver=le-tls"
 
   # =========================
+  # =      GOAT COUNTER     =
+  # =========================
+  goatcounter:
+    <<: *defaults
+    image: goatcounter:{{ app_goatcounter_version }}
+    container_name: goatcounter
+    user: "{{ ansible_real_user_id }}"
+    networks:
+      - traefik
+    volumes:
+      - "{{ general_path_appdata }}/goatcounter/db:/db"
+    environment:
+      - "TZ={{ general_timezone }}"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.goatcounter.entrypoints=websecure"
+      - "traefik.http.routers.goatcounter.rule=Host(`stats.{{ general_domain_default }}`, `stats.{{ general_domain_bjoetiek }}`, `stats.{{ general_domain_klokracing }}`, `stats.{{ general_domain_tuinfeest }}`)"
+      - "traefik.http.routers.goatcounter.tls.certresolver=le-tls"
+
+  # =========================
   # =      MAINTENANCE      =
   # =========================
   maintenance:
