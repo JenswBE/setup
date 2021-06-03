@@ -5,6 +5,9 @@ firewall_additional_ports:
   - port: 443
     proto: tcp
 
+# GoatCounter
+app_goatcounter_version: v2.0.4
+
 # Nextcloud
 app_nextcloud_apps_disable: "firstrunwizard"
 app_nextcloud_apps_install: "contacts,calendar,tasks,notes,groupfolders,quota_warning,previewgenerator,apporder"

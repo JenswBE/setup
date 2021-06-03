@@ -46,3 +46,9 @@
     - destination_mode_dirs: 0700
     - destination_delete_extra: true
   tags: ["docker"]
+
+- name: Build GoatCounter
+  ansible.builtin.command:
+    cmd: docker build --build-arg version={{ app_goatcounter_version }} -t goatcounter:{{ app_goatcounter_version }} .
+    chdir: "{{ ansible_user_dir }}/{{ ansible_hostname }}/goatcounter"
+  tags: ["docker"]
