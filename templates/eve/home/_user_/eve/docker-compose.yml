@@ -504,6 +504,7 @@ services:
       # Backup locations
       - "bjoetiek-db-dump:/mnt/source/bjoetiek/dbdump:ro"
       - "{{ general_path_appdata }}/bjoetiek/backend:/mnt/source/bjoetiek/backend:ro"
+      - "{{ general_path_appdata }}/goatcounter/db:/mnt/source/goatcounter/db:ro"
       - "nc-db-dump:/mnt/source/nextcloud/dbdump:ro"
       - "nc-calcardbackup:/mnt/source/nextcloud/calcardbackup:ro"
       - "{{ general_path_appdata }}/nextcloud/nextcloud/data:/mnt/source/nextcloud/data:ro"
