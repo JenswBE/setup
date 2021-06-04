@@ -1,5 +1,5 @@
 - name: Create temporary dir
-  tempfile:
+  ansible.builtin.tempfile:
     state: directory
   register: tmp_dir
   changed_when: false
@@ -7,7 +7,7 @@
 
 - name: Create directory structure in temporary dir
   become: true
-  file:
+  ansible.builtin.file:
     path: "{{ tmp_dir.path }}/{{ item.path }}"
     state: directory
     owner: "{{ destination_owner }}"
@@ -20,20 +20,33 @@
 
 - name: Generate template files to temporary dir
   become: true
-  template:
+  ansible.builtin.template:
     src: "{{ item.root }}/{{ item.path }}"
     dest: "{{ tmp_dir.path }}/{{ item.path }}"
     owner: "{{ destination_owner }}"
     group: "{{ destination_group }}"
     mode: "{{ destination_mode_files }}"
   with_filetree: templates/{{ templates_folder }}
-  when: item.state == 'file'
+  when: item.state == 'file' and item.path is not search(".+\.(png|jpg)$")
+  changed_when: false
+  tags: ["always"]
+
+- name: Copy binary files
+  become: true
+  ansible.builtin.copy:
+    src: "{{ item.root }}/{{ item.path }}"
+    dest: "{{ tmp_dir.path }}/{{ item.path }}"
+    owner: "{{ destination_owner }}"
+    group: "{{ destination_group }}"
+    mode: "{{ destination_mode_dirs }}"
+  with_filetree: templates/{{ templates_folder }}
+  when: item.state == 'file' and item.path is search(".+\.(png|jpg)$")
   changed_when: false
   tags: ["always"]
 
 - name: Sync temporary dir to destination
   become: true
-  synchronize:
+  ansible.builtin.synchronize:
     src: "{{ tmp_dir.path }}/"
     dest: "{{ destination_folder }}"
     archive: false
@@ -49,12 +62,12 @@
   tags: ["always"]
 
 - name: Show rsync logs
-  debug:
+  ansible.builtin.debug:
     var: rsync_output.stdout_lines
   tags: ["always"]
 
 - name: Delete temporary folder
-  file:
+  ansible.builtin.file:
     path: "{{ tmp_dir.path }}"
     state: absent
   changed_when: false

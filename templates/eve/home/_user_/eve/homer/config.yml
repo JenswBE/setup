@@ -1,0 +1,159 @@
+---
+# Homepage configuration
+# See https://fontawesome.com/icons for icons options
+
+title: "JenswBE"
+subtitle: false
+documentTitle: "JenswBE Dashboard"
+logo: "assets/logo.png"
+
+header: false # Set to false to hide the header
+footer: false # Set false if you want to hide it.
+
+columns: "auto" # "auto" or number (must be a factor of 12: 1, 2, 3, 4, 6, 12)
+connectivityCheck: true # whether you want to display a message when the apps are not accessible anymore (VPN disconnected for example)
+
+# Optional theming
+theme: default # 'default' or one of the themes available in 'src/assets/themes'.
+
+# Optional navbar
+links: [] # Allows for navbar (dark mode, layout, and search) without any links
+
+message:
+  content: >
+    <img src="assets/logos/duckduckgo.png" width="50" style="margin-right:20px;">
+    <iframe src="https://duckduckgo.com/search.html?prefill=Search DuckDuckGo&focus=yes&kz=1&kac=1&kn=1&kp=-2&kam=osm&kaj=m"
+    style="overflow:hidden;margin:0;padding:0;width:calc(100% - 100px);height:60px;" frameborder="0"></iframe>
+  # DuckDuckGo options
+  # See https://duckduckgo.com/params
+  # - kz: Open Instant Answers
+  # - kac: Auto-suggest
+  # - kn: New Window
+  # - kp: Safe Search
+  # - kam: Directions Source (maps)
+  # - kaj: Units of Measure
+
+# Services
+x-tag-eve: &tag_eve
+  tag: "Eve"
+  tagstyle: "is-success"
+  target: "_blank"
+
+x-tag-kubo: &tag_kubo
+  tag: "Kubo"
+  tagstyle: "is-info"
+  target: "_blank"
+
+x-tag-olaf: &tag_olaf
+  tag: "Olaf"
+  tagstyle: "is-danger"
+  target: "_blank"
+
+services:
+  - name: "Analytics"
+    icon: "fas fa-chart-bar"
+    items:
+      - name: "Bjoetiek Y"
+        subtitle: "GoatCounter"
+        logo: "assets/logos/goatcounter.svg"
+        url: "https://stats.bjoetiek-y.be"
+        <<: *tag_eve
+
+      - name: "JenswBE"
+        subtitle: "GoatCounter"
+        logo: "assets/logos/goatcounter.svg"
+        url: "https://stats.jensw.be"
+        <<: *tag_eve
+
+      - name: "Klokracing"
+        subtitle: "GoatCounter"
+        logo: "assets/logos/goatcounter.svg"
+        url: "https://stats.klokracing.be"
+        <<: *tag_eve
+
+      - name: "Tuinfeest Beerse"
+        subtitle: "GoatCounter"
+        logo: "assets/logos/goatcounter.svg"
+        url: "https://stats.tuinfeestbeerse.be"
+        <<: *tag_eve
+
+  - name: "Files and Sync"
+    icon: "fas fa-sync"
+    items:
+      - name: "Nextcloud"
+        logo: "assets/logos/nextcloud.png"
+        url: "https://nextcloud.jensw.be"
+        <<: *tag_eve
+
+      - name: "Nextcloud Media"
+        logo: "assets/logos/nextcloud.png"
+        url: "https://nextcloud-media.jensw.be"
+        <<: *tag_kubo
+
+      - name: "Transmission"
+        logo: "assets/logos/transmission.svg"
+        url: "https://torrent.jensw.be"
+        <<: *tag_olaf
+
+      - name: "TinyMediaManager"
+        logo: "assets/logos/tiny-media-manager.png"
+        url: "https://tmm.jensw.be"
+        <<: *tag_olaf
+
+      - name: "Syncthing Kubo"
+        logo: "assets/logos/syncthing.png"
+        url: "https://syncthing-kubo.jensw.be"
+        <<: *tag_kubo
+
+      - name: "Syncthing Olaf"
+        logo: "assets/logos/syncthing.png"
+        url: "https://syncthing-olaf.jensw.be"
+        <<: *tag_olaf
+
+  - name: "Tools"
+    icon: "fas fa-wrench"
+    items:
+      - name: "MiniFlux"
+        logo: "assets/logos/miniflux.svg"
+        url: "https://feed.jensw.be"
+        <<: *tag_kubo
+
+
+      - name: "Snipe-IT"
+        logo: "assets/logos/snipe-it.png"
+        url: "https://assets.jensw.be"
+        <<: *tag_eve
+
+      - name: "Grafana"
+        logo: "assets/logos/grafana.png"
+        url: "https://grafana.jensw.be"
+        <<: *tag_kubo
+
+      - name: "Traefik Eve"
+        logo: "assets/logos/traefik.png"
+        url: "https://traefik-eve.jensw.be"
+        <<: *tag_eve
+        
+      - name: "Traefik Kubo"
+        logo: "assets/logos/traefik.png"
+        url: "https://traefik-kubo.jensw.be"
+        <<: *tag_kubo
+        
+      - name: "Traefik Olaf"
+        logo: "assets/logos/traefik.png"
+        url: "https://traefik-olaf.jensw.be"
+        <<: *tag_olaf
+
+  - name: "Home"
+    icon: "fas fa-home"
+    items:
+      - name: "Home Assistant"
+        logo: "assets/logos/home-assistant.png"
+        url: "https://ha.jensw.lan"
+        <<: *tag_kubo
+
+      - name: "UniFi Controller"
+        logo: "assets/logos/unifi.png"
+        url: "https://kubo.jensw.lan:8443"
+        <<: *tag_kubo
+      
