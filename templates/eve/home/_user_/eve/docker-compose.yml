@@ -422,7 +422,10 @@ services:
   # =========================
   goatcounter:
     <<: *defaults
-    image: goatcounter:{{ app_goatcounter_version }}
+    build:
+      context: goatcounter
+      args:
+        - "version={{ app_goatcounter_version }}"
     container_name: goatcounter
     user: "{{ ansible_real_user_id }}"
     networks:
