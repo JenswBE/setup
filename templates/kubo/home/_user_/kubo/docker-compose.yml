@@ -107,7 +107,7 @@ services:
       - "./home-automation/zigbee2mqtt/configuration.yaml:/app/data/configuration.yaml"
       - "/run/udev:/run/udev:ro"
     devices:
-      - "/dev/ttyUSB0:/dev/ttyUSB0"
+      - "/dev/ttyACM0:/dev/ttyACM0"
     environment:
       - "TZ={{ general_timezone }}"
 
