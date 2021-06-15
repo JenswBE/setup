@@ -1,10 +1,14 @@
 homeassistant: true
 permit_join: false
+
 mqtt:
   base_topic: zigbee2mqtt
   server: "mqtt://ha-mosquitto"
+
 serial:
   port: /dev/ttyACM0
+  disable_led: true
+
 devices:
   "0xec1bbdfffe9f5aaa":
     friendly_name: button_bedroom_bed
