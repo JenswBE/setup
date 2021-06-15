@@ -346,7 +346,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.bjoetiek-frontend.entrypoints=websecure"
-      - "traefik.http.routers.bjoetiek-frontend.rule=Host(`bjoetiek-y.be`)"
+      - "traefik.http.routers.bjoetiek-frontend.rule=Host(`{{ general_domain_bjoetiek }}`)"
       - "traefik.http.routers.bjoetiek-frontend.tls.certresolver=le-tls"
 
   bjoetiek-frontend-test:
@@ -363,7 +363,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.bjoetiek-frontend-test.entrypoints=websecure"
-      - "traefik.http.routers.bjoetiek-frontend-test.rule=Host(`test.bjoetiek-y.be`)"
+      - "traefik.http.routers.bjoetiek-frontend-test.rule=Host(`test.{{ general_domain_bjoetiek }}`)"
       - "traefik.http.routers.bjoetiek-frontend-test.tls.certresolver=le-tls"
 
   bjoetiek-admin:
@@ -379,7 +379,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.bjoetiek-admin.entrypoints=websecure"
-      - "traefik.http.routers.bjoetiek-admin.rule=Host(`beheer.bjoetiek-y.be`)"
+      - "traefik.http.routers.bjoetiek-admin.rule=Host(`beheer.{{ general_domain_bjoetiek }}`)"
       - "traefik.http.routers.bjoetiek-admin.tls.certresolver=le-tls"
       - "traefik.http.services.bjoetiek-admin-{{ ansible_hostname }}.loadbalancer.server.port=8080"
 
@@ -403,7 +403,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.bjoetiek-backend.entrypoints=websecure"
-      - "traefik.http.routers.bjoetiek-backend.rule=Host(`backend.bjoetiek-y.be`)"
+      - "traefik.http.routers.bjoetiek-backend.rule=Host(`backend.{{ general_domain_bjoetiek }}`)"
       - "traefik.http.routers.bjoetiek-backend.tls.certresolver=le-tls"
       - "traefik.http.routers.bjoetiek-backend.middlewares=bjoetiek-fix-cors@file"
 
@@ -459,8 +459,15 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.goatcounter.entrypoints=websecure"
-      - "traefik.http.routers.goatcounter.rule=Host(`stats.{{ general_domain_default }}`, `stats.{{ general_domain_bjoetiek }}`, `stats.{{ general_domain_klokracing }}`, `stats.{{ general_domain_tuinfeest }}`)"
       - "traefik.http.routers.goatcounter.tls.certresolver=le-tls"
+      - >-
+        traefik.http.routers.goatcounter.rule=Host(
+          `stats.{{ general_domain_default }}`,
+          `stats.proto-browser.{{ general_domain_default }}`,
+          `stats.{{ general_domain_bjoetiek }}`,
+          `stats.{{ general_domain_klokracing }}`,
+          `stats.{{ general_domain_tuinfeest }}`,
+        )
 
   # =========================
   # =      MAINTENANCE      =
