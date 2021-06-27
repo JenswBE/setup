@@ -107,11 +107,9 @@ services:
       - "USERID=233"
       - "GROUPID=233"
     command: >
-      samba.sh -S
+      samba.sh
       -u "nas;{{ app_samba_nas_password }}"
-      -u "scanner;{{ app_samba_scanner_password }}"
       -s "media;/mnt/media;yes;no;no;nas"
-      -s "scans;/mnt/media/Scans;yes;no;no;scanner"
 
   # =========================
   # =          PLEX         =
