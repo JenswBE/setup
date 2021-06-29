@@ -97,7 +97,6 @@ services:
     <<: *defaults
     image: koenkk/zigbee2mqtt:latest
     container_name: ha-zigbee2mqtt
-    privileged: true
     networks:
       - home-automation
     depends_on:
@@ -105,9 +104,8 @@ services:
     volumes:
       - "{{ general_path_appdata }}/home-automation/zigbee2mqtt:/app/data"
       - "./home-automation/zigbee2mqtt/configuration.yaml:/app/data/configuration.yaml"
-      - "/run/udev:/run/udev:ro"
     devices:
-      - "/dev/ttyACM0:/dev/ttyACM0"
+      - "/dev/serial/by-id/usb-Silicon_Labs_slae.sh_cc2652rb_stick_-_slaesh_s_iot_stuff_00_12_4B_00_22_98_86_5C-if00-port0:/dev/zigbee"
     environment:
       - "TZ={{ general_timezone }}"
 
