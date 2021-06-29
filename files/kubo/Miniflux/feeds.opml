@@ -11,10 +11,9 @@
                 <outline title="Visual Studio Code - Code Editing. Redefined." text="Visual Studio Code - Code Editing. Redefined." xmlUrl="https://code.visualstudio.com/feed.xml" htmlUrl="https://code.visualstudio.com/"></outline>
             </outline>
             <outline text="Updates">
-                <outline title="Docker Hub Images: library/mariadb" text="Docker Hub Images: library/mariadb" xmlUrl="https://docker-hub-rss.theconnman.vercel.app/_/mariadb.atom?includeRegex=%5E%5Cd%2B%28%5C.%5Cd%2B%29%24" htmlUrl="https://hub.docker.com/r/library/mariadb"></outline>
-                <outline title="Docker Hub Images: library/postgres" text="Docker Hub Images: library/postgres" xmlUrl="https://docker-hub-rss.theconnman.vercel.app/_/postgres.atom?includeRegex=%5E%5Cd%2B%28%5C.%5Cd%2B%29%24" htmlUrl="https://hub.docker.com/r/library/postgres"></outline>
+                <outline title="Docker Hub Images: library/mariadb" text="Docker Hub Images: library/mariadb" xmlUrl="https://docker-hub-rss-theconnman.vercel.app/_/mariadb.atom?includeRegex=%5E%5Cd%2B%28%5C.%5Cd%2B%29%24" htmlUrl="https://hub.docker.com/r/library/mariadb"></outline>
+                <outline title="Docker Hub Images: library/postgres" text="Docker Hub Images: library/postgres" xmlUrl="https://docker-hub-rss-theconnman.vercel.app/_/postgres.atom?includeRegex=%5E%5Cd%2B%28%5C.%5Cd%2B%29%24" htmlUrl="https://hub.docker.com/r/library/postgres"></outline>
                 <outline title="Release notes from docker-borgmatic" text="Release notes from docker-borgmatic" xmlUrl="https://github.com/b3vis/docker-borgmatic/releases.atom" htmlUrl="https://github.com/b3vis/docker-borgmatic/releases"></outline>
-                <outline title="Release notes from node-red" text="Release notes from node-red" xmlUrl="https://github.com/node-red/node-red/releases.atom" htmlUrl="https://github.com/node-red/node-red/releases"></outline>
                 <outline title="Release notes from traefik" text="Release notes from traefik" xmlUrl="https://github.com/traefik/traefik/releases.atom" htmlUrl="https://github.com/containous/traefik/releases"></outline>
             </outline>
         </body>
