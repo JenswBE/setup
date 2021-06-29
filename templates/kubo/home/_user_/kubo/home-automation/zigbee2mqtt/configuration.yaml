@@ -6,8 +6,10 @@ mqtt:
   server: "mqtt://ha-mosquitto"
 
 serial:
-  port: /dev/ttyACM0
-  disable_led: true
+  port: /dev/zigbee
+
+advanced:
+  pan_id: 0x1a63
 
 devices:
   "0xec1bbdfffe9f5aaa":

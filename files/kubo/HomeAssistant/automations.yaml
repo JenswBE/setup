@@ -1,0 +1,163 @@
+- id: '1610805153006'
+  alias: Emit "bedroom_press"
+  description: ''
+  trigger:
+  - platform: device
+    domain: mqtt
+    device_id: 84daca0877515e1487937f00c3c629af
+    type: action
+    subtype: 'on'
+    discovery_id: 0xec1bbdfffe9c3b0e action_on
+  - platform: device
+    domain: mqtt
+    device_id: 84daca0877515e1487937f00c3c629af
+    type: action
+    subtype: 'off'
+    discovery_id: 0xec1bbdfffe9c3b0e action_off
+  - platform: device
+    domain: mqtt
+    device_id: e9f53283d1984a568507db134a34f845
+    type: action
+    subtype: 'on'
+    discovery_id: 0xec1bbdfffe9f5aaa action_on
+  - platform: device
+    domain: mqtt
+    device_id: e9f53283d1984a568507db134a34f845
+    type: action
+    subtype: 'off'
+    discovery_id: 0xec1bbdfffe9f5aaa action_off
+  - platform: device
+    domain: mqtt
+    device_id: 62a7bb57424c92e3c3b7a59c1194c455
+    type: action
+    subtype: 'on'
+    discovery_id: 0xec1bbdfffe239446 action_on
+  - platform: device
+    domain: mqtt
+    device_id: 62a7bb57424c92e3c3b7a59c1194c455
+    type: action
+    subtype: 'off'
+    discovery_id: 0xec1bbdfffe239446 action_off
+  condition: []
+  action:
+  - event: bedroom_press
+    event_data: {}
+  mode: single
+- id: '1610805282213'
+  alias: Emit "bedroom_long_press"
+  description: ''
+  trigger:
+  - platform: device
+    domain: mqtt
+    device_id: e9f53283d1984a568507db134a34f845
+    type: action
+    subtype: brightness_move_up
+    discovery_id: 0xec1bbdfffe9f5aaa action_brightness_move_up
+  - platform: device
+    domain: mqtt
+    device_id: e9f53283d1984a568507db134a34f845
+    type: action
+    subtype: brightness_move_down
+    discovery_id: 0xec1bbdfffe9f5aaa action_brightness_move_down
+  - platform: device
+    domain: mqtt
+    device_id: 62a7bb57424c92e3c3b7a59c1194c455
+    type: action
+    subtype: brightness_move_up
+    discovery_id: 0xec1bbdfffe239446 action_brightness_move_up
+  - platform: device
+    domain: mqtt
+    device_id: 62a7bb57424c92e3c3b7a59c1194c455
+    type: action
+    subtype: brightness_move_down
+    discovery_id: 0xec1bbdfffe239446 action_brightness_move_down
+  condition: []
+  action:
+  - event: bedroom_long_press
+    event_data: {}
+  mode: single
+- id: '1610805598171'
+  alias: Bedroom light - Light
+  description: ''
+  trigger:
+  - platform: event
+    event_type: bedroom_press
+  condition:
+  - condition: device
+    type: is_off
+    device_id: faa83853d17e7c6884b246564bc48a75
+    entity_id: light.lamp_warm_white
+    domain: light
+  action:
+  - type: turn_on
+    device_id: faa83853d17e7c6884b246564bc48a75
+    entity_id: light.lamp_warm_white
+    domain: light
+    brightness_pct: 100
+  mode: single
+- id: '1610805627327'
+  alias: Bedroom light - Dark
+  description: ''
+  trigger:
+  - platform: event
+    event_type: bedroom_long_press
+  condition:
+  - condition: device
+    type: is_off
+    device_id: faa83853d17e7c6884b246564bc48a75
+    entity_id: light.lamp_warm_white
+    domain: light
+  action:
+  - type: turn_on
+    device_id: faa83853d17e7c6884b246564bc48a75
+    entity_id: light.lamp_warm_white
+    domain: light
+    brightness_pct: 1
+  mode: single
+- id: '1610805673476'
+  alias: Bedroom light - Off
+  description: ''
+  trigger:
+  - platform: event
+    event_type: bedroom_press
+  - platform: event
+    event_type: bedroom_long_press
+  condition:
+  - condition: device
+    type: is_on
+    device_id: faa83853d17e7c6884b246564bc48a75
+    entity_id: light.lamp_warm_white
+    domain: light
+  action:
+  - type: turn_off
+    device_id: faa83853d17e7c6884b246564bc48a75
+    entity_id: light.lamp_warm_white
+    domain: light
+  mode: single
+- id: '1610806089787'
+  alias: Toggle window lights
+  description: ''
+  trigger:
+  - platform: device
+    domain: mqtt
+    device_id: 84daca0877515e1487937f00c3c629af
+    type: action
+    subtype: brightness_move_up
+    discovery_id: 0xec1bbdfffe9c3b0e action_brightness_move_up
+  - platform: device
+    domain: mqtt
+    device_id: 84daca0877515e1487937f00c3c629af
+    type: action
+    subtype: brightness_move_down
+    discovery_id: 0xec1bbdfffe9c3b0e action_brightness_move_down
+  condition: []
+  action:
+  - type: toggle
+    device_id: 2a0ce845e239828a75c76bbf93040eb8
+    entity_id: switch.socket_tv
+    domain: switch
+  - type: toggle
+    device_id: fa3c2f91b921e84b9762d0fa9e7b2765
+    entity_id: switch.socket_table
+    domain: switch
+  mode: single
