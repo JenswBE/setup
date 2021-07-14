@@ -233,7 +233,7 @@ services:
 
   nc-db:
     <<: *defaults
-    image: mariadb:10
+    image: mariadb:10.5
     container_name: nc-db
     networks:
       - nextcloud
