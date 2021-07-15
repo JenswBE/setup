@@ -207,7 +207,7 @@ services:
   # =========================
   nextcloud:
     <<: *defaults
-    image: nextcloud:21
+    image: nextcloud:22
     container_name: nextcloud
     hostname: nextcloud
     networks:
