@@ -84,6 +84,8 @@ services:
       - home-automation
     volumes:
       - "{{ general_path_appdata }}/home-automation/home-assistant/config:/config"
+      - "./home-automation/home-assistant/automations.yaml:/config/automations.yaml"
+      - "./home-automation/home-assistant/configuration.yaml:/config/configuration.yaml"
     environment:
       - "TZ={{ general_timezone }}"
     labels:

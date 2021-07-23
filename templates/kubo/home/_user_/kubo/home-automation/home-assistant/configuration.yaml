@@ -1,0 +1,18 @@
+# Configure a default setup of Home Assistant (frontend, api, etc)
+default_config:
+
+# HTTP server
+http:
+  use_x_forwarded_for: true
+  trusted_proxies: ["172.16.0.0/12"] # Docker
+
+# Text to speech
+tts:
+  - platform: picotts
+    language: "en-US"
+
+# Sub configs
+group: !include groups.yaml
+automation: !include automations.yaml
+script: !include scripts.yaml
+scene: !include scenes.yaml
