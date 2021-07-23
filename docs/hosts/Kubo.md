@@ -11,7 +11,7 @@ Home NAS
 
 ### 01:00 Daily application jobs
 
-- None
+- Rescan photos for Nextcloud Maps (`templates/kubo/etc/systemd/system/nextcloud-maps-scan-photos.timer`)
 
 ### 02:00 Prepare backup
 
