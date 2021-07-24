@@ -209,7 +209,7 @@ services:
   # =========================
   nextcloud:
     <<: *defaults
-    image: nextcloud:22
+    build: ./nextcloud
     container_name: nextcloud
     hostname: nextcloud
     networks:
@@ -218,7 +218,6 @@ services:
     depends_on:
       - nc-db
     volumes:
-      - "./nextcloud/php.ini:/usr/local/etc/php/conf.d/zzz-custom.ini"
       - "{{ general_path_appdata }}/nextcloud/nextcloud/config:/var/www/html"
       - "{{ general_path_appdata }}/nextcloud/nextcloud/data:/var/www/html/data"
     environment:
