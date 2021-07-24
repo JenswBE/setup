@@ -13,6 +13,7 @@ Hetzner VPS
 ### 01:00 Daily application jobs
 
 - Dead link checker (DeLiC): Check sites for dead links (`templates/eve/home/_user_/eve/delic/config.yml`)
+- Rescan photos for Nextcloud Maps (`templates/eve/etc/systemd/system/nextcloud-maps-scan-photos.timer`)
 
 ### 02:00 Prepare backup
 
