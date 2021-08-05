@@ -135,7 +135,7 @@
     domain: light
   mode: single
 - id: '1610806089787'
-  alias: Toggle window lights
+  alias: Window lights - Toggle
   description: ''
   trigger:
   - platform: device
@@ -150,6 +150,12 @@
     type: action
     subtype: brightness_move_down
     discovery_id: 0xec1bbdfffe9c3b0e action_brightness_move_down
+  - platform: device
+    domain: mqtt
+    device_id: 8201ed89f528eecb7479aa769ddccd16
+    type: action
+    subtype: brightness_step_up
+    discovery_id: 0x680ae2fffe25bde4 action_brightness_step_up
   condition: []
   action:
   - type: toggle
@@ -160,4 +166,55 @@
     device_id: fa3c2f91b921e84b9762d0fa9e7b2765
     entity_id: switch.socket_table
     domain: switch
+  mode: single
+- id: '1628189831484'
+  alias: Reading light - Toggle
+  description: ''
+  trigger:
+  - platform: device
+    domain: mqtt
+    device_id: 8201ed89f528eecb7479aa769ddccd16
+    type: action
+    subtype: toggle
+    discovery_id: 0x680ae2fffe25bde4 action_toggle
+  condition: []
+  action:
+  - type: toggle
+    device_id: 3b2596c2b1cee52c3201b2cdc292453f
+    entity_id: light.lamp_rgb
+    domain: light
+  mode: single
+- id: '1628189968604'
+  alias: Reading light - Increase brightness
+  description: ''
+  trigger:
+  - platform: device
+    domain: mqtt
+    device_id: 8201ed89f528eecb7479aa769ddccd16
+    type: action
+    subtype: brightness_move_up
+    discovery_id: 0x680ae2fffe25bde4 action_brightness_move_up
+  condition: []
+  action:
+  - device_id: 3b2596c2b1cee52c3201b2cdc292453f
+    domain: light
+    entity_id: light.lamp_rgb
+    type: brightness_increase
+  mode: single
+- id: '1628190037149'
+  alias: Reading light - Decrease brightness
+  description: ''
+  trigger:
+  - platform: device
+    domain: mqtt
+    device_id: 8201ed89f528eecb7479aa769ddccd16
+    type: action
+    subtype: brightness_move_down
+    discovery_id: 0x680ae2fffe25bde4 action_brightness_move_down
+  condition: []
+  action:
+  - device_id: 3b2596c2b1cee52c3201b2cdc292453f
+    domain: light
+    entity_id: light.lamp_rgb
+    type: brightness_decrease
   mode: single

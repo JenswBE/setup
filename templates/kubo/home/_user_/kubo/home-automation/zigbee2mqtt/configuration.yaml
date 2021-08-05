@@ -31,3 +31,7 @@ devices:
     friendly_name: socket_tv
   "0xbc33acfffe2f0bad":
     friendly_name: socket_table
+  "0x680ae2fffe25bde4":
+    friendly_name: dimmer_living
+    legacy: false
+    simulated_brightness: true
