@@ -463,7 +463,6 @@ services:
       - >-
         traefik.http.routers.goatcounter.rule=Host(
           `stats.{{ general_domain_default }}`,
-          `stats.proto-browser.{{ general_domain_default }}`,
           `stats.{{ general_domain_bjoetiek }}`,
           `stats.{{ general_domain_klokracing }}`,
           `stats.{{ general_domain_tuinfeest }}`,
