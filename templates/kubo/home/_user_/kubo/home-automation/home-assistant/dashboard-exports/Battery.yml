@@ -1,0 +1,29 @@
+views:
+  - title: Home
+    type: panel
+    badges: []
+    cards:
+      - type: grid
+        cards:
+          - type: history-graph
+            entities:
+              - entity: sensor.0x680ae2fffe25bde4_battery
+            hours_to_show: 24
+            refresh_interval: 1
+          - type: history-graph
+            entities:
+              - entity: sensor.button_bedroom_bed_battery
+            hours_to_show: 24
+            refresh_interval: 1
+          - type: history-graph
+            entities:
+              - entity: sensor.button_bedroom_living_battery
+            hours_to_show: 24
+            refresh_interval: 1
+          - type: history-graph
+            entities:
+              - entity: sensor.button_bedroom_bathroom_battery
+            hours_to_show: 24
+            refresh_interval: 1
+        columns: 2
+        square: false
