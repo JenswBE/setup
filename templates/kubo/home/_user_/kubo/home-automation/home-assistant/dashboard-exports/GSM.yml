@@ -1,0 +1,26 @@
+views:
+  - title: GSM
+    theme: ""
+    badges: []
+    cards:
+      - type: grid
+        cards:
+          - type: button
+            tap_action:
+              action: toggle
+            entity: switch.socket_tv
+            name: LED voor
+            icon: hass:lightbulb
+          - type: button
+            tap_action:
+              action: toggle
+            entity: switch.socket_table
+            name: LED achter
+            icon: hass:lightbulb
+        columns: 2
+      - type: light
+        entity: light.lamp_rgb
+        name: Leeslamp
+      - type: light
+        entity: light.lamp_warm_white
+        name: Slaapkamer
