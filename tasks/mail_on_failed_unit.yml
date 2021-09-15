@@ -2,12 +2,12 @@
   become: yes
   block:
     - name: Add user systemd-mailjet
-      user:
+      ansible.builtin.user:
         name: systemd-mailjet
         system: true
 
     - name: Copy systemd-mailjet binary
-      copy:
+      ansible.builtin.copy:
         src: systemd-mailjet
         dest: /opt/bin/systemd-mailjet
         owner: systemd-mailjet
@@ -15,7 +15,7 @@
         mode: 0500
 
     - name: Set systemd-mailjet config
-      template:
+      ansible.builtin.template:
         src: "{{ ansible_hostname }}/opt/conf/systemd-mailjet.conf"
         dest: /opt/conf/systemd-mailjet.conf
         owner: systemd-mailjet

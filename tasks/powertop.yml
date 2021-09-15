@@ -2,12 +2,12 @@
   become: yes
   block:
     - name: Install powertop
-      package:
+      ansible.builtin.package:
         state: present
         name: powertop
 
     - name: Setup powertop service file
-      template:
+      ansible.builtin.template:
         src: powertop.service
         dest: "/etc/systemd/system/powertop.service"
         owner: root
@@ -15,11 +15,11 @@
         mode: 0644
 
     - name: Force systemd reload
-      systemd:
+      ansible.builtin.systemd:
         daemon_reload: yes
 
     - name: Enable automatic powertop tuning
-      systemd:
+      ansible.builtin.systemd:
         name: powertop
         state: started
         enabled: yes
