@@ -158,14 +158,12 @@
     discovery_id: 0x680ae2fffe25bde4 action_brightness_step_up
   condition: []
   action:
-  - type: toggle
-    device_id: 2a0ce845e239828a75c76bbf93040eb8
-    entity_id: switch.socket_tv
-    domain: switch
-  - type: toggle
-    device_id: fa3c2f91b921e84b9762d0fa9e7b2765
-    entity_id: switch.socket_table
-    domain: switch
+  - service: switch.toggle
+    target:
+      entity_id: switch.socket_tv
+  - service: switch.toggle
+    target:
+      entity_id: switch.socket_table
   mode: single
 - id: '1628189831484'
   alias: Reading light - Toggle
