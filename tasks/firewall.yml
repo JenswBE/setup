@@ -2,21 +2,21 @@
   become: yes
   block:
     - name: UFW - Ensure is installed
-      package: name=ufw state=present
+      ansible.builtin.package: name=ufw state=present
 
     - name: UFW - Allow SSH
-      ufw:
+      community.general.ufw:
         rule: allow
         port: "{{ firewall_ssh_port | string }}"
         proto: tcp
 
     - name: UFW - Allow additional ports
-      ufw:
+      community.general.ufw:
         rule: allow
         port: "{{ item.port | string }}"
         proto: "{{ item.proto }}"
       with_items: "{{ firewall_additional_ports }}"
 
     - name: UFW - Enable firewall
-      ufw:
+      community.general.ufw:
         state: enabled
