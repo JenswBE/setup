@@ -38,9 +38,6 @@
     - include_tasks: tasks/mail_on_failed_unit.yml
       tags: ["setup"]
 
-    - include_tasks: tasks/powertop.yml
-      tags: ["setup"]
-
     - include_tasks: tasks/docker_logging.yml
       tags: ["setup"]
 
