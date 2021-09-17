@@ -16,7 +16,7 @@
 
     - name: Set systemd-mailjet config
       ansible.builtin.template:
-        src: "{{ ansible_hostname }}/opt/conf/systemd-mailjet.conf"
+        src: "systemd-mailjet.conf"
         dest: /opt/conf/systemd-mailjet.conf
         owner: systemd-mailjet
         group: systemd-mailjet

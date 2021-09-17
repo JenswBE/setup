@@ -1,3 +1,6 @@
+- include_tasks: tasks/powertop.yml
+  tags: ["setup"]
+
 - name: Copy Netplan config
   become: yes
   ansible.builtin.copy:
