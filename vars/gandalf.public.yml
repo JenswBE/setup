@@ -1,2 +1,4 @@
 # Firewall
-firewall_additional_ports: []
+firewall_additional_ports:
+- port: 23
+  proto: tcp

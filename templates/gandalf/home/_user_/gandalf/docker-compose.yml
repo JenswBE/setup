@@ -1,0 +1,37 @@
+version: "3.7"
+
+#################################################################
+#                            DEFAULTS                           #
+#################################################################
+x-defaults: &defaults
+  restart: always
+  extra_hosts:
+    - "host.docker.internal:host-gateway"
+
+#################################################################
+#                            SERVICES                           #
+#################################################################
+services:
+  # =========================
+  # =      BORG SERVER      =
+  # =========================
+  borgserver:
+    <<: *defaults
+    image: nold360/borgserver:latest
+    container_name: borgserver
+    ports:
+      - "23:22"
+    volumes:
+      - "{{ general_path_appdata }}/borgserver/backups:/backup"
+      - "./borgserver:/sshkeys/clients:ro"
+      - "borgserver-sshkeys-host:/sshkeys/host"
+    environment:
+      - "TZ={{ general_timezone }}"
+      - "PUID={{ ansible_real_user_id }}"
+      - "PGID={{ ansible_real_group_id }}"
+
+#################################################################
+#                            VOLUMES                            #
+#################################################################
+volumes:
+  borgserver-sshkeys-host:

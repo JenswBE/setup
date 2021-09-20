@@ -199,7 +199,7 @@ services:
     environment:
       - "TZ={{ general_timezone }}"
       - "USERID={{ ansible_real_user_id }}"
-      - "GROUPID={{ ansible_real_user_id }}"
+      - "GROUPID={{ ansible_real_group_id }}"
     command: >
       samba.sh -S
       -s "ps2;/data/ps2;yes;no;yes"
