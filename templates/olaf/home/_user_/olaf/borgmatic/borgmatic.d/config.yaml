@@ -4,6 +4,7 @@ location:
 
     repositories:
         - "{{ app_borgmatic_ssh_user }}@{{ app_borgmatic_ssh_host }}:{{ app_borgmatic_remote_folder }}"
+        - "borg@gandalf.jensw.be:{{ app_borgmatic_remote_folder }}"
 
 storage:
     compression: lz4
