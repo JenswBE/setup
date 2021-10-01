@@ -55,6 +55,7 @@ services:
     <<: *defaults
     image: syncthing/syncthing:1
     container_name: syncthing
+    hostname: "{{ ansible_hostname }}"
     networks:
       - traefik
     ports:
