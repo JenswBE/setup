@@ -348,6 +348,10 @@ services:
       - "traefik.http.routers.bjoetiek-frontend.entrypoints=websecure"
       - "traefik.http.routers.bjoetiek-frontend.rule=Host(`{{ general_domain_bjoetiek }}`)"
       - "traefik.http.routers.bjoetiek-frontend.tls.certresolver=le-tls"
+      - "traefik.http.routers.bjoetiek-frontend-www-redirect.entrypoints=websecure"
+      - "traefik.http.routers.bjoetiek-frontend-www-redirect.rule=Host(`www.{{ general_domain_bjoetiek }}`)"
+      - "traefik.http.routers.bjoetiek-frontend-www-redirect.tls.certresolver=le-tls"
+      - "traefik.http.routers.bjoetiek-frontend-www-redirect.middlewares=redirect-www-to-root@file"
 
   bjoetiek-frontend-test:
     <<: *defaults

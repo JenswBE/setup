@@ -1,6 +1,12 @@
 http:
-    middlewares:
-      secure-https:
-        headers:
-          stsSeconds: 15552000
-          sslredirect: true
+  middlewares:
+    secure-https:
+      headers:
+        stsSeconds: 15552000
+        sslredirect: true
+
+    redirect-www-to-root:
+      redirectRegex:
+        regex: "^(https?)://www\\.(.+)"
+        replacement: "${1}://${2}"
+        permanent: true
