@@ -13,6 +13,65 @@ x-defaults: &defaults
 #################################################################
 services:
   # =========================
+  # =         PROXY         =
+  # =========================
+  traefik:
+    <<: *defaults
+    image: traefik:latest
+    container_name: traefik
+    command:
+      # - "--log.level=DEBUG"
+      - "--providers.file.directory=/conf"
+      - "--providers.file.watch=true"
+      - "--providers.docker=true"
+      - "--providers.docker.network=traefik"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.websecure.address=:443"
+      - "--entrypoints.websecure.http.middlewares=secure-https@file"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.web.http.redirections.entryPoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entryPoint.scheme=https"
+      - "--certificatesresolvers.le-tls.acme.tlsChallenge=true"
+      - "--certificatesresolvers.le-tls.acme.email={{ general_mail_admin }}@{{ general_domain_default }}"
+      - "--certificatesresolvers.le-tls.acme.storage=/letsencrypt/acme.json"
+      - "--api=true"
+      - "--ping.manualrouting=true"
+    ports:
+      - 80:80
+      - 443:443
+    networks:
+      - traefik
+    volumes:
+      - ./traefik:/conf
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - traefik-cert:/letsencrypt/
+    environment:
+      - "TZ={{ general_timezone }}"
+
+  # =========================
+  # =       SYNCTHING       =
+  # =========================
+  syncthing:
+    <<: *defaults
+    image: syncthing/syncthing:1
+    container_name: syncthing
+    networks:
+      - traefik
+    ports:
+      - "22000:22000"
+    volumes:
+      - "{{ general_path_appdata }}/syncthing/config:/var/syncthing"
+      - "{{ general_path_appdata }}/syncthing/data:/data"
+    environment:
+      - "TZ={{ general_timezone }}"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.syncthing.entrypoints=websecure"
+      - "traefik.http.routers.syncthing.rule=Host(`syncthing-{{ ansible_hostname }}.{{ general_domain_default }}`)"
+      - "traefik.http.routers.syncthing.tls.certresolver=le-tls"
+      - "traefik.http.services.syncthing-{{ ansible_hostname }}.loadbalancer.server.port=8384"
+
+  # =========================
   # =      BORG SERVER      =
   # =========================
   borgserver:
@@ -35,3 +94,11 @@ services:
 #################################################################
 volumes:
   borgserver-sshkeys-host:
+  traefik-cert:
+
+# #################################################################
+# #                            NETWORKS                           #
+# #################################################################
+networks:
+  traefik:
+    name: traefik
