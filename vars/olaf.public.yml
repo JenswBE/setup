@@ -1,8 +1,12 @@
 # Firewall
 firewall_additional_ports:
-  - port: 80
+  - port: 80 # Traefik HTTP
     proto: tcp
-  - port: 443
+  - port: 443 # Traefik HTTPS
     proto: tcp
-  - port: 32400
+  - port: 22000 # Syncthing TCP
+    proto: tcp
+  - port: 22000 # Syncthing QUIC
+    proto: udp
+  - port: 32400 # Plex
     proto: tcp

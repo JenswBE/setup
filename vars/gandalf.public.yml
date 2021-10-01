@@ -1,4 +1,12 @@
 # Firewall
 firewall_additional_ports:
-- port: 23
-  proto: tcp
+  - port: 23 # Borg server
+    proto: tcp
+  - port: 80 # Traefik HTTP
+    proto: tcp
+  - port: 443 # Traefik HTTPS
+    proto: tcp
+  - port: 22000 # Syncthing TCP
+    proto: tcp
+  - port: 22000 # Syncthing QUIC
+    proto: udp
