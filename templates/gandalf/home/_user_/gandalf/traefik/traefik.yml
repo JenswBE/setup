@@ -1,0 +1,23 @@
+http:
+  middlewares:
+    api-auth:
+      basicauth:
+        users: "{{ app_traefik_api_users }}"
+
+  routers:
+    api:
+      entrypoints: ["websecure"]
+      rule: "Host(`traefik-{{ ansible_hostname }}.{{ general_domain_default }}`)"
+      service: api@internal
+      tls:
+        certresolver: le-tls
+      middlewares:
+        - secure-https
+        - api-auth
+
+    ping:
+      entrypoints: ["websecure"]
+      rule: "Host(`ping-{{ ansible_hostname }}.{{ general_domain_default }}`)"
+      service: ping@internal
+      tls:
+        certresolver: le-tls
