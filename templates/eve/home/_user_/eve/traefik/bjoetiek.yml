@@ -1,6 +1,9 @@
 http:
   middlewares:
-    bjoetiek-fix-cors:
+    bjoetiek-cors:
       headers:
-        customResponseHeaders:
-          Access-Control-Allow-Credentials: "true"
+        accessControlAllowCredentials: true
+        accessControlAllowHeaders: "*"
+        accessControlAllowMethods: "*"
+        accessControlAllowOriginListRegex: '^https?://(.+\.)?{{ general_domain_bjoetiek | regex_escape() }}$'
+        addVaryHeader: true

@@ -409,7 +409,7 @@ services:
       - "traefik.http.routers.bjoetiek-backend.entrypoints=websecure"
       - "traefik.http.routers.bjoetiek-backend.rule=Host(`backend.{{ general_domain_bjoetiek }}`)"
       - "traefik.http.routers.bjoetiek-backend.tls.certresolver=le-tls"
-      - "traefik.http.routers.bjoetiek-backend.middlewares=bjoetiek-fix-cors@file"
+      - "traefik.http.routers.bjoetiek-backend.middlewares=bjoetiek-cors@file"
 
   bjoetiek-db:
     <<: *defaults
