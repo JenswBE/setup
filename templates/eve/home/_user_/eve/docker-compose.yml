@@ -26,6 +26,7 @@ services:
       - "--providers.docker=true"
       - "--providers.docker.network=traefik"
       - "--providers.docker.exposedbydefault=false"
+      - "--providers.docker.constraints=!Label(`bjoetiek.env`,`backend-test`)"
       - "--entrypoints.websecure.address=:443"
       - "--entrypoints.websecure.http.middlewares=secure-https@file"
       - "--entrypoints.web.address=:80"
@@ -353,23 +354,6 @@ services:
       - "traefik.http.routers.bjoetiek-frontend-www-redirect.tls.certresolver=le-tls"
       - "traefik.http.routers.bjoetiek-frontend-www-redirect.middlewares=redirect-www-to-root@file"
 
-  bjoetiek-frontend-test:
-    <<: *defaults
-    image: jenswbe/bjoetiek-y-frontend:latest
-    container_name: bjoetiek-frontend-test
-    depends_on:
-      - bjoetiek-backend
-    networks:
-      - traefik
-      - bjoetiek
-    environment:
-      - "TZ={{ general_timezone }}"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.bjoetiek-frontend-test.entrypoints=websecure"
-      - "traefik.http.routers.bjoetiek-frontend-test.rule=Host(`test.{{ general_domain_bjoetiek }}`)"
-      - "traefik.http.routers.bjoetiek-frontend-test.tls.certresolver=le-tls"
-
   bjoetiek-admin:
     <<: *defaults
     image: jenswbe/bjoetiek-y-admin:v1.0.2
@@ -424,6 +408,130 @@ services:
       - "TZ={{ general_timezone }}"
       - "POSTGRES_USER=bjoetiek"
       - "POSTGRES_PASSWORD={{ app_bjoetiek_db_pass }}"
+
+  # ===========================================================================
+  # =   BJOETIEK Y - Test                                                     =
+  # =   https://github.com/JenswBE/bjoetiek-y-frontend                        =
+  # =   https://github.com/JenswBE/go-commerce                                =
+  # =   https://github.com/JenswBE/go-commerce-admin                          =
+  # ===========================================================================
+
+  bjoetiek-test-frontend:
+    <<: *defaults
+    image: jenswbe/bjoetiek-y-frontend:latest
+    container_name: bjoetiek-test-frontend
+    networks:
+      - traefik
+      - bjoetiek-test
+    environment:
+      - "TZ={{ general_timezone }}"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.bjoetiek-test-frontend.entrypoints=websecure"
+      - "traefik.http.routers.bjoetiek-test-frontend.rule=Host(`test.{{ general_domain_bjoetiek }}`)"
+      - "traefik.http.routers.bjoetiek-test-frontend.tls.certresolver=le-tls"
+
+  bjoetiek-test-admin:
+    <<: *defaults
+    image: jenswbe/go-commerce-admin:latest
+    container_name: bjoetiek-test-admin
+    networks:
+      - traefik
+    environment:
+      - "TZ={{ general_timezone }}"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.bjoetiek-test-admin.entrypoints=websecure"
+      - "traefik.http.routers.bjoetiek-test-admin.rule=Host(`test-beheer.{{ general_domain_bjoetiek }}`)"
+      - "traefik.http.routers.bjoetiek-test-admin.tls.certresolver=le-tls"
+      - "traefik.http.services.bjoetiek-test-admin-{{ ansible_hostname }}.loadbalancer.server.port=8080"
+
+  bjoetiek-test-backend-proxy:
+    <<: *defaults
+    image: traefik:latest
+    container_name: bjoetiek-test-backend-proxy
+    command:
+      # - "--log.level=DEBUG"
+      - "--providers.docker=true"
+      - "--providers.docker.network=bjoetiek-test"
+      - "--providers.docker.exposedbydefault=false"
+      - "--providers.docker.constraints=Label(`bjoetiek.env`,`backend-test`)"
+      - "--entrypoints.web.address=:80"
+    networks:
+      - traefik
+      - bjoetiek-test
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    environment:
+      - "TZ={{ general_timezone }}"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.bjoetiek-test-backend.entrypoints=websecure"
+      - "traefik.http.routers.bjoetiek-test-backend.rule=Host(`test-backend.{{ general_domain_bjoetiek }}`)"
+      - "traefik.http.routers.bjoetiek-test-backend.tls.certresolver=le-tls"
+
+  bjoetiek-test-imgproxy:
+    <<: *defaults
+    image: darthsim/imgproxy:latest
+    container_name: bjoetiek-test-imgproxy
+    environment:
+      - "IMGPROXY_KEY={{ app_bjoetiek_test_image_proxy_key }}"
+      - "IMGPROXY_SALT={{ app_bjoetiek_test_image_proxy_salt }}"
+      - "IMGPROXY_LOCAL_FILESYSTEM_ROOT=/images"
+      - "IMGPROXY_MAX_SRC_RESOLUTION=64"
+    networks:
+      - bjoetiek-test
+    volumes:
+      - "{{ general_path_appdata }}/bjoetiek/backend-test/images:/images:ro"
+    labels:
+      - "bjoetiek.env=backend-test"
+      - "traefik.http.routers.images.entrypoints=web"
+      - "traefik.http.routers.images.rule=PathPrefix(`/images`)"
+      - "traefik.http.routers.images.middlewares=strip-images-prefix"
+      - "traefik.http.middlewares.strip-images-prefix.stripPrefix.prefixes=/images"
+
+  bjoetiek-test-backend:
+    <<: *defaults
+    image: jenswbe/go-commerce:latest
+    container_name: bjoetiek-test-backend
+    depends_on:
+      - bjoetiek-test-db
+    networks:
+      - bjoetiek-test
+    volumes:
+      - "{{ general_path_appdata }}/bjoetiek/backend-test/images:/images"
+    environment:
+      - "TZ={{ general_timezone }}"
+      - "AUTH_USERNAME={{ app_bjoetiek_admin_user }}"
+      - "AUTH_PASSWORD={{ app_bjoetiek_admin_pass }}"
+      - "DATABASE_HOST=bjoetiek-test-db"
+      - "DATABASE_USER=bjoetiek-test"
+      - "DATABASE_PASSWORD=bjoetiek-test"
+      - "DATABASE_DATABASE=bjoetiek-test"
+      - "IMAGE_PROXY_BASE_URL=https://test-backend.{{ general_domain_bjoetiek }}/images/"
+      - "IMAGE_PROXY_KEY={{ app_bjoetiek_test_image_proxy_key }}"
+      - "IMAGE_PROXY_SALT={{ app_bjoetiek_test_image_proxy_salt }}"
+      - "IMAGE_PROXY_ALLOWED_CONFIGS=100:100:FIT,150:150:FIT,400:400:FIT,550:550:FIT"
+      - "STORAGE_IMAGES_PATH=/images"
+    labels:
+      - "bjoetiek.env=backend-test"
+      - "traefik.http.routers.backend.entrypoints=web"
+      - "traefik.http.routers.backend.rule=PathPrefix(`/api`)"
+      - "traefik.http.routers.backend.middlewares=strip-api-prefix"
+      - "traefik.http.middlewares.strip-api-prefix.stripPrefix.prefixes=/api"
+
+  bjoetiek-test-db:
+    <<: *defaults
+    image: postgres:13-alpine
+    container_name: bjoetiek-test-db
+    networks:
+      - bjoetiek-test
+    volumes:
+      - "bjoetiek-test-db-data:/var/lib/postgresql/data"
+    environment:
+      - "TZ={{ general_timezone }}"
+      - "POSTGRES_USER=bjoetiek-test"
+      - "POSTGRES_PASSWORD=bjoetiek-test"
 
   # ===========================================================================
   # =   SNOEP PROTOTYPE                                                       =
@@ -563,6 +671,7 @@ services:
 # #################################################################
 volumes:
   bjoetiek-db-dump:
+  bjoetiek-test-db-data:
   isa-output:
   nc-db-dump:
   nc-calcardbackup:
@@ -576,6 +685,9 @@ volumes:
 # #################################################################
 networks:
   bjoetiek:
+    name: bjoetiek
+
+  bjoetiek-test:
     name: bjoetiek
 
   backup-nc-db:

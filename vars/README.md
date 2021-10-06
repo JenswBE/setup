@@ -11,3 +11,11 @@ htpasswd -nBC 10 <USERNAME>
 ```bash
 rclone obscure <PASS>
 ```
+
+## Generate imgproxy key and salt
+
+See https://docs.imgproxy.net/configuration?id=url-signature
+
+```bash
+echo $(xxd -g 2 -l 64 -p /dev/random | tr -d '\n')
+```
