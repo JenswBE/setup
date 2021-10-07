@@ -454,8 +454,10 @@ services:
     <<: *defaults
     image: traefik:latest
     container_name: bjoetiek-test-backend-proxy
+    logging:
+      driver: "local" # To prevent spamming Loki with debug logs
     command:
-      # - "--log.level=DEBUG"
+      - "--log.level=DEBUG"
       - "--providers.docker=true"
       - "--providers.docker.network=bjoetiek-test"
       - "--providers.docker.exposedbydefault=false"
@@ -473,6 +475,7 @@ services:
       - "traefik.http.routers.bjoetiek-test-backend.entrypoints=websecure"
       - "traefik.http.routers.bjoetiek-test-backend.rule=Host(`test-backend.{{ general_domain_bjoetiek }}`)"
       - "traefik.http.routers.bjoetiek-test-backend.tls.certresolver=le-tls"
+      - "traefik.http.routers.bjoetiek-test-backend.middlewares=bjoetiek-cors@file"
 
   bjoetiek-test-imgproxy:
     <<: *defaults
@@ -489,6 +492,7 @@ services:
       - "{{ general_path_appdata }}/bjoetiek/backend-test/images:/images:ro"
     labels:
       - "bjoetiek.env=backend-test"
+      - "traefik.enable=true"
       - "traefik.http.routers.images.entrypoints=web"
       - "traefik.http.routers.images.rule=PathPrefix(`/images`)"
       - "traefik.http.routers.images.middlewares=strip-images-prefix"
@@ -519,6 +523,7 @@ services:
       - "STORAGE_IMAGES_PATH=/images"
     labels:
       - "bjoetiek.env=backend-test"
+      - "traefik.enable=true"
       - "traefik.http.routers.backend.entrypoints=web"
       - "traefik.http.routers.backend.rule=PathPrefix(`/api`)"
       - "traefik.http.routers.backend.middlewares=strip-api-prefix"
