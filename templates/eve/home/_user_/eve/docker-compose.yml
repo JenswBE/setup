@@ -425,6 +425,9 @@ services:
       - bjoetiek-test
     environment:
       - "TZ={{ general_timezone }}"
+      - "SENTRY_DSN={{ app_bjoetiek_sentry_dsn }}"
+      - "BACKEND_URL_INTERNAL=http://bjoetiek-test-backend:8090"
+      - "BACKEND_URL_EXTERNAL=https://test-backend.{{ general_domain_bjoetiek }}/api"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.bjoetiek-test-frontend.entrypoints=websecure"
@@ -439,6 +442,7 @@ services:
       - traefik
     environment:
       - "TZ={{ general_timezone }}"
+      - "BACKEND_URL=https://test-backend.{{ general_domain_bjoetiek }}/api"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.bjoetiek-test-admin.entrypoints=websecure"
