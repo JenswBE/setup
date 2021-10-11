@@ -140,7 +140,7 @@ services:
 
       - name: "Pi-hole"
         logo: "assets/logos/pi-hole.png"
-        url: "https://dns.jensw.be"
+        url: "https://dns.jensw.be/admin"
         <<: *tag_eve
 
       - name: "Traefik Eve"
