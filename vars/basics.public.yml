@@ -10,8 +10,9 @@ general_timezone: "Europe/Brussels"
 general_user: jens
 
 # Docker
-docker_users:
-  - jens
+docker_users: ["jens"]
+docker_compose_version: "v2.0.1"
+docker_compose_path: "/usr/libexec/docker/cli-plugins/docker-compose" # Also used for systemd units
 
 # Firewall
 firewall_ssh_port: 22
