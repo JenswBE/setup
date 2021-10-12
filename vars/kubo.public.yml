@@ -1,8 +1,14 @@
 # Firewall
 firewall_additional_ports:
+  - port: 53 # Pi-hole
+    proto: tcp
+  - port: 53 # Pi-hole
+    proto: udp
   - port: 80 # Traefik HTTP
     proto: tcp
   - port: 443 # Traefik HTTPS
+    proto: tcp
+  - port: 8080 # UniFi
     proto: tcp
   - port: 22000 # Syncthing TCP
     proto: tcp

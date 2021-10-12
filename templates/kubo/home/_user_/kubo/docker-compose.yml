@@ -34,6 +34,10 @@ services:
       - "--certificatesresolvers.le-tls.acme.tlsChallenge=true"
       - "--certificatesresolvers.le-tls.acme.email={{ general_mail_admin }}@{{ general_domain_default }}"
       - "--certificatesresolvers.le-tls.acme.storage=/letsencrypt/acme.json"
+      - "--certificatesresolvers.le-tls-staging.acme.tlsChallenge=true"
+      - "--certificatesresolvers.le-tls-staging.acme.email={{ general_mail_admin }}@{{ general_domain_default }}"
+      - "--certificatesresolvers.le-tls-staging.acme.storage=/letsencrypt/acme-staging.json"
+      - "--certificatesResolvers.le-tls-staging.acme.caServer=https://acme-staging-v02.api.letsencrypt.org/directory"
       - "--api=true"
       - "--ping.manualrouting=true"
     ports:
@@ -260,6 +264,64 @@ services:
       retries: 5
 
   # =========================
+  # =          DNS          =
+  # =========================
+  pihole:
+    <<: *defaults
+    image: pihole/pihole:latest
+    container_name: pihole
+    hostname: "{{ ansible_hostname }}"
+    networks:
+      - traefik
+      - pihole
+    ports:
+      - "53:53/tcp"
+      - "53:53/udp"
+    volumes:
+      - "{{ general_path_appdata }}/pihole/pihole/:/etc/pihole/"
+      - "{{ general_path_appdata }}/pihole/dnsmasq/:/etc/dnsmasq.d/"
+    environment:
+      - "TZ={{ general_timezone }}"
+      - "PIHOLE_DNS_={{ app_pihole_upstream_dns }}"
+      - "WEBPASSWORD={{ app_pihole_web_password }}"
+      - "WEBTHEME=default-dark"
+      - "DNSMASQ_LISTENING=all"
+      - "DNS_BOGUS_PRIV=false"
+      - "DNS_FQDN_REQUIRED=false"
+    dns: ["{{ app_pihole_upstream_dns }}"]
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.pihole.entrypoints=websecure"
+      - "traefik.http.routers.pihole.rule=Host(`dns.{{ general_domain_default }}`)"
+      - "traefik.http.routers.pihole.tls.certresolver=le-tls"
+      - "traefik.http.services.pihole-{{ ansible_hostname }}.loadbalancer.server.port=80"
+
+  doh-server:
+    <<: *defaults
+    image: satishweb/doh-server:latest
+    container_name: doh-server
+    hostname: doh-server
+    networks:
+      - traefik
+      - pihole
+    environment:
+      # - "DEBUG=1"
+      - "TZ={{ general_timezone }}"
+      - "UPSTREAM_DNS_SERVER=udp:pihole:53"
+      - "DOH_HTTP_PREFIX=/dns-query"
+      - "DOH_SERVER_TIMEOUT=10"
+      - "DOH_SERVER_TRIES=3"
+      - "DOH_SERVER_VERBOSE=false"
+    depends_on:
+      - pihole
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.doh-server.entrypoints=websecure"
+      - "traefik.http.routers.doh-server.rule=Host(`{{ app_pihole_domain_prefix }}.dns.{{ general_domain_default }}`)"
+      - "traefik.http.routers.doh-server.tls.certresolver=le-tls"
+      - "traefik.http.routers.doh-server.middlewares=doh-server-ratelimit@file, doh-server-compress@file"
+
+  # =========================
   # =        LOGGING        =
   # =========================
   grafana:
@@ -370,6 +432,9 @@ networks:
 
   nextcloud:
     name: nextcloud
+
+  pihole:
+    name: pihole
 
   traefik:
     name: traefik

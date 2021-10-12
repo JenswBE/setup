@@ -4,8 +4,6 @@ firewall_additional_ports:
     proto: tcp
   - port: 443 # Traefik HTTPS
     proto: tcp
-  - port: 853 # DNS over TLS
-    proto: tcp
 
 # GoatCounter
 app_goatcounter_version: v2.0.4
