@@ -1,6 +1,37 @@
 - include_tasks: tasks/powertop.yml
   tags: ["setup"]
 
+- name: Disable systemd-resolved DNSStubListener
+  # Based on https://www.qualityology.com/tech/ubuntu-port-53-already-in-use-how-to-free-the-dns-port/
+  ansible.builtin.lineinfile:
+    dest: "/etc/systemd/resolved.conf"
+    regexp: '^#?\s*DNSStubListener='
+    line: "DNSStubListener=no"
+    state: present
+    mode: 0644
+  become: yes
+  register: disable_dns_stub_listener
+  tags: ["setup"]
+
+- name: Create a symbolic link
+  ansible.builtin.file:
+    src: /run/systemd/resolve/resolv.conf
+    dest: /etc/resolv.conf
+    owner: root
+    group: root
+    state: link
+    force: true
+  become: yes
+  tags: ["setup"]
+
+- name: Restart systemd-resolved
+  when: disable_dns_stub_listener.changed
+  systemd:
+    name: "systemd-resolved"
+    state: restarted
+  become: yes
+  tags: ["setup"]
+
 - name: Copy systemd system unit templates
   include_tasks: tasks/helpers/copy_templates_folder.yml
   vars:
