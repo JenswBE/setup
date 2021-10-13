@@ -353,7 +353,7 @@ services:
 
   loki:
     <<: *defaults
-    image: grafana/loki:2.2.0
+    image: grafana/loki:2.3.0
     container_name: loki
     command: -config.file=/etc/loki/config.yml
     user: "{{ ansible_real_user_id }}"
@@ -380,7 +380,7 @@ services:
 
   promtail:
     <<: *defaults
-    image: grafana/promtail:2.2.0
+    image: grafana/promtail:2.3.0
     container_name: promtail
     command: -config.file=/etc/promtail/config.yml
     volumes:
