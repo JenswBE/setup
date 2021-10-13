@@ -187,7 +187,7 @@ services:
   # =========================
   promtail:
     <<: *defaults
-    image: grafana/promtail:2.2.0
+    image: grafana/promtail:2.3.0
     container_name: promtail
     command: -config.file=/etc/promtail/config.yml
     volumes:
