@@ -26,7 +26,7 @@ services:
       - "--providers.docker=true"
       - "--providers.docker.network=traefik"
       - "--providers.docker.exposedbydefault=false"
-      - "--providers.docker.constraints=!Label(`bjoetiek.env`,`backend-test`)"
+      - "--providers.docker.constraints=!LabelRegex(`bjoetiek.env`,`.+`)"
       - "--entrypoints.websecure.address=:443"
       - "--entrypoints.websecure.http.middlewares=secure-https@file"
       - "--entrypoints.web.address=:80"
@@ -334,20 +334,21 @@ services:
   # ===========================================================================
   # =   BJOETIEK Y                                                            =
   # =   https://github.com/JenswBE/bjoetiek-y-frontend                        =
-  # =   https://github.com/JenswBE/bjoetiek-y-admin                           =
-  # =   https://github.com/JenswBE/bjoetiek-y-backend                         =
+  # =   https://github.com/JenswBE/go-commerce                                =
+  # =   https://github.com/JenswBE/go-commerce-admin                           =
   # ===========================================================================
   bjoetiek-frontend:
     <<: *defaults
-    image: jenswbe/bjoetiek-y-frontend:v1.4.0
+    image: jenswbe/bjoetiek-y-frontend:latest
     container_name: bjoetiek-frontend
-    depends_on:
-      - bjoetiek-backend
     networks:
       - traefik
       - bjoetiek
     environment:
       - "TZ={{ general_timezone }}"
+      - "SENTRY_DSN={{ app_bjoetiek_sentry_dsn }}"
+      - "BACKEND_URL_INTERNAL=http://bjoetiek-backend:8080"
+      - "BACKEND_URL_EXTERNAL=https://backend.{{ general_domain_bjoetiek }}/api"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.bjoetiek-frontend.entrypoints=websecure"
@@ -360,14 +361,13 @@ services:
 
   bjoetiek-admin:
     <<: *defaults
-    image: jenswbe/bjoetiek-y-admin:v1.0.2
+    image: jenswbe/go-commerce-admin:latest
     container_name: bjoetiek-admin
-    depends_on:
-      - bjoetiek-backend
     networks:
       - traefik
     environment:
       - "TZ={{ general_timezone }}"
+      - "BACKEND_URL=https://backend.{{ general_domain_bjoetiek }}"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.bjoetiek-admin.entrypoints=websecure"
@@ -375,29 +375,82 @@ services:
       - "traefik.http.routers.bjoetiek-admin.tls.certresolver=le-tls"
       - "traefik.http.services.bjoetiek-admin-{{ ansible_hostname }}.loadbalancer.server.port=8080"
 
-  bjoetiek-backend:
+  bjoetiek-backend-proxy:
     <<: *defaults
-    image: jenswbe/bjoetiek-y-backend:v1.0.1
-    container_name: bjoetiek-backend
-    depends_on:
-      - bjoetiek-db
+    image: traefik:latest
+    container_name: bjoetiek-backend-proxy
+    command:
+      # - "--log.level=DEBUG"
+      - "--providers.docker=true"
+      - "--providers.docker.network=bjoetiek"
+      - "--providers.docker.exposedbydefault=false"
+      - "--providers.docker.constraints=Label(`bjoetiek.env`,`backend-production`)"
+      - "--entrypoints.web.address=:80"
     networks:
       - traefik
       - bjoetiek
     volumes:
-      - "{{ general_path_appdata }}/bjoetiek/backend/images:/images"
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
     environment:
       - "TZ={{ general_timezone }}"
-      - "ADMIN_USERNAME={{ app_bjoetiek_admin_user }}"
-      - "ADMIN_PASSWORD={{ app_bjoetiek_admin_pass }}"
-      - "DATABASE_URL=postgres://bjoetiek:{{ app_bjoetiek_db_pass }}@bjoetiek-db/bjoetiek"
-      - "IMAGES_PATH=/images"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.bjoetiek-backend.entrypoints=websecure"
       - "traefik.http.routers.bjoetiek-backend.rule=Host(`backend.{{ general_domain_bjoetiek }}`)"
       - "traefik.http.routers.bjoetiek-backend.tls.certresolver=le-tls"
       - "traefik.http.routers.bjoetiek-backend.middlewares=bjoetiek-cors@file"
+
+  bjoetiek-imgproxy:
+    <<: *defaults
+    image: darthsim/imgproxy:latest
+    container_name: bjoetiek-imgproxy
+    environment:
+      - "IMGPROXY_KEY={{ app_bjoetiek_image_proxy_key }}"
+      - "IMGPROXY_SALT={{ app_bjoetiek_image_proxy_salt }}"
+      - "IMGPROXY_LOCAL_FILESYSTEM_ROOT=/images"
+      - "IMGPROXY_MAX_SRC_RESOLUTION=64"
+    networks:
+      - bjoetiek
+    volumes:
+      - "{{ general_path_appdata }}/bjoetiek/backend/images:/images:ro"
+    labels:
+      - "bjoetiek.env=backend-production"
+      - "traefik.enable=true"
+      - "traefik.http.routers.images.entrypoints=web"
+      - "traefik.http.routers.images.rule=PathPrefix(`/images`)"
+      - "traefik.http.routers.images.middlewares=strip-images-prefix"
+      - "traefik.http.middlewares.strip-images-prefix.stripPrefix.prefixes=/images"
+
+  bjoetiek-backend:
+    <<: *defaults
+    image: jenswbe/go-commerce:latest
+    container_name: bjoetiek-backend
+    depends_on:
+      - bjoetiek-db
+    networks:
+      - bjoetiek
+    volumes:
+      - "{{ general_path_appdata }}/bjoetiek/backend/images:/images"
+    environment:
+      - "TZ={{ general_timezone }}"
+      - "AUTH_USERNAME={{ app_bjoetiek_admin_user }}"
+      - "AUTH_PASSWORD={{ app_bjoetiek_admin_pass }}"
+      - "DATABASE_HOST=bjoetiek-db"
+      - "DATABASE_USER=bjoetiek"
+      - "DATABASE_PASSWORD={{ app_bjoetiek_db_pass }}"
+      - "DATABASE_DATABASE=bjoetiek"
+      - "IMAGE_PROXY_BASE_URL=https://backend.{{ general_domain_bjoetiek }}/images/"
+      - "IMAGE_PROXY_KEY={{ app_bjoetiek_image_proxy_key }}"
+      - "IMAGE_PROXY_SALT={{ app_bjoetiek_image_proxy_salt }}"
+      - "IMAGE_PROXY_ALLOWED_CONFIGS=100:100:FIT,150:150:FIT,400:400:FIT,550:550:FIT"
+      - "STORAGE_IMAGES_PATH=/images"
+    labels:
+      - "bjoetiek.env=backend-production"
+      - "traefik.enable=true"
+      - "traefik.http.routers.backend.entrypoints=web"
+      - "traefik.http.routers.backend.rule=PathPrefix(`/api`)"
+      - "traefik.http.routers.backend.middlewares=strip-api-prefix"
+      - "traefik.http.middlewares.strip-api-prefix.stripPrefix.prefixes=/api"
 
   bjoetiek-db:
     <<: *defaults
