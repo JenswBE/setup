@@ -339,7 +339,7 @@ services:
   # ===========================================================================
   bjoetiek-frontend:
     <<: *defaults
-    image: jenswbe/bjoetiek-y-frontend:latest
+    image: jenswbe/bjoetiek-y-frontend:v2.0.0
     container_name: bjoetiek-frontend
     networks:
       - traefik
@@ -361,7 +361,7 @@ services:
 
   bjoetiek-admin:
     <<: *defaults
-    image: jenswbe/go-commerce-admin:latest
+    image: jenswbe/go-commerce-admin:v0.1.0
     container_name: bjoetiek-admin
     networks:
       - traefik
@@ -377,7 +377,7 @@ services:
 
   bjoetiek-backend-proxy:
     <<: *defaults
-    image: traefik:latest
+    image: traefik:v2.5
     container_name: bjoetiek-backend-proxy
     command:
       # - "--log.level=DEBUG"
@@ -402,7 +402,7 @@ services:
 
   bjoetiek-imgproxy:
     <<: *defaults
-    image: darthsim/imgproxy:latest
+    image: darthsim/imgproxy:v2
     container_name: bjoetiek-imgproxy
     environment:
       - "IMGPROXY_KEY={{ app_bjoetiek_image_proxy_key }}"
@@ -423,7 +423,7 @@ services:
 
   bjoetiek-backend:
     <<: *defaults
-    image: jenswbe/go-commerce:latest
+    image: jenswbe/go-commerce:v0.1.0
     container_name: bjoetiek-backend
     depends_on:
       - bjoetiek-db
