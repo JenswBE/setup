@@ -149,37 +149,23 @@ services:
       - "traefik.http.routers.nginx-tuinfeest-beta.rule=Host(`beta.{{ general_domain_tuinfeest }}`)"
       - "traefik.http.routers.nginx-tuinfeest-beta.tls.certresolver=le-tls"
 
-  nginx-tuinfeest-archive-2019:
+{% for year in range(2019,2020+1) %}
+  nginx-tuinfeest-archive-{{ year }}:
     <<: *defaults
     image: nginx:latest
-    container_name: nginx-tf-archive-2019
+    container_name: "nginx-tf-archive-{{ year }}"
     networks:
       - traefik
     volumes:
-      - "{{ general_path_appdata }}/nginx/tuinfeest-archive/2019:/usr/share/nginx/html"
+      - "{{ general_path_appdata }}/nginx/tuinfeest-archive/{{ year }}:/usr/share/nginx/html"
     environment:
       - "TZ={{ general_timezone }}"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.nginx-tuinfeest-archive-2019.entrypoints=websecure"
-      - "traefik.http.routers.nginx-tuinfeest-archive-2019.rule=Host(`2019.{{ general_domain_tuinfeest }}`)"
-      - "traefik.http.routers.nginx-tuinfeest-archive-2019.tls.certresolver=le-tls"
-
-  nginx-tuinfeest-archive-2020:
-    <<: *defaults
-    image: nginx:latest
-    container_name: nginx-tf-archive-2020
-    networks:
-      - traefik
-    volumes:
-      - "{{ general_path_appdata }}/nginx/tuinfeest-archive/2020:/usr/share/nginx/html"
-    environment:
-      - "TZ={{ general_timezone }}"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.nginx-tuinfeest-archive-2020.entrypoints=websecure"
-      - "traefik.http.routers.nginx-tuinfeest-archive-2020.rule=Host(`2020.{{ general_domain_tuinfeest }}`)"
-      - "traefik.http.routers.nginx-tuinfeest-archive-2020.tls.certresolver=le-tls"
+      - "traefik.http.routers.nginx-tuinfeest-archive-{{ year }}.entrypoints=websecure"
+      - "traefik.http.routers.nginx-tuinfeest-archive-{{ year }}.rule=Host(`{{ year }}.{{ general_domain_tuinfeest }}`)"
+      - "traefik.http.routers.nginx-tuinfeest-archive-{{ year }}.tls.certresolver=le-tls"
+{% endfor %}
 
   # =========================
   # =         PASSIT        =
