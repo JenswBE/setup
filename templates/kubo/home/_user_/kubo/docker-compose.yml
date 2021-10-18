@@ -279,7 +279,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.nginx-hetvleermuizenkind.entrypoints=websecure"
-      - "traefik.http.routers.nginx-hetvleermuizenkind.rule=Host(`hetvleermuizenkind.{{ general_domain }}`)"
+      - "traefik.http.routers.nginx-hetvleermuizenkind.rule=Host(`hetvleermuizenkind.{{ general_domain_default }}`)"
       - "traefik.http.routers.nginx-hetvleermuizenkind.tls.certresolver=le-tls"
 
   # =========================
