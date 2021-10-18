@@ -264,6 +264,25 @@ services:
       retries: 5
 
   # =========================
+  # =         NGINX         =
+  # =========================
+  nginx-hetvleermuizenkind:
+    <<: *defaults
+    image: nginx:latest
+    container_name: nginx-hetvleermuizenkind
+    networks:
+      - traefik
+    volumes:
+      - "{{ general_path_appdata }}/nginx/hetvleermuizenkind:/usr/share/nginx/html"
+    environment:
+      - "TZ={{ general_timezone }}"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.nginx-hetvleermuizenkind.entrypoints=websecure"
+      - "traefik.http.routers.nginx-hetvleermuizenkind.rule=Host(`hetvleermuizenkind.{{ general_domain }}`)"
+      - "traefik.http.routers.nginx-hetvleermuizenkind.tls.certresolver=le-tls"
+
+  # =========================
   # =          DNS          =
   # =========================
   pihole:
