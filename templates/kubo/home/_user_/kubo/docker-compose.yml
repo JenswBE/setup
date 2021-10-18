@@ -438,6 +438,8 @@ services:
     environment:
       - "TZ={{ general_timezone }}"
       - "BORG_PASSPHRASE={{ app_borgmatic_borg_passphrase }}"
+      - "BORG_HOSTNAME_IS_UNIQUE=yes" # Automatically removes stale locks
+      - "BORG_HOST_ID={{ ansible_hostname }}"
 
 #################################################################
 #                            NETWORKS                           #
