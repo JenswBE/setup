@@ -26,6 +26,7 @@
     - bjoetiek-dump-db.timer
     - docker-update-containers.timer
     - isa-rclone.timer
+    - keycloak-dump-db.timer
     - nextcloud-calcardbackup.timer
     - nextcloud-cron.timer
     - nextcloud-dump-db.timer
