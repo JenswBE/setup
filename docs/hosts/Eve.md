@@ -18,10 +18,11 @@ Hetzner VPS
 ### 02:00 Prepare backup
 
 - Dump Bjoetiek DB (`templates/eve/etc/systemd/system/bjoetiek-dump-db.timer`)
+- Dump Keycloak DB (`templates/eve/etc/systemd/system/keycloak-dump-db.timer`)
 - Dump Nextcloud DB (`templates/eve/etc/systemd/system/nextcloud-dump-db.timer`)
 - Dump Nextcloud calendars and contacts (`templates/eve/etc/systemd/system/nextcloud-calcardbackup.timer`)
 - Dump Passit DB (`templates/eve/etc/systemd/system/passit-dump-db.timer`)
-- Dump SnipeIT DB (`templates/eve/etc/systemd/system/snipe-it-dump-db.service`)
+- Dump Snipe-IT DB (`templates/eve/etc/systemd/system/snipe-it-dump-db.service`)
 
 ### 03:00 Perform backup
 

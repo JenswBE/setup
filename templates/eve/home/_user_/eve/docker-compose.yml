@@ -485,7 +485,16 @@ services:
       - traefik
     environment:
       - "TZ={{ general_timezone }}"
-      - "BACKEND_URL=https://test-backend.{{ general_domain_bjoetiek }}"
+      - "AUTH_CLIENT_ID={{ app_bjoetiek_test_auth_client_id }}"
+      - "AUTH_STATE={{ app_bjoetiek_test_auth_state }}"
+      - "AUTH_URL_AUTHORIZATION=https://auth.{{ general_domain_default }}/auth/realms/bjoetiek/protocol/openid-connect/auth"
+      - "AUTH_URL_TOKEN=https://auth.{{ general_domain_default }}/auth/realms/bjoetiek/protocol/openid-connect/token"
+      - "AUTH_URL_USERINFO=https://auth.{{ general_domain_default }}/auth/realms/bjoetiek/protocol/openid-connect/userinfo"
+      - "AUTH_URL_LOGOUT=https://auth.{{ general_domain_default }}/auth/realms/bjoetiek/protocol/openid-connect/logout"
+      - "AUTH_URL_LOGOUT_REDIRECT=https://test-beheer.{{ general_domain_bjoetiek }}/login"
+      - "BACKEND_URL_INTERNAL=http://bjoetiek-test-backend:8080"
+      - "BACKEND_URL_EXTERNAL=https://test-backend.{{ general_domain_bjoetiek }}/api"
+      - "PRODUCT_URL_TEMPLATE=https://test.{{ general_domain_bjoetiek }}/producten/$${p.id}/$${p.name}"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.bjoetiek-test-admin.entrypoints=websecure"
@@ -553,8 +562,7 @@ services:
       - "{{ general_path_appdata }}/bjoetiek/backend-test/images:/images"
     environment:
       - "TZ={{ general_timezone }}"
-      - "AUTH_USERNAME={{ app_bjoetiek_admin_user }}"
-      - "AUTH_PASSWORD={{ app_bjoetiek_admin_pass }}"
+      - "AUTH_ISSUER_URL=https://auth.{{ general_domain_default }}/auth/realms/bjoetiek"
       - "DATABASE_HOST=bjoetiek-test-db"
       - "DATABASE_USER=bjoetiek-test"
       - "DATABASE_PASSWORD=bjoetiek-test"
@@ -586,12 +594,13 @@ services:
       - "POSTGRES_PASSWORD=bjoetiek-test"
 
   # ===========================================================================
-  # =   SNOEP PROTOTYPE                                                       =
-  # =   https://github.com/JenswBE/charlotte-frontend                         =
+  # =   SNOEP AND FRIET PROTOTYPE                                             =
+  # =   https://github.com/JenswBE/candylicious-frontend                      =
+  # =   https://github.com/JenswBE/oud-turnhoutsgebak-frontend                =
   # ===========================================================================
   snoep-frontend:
     <<: *defaults
-    image: jenswbe/charlotte-frontend:latest
+    image: jenswbe/candylicious-frontend:latest
     container_name: snoep-frontend
     networks:
       - traefik
@@ -602,6 +611,20 @@ services:
       - "traefik.http.routers.snoep-frontend.entrypoints=websecure"
       - "traefik.http.routers.snoep-frontend.rule=Host(`snoep.{{ general_domain_default }}`)"
       - "traefik.http.routers.snoep-frontend.tls.certresolver=le-tls"
+
+  friet-frontend:
+    <<: *defaults
+    image: jenswbe/oud-turnhoutsgebak-frontend:latest
+    container_name: friet-frontend
+    networks:
+      - traefik
+    environment:
+      - "TZ={{ general_timezone }}"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.friet-frontend.entrypoints=websecure"
+      - "traefik.http.routers.friet-frontend.rule=Host(`friet.{{ general_domain_default }}`)"
+      - "traefik.http.routers.friet-frontend.tls.certresolver=le-tls"
 
   # =========================
   # =      GOAT COUNTER     =
@@ -631,6 +654,55 @@ services:
           `stats.{{ general_domain_klokracing }}`,
           `stats.{{ general_domain_tuinfeest }}`,
         )
+
+  # =========================
+  # =          AUTH         =
+  # =========================
+  keycloak:
+    <<: *defaults
+    image: quay.io/keycloak/keycloak:15.0.2
+    container_name: keycloak
+    depends_on:
+      - keycloak-db
+    networks:
+      - traefik
+      - keycloak
+    environment:
+      - "TZ={{ general_timezone }}"
+      - "DB_VENDOR=POSTGRES"
+      - "DB_ADDR=keycloak-db"
+      - "DB_DATABASE=keycloak"
+      - "DB_USER=keycloak"
+      - "DB_SCHEMA=public"
+      - "DB_PASSWORD={{ app_keycloak_db_pass }}"
+      - "KEYCLOAK_USER={{ app_keycloak_admin_user }}"
+      - "KEYCLOAK_PASSWORD={{ app_keycloak_admin_pass }}"
+      - "KEYCLOAK_FRONTEND_URL=https://auth.{{ general_domain_default }}/auth"
+      - "PROXY_ADDRESS_FORWARDING=true"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.keycloak.entrypoints=websecure"
+      - "traefik.http.routers.keycloak.tls.certresolver=le-tls"
+      - >-
+        traefik.http.routers.keycloak.rule=Host(
+          `auth.{{ general_domain_default }}`,
+          `auth.{{ general_domain_bjoetiek }}`,
+        )
+
+  keycloak-db:
+    <<: *defaults
+    image: postgres:12-alpine
+    container_name: keycloak-db
+    networks:
+      - keycloak
+    volumes:
+      - "{{ general_path_appdata }}/keycloak/postgres/data:/var/lib/postgresql/data"
+      - keycloak-db-dump:/backup
+    environment:
+      - "TZ={{ general_timezone }}"
+      - "POSTGRES_USER=keycloak"
+      - "POSTGRES_PASSWORD={{ app_keycloak_db_pass }}"
+      - "POSTGRES_DB=keycloak"
 
   # =========================
   # =      MAINTENANCE      =
@@ -700,6 +772,7 @@ services:
       - "bjoetiek-db-dump:/mnt/source/bjoetiek/dbdump:ro"
       - "{{ general_path_appdata }}/bjoetiek/backend:/mnt/source/bjoetiek/backend:ro"
       - "{{ general_path_appdata }}/goatcounter/db:/mnt/source/goatcounter/db:ro"
+      - "keycloak-db-dump:/mnt/source/keycloak/dbdump:ro"
       - "nc-db-dump:/mnt/source/nextcloud/dbdump:ro"
       - "nc-calcardbackup:/mnt/source/nextcloud/calcardbackup:ro"
       - "{{ general_path_appdata }}/nextcloud/nextcloud/data:/mnt/source/nextcloud/data:ro"
@@ -727,6 +800,7 @@ volumes:
   bjoetiek-db-dump:
   bjoetiek-test-db-data:
   isa-output:
+  keycloak-db-dump:
   nc-db-dump:
   nc-calcardbackup:
   passit-db-dump:
@@ -746,6 +820,9 @@ networks:
 
   backup-nc-db:
     name: backup-nc-db
+
+  keycloak:
+    name: keycloak
 
   nextcloud:
     name: nextcloud
