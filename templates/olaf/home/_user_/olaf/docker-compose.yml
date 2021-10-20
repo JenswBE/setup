@@ -91,8 +91,6 @@ services:
       - "PUID=233"
       - "PGID=233"
       - "TRANSMISSION_WEB_HOME=/combustion-release/"
-      - "USER={{ app_transmission_user }}"
-      - "PASS={{ app_transmission_password }}"
     volumes:
       - "/media/data/services/transmission/:/downloads/incomplete"
       - "/media/data/media/000. Plex/Nazien:/downloads/complete"
@@ -102,6 +100,7 @@ services:
       - "traefik.http.routers.transmission.entrypoints=websecure"
       - "traefik.http.routers.transmission.rule=Host(`torrent.{{ general_domain_default }}`)"
       - "traefik.http.routers.transmission.tls.certresolver=le-tls"
+      - "traefik.http.routers.transmission.middlewares=forward-auth@file"
       - "traefik.http.services.transmission-{{ ansible_hostname }}.loadbalancer.server.port=9091"
 
   # =========================
