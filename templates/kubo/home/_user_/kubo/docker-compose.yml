@@ -52,6 +52,20 @@ services:
     environment:
       - "TZ={{ general_timezone }}"
 
+  traefik-forward-auth:
+    <<: *defaults
+    image: thomseddon/traefik-forward-auth:2
+    container_name: traefik-forward-auth
+    networks:
+      - traefik
+    environment:
+      - "COOKIE_DOMAIN={{ general_domain_default }}"
+      - "DEFAULT_PROVIDER=oidc"
+      - "SECRET={{ app_traefik_forward_auth_secret }}"
+      - "PROVIDERS_OIDC_ISSUER_URL={{ app_traefik_forward_auth_oidc_issuer_url }}"
+      - "PROVIDERS_OIDC_CLIENT_ID={{ app_traefik_forward_auth_oidc_client_id }}"
+      - "PROVIDERS_OIDC_CLIENT_SECRET={{ app_traefik_forward_auth_oidc_client_secret }}"
+
   # =========================
   # =    UNIFI CONTROLLER   =
   # =========================
@@ -412,6 +426,33 @@ services:
       - "TZ={{ general_timezone }}"
 
   # =========================
+  # =         SMART         =
+  # =========================
+  scrutiny:
+    <<: *defaults
+    image: analogj/scrutiny:latest
+    container_name: scrutiny
+    cap_add:
+      - SYS_RAWIO # Required for querying SMART data
+      - SYS_ADMIN # Required for querying NVMe drives
+    volumes:
+      - "./scrutiny/scrutiny.yaml:/scrutiny/config/scrutiny.yaml"
+      - "scrutiny-data:/data"
+      - "/run/udev:/run/udev:ro"
+    devices:
+      - "/dev/nvme0:/dev/nvme0"
+    networks:
+      - traefik
+    environment:
+      - "TZ={{ general_timezone }}"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.scrutiny.entrypoints=websecure"
+      - "traefik.http.routers.scrutiny.rule=Host(`smart-{{ ansible_hostname }}.{{ general_domain_default }}`)"
+      - "traefik.http.routers.scrutiny.tls.certresolver=le-tls"
+      - "traefik.http.routers.scrutiny.middlewares=forward-auth@file"
+
+  # =========================
   # =         BACKUP        =
   # =========================
   borgmatic:
@@ -470,4 +511,5 @@ volumes:
   miniflux-db-dump:
   nc-db-dump:
   promtail-positions:
+  scrutiny-data:
   traefik-cert:

@@ -1,5 +1,0 @@
-http:
-    middlewares:
-        tmm-auth:
-            basicauth:
-                users: "{{ app_tmm_users }}"

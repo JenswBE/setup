@@ -5,6 +5,12 @@ http:
         stsSeconds: 15552000
         sslredirect: true
 
+    forward-auth:
+      forwardAuth:
+        address: http://traefik-forward-auth:4181
+        authResponseHeaders:
+          - X-Forwarded-User
+
 tls:
   certificates:
     - certFile: /conf/certs/ha.crt
