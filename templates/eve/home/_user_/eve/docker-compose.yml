@@ -53,6 +53,20 @@ services:
     environment:
       - "TZ={{ general_timezone }}"
 
+  traefik-forward-auth:
+    <<: *defaults
+    image: thomseddon/traefik-forward-auth:2
+    container_name: traefik-forward-auth
+    networks:
+      - traefik
+    environment:
+      - "COOKIE_DOMAIN={{ general_domain_default }}"
+      - "DEFAULT_PROVIDER=oidc"
+      - "SECRET={{ app_traefik_forward_auth_secret }}"
+      - "PROVIDERS_OIDC_ISSUER_URL={{ app_traefik_forward_auth_oidc_issuer_url }}"
+      - "PROVIDERS_OIDC_CLIENT_ID={{ app_traefik_forward_auth_oidc_client_id }}"
+      - "PROVIDERS_OIDC_CLIENT_SECRET={{ app_traefik_forward_auth_oidc_client_secret }}"
+
   # =========================
   # =         HOMER         =
   # =========================
