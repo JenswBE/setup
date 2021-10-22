@@ -339,7 +339,7 @@ services:
   # ===========================================================================
   bjoetiek-frontend:
     <<: *defaults
-    image: jenswbe/bjoetiek-y-frontend:v2.0.0
+    image: jenswbe/bjoetiek-y-frontend:v2.1.0
     container_name: bjoetiek-frontend
     networks:
       - traefik
@@ -361,13 +361,22 @@ services:
 
   bjoetiek-admin:
     <<: *defaults
-    image: jenswbe/go-commerce-admin:v0.1.0
+    image: jenswbe/go-commerce-admin:v0.2.0
     container_name: bjoetiek-admin
     networks:
       - traefik
     environment:
       - "TZ={{ general_timezone }}"
-      - "BACKEND_URL=https://backend.{{ general_domain_bjoetiek }}"
+      - "AUTH_CLIENT_ID={{ app_bjoetiek_auth_client_id }}"
+      - "AUTH_STATE={{ app_bjoetiek_auth_state }}"
+      - "AUTH_URL_AUTHORIZATION=https://auth.{{ general_domain_default }}/auth/realms/bjoetiek/protocol/openid-connect/auth"
+      - "AUTH_URL_TOKEN=https://auth.{{ general_domain_default }}/auth/realms/bjoetiek/protocol/openid-connect/token"
+      - "AUTH_URL_USERINFO=https://auth.{{ general_domain_default }}/auth/realms/bjoetiek/protocol/openid-connect/userinfo"
+      - "AUTH_URL_LOGOUT=https://auth.{{ general_domain_default }}/auth/realms/bjoetiek/protocol/openid-connect/logout"
+      - "AUTH_URL_LOGOUT_REDIRECT=https://beheer.{{ general_domain_bjoetiek }}/login"
+      - "BACKEND_URL_INTERNAL=http://bjoetiek-backend:8080"
+      - "BACKEND_URL_EXTERNAL=https://backend.{{ general_domain_bjoetiek }}/api"
+      - "PRODUCT_URL_TEMPLATE=https://{{ general_domain_bjoetiek }}/producten/$${p.id}/$${p.name}"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.bjoetiek-admin.entrypoints=websecure"
@@ -423,7 +432,7 @@ services:
 
   bjoetiek-backend:
     <<: *defaults
-    image: jenswbe/go-commerce:v0.1.0
+    image: jenswbe/go-commerce:v0.2.0
     container_name: bjoetiek-backend
     depends_on:
       - bjoetiek-db
@@ -433,8 +442,7 @@ services:
       - "{{ general_path_appdata }}/bjoetiek/backend/images:/images"
     environment:
       - "TZ={{ general_timezone }}"
-      - "AUTH_USERNAME={{ app_bjoetiek_admin_user }}"
-      - "AUTH_PASSWORD={{ app_bjoetiek_admin_pass }}"
+      - "AUTH_ISSUER_URL=https://auth.{{ general_domain_default }}/auth/realms/bjoetiek"
       - "DATABASE_HOST=bjoetiek-db"
       - "DATABASE_USER=bjoetiek"
       - "DATABASE_PASSWORD={{ app_bjoetiek_db_pass }}"
