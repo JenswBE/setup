@@ -47,7 +47,7 @@ services:
     networks:
       - traefik
     volumes:
-      - "./traefik:/conf"
+      - "./traefik:/conf:ro"
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
       - "traefik-cert:/letsencrypt/"
     environment:
@@ -77,8 +77,8 @@ services:
     networks:
       - traefik
     volumes:
-      - ./homer/config.yml:/www/assets/config.yml
-      - ./homer/logos:/www/assets/logos
+      - "./homer/config.yml:/www/assets/config.yml:ro"
+      - "./homer/logos:/www/assets/logos:ro"
     environment:
       - "TZ={{ general_timezone }}"
       - "UID={{ ansible_real_user_id }}"
@@ -149,12 +149,12 @@ services:
   # =========================
   nginx-tuinfeest-beta:
     <<: *defaults
-    image: nginx:latest
+    image: nginxinc/nginx-unprivileged:alpine
     container_name: nginx-tuinfeest-beta
     networks:
       - traefik
     volumes:
-      - "{{ general_path_appdata }}/nginx/tuinfeest-beta:/usr/share/nginx/html"
+      - "{{ general_path_appdata }}/nginx/tuinfeest-beta:/usr/share/nginx/html:ro"
     environment:
       - "TZ={{ general_timezone }}"
     labels:
@@ -163,15 +163,15 @@ services:
       - "traefik.http.routers.nginx-tuinfeest-beta.rule=Host(`beta.{{ general_domain_tuinfeest }}`)"
       - "traefik.http.routers.nginx-tuinfeest-beta.tls.certresolver=le-tls"
 
-{% for year in range(2019,2020+1) %}
+# Ensure to add DNS entry before bumping!
+{% for year in range(2019,2021+1) %}
   nginx-tuinfeest-archive-{{ year }}:
     <<: *defaults
-    image: nginx:latest
+    image: nginxinc/nginx-unprivileged:alpine
     container_name: "nginx-tf-archive-{{ year }}"
+    user: "{{ ansible_real_user_id }}"
     networks:
       - traefik
-    volumes:
-      - "{{ general_path_appdata }}/nginx/tuinfeest-archive/{{ year }}:/usr/share/nginx/html"
     environment:
       - "TZ={{ general_timezone }}"
     labels:
@@ -179,6 +179,13 @@ services:
       - "traefik.http.routers.nginx-tuinfeest-archive-{{ year }}.entrypoints=websecure"
       - "traefik.http.routers.nginx-tuinfeest-archive-{{ year }}.rule=Host(`{{ year }}.{{ general_domain_tuinfeest }}`)"
       - "traefik.http.routers.nginx-tuinfeest-archive-{{ year }}.tls.certresolver=le-tls"
+      - "traefik.http.services.nginx-tuinfeest-archive-{{ year }}-{{ ansible_hostname }}.loadbalancer.server.port=8080"
+    volumes:
+{% if year == 2021 %}
+      - "./nginx/tf-2021-redirect/nginx.conf:/etc/nginx/conf.d/default.conf:ro"
+{% else %}
+      - "{{ general_path_appdata }}/nginx/tuinfeest-archive/{{ year }}:/usr/share/nginx/html:ro"
+{% endif %}
 {% endfor %}
 
   # =========================
@@ -731,14 +738,14 @@ services:
   # =========================
   maintenance:
     <<: *defaults
-    image: nginx:latest
+    image: nginxinc/nginx-unprivileged:alpine
     container_name: maintenance
     user: "{{ ansible_real_user_id }}"
     networks:
       - traefik
     volumes:
-      - "./maintenance/public:/usr/share/nginx/html"
-      - "./maintenance/nginx.conf:/etc/nginx/nginx.conf"
+      - "./nginx/maintenance/public:/usr/share/nginx/html:ro"
+      - "./nginx/maintenance/nginx.conf:/etc/nginx/conf.d/default.conf:ro"
     environment:
       - "TZ={{ general_timezone }}"
     labels:
