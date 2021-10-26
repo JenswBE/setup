@@ -58,6 +58,7 @@
     enabled: yes
   with_items:
     - docker-update-containers.timer
+    - glitchtip-dump-db.timer
     - nextcloud-cron.timer
     - nextcloud-dump-db.timer
     - nextcloud-maps-scan-photos.timer
