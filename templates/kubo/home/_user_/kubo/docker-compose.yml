@@ -174,7 +174,6 @@ services:
       - miniflux
     volumes:
       - "{{ general_path_appdata }}/miniflux/db:/var/lib/postgresql/data"
-      - "miniflux-db-dump:/backup"
     environment:
       - "TZ={{ general_timezone }}"
       - "POSTGRES_USER=miniflux"
@@ -355,6 +354,101 @@ services:
       - "traefik.http.routers.doh-server.middlewares=doh-server-ratelimit@file, doh-server-compress@file"
 
   # =========================
+  # =     ERROR LOGGING     =
+  # =========================
+  # Go to GlitchTip url /register to create first user
+  glitchtip:
+    <<: *defaults
+    image: glitchtip/glitchtip
+    container_name: glitchtip
+    depends_on:
+      - glitchtip-db
+      - glitchtip-redis
+    networks:
+      - traefik
+      - glitchtip
+    environment:
+      - "TZ={{ general_timezone }}"
+      - "PORT=8080"
+      - "DATABASE_URL=postgres://glitchtip:{{ app_glitchtip_db_pass }}@glitchtip-db:5432/glitchtip"
+      - "REDIS_HOST=glitchtip-redis"
+      - "SECRET_KEY={{ app_glitchtip_secret_key }}"
+      - "EMAIL_URL=smtp://{{ mailjet_username }}:{{ mailjet_password }}@{{ mailjet_host }}:{{ mailjet_port }}"
+      - "DEFAULT_FROM_EMAIL=glitchtip@{{ general_domain_default }}"
+      - "GLITCHTIP_DOMAIN=https://glitchtip.{{ general_domain_default }}"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.glitchtip.entrypoints=websecure"
+      - "traefik.http.routers.glitchtip.rule=Host(`glitchtip.{{ general_domain_default }}`)"
+      - "traefik.http.routers.glitchtip.tls.certresolver=le-tls"
+      - "traefik.http.services.glitchtip-{{ ansible_hostname }}.loadbalancer.server.port=8080"
+
+  glitchtip-worker:
+    <<: *defaults
+    image: glitchtip/glitchtip
+    container_name: glitchtip-worker
+    command: celery -A glitchtip worker -B -l INFO
+    depends_on:
+      - glitchtip-db
+      - glitchtip-redis
+    networks:
+      - glitchtip
+    environment:
+      - "TZ={{ general_timezone }}"
+      - "PORT=8080"
+      - "DATABASE_URL=postgres://glitchtip:{{ app_glitchtip_db_pass }}@glitchtip-db:5432/glitchtip"
+      - "REDIS_HOST=glitchtip-redis"
+      - "SECRET_KEY={{ app_glitchtip_secret_key }}"
+      - "EMAIL_URL=smtp://{{ mailjet_username }}:{{ mailjet_password }}@{{ mailjet_host }}:{{ mailjet_port }}"
+      - "DEFAULT_FROM_EMAIL=glitchtip@{{ general_domain_default }}"
+      - "GLITCHTIP_DOMAIN=https://glitchtip.{{ general_domain_default }}"
+
+  glitchtip-migrate:
+    <<: *defaults
+    image: glitchtip/glitchtip
+    container_name: glitchtip-migrate
+    restart: "no" # Only run on "docker compose up"
+    depends_on:
+      - glitchtip-db
+      - glitchtip-redis
+    command: "./manage.py migrate"
+    networks:
+      - glitchtip
+    environment:
+      - "TZ={{ general_timezone }}"
+      - "PORT=8080"
+      - "DATABASE_URL=postgres://glitchtip:{{ app_glitchtip_db_pass }}@glitchtip-db:5432/glitchtip"
+      - "REDIS_HOST=glitchtip-redis"
+      - "SECRET_KEY={{ app_glitchtip_secret_key }}"
+      - "EMAIL_URL=smtp://{{ mailjet_username }}:{{ mailjet_password }}@{{ mailjet_host }}:{{ mailjet_port }}"
+      - "DEFAULT_FROM_EMAIL=glitchtip@{{ general_domain_default }}"
+      - "GLITCHTIP_DOMAIN=https://glitchtip.{{ general_domain_default }}"
+
+  glitchtip-db:
+    <<: *defaults
+    image: postgres:13-alpine
+    container_name: glitchtip-db
+    networks:
+      - glitchtip
+    volumes:
+      - "{{ general_path_appdata }}/glitchtip/db:/var/lib/postgresql/data"
+      - "glitchtip-db-dump:/backup"
+    environment:
+      - "TZ={{ general_timezone }}"
+      - "POSTGRES_USER=glitchtip"
+      - "POSTGRES_PASSWORD={{ app_glitchtip_db_pass }}"
+      - "POSTGRES_DB=glitchtip"
+
+  glitchtip-redis:
+    <<: *defaults
+    image: redis
+    container_name: glitchtip-redis
+    networks:
+      - glitchtip
+    environment:
+      - "TZ={{ general_timezone }}"
+
+  # =========================
   # =        LOGGING        =
   # =========================
   grafana:
@@ -464,6 +558,7 @@ services:
       - SYS_ADMIN # Required for borg mount
     volumes:
       # Backup locations
+      - "glitchtip-db-dump:/mnt/source/glitchtip/dbdump:ro"
       - "{{ general_path_appdata }}/home-automation/home-assistant/config:/mnt/source/home-automation/home-assistant/config:ro"
       - "nc-db-dump:/mnt/source/nextcloud/dbdump:ro"
       - "{{ general_path_appdata }}/nextcloud/nextcloud/data:/mnt/source/nextcloud/data:ro"
@@ -486,6 +581,9 @@ services:
 #                            NETWORKS                           #
 #################################################################
 networks:
+  glitchtip:
+    name: glitchtip
+
   home-automation:
     name: home-automation
 
@@ -508,7 +606,7 @@ networks:
 #                            VOLUMES                            #
 #################################################################
 volumes:
-  miniflux-db-dump:
+  glitchtip-db-dump:
   nc-db-dump:
   promtail-positions:
   scrutiny-data:
