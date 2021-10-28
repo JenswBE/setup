@@ -159,6 +159,11 @@ services:
       - "CREATE_ADMIN=1"
       - "ADMIN_USERNAME={{ app_miniflux_admin_user }}"
       - "ADMIN_PASSWORD={{ app_miniflux_admin_pass }}"
+      - "OAUTH2_PROVIDER=oidc"
+      - "OAUTH2_OIDC_DISCOVERY_ENDPOINT={{ app_miniflux_oidc_url }}"
+      - "OAUTH2_CLIENT_ID={{ app_miniflux_oidc_client_id }}"
+      - "OAUTH2_CLIENT_SECRET={{ app_miniflux_oidc_client_secret }}"
+      - "OAUTH2_REDIRECT_URL=https://feed.{{ general_domain_default }}/oauth2/oidc/callback"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.miniflux.entrypoints=websecure"
