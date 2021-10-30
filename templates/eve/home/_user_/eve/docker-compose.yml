@@ -147,6 +147,21 @@ services:
   # =========================
   # =         NGINX         =
   # =========================
+  spellebel:
+    <<: *defaults
+    image: jenswbe/spellebel-frontend:latest
+    container_name: spellebel
+    networks:
+      - traefik
+    environment:
+      - "TZ={{ general_timezone }}"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.spellebel.entrypoints=websecure"
+      - "traefik.http.routers.spellebel.rule=Host(`spellebel.{{ general_domain_default }}`)"
+      - "traefik.http.routers.spellebel.tls.certresolver=le-tls"
+      - "traefik.http.services.spellebel-{{ ansible_hostname }}.loadbalancer.server.port=8080"
+
   nginx-tuinfeest-beta:
     <<: *defaults
     image: nginxinc/nginx-unprivileged:alpine
