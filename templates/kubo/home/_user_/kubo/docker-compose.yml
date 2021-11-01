@@ -366,6 +366,7 @@ services:
     <<: *defaults
     image: glitchtip/glitchtip
     container_name: glitchtip
+    hostname: "glitchtip.{{ general_domain_default }}" # Prevents unvalidated sender in Mailjet
     depends_on:
       - glitchtip-db
       - glitchtip-redis
@@ -393,6 +394,7 @@ services:
     image: glitchtip/glitchtip
     container_name: glitchtip-worker
     command: celery -A glitchtip worker -B -l INFO
+    hostname: "glitchtip.{{ general_domain_default }}" # Prevents unvalidated sender in Mailjet
     depends_on:
       - glitchtip-db
       - glitchtip-redis
@@ -412,6 +414,7 @@ services:
     <<: *defaults
     image: glitchtip/glitchtip
     container_name: glitchtip-migrate
+    hostname: "glitchtip.{{ general_domain_default }}" # Prevents unvalidated sender in Mailjet
     restart: "no" # Only run on "docker compose up"
     depends_on:
       - glitchtip-db
