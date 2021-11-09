@@ -454,7 +454,7 @@ services:
 
   bjoetiek-backend:
     <<: *defaults
-    image: jenswbe/go-commerce:v0.2.0
+    image: jenswbe/go-commerce:v0.2.1
     container_name: bjoetiek-backend
     depends_on:
       - bjoetiek-db
