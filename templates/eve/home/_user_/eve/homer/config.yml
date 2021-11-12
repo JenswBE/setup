@@ -95,10 +95,15 @@ services:
         url: "https://nextcloud-media.jensw.be"
         <<: *tag_kubo
 
-      - name: "Transmission"
+      - name: "Transmission Olaf"
         logo: "assets/logos/transmission.svg"
         url: "https://torrent.jensw.be"
         <<: *tag_olaf
+
+      - name: "Transmission Kubo"
+        logo: "assets/logos/transmission.svg"
+        url: "https://torrent-kubo.jensw.be"
+        <<: *tag_kubo
 
       - name: "TinyMediaManager"
         logo: "assets/logos/tiny-media-manager.png"
