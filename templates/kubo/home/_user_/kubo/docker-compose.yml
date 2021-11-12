@@ -457,6 +457,35 @@ services:
       - "TZ={{ general_timezone }}"
 
   # =========================
+  # =        TORRENT        =
+  # =========================
+  transmission:
+    <<: *defaults
+    image: linuxserver/transmission:latest
+    container_name: transmission
+    networks:
+      - traefik
+    ports:
+      - "51413:51413"
+      - "51413:51413/udp"
+    environment:
+      - "TZ={{ general_timezone }}"
+      - "PUID={{ ansible_real_user_id }}"
+      - "PGID={{ ansible_real_group_id }}"
+      - "TRANSMISSION_WEB_HOME=/combustion-release/"
+    volumes:
+      - "{{ ansible_user_dir }}/Downloads:/downloads/complete"
+      - "{{ general_path_appdata }}/transmission/config:/config"
+      - "{{ general_path_appdata }}/transmission/downloads:/downloads/incomplete"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.transmission.entrypoints=websecure"
+      - "traefik.http.routers.transmission.rule=Host(`torrent-{{ ansible_hostname }}.{{ general_domain_default }}`)"
+      - "traefik.http.routers.transmission.tls.certresolver=le-tls"
+      - "traefik.http.routers.transmission.middlewares=forward-auth@file"
+      - "traefik.http.services.transmission-{{ ansible_hostname }}.loadbalancer.server.port=9091"
+
+  # =========================
   # =        LOGGING        =
   # =========================
   grafana:
