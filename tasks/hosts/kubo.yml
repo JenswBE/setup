@@ -1,5 +1,5 @@
 - include_tasks: tasks/powertop.yml
-  tags: ["setup"]
+  tags: ["setup", "powertop"]
 
 - name: Disable systemd-resolved DNSStubListener
   # Based on https://www.qualityology.com/tech/ubuntu-port-53-already-in-use-how-to-free-the-dns-port/
