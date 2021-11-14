@@ -638,37 +638,48 @@ services:
       - "POSTGRES_PASSWORD=bjoetiek-test"
 
   # ===========================================================================
-  # =   SNOEP AND FRIET PROTOTYPE                                             =
+  # =   CANDYLICIOUS AND OUD-TURNHOUTS GEBAK                                  =
   # =   https://github.com/JenswBE/candylicious-frontend                      =
   # =   https://github.com/JenswBE/oud-turnhoutsgebak-frontend                =
   # ===========================================================================
-  snoep-frontend:
+  candylicious-frontend:
     <<: *defaults
     image: jenswbe/candylicious-frontend:latest
-    container_name: snoep-frontend
+    container_name: candylicious-frontend
     networks:
       - traefik
     environment:
       - "TZ={{ general_timezone }}"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.snoep-frontend.entrypoints=websecure"
-      - "traefik.http.routers.snoep-frontend.rule=Host(`snoep.{{ general_domain_default }}`)"
-      - "traefik.http.routers.snoep-frontend.tls.certresolver=le-tls"
+      - "traefik.http.routers.candylicious-frontend.entrypoints=websecure"
+      - "traefik.http.routers.candylicious-frontend.rule=Host(`candylicious.{{ general_domain_default }}`)"
+      - "traefik.http.routers.candylicious-frontend.tls.certresolver=le-tls"
 
-  friet-frontend:
+  oud-turnhoutsgebak-frontend:
     <<: *defaults
     image: jenswbe/oud-turnhoutsgebak-frontend:latest
-    container_name: friet-frontend
+    container_name: oud-turnhoutsgebak-frontend
     networks:
       - traefik
     environment:
       - "TZ={{ general_timezone }}"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.friet-frontend.entrypoints=websecure"
-      - "traefik.http.routers.friet-frontend.rule=Host(`friet.{{ general_domain_default }}`)"
-      - "traefik.http.routers.friet-frontend.tls.certresolver=le-tls"
+      # Main (serve WIP page)
+      - "traefik.http.routers.oud-turnhoutsgebak-frontend.entrypoints=websecure"
+      - "traefik.http.routers.oud-turnhoutsgebak-frontend.rule=Host(`{{ general_domain_otg }}`)"
+      - "traefik.http.routers.oud-turnhoutsgebak-frontend.tls.certresolver=le-tls"
+      - "traefik.http.routers.oud-turnhoutsgebak-frontend.service=wip-{{ ansible_hostname }}"
+      # WWW redirect
+      - "traefik.http.routers.oud-turnhoutsgebak-frontend-www-redirect.entrypoints=websecure"
+      - "traefik.http.routers.oud-turnhoutsgebak-frontend-www-redirect.rule=Host(`www.{{ general_domain_otg }}`)"
+      - "traefik.http.routers.oud-turnhoutsgebak-frontend-www-redirect.tls.certresolver=le-tls"
+      - "traefik.http.routers.oud-turnhoutsgebak-frontend-www-redirect.middlewares=redirect-www-to-root@file"
+      # Test
+      - "traefik.http.routers.oud-turnhoutsgebak-frontend-test.entrypoints=websecure"
+      - "traefik.http.routers.oud-turnhoutsgebak-frontend-test.rule=Host(`test.{{ general_domain_otg }}`)"
+      - "traefik.http.routers.oud-turnhoutsgebak-frontend-test.tls.certresolver=le-tls"
 
   # =========================
   # =      GOAT COUNTER     =
@@ -749,7 +760,7 @@ services:
       - "POSTGRES_DB=keycloak"
 
   # =========================
-  # =      MAINTENANCE      =
+  # =      PLACEHOLDERS     =
   # =========================
   maintenance:
     <<: *defaults
@@ -769,6 +780,25 @@ services:
       - "traefik.http.routers.maintenance.rule=Host(`maintenance.{{ general_domain_default }}`)"
       - "traefik.http.routers.maintenance.tls.certresolver=le-tls"
       - "traefik.http.services.maintenance-{{ ansible_hostname }}.loadbalancer.server.port=8080"
+
+  wip:
+    <<: *defaults
+    image: nginxinc/nginx-unprivileged:alpine
+    container_name: wip
+    user: "{{ ansible_real_user_id }}"
+    networks:
+      - traefik
+    volumes:
+      - "./nginx/wip/public:/usr/share/nginx/html:ro"
+      - "./nginx/wip/nginx.conf:/etc/nginx/conf.d/default.conf:ro"
+    environment:
+      - "TZ={{ general_timezone }}"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.wip.entrypoints=websecure"
+      - "traefik.http.routers.wip.rule=Host(`wip.{{ general_domain_default }}`)"
+      - "traefik.http.routers.wip.tls.certresolver=le-tls"
+      - "traefik.http.services.wip-{{ ansible_hostname }}.loadbalancer.server.port=8080"
 
   # =========================
   # =        LOGGING        =
