@@ -683,7 +683,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.candylicious-test-admin.entrypoints=websecure"
-      - "traefik.http.routers.candylicious-test-admin.rule=Host(`test-beheer.{{ general_domain_candylicious }}`)"
+      - "traefik.http.routers.candylicious-test-admin.rule=Host(`beheer.{{ general_domain_candylicious }}`)"
       - "traefik.http.routers.candylicious-test-admin.tls.certresolver=le-tls"
       - "traefik.http.services.candylicious-test-admin-{{ ansible_hostname }}.loadbalancer.server.port=8080"
 
@@ -710,7 +710,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.candylicious-test-backend.entrypoints=websecure"
-      - "traefik.http.routers.candylicious-test-backend.rule=Host(`test-backend.{{ general_domain_candylicious }}`)"
+      - "traefik.http.routers.candylicious-test-backend.rule=Host(`backend.{{ general_domain_candylicious }}`)"
       - "traefik.http.routers.candylicious-test-backend.tls.certresolver=le-tls"
       - "traefik.http.routers.candylicious-test-backend.middlewares=candylicious-cors@file"
 
@@ -754,7 +754,7 @@ services:
       - "DATABASE_DEFAULT_DATABASE=candylicious-test"
       - "FEATURES_CONTENT_ENABLED=false"
       - "FEATURES_EVENTS_ENABLED=false"
-      - "IMAGE_PROXY_BASE_URL=https://test-backend.{{ general_domain_candylicious }}/images/"
+      - "IMAGE_PROXY_BASE_URL=https://backend.{{ general_domain_candylicious }}/images/"
       - "IMAGE_PROXY_KEY={{ app_candylicious_test_image_proxy_key }}"
       - "IMAGE_PROXY_SALT={{ app_candylicious_test_image_proxy_salt }}"
       - "IMAGE_PROXY_ALLOWED_CONFIGS=100:100:FIT,150:150:FIT,400:400:FIT,550:550:FIT"
