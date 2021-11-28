@@ -361,7 +361,7 @@ services:
   # ===========================================================================
   bjoetiek-frontend:
     <<: *defaults
-    image: jenswbe/bjoetiek-y-frontend:v2.1.0
+    image: jenswbe/bjoetiek-y-frontend:v2.2.0
     container_name: bjoetiek-frontend
     networks:
       - traefik
@@ -383,10 +383,11 @@ services:
 
   bjoetiek-admin:
     <<: *defaults
-    image: jenswbe/go-commerce-admin:v0.2.0
+    image: jenswbe/go-commerce-admin:v0.3.0
     container_name: bjoetiek-admin
     networks:
       - traefik
+      - bjoetiek
     environment:
       - "TZ={{ general_timezone }}"
       - "AUTH_CLIENT_ID={{ app_bjoetiek_auth_client_id }}"
@@ -454,7 +455,7 @@ services:
 
   bjoetiek-backend:
     <<: *defaults
-    image: jenswbe/go-commerce:v0.2.1
+    image: jenswbe/go-commerce:v0.3.0
     container_name: bjoetiek-backend
     depends_on:
       - bjoetiek-db
@@ -465,10 +466,12 @@ services:
     environment:
       - "TZ={{ general_timezone }}"
       - "AUTH_ISSUER_URL=https://auth.{{ general_domain_default }}/auth/realms/bjoetiek"
-      - "DATABASE_HOST=bjoetiek-db"
-      - "DATABASE_USER=bjoetiek"
-      - "DATABASE_PASSWORD={{ app_bjoetiek_db_pass }}"
-      - "DATABASE_DATABASE=bjoetiek"
+      - "DATABASE_DEFAULT_HOST=bjoetiek-db"
+      - "DATABASE_DEFAULT_USER=bjoetiek"
+      - "DATABASE_DEFAULT_PASSWORD={{ app_bjoetiek_db_pass }}"
+      - "DATABASE_DEFAULT_DATABASE=bjoetiek"
+      - "FEATURES_CONTENT_ENABLED=false"
+      - "FEATURES_EVENTS_ENABLED=false"
       - "IMAGE_PROXY_BASE_URL=https://backend.{{ general_domain_bjoetiek }}/images/"
       - "IMAGE_PROXY_KEY={{ app_bjoetiek_image_proxy_key }}"
       - "IMAGE_PROXY_SALT={{ app_bjoetiek_image_proxy_salt }}"
@@ -527,6 +530,7 @@ services:
     container_name: bjoetiek-test-admin
     networks:
       - traefik
+      - bjoetiek-test
     environment:
       - "TZ={{ general_timezone }}"
       - "AUTH_CLIENT_ID={{ app_bjoetiek_test_auth_client_id }}"
@@ -607,10 +611,12 @@ services:
     environment:
       - "TZ={{ general_timezone }}"
       - "AUTH_ISSUER_URL=https://auth.{{ general_domain_default }}/auth/realms/bjoetiek"
-      - "DATABASE_HOST=bjoetiek-test-db"
-      - "DATABASE_USER=bjoetiek-test"
-      - "DATABASE_PASSWORD=bjoetiek-test"
-      - "DATABASE_DATABASE=bjoetiek-test"
+      - "DATABASE_DEFAULT_HOST=bjoetiek-test-db"
+      - "DATABASE_DEFAULT_USER=bjoetiek-test"
+      - "DATABASE_DEFAULT_PASSWORD=bjoetiek-test"
+      - "DATABASE_DEFAULT_DATABASE=bjoetiek-test"
+      - "FEATURES_CONTENT_ENABLED=false"
+      - "FEATURES_EVENTS_ENABLED=false"
       - "IMAGE_PROXY_BASE_URL=https://test-backend.{{ general_domain_bjoetiek }}/images/"
       - "IMAGE_PROXY_KEY={{ app_bjoetiek_test_image_proxy_key }}"
       - "IMAGE_PROXY_SALT={{ app_bjoetiek_test_image_proxy_salt }}"
