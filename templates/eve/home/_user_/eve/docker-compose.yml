@@ -644,9 +644,8 @@ services:
       - "POSTGRES_PASSWORD=bjoetiek-test"
 
   # ===========================================================================
-  # =   CANDYLICIOUS AND OUD-TURNHOUTS GEBAK                                  =
+  # =   CANDYLICIOUS                                                          =
   # =   https://github.com/JenswBE/candylicious-frontend                      =
-  # =   https://github.com/JenswBE/oud-turnhoutsgebak-frontend                =
   # ===========================================================================
   candylicious-frontend:
     <<: *defaults
@@ -662,6 +661,130 @@ services:
       - "traefik.http.routers.candylicious-frontend.rule=Host(`candylicious.{{ general_domain_default }}`)"
       - "traefik.http.routers.candylicious-frontend.tls.certresolver=le-tls"
 
+  candylicious-test-admin:
+    <<: *defaults
+    image: jenswbe/go-commerce-admin:latest
+    container_name: candylicious-test-admin
+    networks:
+      - traefik
+      - candylicious-test
+    environment:
+      - "TZ={{ general_timezone }}"
+      - "AUTH_CLIENT_ID={{ app_candylicious_test_auth_client_id }}"
+      - "AUTH_STATE={{ app_candylicious_test_auth_state }}"
+      - "AUTH_URL_AUTHORIZATION=https://auth.{{ general_domain_default }}/auth/realms/candylicious/protocol/openid-connect/auth"
+      - "AUTH_URL_TOKEN=https://auth.{{ general_domain_default }}/auth/realms/candylicious/protocol/openid-connect/token"
+      - "AUTH_URL_USERINFO=https://auth.{{ general_domain_default }}/auth/realms/candylicious/protocol/openid-connect/userinfo"
+      - "AUTH_URL_LOGOUT=https://auth.{{ general_domain_default }}/auth/realms/candylicious/protocol/openid-connect/logout"
+      - "AUTH_URL_LOGOUT_REDIRECT=https://test-beheer.{{ general_domain_candylicious }}/login"
+      - "BACKEND_URL_INTERNAL=http://candylicious-test-backend:8080"
+      - "BACKEND_URL_EXTERNAL=https://test-backend.{{ general_domain_candylicious }}/api"
+      - "PRODUCT_URL_TEMPLATE=https://test.{{ general_domain_candylicious }}/producten/$${p.id}/$${p.name}"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.candylicious-test-admin.entrypoints=websecure"
+      - "traefik.http.routers.candylicious-test-admin.rule=Host(`test-beheer.{{ general_domain_candylicious }}`)"
+      - "traefik.http.routers.candylicious-test-admin.tls.certresolver=le-tls"
+      - "traefik.http.services.candylicious-test-admin-{{ ansible_hostname }}.loadbalancer.server.port=8080"
+
+  candylicious-test-backend-proxy:
+    <<: *defaults
+    image: traefik:latest
+    container_name: candylicious-test-backend-proxy
+    logging:
+      driver: "local" # To prevent spamming Loki with debug logs
+    command:
+      - "--log.level=DEBUG"
+      - "--providers.docker=true"
+      - "--providers.docker.network=candylicious-test"
+      - "--providers.docker.exposedbydefault=false"
+      - "--providers.docker.constraints=Label(`candylicious.env`,`backend-test`)"
+      - "--entrypoints.web.address=:80"
+    networks:
+      - traefik
+      - candylicious-test
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    environment:
+      - "TZ={{ general_timezone }}"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.candylicious-test-backend.entrypoints=websecure"
+      - "traefik.http.routers.candylicious-test-backend.rule=Host(`test-backend.{{ general_domain_candylicious }}`)"
+      - "traefik.http.routers.candylicious-test-backend.tls.certresolver=le-tls"
+      - "traefik.http.routers.candylicious-test-backend.middlewares=candylicious-cors@file"
+
+  candylicious-test-imgproxy:
+    <<: *defaults
+    image: darthsim/imgproxy:latest
+    container_name: candylicious-test-imgproxy
+    environment:
+      - "IMGPROXY_KEY={{ app_candylicious_test_image_proxy_key }}"
+      - "IMGPROXY_SALT={{ app_candylicious_test_image_proxy_salt }}"
+      - "IMGPROXY_LOCAL_FILESYSTEM_ROOT=/images"
+      - "IMGPROXY_MAX_SRC_RESOLUTION=64"
+    networks:
+      - candylicious-test
+    volumes:
+      - "{{ general_path_appdata }}/candylicious/backend-test/images:/images:ro"
+    labels:
+      - "candylicious.env=backend-test"
+      - "traefik.enable=true"
+      - "traefik.http.routers.images.entrypoints=web"
+      - "traefik.http.routers.images.rule=PathPrefix(`/images`)"
+      - "traefik.http.routers.images.middlewares=strip-images-prefix"
+      - "traefik.http.middlewares.strip-images-prefix.stripPrefix.prefixes=/images"
+
+  candylicious-test-backend:
+    <<: *defaults
+    image: jenswbe/go-commerce:latest
+    container_name: candylicious-test-backend
+    depends_on:
+      - candylicious-test-db
+    networks:
+      - candylicious-test
+    volumes:
+      - "{{ general_path_appdata }}/candylicious/backend-test/images:/images"
+    environment:
+      - "TZ={{ general_timezone }}"
+      - "AUTH_ISSUER_URL=https://auth.{{ general_domain_default }}/auth/realms/candylicious"
+      - "DATABASE_DEFAULT_HOST=candylicious-test-db"
+      - "DATABASE_DEFAULT_USER=candylicious-test"
+      - "DATABASE_DEFAULT_PASSWORD=candylicious-test"
+      - "DATABASE_DEFAULT_DATABASE=candylicious-test"
+      - "FEATURES_CONTENT_ENABLED=false"
+      - "FEATURES_EVENTS_ENABLED=false"
+      - "IMAGE_PROXY_BASE_URL=https://test-backend.{{ general_domain_candylicious }}/images/"
+      - "IMAGE_PROXY_KEY={{ app_candylicious_test_image_proxy_key }}"
+      - "IMAGE_PROXY_SALT={{ app_candylicious_test_image_proxy_salt }}"
+      - "IMAGE_PROXY_ALLOWED_CONFIGS=100:100:FIT,150:150:FIT,400:400:FIT,550:550:FIT"
+      - "STORAGE_IMAGES_PATH=/images"
+    labels:
+      - "candylicious.env=backend-test"
+      - "traefik.enable=true"
+      - "traefik.http.routers.backend.entrypoints=web"
+      - "traefik.http.routers.backend.rule=PathPrefix(`/api`)"
+      - "traefik.http.routers.backend.middlewares=strip-api-prefix"
+      - "traefik.http.middlewares.strip-api-prefix.stripPrefix.prefixes=/api"
+
+  candylicious-test-db:
+    <<: *defaults
+    image: postgres:13-alpine
+    container_name: candylicious-test-db
+    networks:
+      - candylicious-test
+    volumes:
+      - "candylicious-test-db-data:/var/lib/postgresql/data"
+    environment:
+      - "TZ={{ general_timezone }}"
+      - "POSTGRES_USER=candylicious-test"
+      - "POSTGRES_PASSWORD=candylicious-test"
+
+  # ===========================================================================
+  # =   OUD-TURNHOUTS GEBAK                                                   =
+  # =   https://github.com/JenswBE/oud-turnhoutsgebak-frontend                =
+  # ===========================================================================
+
   oud-turnhoutsgebak-frontend:
     <<: *defaults
     image: jenswbe/oud-turnhoutsgebak-frontend:latest
@@ -674,18 +797,112 @@ services:
       - "traefik.enable=true"
       # Main (serve WIP page)
       - "traefik.http.routers.oud-turnhoutsgebak-frontend.entrypoints=websecure"
-      - "traefik.http.routers.oud-turnhoutsgebak-frontend.rule=Host(`{{ general_domain_otg }}`)"
+      - "traefik.http.routers.oud-turnhoutsgebak-frontend.rule=Host(`{{ general_domain_oud_turnhoutsgebak }}`)"
       - "traefik.http.routers.oud-turnhoutsgebak-frontend.tls.certresolver=le-tls"
       - "traefik.http.routers.oud-turnhoutsgebak-frontend.service=wip-{{ ansible_hostname }}"
       # WWW redirect
       - "traefik.http.routers.oud-turnhoutsgebak-frontend-www-redirect.entrypoints=websecure"
-      - "traefik.http.routers.oud-turnhoutsgebak-frontend-www-redirect.rule=Host(`www.{{ general_domain_otg }}`)"
+      - "traefik.http.routers.oud-turnhoutsgebak-frontend-www-redirect.rule=Host(`www.{{ general_domain_oud_turnhoutsgebak }}`)"
       - "traefik.http.routers.oud-turnhoutsgebak-frontend-www-redirect.tls.certresolver=le-tls"
       - "traefik.http.routers.oud-turnhoutsgebak-frontend-www-redirect.middlewares=redirect-www-to-root@file"
       # Test
       - "traefik.http.routers.oud-turnhoutsgebak-frontend-test.entrypoints=websecure"
-      - "traefik.http.routers.oud-turnhoutsgebak-frontend-test.rule=Host(`test.{{ general_domain_otg }}`)"
+      - "traefik.http.routers.oud-turnhoutsgebak-frontend-test.rule=Host(`test.{{ general_domain_oud_turnhoutsgebak }}`)"
       - "traefik.http.routers.oud-turnhoutsgebak-frontend-test.tls.certresolver=le-tls"
+
+  oud-turnhoutsgebak-test-admin:
+    <<: *defaults
+    image: jenswbe/go-commerce-admin:latest
+    container_name: oud-turnhoutsgebak-test-admin
+    networks:
+      - traefik
+      - oud-turnhoutsgebak-test
+    environment:
+      - "TZ={{ general_timezone }}"
+      - "AUTH_CLIENT_ID={{ app_oud_turnhoutsgebak_test_auth_client_id }}"
+      - "AUTH_STATE={{ app_oud_turnhoutsgebak_test_auth_state }}"
+      - "AUTH_URL_AUTHORIZATION=https://auth.{{ general_domain_default }}/auth/realms/oud-turnhoutsgebak/protocol/openid-connect/auth"
+      - "AUTH_URL_TOKEN=https://auth.{{ general_domain_default }}/auth/realms/oud-turnhoutsgebak/protocol/openid-connect/token"
+      - "AUTH_URL_USERINFO=https://auth.{{ general_domain_default }}/auth/realms/oud-turnhoutsgebak/protocol/openid-connect/userinfo"
+      - "AUTH_URL_LOGOUT=https://auth.{{ general_domain_default }}/auth/realms/oud-turnhoutsgebak/protocol/openid-connect/logout"
+      - "AUTH_URL_LOGOUT_REDIRECT=https://test-beheer.{{ general_domain_oud_turnhoutsgebak }}/login"
+      - "BACKEND_URL_INTERNAL=http://oud-turnhoutsgebak-test-backend:8080"
+      - "BACKEND_URL_EXTERNAL=https://test-backend.{{ general_domain_oud_turnhoutsgebak }}/api"
+      - "PRODUCT_URL_TEMPLATE=https://test.{{ general_domain_oud_turnhoutsgebak }}/producten/$${p.id}/$${p.name}"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.oud-turnhoutsgebak-test-admin.entrypoints=websecure"
+      - "traefik.http.routers.oud-turnhoutsgebak-test-admin.rule=Host(`test-beheer.{{ general_domain_oud_turnhoutsgebak }}`)"
+      - "traefik.http.routers.oud-turnhoutsgebak-test-admin.tls.certresolver=le-tls"
+      - "traefik.http.services.oud-turnhoutsgebak-test-admin-{{ ansible_hostname }}.loadbalancer.server.port=8080"
+
+  oud-turnhoutsgebak-test-backend-proxy:
+    <<: *defaults
+    image: traefik:latest
+    container_name: oud-turnhoutsgebak-test-backend-proxy
+    logging:
+      driver: "local" # To prevent spamming Loki with debug logs
+    command:
+      - "--log.level=DEBUG"
+      - "--providers.docker=true"
+      - "--providers.docker.network=oud-turnhoutsgebak-test"
+      - "--providers.docker.exposedbydefault=false"
+      - "--providers.docker.constraints=Label(`oud-turnhoutsgebak.env`,`backend-test`)"
+      - "--entrypoints.web.address=:80"
+    networks:
+      - traefik
+      - oud-turnhoutsgebak-test
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    environment:
+      - "TZ={{ general_timezone }}"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.oud-turnhoutsgebak-test-backend.entrypoints=websecure"
+      - "traefik.http.routers.oud-turnhoutsgebak-test-backend.rule=Host(`test-backend.{{ general_domain_oud_turnhoutsgebak }}`)"
+      - "traefik.http.routers.oud-turnhoutsgebak-test-backend.tls.certresolver=le-tls"
+      - "traefik.http.routers.oud-turnhoutsgebak-test-backend.middlewares=oud-turnhoutsgebak-cors@file"
+
+  oud-turnhoutsgebak-test-backend:
+    <<: *defaults
+    image: jenswbe/go-commerce:latest
+    container_name: oud-turnhoutsgebak-test-backend
+    depends_on:
+      - oud-turnhoutsgebak-test-db
+    networks:
+      - oud-turnhoutsgebak-test
+    environment:
+      - "TZ={{ general_timezone }}"
+      - "AUTH_ISSUER_URL=https://auth.{{ general_domain_default }}/auth/realms/oud-turnhoutsgebak"
+      - "DATABASE_DEFAULT_HOST=oud-turnhoutsgebak-test-db"
+      - "DATABASE_DEFAULT_USER=oud-turnhoutsgebak-test"
+      - "DATABASE_DEFAULT_PASSWORD=oud-turnhoutsgebak-test"
+      - "DATABASE_DEFAULT_DATABASE=oud-turnhoutsgebak-test"
+      - "FEATURES_CONTENT_LIST=vacatures:HTML"
+      - "FEATURES_CATEGORIES_ENABLED=false"
+      - "FEATURES_MANUFACTURERS_ENABLED=false"
+      - "FEATURES_PRODUCTS_ENABLED=false"
+      - "IMAGE_PROXY_ALLOWED_CONFIGS=*"
+    labels:
+      - "oud-turnhoutsgebak.env=backend-test"
+      - "traefik.enable=true"
+      - "traefik.http.routers.backend.entrypoints=web"
+      - "traefik.http.routers.backend.rule=PathPrefix(`/api`)"
+      - "traefik.http.routers.backend.middlewares=strip-api-prefix"
+      - "traefik.http.middlewares.strip-api-prefix.stripPrefix.prefixes=/api"
+
+  oud-turnhoutsgebak-test-db:
+    <<: *defaults
+    image: postgres:13-alpine
+    container_name: oud-turnhoutsgebak-test-db
+    networks:
+      - oud-turnhoutsgebak-test
+    volumes:
+      - "oud-turnhoutsgebak-test-db-data:/var/lib/postgresql/data"
+    environment:
+      - "TZ={{ general_timezone }}"
+      - "POSTGRES_USER=oud-turnhoutsgebak-test"
+      - "POSTGRES_PASSWORD=oud-turnhoutsgebak-test"
 
   # =========================
   # =      GOAT COUNTER     =
@@ -879,10 +1096,12 @@ services:
 volumes:
   bjoetiek-db-dump:
   bjoetiek-test-db-data:
+  candylicious-test-db-data:
   isa-output:
   keycloak-db-dump:
   nc-db-dump:
   nc-calcardbackup:
+  oud-turnhoutsgebak-test-db-data:
   passit-db-dump:
   promtail-positions:
   snipe-it-db-dump:
@@ -896,7 +1115,13 @@ networks:
     name: bjoetiek
 
   bjoetiek-test:
-    name: bjoetiek
+    name: bjoetiek-test
+
+  candylicious:
+    name: candylicious
+
+  candylicious-test:
+    name: candylicious-test
 
   backup-nc-db:
     name: backup-nc-db
@@ -906,6 +1131,12 @@ networks:
 
   nextcloud:
     name: nextcloud
+
+  oud-turnhoutsgebak:
+    name: oud-turnhoutsgebak
+
+  oud-turnhoutsgebak-test:
+    name: oud-turnhoutsgebak-test
 
   passit:
     name: passit
