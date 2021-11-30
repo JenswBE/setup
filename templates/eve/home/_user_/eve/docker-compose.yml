@@ -961,8 +961,6 @@ services:
       - "DB_USER=keycloak"
       - "DB_SCHEMA=public"
       - "DB_PASSWORD={{ app_keycloak_db_pass }}"
-      - "KEYCLOAK_USER={{ app_keycloak_admin_user }}"
-      - "KEYCLOAK_PASSWORD={{ app_keycloak_admin_pass }}"
       - "KEYCLOAK_FRONTEND_URL=https://auth.{{ general_domain_default }}/auth"
       - "PROXY_ADDRESS_FORWARDING=true"
     labels:

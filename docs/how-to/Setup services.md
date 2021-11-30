@@ -17,12 +17,20 @@ docker exec borgmatic sh -c "BORG_RSH=\"ssh -p${BORGMATIC_PORT:?} -i /root/.ssh/
                              /etc/borgmatic.d/repokey.html"
 ```
 
-## GoatCounter
+### GoatCounter
 
 ```bash
 GC_HOST=stats.jensw.be
 GC_USER=$REPLACE_ME
 docker-compose run --rm goatcounter db create site -createdb -vhost=${GC_HOST} -user.email=${GC_USER}
+```
+
+### Keycloak
+
+```bash
+# Create initial admin user
+docker exec keycloak /opt/jboss/keycloak/bin/add-user-keycloak.sh -u <USERNAME> -p <PASSWORD>
+docker restart keycloak
 ```
 
 ### Nextcloud
