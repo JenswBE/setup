@@ -258,7 +258,8 @@ services:
 
   nc-db:
     <<: *defaults
-    image: mariadb:10
+    image: mariadb:10.6
+    command: --transaction-isolation=READ-COMMITTED --log-bin=ROW --innodb-read-only-compressed=OFF
     container_name: nc-db
     networks:
       - nextcloud
