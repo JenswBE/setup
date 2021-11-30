@@ -120,8 +120,9 @@ services:
 
   nc-db:
     <<: *defaults
-    image: mariadb:10
+    image: mariadb:10.6
     container_name: nc-db
+    command: --transaction-isolation=READ-COMMITTED --log-bin=ROW --innodb-read-only-compressed=OFF
     networks:
       - nextcloud
       - backup-nc-db
@@ -653,8 +654,11 @@ services:
     container_name: candylicious-frontend
     networks:
       - traefik
+      - candylicious-test
     environment:
       - "TZ={{ general_timezone }}"
+      - "BACKEND_URL_INTERNAL=http://candylicious-test-backend:8080"
+      - "BACKEND_URL_EXTERNAL=https://backend.{{ general_domain_candylicious }}/api"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.candylicious-frontend.entrypoints=websecure"
@@ -676,10 +680,10 @@ services:
       - "AUTH_URL_TOKEN=https://auth.{{ general_domain_default }}/auth/realms/candylicious/protocol/openid-connect/token"
       - "AUTH_URL_USERINFO=https://auth.{{ general_domain_default }}/auth/realms/candylicious/protocol/openid-connect/userinfo"
       - "AUTH_URL_LOGOUT=https://auth.{{ general_domain_default }}/auth/realms/candylicious/protocol/openid-connect/logout"
-      - "AUTH_URL_LOGOUT_REDIRECT=https://test-beheer.{{ general_domain_candylicious }}/login"
+      - "AUTH_URL_LOGOUT_REDIRECT=https://beheer.{{ general_domain_candylicious }}/login"
       - "BACKEND_URL_INTERNAL=http://candylicious-test-backend:8080"
-      - "BACKEND_URL_EXTERNAL=https://test-backend.{{ general_domain_candylicious }}/api"
-      - "PRODUCT_URL_TEMPLATE=https://test.{{ general_domain_candylicious }}/producten/$${p.id}/$${p.name}"
+      - "BACKEND_URL_EXTERNAL=https://backend.{{ general_domain_candylicious }}/api"
+      - "PRODUCT_URL_TEMPLATE=https://{{ general_domain_candylicious }}/producten/$${p.id}/$${p.name}"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.candylicious-test-admin.entrypoints=websecure"
@@ -752,8 +756,8 @@ services:
       - "DATABASE_DEFAULT_USER=candylicious-test"
       - "DATABASE_DEFAULT_PASSWORD=candylicious-test"
       - "DATABASE_DEFAULT_DATABASE=candylicious-test"
-      - "FEATURES_CONTENT_ENABLED=false"
-      - "FEATURES_EVENTS_ENABLED=false"
+      - "FEATURES_CONTENT_LIST=vacatures:HTML"
+      - "FEATURES_EVENTS_WHOLE_DAYS_ONLY=true"
       - "IMAGE_PROXY_BASE_URL=https://backend.{{ general_domain_candylicious }}/images/"
       - "IMAGE_PROXY_KEY={{ app_candylicious_test_image_proxy_key }}"
       - "IMAGE_PROXY_SALT={{ app_candylicious_test_image_proxy_salt }}"
@@ -791,8 +795,11 @@ services:
     container_name: oud-turnhoutsgebak-frontend
     networks:
       - traefik
+      - oud-turnhoutsgebak-test
     environment:
       - "TZ={{ general_timezone }}"
+      - "BACKEND_URL_INTERNAL=http://oud-turnhoutsgebak-test-backend:8080"
+      - "BACKEND_URL_EXTERNAL=https://test-backend.{{ general_domain_oud_turnhoutsgebak }}/api"
     labels:
       - "traefik.enable=true"
       # Main (serve WIP page)
@@ -878,10 +885,11 @@ services:
       - "DATABASE_DEFAULT_USER=oud-turnhoutsgebak-test"
       - "DATABASE_DEFAULT_PASSWORD=oud-turnhoutsgebak-test"
       - "DATABASE_DEFAULT_DATABASE=oud-turnhoutsgebak-test"
-      - "FEATURES_CONTENT_LIST=vacatures:HTML"
       - "FEATURES_CATEGORIES_ENABLED=false"
       - "FEATURES_MANUFACTURERS_ENABLED=false"
       - "FEATURES_PRODUCTS_ENABLED=false"
+      - "FEATURES_CONTENT_LIST=vacatures:HTML"
+      - "FEATURES_EVENTS_WHOLE_DAYS_ONLY=true"
       - "IMAGE_PROXY_ALLOWED_CONFIGS=*"
     labels:
       - "oud-turnhoutsgebak.env=backend-test"
