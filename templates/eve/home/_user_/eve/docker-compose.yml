@@ -466,7 +466,7 @@ services:
       - "{{ general_path_appdata }}/bjoetiek/backend/images:/images"
     environment:
       - "TZ={{ general_timezone }}"
-      - "AUTH_ISSUER_URL=https://auth.{{ general_domain_default }}/auth/realms/bjoetiek"
+      - "AUTH_ISSUER_URL=https://auth.{{ general_domain_bjoetiek }}/auth/realms/bjoetiek"
       - "DATABASE_DEFAULT_HOST=bjoetiek-db"
       - "DATABASE_DEFAULT_USER=bjoetiek"
       - "DATABASE_DEFAULT_PASSWORD={{ app_bjoetiek_db_pass }}"
@@ -608,7 +608,7 @@ services:
       - "{{ general_path_appdata }}/bjoetiek/backend-test/images:/images"
     environment:
       - "TZ={{ general_timezone }}"
-      - "AUTH_ISSUER_URL=https://auth.{{ general_domain_default }}/auth/realms/bjoetiek"
+      - "AUTH_ISSUER_URL=https://auth.{{ general_domain_bjoetiek }}/auth/realms/bjoetiek"
       - "DATABASE_DEFAULT_HOST=bjoetiek-test-db"
       - "DATABASE_DEFAULT_USER=bjoetiek-test"
       - "DATABASE_DEFAULT_PASSWORD=bjoetiek-test"
@@ -745,13 +745,14 @@ services:
       - "{{ general_path_appdata }}/candylicious/backend-test/images:/images"
     environment:
       - "TZ={{ general_timezone }}"
-      - "AUTH_ISSUER_URL=https://auth.{{ general_domain_default }}/auth/realms/candylicious"
+      - "AUTH_ISSUER_URL=https://auth.{{ general_domain_candylicious }}/auth/realms/candylicious"
       - "DATABASE_DEFAULT_HOST=candylicious-test-db"
       - "DATABASE_DEFAULT_USER=candylicious-test"
       - "DATABASE_DEFAULT_PASSWORD=candylicious-test"
       - "DATABASE_DEFAULT_DATABASE=candylicious-test"
       - "FEATURES_CONTENT_LIST=vacatures:HTML"
       - "FEATURES_EVENTS_WHOLE_DAYS_ONLY=true"
+      - "FEATURES_MANUFACTURERS_ENABLED=false"
       - "IMAGE_PROXY_BASE_URL=https://backend.{{ general_domain_candylicious }}/images/"
       - "IMAGE_PROXY_KEY={{ app_candylicious_test_image_proxy_key }}"
       - "IMAGE_PROXY_SALT={{ app_candylicious_test_image_proxy_salt }}"
@@ -871,7 +872,7 @@ services:
       - oud-turnhoutsgebak-test
     environment:
       - "TZ={{ general_timezone }}"
-      - "AUTH_ISSUER_URL=https://auth.{{ general_domain_default }}/auth/realms/oud-turnhoutsgebak"
+      - "AUTH_ISSUER_URL=https://auth.{{ general_domain_oud_turnhoutsgebak }}/auth/realms/oud-turnhoutsgebak"
       - "DATABASE_DEFAULT_HOST=oud-turnhoutsgebak-test-db"
       - "DATABASE_DEFAULT_USER=oud-turnhoutsgebak-test"
       - "DATABASE_DEFAULT_PASSWORD=oud-turnhoutsgebak-test"
