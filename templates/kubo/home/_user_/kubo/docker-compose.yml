@@ -202,9 +202,11 @@ services:
       - "22000:22000"
     volumes:
       - "{{ general_path_appdata }}/syncthing/config:/var/syncthing"
-      - "/data/syncthing:/data"
+      - "/data/media/Music:/data/music"
     environment:
       - "TZ={{ general_timezone }}"
+      - "PUID=233"
+      - "PGID=233"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.syncthing.entrypoints=websecure"
@@ -222,7 +224,7 @@ services:
     ports:
       - "445:445"
     volumes:
-      - "{{ general_path_appdata }}/samba/data:/data"
+      - "/data/ps2-roms:/data/ps2"
     environment:
       - "TZ={{ general_timezone }}"
       - "USERID={{ ansible_real_user_id }}"
@@ -581,6 +583,10 @@ services:
       - "/run/udev:/run/udev:ro"
     devices:
       - "/dev/nvme0:/dev/nvme0"
+      - "/dev/sda:/dev/sda"
+      - "/dev/sdb:/dev/sdb"
+      - "/dev/sdc:/dev/sdc"
+      - "/dev/sdd:/dev/sdd"
     networks:
       - traefik
     environment:

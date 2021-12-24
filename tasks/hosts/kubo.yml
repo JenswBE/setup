@@ -57,6 +57,8 @@
     state: started
     enabled: yes
   with_items:
+    - btrfs-scrub.timer
+    - data.mount
     - docker-update-containers.timer
     - glitchtip-dump-db.timer
     - nextcloud-cron.timer
