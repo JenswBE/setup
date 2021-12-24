@@ -196,52 +196,6 @@ services:
       - "traefik.http.services.syncthing-{{ ansible_hostname }}.loadbalancer.server.port=8384"
 
   # =========================
-  # =         SMART         =
-  # =========================
-  scrutiny:
-    <<: *defaults
-    image: analogj/scrutiny:latest
-    container_name: scrutiny
-    cap_add:
-      - SYS_RAWIO # Required for querying SMART data
-      # - SYS_ADMIN # Required for querying NVMe drives. Currently no NVMe drives installed.
-    volumes:
-      - "./scrutiny/scrutiny.yaml:/scrutiny/config/scrutiny.yaml"
-      - "scrutiny-data:/data"
-      - "/run/udev:/run/udev:ro"
-    devices:
-      - "/dev/sda:/dev/sda"
-      - "/dev/sdb:/dev/sdb"
-      - "/dev/sdc:/dev/sdc"
-      - "/dev/sdd:/dev/sdd"
-      - "/dev/sde:/dev/sde"
-    networks:
-      - traefik
-    environment:
-      - "TZ={{ general_timezone }}"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.scrutiny.entrypoints=websecure"
-      - "traefik.http.routers.scrutiny.rule=Host(`smart-{{ ansible_hostname }}.{{ general_domain_default }}`)"
-      - "traefik.http.routers.scrutiny.tls.certresolver=le-tls"
-      - "traefik.http.routers.scrutiny.middlewares=forward-auth@file"
-
-  # =========================
-  # =        LOGGING        =
-  # =========================
-  promtail:
-    <<: *defaults
-    image: grafana/promtail:2.3.0
-    container_name: promtail
-    command: -config.file=/etc/promtail/config.yml
-    volumes:
-      - ./promtail/config.yml:/etc/promtail/config.yml:ro
-      - promtail-positions:/positions
-      - /var/log:/var/log:ro
-    environment:
-      - "TZ={{ general_timezone }}"
-
-  # =========================
   # =         BACKUP        =
   # =========================
   borgmatic:
