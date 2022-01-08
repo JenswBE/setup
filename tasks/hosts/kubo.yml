@@ -60,7 +60,9 @@
     - btrfs-scrub.timer
     - data.mount
     - docker-update-containers.timer
+    - fatrace-btrfs.service
     - glitchtip-dump-db.timer
+    - mnt-btrfs.mount
     - nextcloud-cron.timer
     - nextcloud-dump-db.timer
     - nextcloud-maps-scan-photos.timer
