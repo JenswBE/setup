@@ -1,0 +1,9 @@
+[Unit]
+Description=Trace file access to BTRFS drives
+
+[Service]
+Type=exec
+Restart=on-failure
+WorkingDirectory=/mnt/btrfs
+ExecStart=/usr/bin/bash {{ ansible_user_dir }}/{{ ansible_hostname }}/scripts/fatrace-btrfs.sh
+StandardOutput=append:{{ ansible_user_dir }}/fatrace-btrfs.txt
