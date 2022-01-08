@@ -659,6 +659,8 @@ services:
       - "nc-db-dump:/mnt/source/nextcloud/dbdump:ro"
       - "{{ general_path_appdata }}/nextcloud/nextcloud/data:/mnt/source/nextcloud/data:ro"
       - "{{ general_path_appdata }}/nextcloud/nextcloud/config:/mnt/source/nextcloud/config:ro"
+      - "/data/media/Photos:/mnt/source/plex/photos:ro"
+      - "/data/media/Music:/mnt/source/plex/music:ro"
       # Config and cache
       - "./borgmatic/borgmatic.d:/etc/borgmatic.d"
       - "./borgmatic/ssh:/root/.ssh"
