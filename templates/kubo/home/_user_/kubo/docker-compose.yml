@@ -205,8 +205,8 @@ services:
     #   - "/dev/dri/renderD128:/dev/dri/renderD128"
     environment:
       - "TZ={{ general_timezone }}"
-      - "PLEX_UID=233"
-      - "PLEX_GID=233"
+      - "PLEX_UID=1000"
+      - "PLEX_GID=1000"
 
   # =========================
   # =   TINY MEDIA MANAGER  =
@@ -249,8 +249,8 @@ services:
       - "/data/media/Music:/data/music"
     environment:
       - "TZ={{ general_timezone }}"
-      - "PUID=233"
-      - "PGID=233"
+      - "PUID=1000"
+      - "PGID=1000"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.syncthing.entrypoints=websecure"
@@ -276,6 +276,30 @@ services:
     command: >
       samba.sh -S
       -s "ps2;/data/ps2;yes;no;yes"
+
+  # =========================
+  # =          NFS          =
+  # =========================
+  nfs:
+    <<: *defaults
+    image: erichough/nfs-server:latest
+    container_name: nfs
+    privileged: true # Required for mount several filesystems inside the container to support its operation
+    ports:
+      - "111:111"
+      - "111:111/udp"
+      - "2049:2049"
+      - "2049:2049/udp"
+      - "32765:32765"
+      - "32765:32765/udp"
+      - "32767:32767"
+      - "32767:32767/udp"
+    volumes:
+      - "/data/media:/data/media"
+      - "./nfs/exports:/etc/exports:ro"
+      - "./nfs/idmapd.conf:/etc/idmapd.conf:ro"
+    environment:
+      - "TZ={{ general_timezone }}"
 
   # =========================
   # =       NEXTCLOUD       =
@@ -525,8 +549,8 @@ services:
       - "51413:51413/udp"
     environment:
       - "TZ={{ general_timezone }}"
-      - "PUID=233"
-      - "PGID=233"
+      - "PUID=1000"
+      - "PGID=1000"
       - "TRANSMISSION_WEB_HOME=/combustion-release/"
     volumes:
       - "{{ general_path_appdata }}/transmission/downloads:/downloads/incomplete"

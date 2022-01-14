@@ -6,8 +6,16 @@ firewall_additional_ports:
     proto: udp
   - port: 80 # Traefik HTTP
     proto: tcp
+  - port: 111 # NFS (v3 only)
+    proto: tcp
+  - port: 111 # NFS (v3 only)
+    proto: udp
   - port: 443 # Traefik HTTPS
     proto: tcp
+  - port: 2049 # NFS
+    proto: tcp
+  - port: 2049 # NFS (v3 only)
+    proto: udp
   - port: 8080 # UniFi
     proto: tcp
   - port: 22000 # Syncthing TCP
@@ -16,6 +24,14 @@ firewall_additional_ports:
     proto: udp
   - port: 32400 # Plex
     proto: tcp
+  - port: 32767 # NFS (v3 only)
+    proto: tcp
+  - port: 32767 # NFS (v3 only)
+    proto: udp
+  - port: 32767 # NFS (v3 only)
+    proto: tcp
+  - port: 32767 # NFS (v3 only)
+    proto: udp
 
 # Nextcloud
 app_nextcloud_apps_disable: "firstrunwizard,dashboard,weather_status"
