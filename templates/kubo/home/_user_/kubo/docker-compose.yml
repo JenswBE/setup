@@ -297,7 +297,6 @@ services:
     volumes:
       - "/data/media:/data/media"
       - "./nfs/exports:/etc/exports:ro"
-      - "./nfs/idmapd.conf:/etc/idmapd.conf:ro"
     environment:
       - "TZ={{ general_timezone }}"
 
