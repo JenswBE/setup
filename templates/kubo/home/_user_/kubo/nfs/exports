@@ -1,5 +1,5 @@
 # Hercules
-/data/media 192.168.20.50(rw,no_subtree_check)
+/data/media 192.168.20.50(rw,no_subtree_check,insecure)
 
 # Rango
-/data/media 192.168.20.52(rw,no_subtree_check)
+/data/media 192.168.20.52(rw,no_subtree_check,insecure)
