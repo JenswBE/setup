@@ -16,7 +16,8 @@ notify:
   data:
     host: "{{ mailjet_host }}"
     port: "{{ mailjet_port }}"
-    tls: True
+    tls: Truesrtrstrs
+    strstrs
     username: "{{ mailjet_username }}"
     password: "{{ mailjet_password }}"
     from: "DeLiC <delic@{{ general_domain_default }}>"
