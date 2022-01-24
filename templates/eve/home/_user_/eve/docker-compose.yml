@@ -148,21 +148,6 @@ services:
   # =========================
   # =         NGINX         =
   # =========================
-  spellebel:
-    <<: *defaults
-    image: jenswbe/spellebel-frontend:latest
-    container_name: spellebel
-    networks:
-      - traefik
-    environment:
-      - "TZ={{ general_timezone }}"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.spellebel.entrypoints=websecure"
-      - "traefik.http.routers.spellebel.rule=Host(`spellebel.{{ general_domain_default }}`)"
-      - "traefik.http.routers.spellebel.tls.certresolver=le-tls"
-      - "traefik.http.services.spellebel-{{ ansible_hostname }}.loadbalancer.server.port=8080"
-
   nginx-tuinfeest-beta:
     <<: *defaults
     image: nginxinc/nginx-unprivileged:alpine
@@ -640,6 +625,58 @@ services:
       - "TZ={{ general_timezone }}"
       - "POSTGRES_USER=bjoetiek-test"
       - "POSTGRES_PASSWORD=bjoetiek-test"
+
+  # ===========================================================================
+  # =   SPELLEBEL                                                             =
+  # =   https://github.com/JenswBE/spellebel-frontend                         =
+  # ===========================================================================
+  spellebel:
+    <<: *defaults
+    image: jenswbe/spellebel-frontend:stable
+    container_name: spellebel
+    networks:
+      - traefik
+    environment:
+      - "TZ={{ general_timezone }}"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.spellebel.entrypoints=websecure"
+      - "traefik.http.routers.spellebel.rule=Host(`nieuw.{{ general_domain_spellebel }}`)"
+      - "traefik.http.routers.spellebel.tls.certresolver=le-tls"
+      - "traefik.http.services.spellebel-{{ ansible_hostname }}.loadbalancer.server.port=8080"
+
+  spellebel-test:
+    <<: *defaults
+    image: jenswbe/spellebel-frontend:latest
+    container_name: spellebel-test
+    networks:
+      - traefik
+    environment:
+      - "TZ={{ general_timezone }}"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.spellebel-test.entrypoints=websecure"
+      - "traefik.http.routers.spellebel-test.rule=Host(`test.{{ general_domain_spellebel }}`)"
+      - "traefik.http.routers.spellebel-test.tls.certresolver=le-tls"
+      - "traefik.http.services.spellebel-test-{{ ansible_hostname }}.loadbalancer.server.port=8080"
+
+  drpr:
+    <<: *defaults
+    image: jenswbe/docker-rest-puller-restarter:latest
+    container_name: drpr
+    networks:
+      - traefik
+    environment:
+      - "TZ={{ general_timezone }}"
+    volumes:
+      - "./docker-rest-puller-restarter/config.yml:/config.yml:ro"
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.drpr.entrypoints=websecure"
+      - "traefik.http.routers.drpr.rule=Host(`drpr-{{ ansible_hostname }}.{{ general_domain_default }}`)"
+      - "traefik.http.routers.drpr.tls.certresolver=le-tls"
+      - "traefik.http.services.drpr-{{ ansible_hostname }}.loadbalancer.server.port=8080"
 
   # ===========================================================================
   # =   CANDYLICIOUS                                                          =
