@@ -662,7 +662,7 @@ services:
 
   drpr:
     <<: *defaults
-    image: jenswbe/docker-rest-puller-restarter:latest
+    image: jenswbe/docker-rest-puller-restarter:stable
     container_name: drpr
     networks:
       - traefik
