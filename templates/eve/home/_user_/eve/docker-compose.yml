@@ -668,6 +668,7 @@ services:
       - traefik
     environment:
       - "TZ={{ general_timezone }}"
+      - "SERVER_DEBUG=True"
     volumes:
       - "./docker-rest-puller-restarter/config.yml:/config.yml:ro"
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
