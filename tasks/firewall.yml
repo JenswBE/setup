@@ -1,5 +1,6 @@
 - name: Install, configure, and enable UFW
   become: yes
+  tags: ["setup", "firewall"]
   block:
     - name: UFW - Ensure is installed
       ansible.builtin.package: name=ufw state=present

@@ -4,6 +4,8 @@ firewall_additional_ports:
     proto: tcp
   - port: 443 # Traefik HTTPS
     proto: tcp
+  - port: 51820 # Wireguard
+    proto: udp
 
 # GoatCounter
 app_goatcounter_version: v2.0.4

@@ -1,0 +1,6 @@
+Clients:
+{% for client in app_drpr_clients %}
+  - Name: "{{ client.name }}"
+    APIKey: "{{ client.api_key }}"
+    ContainerNames: "{{ client.container_names }}"
+{% endfor %}

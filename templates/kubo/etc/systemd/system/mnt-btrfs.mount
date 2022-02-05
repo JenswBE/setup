@@ -1,8 +1,7 @@
 [Mount]
 What=/dev/disk/by-uuid/c44fbbe8-f708-4bbd-9dfc-8a0fa15fc956
-Where=/media/backup
+Where=/mnt/btrfs
 Type=btrfs
-Options=subvol=backup
 
 [Install]
 WantedBy=multi-user.target

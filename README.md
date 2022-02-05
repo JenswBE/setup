@@ -58,7 +58,6 @@ ansible-playbook main.yml --ask-vault-pass --ask-become-pass --tags docker --lim
 #   - docker
 ```
 
-## Host specific configuration
+## Service specific configuration
 
-- [Olaf](docs/olaf.md)
-- [Eve](docs/eve.md)
+See [instructions for configuring services](docs/how-to/Setup services.md)

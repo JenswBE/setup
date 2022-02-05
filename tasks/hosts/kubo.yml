@@ -1,5 +1,8 @@
 - include_tasks: tasks/powertop.yml
-  tags: ["setup"]
+  tags: ["setup", "powertop"]
+
+- include_tasks: tasks/nfs.yml
+  tags: ["setup", "nfs"]
 
 - name: Disable systemd-resolved DNSStubListener
   # Based on https://www.qualityology.com/tech/ubuntu-port-53-already-in-use-how-to-free-the-dns-port/
@@ -57,8 +60,12 @@
     state: started
     enabled: yes
   with_items:
+    - btrfs-scrub.timer
+    - data.mount
     - docker-update-containers.timer
+    - fatrace-btrfs.service
     - glitchtip-dump-db.timer
+    - mnt-btrfs.mount
     - nextcloud-cron.timer
     - nextcloud-dump-db.timer
     - nextcloud-maps-scan-photos.timer

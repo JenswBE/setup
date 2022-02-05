@@ -1,0 +1,22 @@
+- name: Setup Wireguard
+  become: yes
+  tags: ["setup", "wireguard"]
+  block:
+    - name: Install Wireguard
+      ansible.builtin.package:
+        state: present
+        name: wireguard
+
+    - name: Setup Wireguard config
+      ansible.builtin.template:
+        src: "{{ ansible_hostname }}/etc/wireguard/wg0.conf.j2"
+        dest: "/etc/wireguard/wg0.conf"
+        owner: root
+        group: root
+        mode: 0600
+
+    - name: Enable Wireguard on boot
+      ansible.builtin.systemd:
+        name: wg-quick@wg0
+        enabled: yes
+        state: started
