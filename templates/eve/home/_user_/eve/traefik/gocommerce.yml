@@ -1,0 +1,25 @@
+http:
+  middlewares:
+    bjoetiek-cors:
+      headers:
+        accessControlAllowCredentials: true
+        accessControlAllowHeaders: "*"
+        accessControlAllowMethods: "*"
+        accessControlAllowOriginListRegex: '^https?://(.+\.)?{{ general_domain_bjoetiek | regex_escape() }}$'
+        addVaryHeader: true
+
+    candylicious-cors:
+      headers:
+        accessControlAllowCredentials: true
+        accessControlAllowHeaders: "*"
+        accessControlAllowMethods: "*"
+        accessControlAllowOriginListRegex: '^https?://(.+\.)?{{ general_domain_candylicious | regex_escape() }}$'
+        addVaryHeader: true
+
+    oud-turnhoutsgebak-cors:
+      headers:
+        accessControlAllowCredentials: true
+        accessControlAllowHeaders: "*"
+        accessControlAllowMethods: "*"
+        accessControlAllowOriginListRegex: '^https?://(.+\.)?{{ general_domain_oud_turnhoutsgebak | regex_escape() }}$'
+        addVaryHeader: true

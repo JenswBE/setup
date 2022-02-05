@@ -19,19 +19,19 @@ theme: default # 'default' or one of the themes available in 'src/assets/themes'
 # Optional navbar
 links: [] # Allows for navbar (dark mode, layout, and search) without any links
 
-message:
-  content: >
-    <img src="assets/logos/duckduckgo.png" width="50" style="margin-right:20px;">
-    <iframe src="https://duckduckgo.com/search.html?prefill=Search DuckDuckGo&focus=yes&kz=1&kac=1&kn=1&kp=-2&kam=osm&kaj=m"
-    style="overflow:hidden;margin:0;padding:0;width:calc(100% - 100px);height:60px;" frameborder="0"></iframe>
-  # DuckDuckGo options
-  # See https://duckduckgo.com/params
-  # - kz: Open Instant Answers
-  # - kac: Auto-suggest
-  # - kn: New Window
-  # - kp: Safe Search
-  # - kam: Directions Source (maps)
-  # - kaj: Units of Measure
+# message:
+#   content: >
+#     <img src="assets/logos/duckduckgo.png" width="50" style="margin-right:20px;">
+#     <iframe src="https://duckduckgo.com/search.html?prefill=Search DuckDuckGo&focus=yes&kz=1&kac=1&kn=1&kp=-2&kam=osm&kaj=m"
+#     style="overflow:hidden;margin:0;padding:0;width:calc(100% - 100px);height:60px;" frameborder="0"></iframe>
+# DuckDuckGo options
+# See https://duckduckgo.com/params
+# - kz: Open Instant Answers
+# - kac: Auto-suggest
+# - kn: New Window
+# - kp: Safe Search
+# - kam: Directions Source (maps)
+# - kaj: Units of Measure
 
 # Services
 x-tag-eve: &tag_eve
@@ -47,11 +47,6 @@ x-tag-gandalf: &tag_gandalf
 x-tag-kubo: &tag_kubo
   tag: "Kubo"
   tagstyle: "is-info"
-  target: "_blank"
-
-x-tag-olaf: &tag_olaf
-  tag: "Olaf"
-  tagstyle: "is-danger"
   target: "_blank"
 
 services:
@@ -98,12 +93,12 @@ services:
       - name: "Transmission"
         logo: "assets/logos/transmission.svg"
         url: "https://torrent.jensw.be"
-        <<: *tag_olaf
+        <<: *tag_kubo
 
       - name: "TinyMediaManager"
         logo: "assets/logos/tiny-media-manager.png"
         url: "https://tmm.jensw.be"
-        <<: *tag_olaf
+        <<: *tag_kubo
 
       - name: "Syncthing Gandalf"
         logo: "assets/logos/syncthing.png"
@@ -114,11 +109,6 @@ services:
         logo: "assets/logos/syncthing.png"
         url: "https://syncthing-kubo.jensw.be"
         <<: *tag_kubo
-
-      - name: "Syncthing Olaf"
-        logo: "assets/logos/syncthing.png"
-        url: "https://syncthing-olaf.jensw.be"
-        <<: *tag_olaf
 
   - name: "Tools"
     icon: "fas fa-wrench"
@@ -143,6 +133,16 @@ services:
         url: "https://dns.jensw.be/admin"
         <<: *tag_eve
 
+      - name: "Scrutiny S.M.A.R.T."
+        logo: "assets/logos/scrutiny.png"
+        url: "https://smart-kubo.jensw.be"
+        <<: *tag_kubo
+
+      - name: "GlitchTip"
+        logo: "assets/logos/glitchtip.png"
+        url: "https://glitchtip.jensw.be"
+        <<: *tag_kubo
+
       - name: "Traefik Eve"
         logo: "assets/logos/traefik.png"
         url: "https://traefik-eve.jensw.be"
@@ -157,11 +157,6 @@ services:
         logo: "assets/logos/traefik.png"
         url: "https://traefik-kubo.jensw.be"
         <<: *tag_kubo
-
-      - name: "Traefik Olaf"
-        logo: "assets/logos/traefik.png"
-        url: "https://traefik-olaf.jensw.be"
-        <<: *tag_olaf
 
   - name: "Home"
     icon: "fas fa-home"

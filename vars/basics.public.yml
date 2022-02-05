@@ -2,7 +2,10 @@
 general_domain_default: jensw.be
 general_domain_local: jensw.lan
 general_domain_bjoetiek: bjoetiek-y.be
+general_domain_candylicious: candylicious.jensw.be
 general_domain_klokracing: klokracing.be
+general_domain_oud_turnhoutsgebak: oud-turnhoutsgebak.be
+general_domain_spellebel: spellebel.be
 general_domain_tuinfeest: tuinfeestbeerse.be
 general_mail_admin: admin
 general_path_appdata: "/opt/appdata"
@@ -19,7 +22,9 @@ firewall_ssh_port: 22
 
 # Packages
 packages_base:
+  - console-data
   - htop
+  - iotop
   - rsync
   - vim
 

@@ -1,0 +1,20 @@
+- name: Setup NFS
+  become: yes
+  tags: ["setup", "nfs"]
+  block:
+    - name: Load NFS modules
+      community.general.modprobe:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - nfs
+        - nfsd
+
+    - name: Load NFS modules on boot
+      ansible.builtin.copy:
+        dest: "/etc/modules-load.d/nfs.conf"
+        owner: root
+        mode: 0644
+        content: |
+          nfs
+          nfsd

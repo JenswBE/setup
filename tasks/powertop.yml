@@ -1,5 +1,6 @@
 - name: Setup powertop
   become: yes
+  tags: ["setup", "powertop"]
   block:
     - name: Install powertop
       ansible.builtin.package:

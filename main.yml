@@ -33,7 +33,7 @@
       tags: ["setup"]
 
     - include_tasks: tasks/firewall.yml
-      tags: ["setup"]
+      tags: ["setup", "firewall"]
 
     - include_tasks: tasks/mail_on_failed_unit.yml
       tags: ["setup"]
