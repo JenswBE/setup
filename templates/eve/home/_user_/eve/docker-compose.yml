@@ -347,7 +347,7 @@ services:
   # ===========================================================================
   bjoetiek-frontend:
     <<: *defaults
-    image: jenswbe/bjoetiek-y-frontend:v2.2.0
+    image: jenswbe/bjoetiek-y-frontend:v2.2.1
     container_name: bjoetiek-frontend
     networks:
       - traefik
