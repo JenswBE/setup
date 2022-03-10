@@ -441,7 +441,7 @@ services:
 
   bjoetiek-backend:
     <<: *defaults
-    image: jenswbe/go-commerce:v0.3.0
+    image: jenswbe/go-commerce:v0.4.0
     container_name: bjoetiek-backend
     depends_on:
       - bjoetiek-db
@@ -451,7 +451,7 @@ services:
       - "{{ general_path_appdata }}/bjoetiek/backend/images:/images"
     environment:
       - "TZ={{ general_timezone }}"
-      - "AUTH_ISSUER_URL=https://auth.{{ general_domain_bjoetiek }}/auth/realms/bjoetiek"
+      - "AUTH_OIDC_ISSUER_URL=https://auth.{{ general_domain_bjoetiek }}/auth/realms/bjoetiek"
       - "DATABASE_DEFAULT_HOST=bjoetiek-db"
       - "DATABASE_DEFAULT_USER=bjoetiek"
       - "DATABASE_DEFAULT_PASSWORD={{ app_bjoetiek_db_pass }}"
@@ -593,7 +593,7 @@ services:
       - "{{ general_path_appdata }}/bjoetiek/backend-test/images:/images"
     environment:
       - "TZ={{ general_timezone }}"
-      - "AUTH_ISSUER_URL=https://auth.{{ general_domain_bjoetiek }}/auth/realms/bjoetiek"
+      - "AUTH_OIDC_ISSUER_URL=https://auth.{{ general_domain_bjoetiek }}/auth/realms/bjoetiek"
       - "DATABASE_DEFAULT_HOST=bjoetiek-test-db"
       - "DATABASE_DEFAULT_USER=bjoetiek-test"
       - "DATABASE_DEFAULT_PASSWORD=bjoetiek-test"
@@ -783,7 +783,7 @@ services:
       - "{{ general_path_appdata }}/candylicious/backend-test/images:/images"
     environment:
       - "TZ={{ general_timezone }}"
-      - "AUTH_ISSUER_URL=https://auth.{{ general_domain_candylicious }}/auth/realms/candylicious"
+      - "AUTH_OIDC_ISSUER_URL=https://auth.{{ general_domain_candylicious }}/auth/realms/candylicious"
       - "DATABASE_DEFAULT_HOST=candylicious-test-db"
       - "DATABASE_DEFAULT_USER=candylicious-test"
       - "DATABASE_DEFAULT_PASSWORD=candylicious-test"
@@ -910,7 +910,7 @@ services:
       - oud-turnhoutsgebak-test
     environment:
       - "TZ={{ general_timezone }}"
-      - "AUTH_ISSUER_URL=https://auth.{{ general_domain_oud_turnhoutsgebak }}/auth/realms/oud-turnhoutsgebak"
+      - "AUTH_OIDC_ISSUER_URL=https://auth.{{ general_domain_oud_turnhoutsgebak }}/auth/realms/oud-turnhoutsgebak"
       - "DATABASE_DEFAULT_HOST=oud-turnhoutsgebak-test-db"
       - "DATABASE_DEFAULT_USER=oud-turnhoutsgebak-test"
       - "DATABASE_DEFAULT_PASSWORD=oud-turnhoutsgebak-test"
