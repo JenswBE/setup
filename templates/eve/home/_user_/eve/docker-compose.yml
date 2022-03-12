@@ -26,7 +26,7 @@ services:
       - "--providers.docker=true"
       - "--providers.docker.network=traefik"
       - "--providers.docker.exposedbydefault=false"
-      - "--providers.docker.constraints=!LabelRegex(`bjoetiek.env`,`.+`)"
+      - "--providers.docker.constraints=!(LabelRegex(`bjoetiek.env`,`.+`) || LabelRegex(`candylicious.env`,`.+`) || LabelRegex(`oud-turnhoutsgebak.env`,`.+`))"
       - "--entrypoints.websecure.address=:443"
       - "--entrypoints.websecure.http.middlewares=secure-https@file"
       - "--entrypoints.web.address=:80"
@@ -378,10 +378,10 @@ services:
       - "TZ={{ general_timezone }}"
       - "AUTH_CLIENT_ID={{ app_bjoetiek_auth_client_id }}"
       - "AUTH_STATE={{ app_bjoetiek_auth_state }}"
-      - "AUTH_URL_AUTHORIZATION=https://auth.{{ general_domain_bjoetiek }}/auth/realms/bjoetiek/protocol/openid-connect/auth"
-      - "AUTH_URL_TOKEN=https://auth.{{ general_domain_bjoetiek }}/auth/realms/bjoetiek/protocol/openid-connect/token"
-      - "AUTH_URL_USERINFO=https://auth.{{ general_domain_bjoetiek }}/auth/realms/bjoetiek/protocol/openid-connect/userinfo"
-      - "AUTH_URL_LOGOUT=https://auth.{{ general_domain_bjoetiek }}/auth/realms/bjoetiek/protocol/openid-connect/logout"
+      - "AUTH_URL_AUTHORIZATION=https://auth.{{ general_domain_bjoetiek }}/realms/bjoetiek/protocol/openid-connect/auth"
+      - "AUTH_URL_TOKEN=https://auth.{{ general_domain_bjoetiek }}/realms/bjoetiek/protocol/openid-connect/token"
+      - "AUTH_URL_USERINFO=https://auth.{{ general_domain_bjoetiek }}/realms/bjoetiek/protocol/openid-connect/userinfo"
+      - "AUTH_URL_LOGOUT=https://auth.{{ general_domain_bjoetiek }}/realms/bjoetiek/protocol/openid-connect/logout"
       - "AUTH_URL_LOGOUT_REDIRECT=https://beheer.{{ general_domain_bjoetiek }}/login"
       - "BACKEND_URL_INTERNAL=http://bjoetiek-backend:8080"
       - "BACKEND_URL_EXTERNAL=https://backend.{{ general_domain_bjoetiek }}/api"
@@ -451,7 +451,7 @@ services:
       - "{{ general_path_appdata }}/bjoetiek/backend/images:/images"
     environment:
       - "TZ={{ general_timezone }}"
-      - "AUTH_OIDC_ISSUER_URL=https://auth.{{ general_domain_bjoetiek }}/auth/realms/bjoetiek"
+      - "AUTH_OIDC_ISSUER_URL=https://auth.{{ general_domain_bjoetiek }}/realms/bjoetiek"
       - "DATABASE_DEFAULT_HOST=bjoetiek-db"
       - "DATABASE_DEFAULT_USER=bjoetiek"
       - "DATABASE_DEFAULT_PASSWORD={{ app_bjoetiek_db_pass }}"
@@ -521,7 +521,7 @@ services:
       - "TZ={{ general_timezone }}"
       - "AUTH_CLIENT_ID={{ app_bjoetiek_test_auth_client_id }}"
       - "AUTH_STATE={{ app_bjoetiek_test_auth_state }}"
-      - "AUTH_URL_OIDC_CONFIG=https://auth.{{ general_domain_bjoetiek }}/auth/realms/bjoetiek/.well-known/openid-configuration"
+      - "AUTH_URL_OIDC_CONFIG=https://auth.{{ general_domain_bjoetiek }}/realms/bjoetiek/.well-known/openid-configuration"
       - "AUTH_URL_LOGOUT_REDIRECT=https://test-beheer.{{ general_domain_bjoetiek }}/login"
       - "BACKEND_URL_INTERNAL=http://bjoetiek-test-backend:8080"
       - "BACKEND_URL_EXTERNAL=https://test-backend.{{ general_domain_bjoetiek }}/api"
@@ -593,7 +593,7 @@ services:
       - "{{ general_path_appdata }}/bjoetiek/backend-test/images:/images"
     environment:
       - "TZ={{ general_timezone }}"
-      - "AUTH_OIDC_ISSUER_URL=https://auth.{{ general_domain_bjoetiek }}/auth/realms/bjoetiek"
+      - "AUTH_OIDC_ISSUER_URL=https://auth.{{ general_domain_bjoetiek }}/realms/bjoetiek"
       - "DATABASE_DEFAULT_HOST=bjoetiek-test-db"
       - "DATABASE_DEFAULT_USER=bjoetiek-test"
       - "DATABASE_DEFAULT_PASSWORD=bjoetiek-test"
@@ -711,7 +711,7 @@ services:
       - "TZ={{ general_timezone }}"
       - "AUTH_CLIENT_ID={{ app_candylicious_test_auth_client_id }}"
       - "AUTH_STATE={{ app_candylicious_test_auth_state }}"
-      - "AUTH_URL_OIDC_CONFIG=https://auth.{{ general_domain_candylicious }}/auth/realms/candylicious/.well-known/openid-configuration"
+      - "AUTH_URL_OIDC_CONFIG=https://auth.{{ general_domain_candylicious }}/realms/candylicious/.well-known/openid-configuration"
       - "AUTH_URL_LOGOUT_REDIRECT=https://beheer.{{ general_domain_candylicious }}/login"
       - "BACKEND_URL_INTERNAL=http://candylicious-test-backend:8080"
       - "BACKEND_URL_EXTERNAL=https://backend.{{ general_domain_candylicious }}/api"
@@ -783,7 +783,7 @@ services:
       - "{{ general_path_appdata }}/candylicious/backend-test/images:/images"
     environment:
       - "TZ={{ general_timezone }}"
-      - "AUTH_OIDC_ISSUER_URL=https://auth.{{ general_domain_candylicious }}/auth/realms/candylicious"
+      - "AUTH_OIDC_ISSUER_URL=https://auth.{{ general_domain_candylicious }}/realms/candylicious"
       - "DATABASE_DEFAULT_HOST=candylicious-test-db"
       - "DATABASE_DEFAULT_USER=candylicious-test"
       - "DATABASE_DEFAULT_PASSWORD=candylicious-test"
@@ -861,7 +861,7 @@ services:
       - "TZ={{ general_timezone }}"
       - "AUTH_CLIENT_ID={{ app_oud_turnhoutsgebak_test_auth_client_id }}"
       - "AUTH_STATE={{ app_oud_turnhoutsgebak_test_auth_state }}"
-      - "AUTH_URL_OIDC_CONFIG=https://auth.{{ general_domain_oud_turnhoutsgebak }}/auth/realms/oud-turnhoutsgebak/.well-known/openid-configuration"
+      - "AUTH_URL_OIDC_CONFIG=https://auth.{{ general_domain_candylicious }}/realms/candylicious/.well-known/openid-configuration"
       - "AUTH_URL_LOGOUT_REDIRECT=https://test-beheer.{{ general_domain_oud_turnhoutsgebak }}/login"
       - "BACKEND_URL_INTERNAL=http://oud-turnhoutsgebak-test-backend:8080"
       - "BACKEND_URL_EXTERNAL=https://test-backend.{{ general_domain_oud_turnhoutsgebak }}/api"
@@ -910,7 +910,7 @@ services:
       - oud-turnhoutsgebak-test
     environment:
       - "TZ={{ general_timezone }}"
-      - "AUTH_OIDC_ISSUER_URL=https://auth.{{ general_domain_oud_turnhoutsgebak }}/auth/realms/oud-turnhoutsgebak"
+      - "AUTH_OIDC_ISSUER_URL=https://auth.{{ general_domain_candylicious }}/realms/candylicious"
       - "DATABASE_DEFAULT_HOST=oud-turnhoutsgebak-test-db"
       - "DATABASE_DEFAULT_USER=oud-turnhoutsgebak-test"
       - "DATABASE_DEFAULT_PASSWORD=oud-turnhoutsgebak-test"
@@ -976,7 +976,7 @@ services:
   # =========================
   keycloak:
     <<: *defaults
-    image: quay.io/keycloak/keycloak:15.0.2
+    build: ./keycloak
     container_name: keycloak
     depends_on:
       - keycloak-db
@@ -985,14 +985,17 @@ services:
       - keycloak
     environment:
       - "TZ={{ general_timezone }}"
-      - "DB_VENDOR=POSTGRES"
-      - "DB_ADDR=keycloak-db"
-      - "DB_DATABASE=keycloak"
-      - "DB_USER=keycloak"
-      - "DB_SCHEMA=public"
-      - "DB_PASSWORD={{ app_keycloak_db_pass }}"
-      - "KEYCLOAK_FRONTEND_URL=https://auth.{{ general_domain_default }}/auth"
-      - "PROXY_ADDRESS_FORWARDING=true"
+      - "KC_DB_URL_HOST=keycloak-db"
+      - "KC_DB_URL_DATABASE=keycloak"
+      - "KC_DB_USERNAME=keycloak"
+      - "KC_DB_PASSWORD={{ app_keycloak_db_pass }}"
+      - "KC_DB_SCHEMA=public"
+      - "KC_HOSTNAME=auth.{{ general_domain_default }}"
+      - "KC_HOSTNAME_STRICT=false" # Hostnames validated by Traefik
+      - "KC_PROXY=edge"
+      # Only for initial setup
+      # - KEYCLOAK_ADMIN=admin
+      # - KEYCLOAK_ADMIN_PASSWORD=change_me
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.keycloak.entrypoints=websecure"
@@ -1002,8 +1005,8 @@ services:
           `auth.{{ general_domain_default }}`,
           `auth.{{ general_domain_bjoetiek }}`,
           `auth.{{ general_domain_candylicious }}`,
-          `auth.{{ general_domain_oud_turnhoutsgebak }}`,
         )
+      - "traefik.http.services.keycloak-{{ ansible_hostname }}.loadbalancer.server.port=8080"
 
   keycloak-db:
     <<: *defaults
