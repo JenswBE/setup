@@ -1,5 +1,10 @@
-homeassistant: true
 permit_join: false
+
+homeassistant:
+  discovery_topic: "homeassistant"
+  status_topic: "homeassistant/status"
+  legacy_entity_attributes: false
+  legacy_triggers: false
 
 mqtt:
   base_topic: zigbee2mqtt
