@@ -10,3 +10,5 @@ firewall_additional_ports:
     proto: tcp
   - port: 22000 # Syncthing QUIC
     proto: udp
+  - port: 51820 # Wireguard
+    proto: udp

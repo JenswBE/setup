@@ -1,10 +1,13 @@
 [Interface]
-Address = 10.10.0.1/24
+Address = {{ app_wireguard_ip_address }}
 PrivateKey = {{ app_wireguard_private_key }}
 ListenPort = 51820
 
 {% for peer in app_wireguard_peers %}
 [Peer]
+{% if peer.endpoint %}
+Endpoint = {{ peer.endpoint }}
+{% endif %}
 PublicKey = {{ peer.public_key }}
 AllowedIPs = {{ peer.allowed_ips }}
 

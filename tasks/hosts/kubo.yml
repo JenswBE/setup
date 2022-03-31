@@ -4,6 +4,9 @@
 - include_tasks: tasks/nfs.yml
   tags: ["setup", "nfs"]
 
+- include_tasks: tasks/wireguard.yml
+  tags: ["setup", "wireguard"]
+
 - name: Copy systemd system unit templates
   include_tasks: tasks/helpers/copy_templates_folder.yml
   vars:
