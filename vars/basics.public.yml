@@ -14,7 +14,7 @@ general_user: jens
 
 # Docker
 docker_users: ["jens"]
-docker_compose_version: "v2.0.1"
+docker_compose_version: "v2.3.4"
 docker_compose_path: "/usr/libexec/docker/cli-plugins/docker-compose" # Also used for systemd units
 
 # Firewall
