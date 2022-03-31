@@ -9,7 +9,7 @@
 
     - name: Setup Wireguard config
       ansible.builtin.template:
-        src: "{{ ansible_hostname }}/etc/wireguard/wg0.conf.j2"
+        src: "wireguard.conf.j2"
         dest: "/etc/wireguard/wg0.conf"
         owner: root
         group: root

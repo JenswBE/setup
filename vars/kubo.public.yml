@@ -28,9 +28,7 @@ firewall_additional_ports:
     proto: tcp
   - port: 32767 # NFS (v3 only)
     proto: udp
-  - port: 32767 # NFS (v3 only)
-    proto: tcp
-  - port: 32767 # NFS (v3 only)
+  - port: 51820 # Wireguard
     proto: udp
 
 # Nextcloud
