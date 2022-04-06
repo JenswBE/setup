@@ -1,12 +1,46 @@
 version: "3.7"
 
 #################################################################
-#                            DEFAULTS                           #
+#                    DEFAULTS AND COMMON ENVS                   #
 #################################################################
 x-defaults: &defaults
   restart: always
   extra_hosts:
     - "host.docker.internal:host-gateway"
+
+x-glitchtip-env: &glitchtip-env
+  TZ: "{{ general_timezone }}"
+  PORT: "8080"
+  DATABASE_URL: "postgres://glitchtip:{{ app_glitchtip_db_pass }}@glitchtip-db:5432/glitchtip"
+  REDIS_HOST: "glitchtip-redis"
+  SECRET_KEY: "{{ app_glitchtip_secret_key }}"
+  EMAIL_URL: "smtp://{{ mailjet_username }}:{{ mailjet_password }}@{{ mailjet_host }}:{{ mailjet_port }}"
+  DEFAULT_FROM_EMAIL: "glitchtip@{{ general_domain_default }}"
+  GLITCHTIP_DOMAIN: "https://glitchtip.{{ general_domain_default }}"
+
+x-librenms-env: &librenms-env
+  TZ: "{{ general_timezone }}"
+  PUID: "{{ ansible_real_user_id }}"
+  PGID: "{{ ansible_real_group_id }}"
+  DB_HOST: "librenms-db"
+  DB_NAME: "librenms"
+  DB_USER: "librenms"
+  DB_PASSWORD: "{{ app_librenms_db_pass_librenms }}"
+  DB_TIMEOUT: "60"
+  REDIS_HOST: "librenms-redis"
+  REDIS_PORT: "6379"
+  REDIS_DB: "0"
+  MEMORY_LIMIT: "256M"
+  UPLOAD_MAX_SIZE: "16M"
+  OPCACHE_MEM_SIZE: "128"
+  REAL_IP_FROM: "172.16.0.0/12"
+  REAL_IP_HEADER: "X-Forwarded-For"
+  LOG_IP_VAR: "http_x_forwarded_for"
+  LIBRENMS_SNMP_COMMUNITY: "librenmsdocker"
+  MEMCACHED_HOST: "librenms-memcached"
+  MEMCACHED_PORT: "11211"
+  LIBRENMS_WEATHERMAP: "false"
+  LIBRENMS_WEATHERMAP_SCHEDULE: "*/5 * * * *"
 
 #################################################################
 #                            SERVICES                           #
@@ -54,7 +88,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - traefik-cert:/letsencrypt/
     environment:
-      - "TZ={{ general_timezone }}"
+      TZ: "{{ general_timezone }}"
 
   traefik-forward-auth:
     <<: *defaults
@@ -63,12 +97,12 @@ services:
     networks:
       - traefik
     environment:
-      - "COOKIE_DOMAIN={{ general_domain_default }}"
-      - "DEFAULT_PROVIDER=oidc"
-      - "SECRET={{ app_traefik_forward_auth_secret }}"
-      - "PROVIDERS_OIDC_ISSUER_URL={{ app_traefik_forward_auth_oidc_issuer_url }}"
-      - "PROVIDERS_OIDC_CLIENT_ID={{ app_traefik_forward_auth_oidc_client_id }}"
-      - "PROVIDERS_OIDC_CLIENT_SECRET={{ app_traefik_forward_auth_oidc_client_secret }}"
+      COOKIE_DOMAIN: "{{ general_domain_default }}"
+      DEFAULT_PROVIDER: "oidc"
+      SECRET: "{{ app_traefik_forward_auth_secret }}"
+      PROVIDERS_OIDC_ISSUER_URL: "{{ app_traefik_forward_auth_oidc_issuer_url }}"
+      PROVIDERS_OIDC_CLIENT_ID: "{{ app_traefik_forward_auth_oidc_client_id }}"
+      PROVIDERS_OIDC_CLIENT_SECRET: "{{ app_traefik_forward_auth_oidc_client_secret }}"
 
   # =========================
   # =    UNIFI CONTROLLER   =
@@ -78,10 +112,10 @@ services:
     image: linuxserver/unifi-controller:latest
     container_name: unifi-controller
     environment:
-      - "TZ={{ general_timezone }}"
-      - "PUID=1000"
-      - "PGID=1000"
-      - "MEM_LIMIT=512M"
+      TZ: "{{ general_timezone }}"
+      PUID: "1000"
+      PGID: "1000"
+      MEM_LIMIT: "512M"
     volumes:
       - "{{ general_path_appdata }}/unifi-controller/config:/config"
     ports:
@@ -109,7 +143,7 @@ services:
       - "./home-automation/home-assistant/configuration.yaml:/config/configuration.yaml"
       - "{{ general_path_appdata }}/home-automation/home-assistant/config:/config"
     environment:
-      - "TZ={{ general_timezone }}"
+      TZ: "{{ general_timezone }}"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.ha.entrypoints=websecure"
@@ -131,7 +165,7 @@ services:
     devices:
       - "/dev/serial/by-id/usb-Silicon_Labs_slae.sh_cc2652rb_stick_-_slaesh_s_iot_stuff_00_12_4B_00_22_98_86_5C-if00-port0:/dev/zigbee"
     environment:
-      - "TZ={{ general_timezone }}"
+      TZ: "{{ general_timezone }}"
 
   ha-mosquitto:
     <<: *defaults
@@ -142,7 +176,7 @@ services:
     volumes:
       - "./home-automation/mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro"
     environment:
-      - "TZ={{ general_timezone }}"
+      TZ: "{{ general_timezone }}"
 
   # =========================
   # =        MINIFLUX       =
@@ -157,17 +191,17 @@ services:
     depends_on:
       - miniflux-db
     environment:
-      - "TZ={{ general_timezone }}"
-      - "DATABASE_URL=postgres://miniflux:{{ app_miniflux_db_pass }}@miniflux-db/miniflux?sslmode=disable"
-      - "RUN_MIGRATIONS=1"
-      - "CREATE_ADMIN=1"
-      - "ADMIN_USERNAME={{ app_miniflux_admin_user }}"
-      - "ADMIN_PASSWORD={{ app_miniflux_admin_pass }}"
-      - "OAUTH2_PROVIDER=oidc"
-      - "OAUTH2_OIDC_DISCOVERY_ENDPOINT={{ app_miniflux_oidc_url }}"
-      - "OAUTH2_CLIENT_ID={{ app_miniflux_oidc_client_id }}"
-      - "OAUTH2_CLIENT_SECRET={{ app_miniflux_oidc_client_secret }}"
-      - "OAUTH2_REDIRECT_URL=https://feed.{{ general_domain_default }}/oauth2/oidc/callback"
+      TZ: "{{ general_timezone }}"
+      DATABASE_URL: "postgres://miniflux:{{ app_miniflux_db_pass }}@miniflux-db/miniflux?sslmode=disable"
+      RUN_MIGRATIONS: "1"
+      CREATE_ADMIN: "1"
+      ADMIN_USERNAME: "{{ app_miniflux_admin_user }}"
+      ADMIN_PASSWORD: "{{ app_miniflux_admin_pass }}"
+      OAUTH2_PROVIDER: "oidc"
+      OAUTH2_OIDC_DISCOVERY_ENDPOINT: "{{ app_miniflux_oidc_url }}"
+      OAUTH2_CLIENT_ID: "{{ app_miniflux_oidc_client_id }}"
+      OAUTH2_CLIENT_SECRET: "{{ app_miniflux_oidc_client_secret }}"
+      OAUTH2_REDIRECT_URL: "https://feed.{{ general_domain_default }}/oauth2/oidc/callback"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.miniflux.entrypoints=websecure"
@@ -184,9 +218,9 @@ services:
     volumes:
       - "{{ general_path_appdata }}/miniflux/db:/var/lib/postgresql/data"
     environment:
-      - "TZ={{ general_timezone }}"
-      - "POSTGRES_USER=miniflux"
-      - "POSTGRES_PASSWORD={{ app_miniflux_db_pass }}"
+      TZ: "{{ general_timezone }}"
+      POSTGRES_USER: "miniflux"
+      POSTGRES_PASSWORD: "{{ app_miniflux_db_pass }}"
 
   # =========================
   # =          PLEX         =
@@ -204,9 +238,9 @@ services:
     #   - "/dev/dri/card0:/dev/dri/card0"
     #   - "/dev/dri/renderD128:/dev/dri/renderD128"
     environment:
-      - "TZ={{ general_timezone }}"
-      - "PLEX_UID=1000"
-      - "PLEX_GID=1000"
+      TZ: "{{ general_timezone }}"
+      PLEX_UID: "1000"
+      PLEX_GID: "1000"
 
   # =========================
   # =   TINY MEDIA MANAGER  =
@@ -221,9 +255,9 @@ services:
       - "/data/media:/media"
       - "{{ general_path_appdata }}/tmm/config:/config"
     environment:
-      - "TZ={{ general_timezone }}"
-      - "GROUP_ID=0"
-      - "USER_ID=0"
+      TZ: "{{ general_timezone }}"
+      GROUP_ID: "0"
+      USER_ID: "0"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.tmm.entrypoints=websecure"
@@ -248,9 +282,9 @@ services:
       - "{{ general_path_appdata }}/syncthing/config:/var/syncthing"
       - "/data/media/Music:/data/music"
     environment:
-      - "TZ={{ general_timezone }}"
-      - "PUID=1000"
-      - "PGID=1000"
+      TZ: "{{ general_timezone }}"
+      PUID: "1000"
+      PGID: "1000"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.syncthing.entrypoints=websecure"
@@ -270,9 +304,9 @@ services:
     volumes:
       - "/data/ps2-roms:/data/ps2"
     environment:
-      - "TZ={{ general_timezone }}"
-      - "USERID={{ ansible_real_user_id }}"
-      - "GROUPID={{ ansible_real_group_id }}"
+      TZ: "{{ general_timezone }}"
+      USERID: "{{ ansible_real_user_id }}"
+      GROUPID: "{{ ansible_real_group_id }}"
     command: >
       samba.sh -S
       -s "ps2;/data/ps2;yes;no;yes"
@@ -298,7 +332,7 @@ services:
       - "/data/media:/data/media"
       - "./nfs/exports:/etc/exports:ro"
     environment:
-      - "TZ={{ general_timezone }}"
+      TZ: "{{ general_timezone }}"
 
   # =========================
   # =       NEXTCLOUD       =
@@ -317,11 +351,11 @@ services:
       - "{{ general_path_appdata }}/nextcloud/nextcloud/config:/var/www/html"
       - "{{ general_path_appdata }}/nextcloud/nextcloud/data:/var/www/html/data"
     environment:
-      - "TZ={{ general_timezone }}"
-      - "MYSQL_DATABASE=nextcloud"
-      - "MYSQL_USER=nextcloud"
-      - "MYSQL_PASSWORD={{ app_nextcloud_db_pass_nextcloud }}"
-      - "MYSQL_HOST=nc-db"
+      TZ: "{{ general_timezone }}"
+      MYSQL_DATABASE: "nextcloud"
+      MYSQL_USER: "nextcloud"
+      MYSQL_PASSWORD: "{{ app_nextcloud_db_pass_nextcloud }}"
+      MYSQL_HOST: "nc-db"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.nextcloud.entrypoints=websecure"
@@ -344,11 +378,11 @@ services:
       - "{{ general_path_appdata }}/nextcloud/mariadb/data:/var/lib/mysql"
       - nc-db-dump:/backup
     environment:
-      - "TZ={{ general_timezone }}"
-      - "MYSQL_ROOT_PASSWORD={{ app_nextcloud_db_pass_root }}"
-      - "MYSQL_PASSWORD={{ app_nextcloud_db_pass_nextcloud }}"
-      - "MYSQL_DATABASE=nextcloud"
-      - "MYSQL_USER=nextcloud"
+      TZ: "{{ general_timezone }}"
+      MYSQL_ROOT_PASSWORD: "{{ app_nextcloud_db_pass_root }}"
+      MYSQL_PASSWORD: "{{ app_nextcloud_db_pass_nextcloud }}"
+      MYSQL_DATABASE: "nextcloud"
+      MYSQL_USER: "nextcloud"
     healthcheck:
       test:
         [
@@ -371,7 +405,7 @@ services:
     volumes:
       - "{{ general_path_appdata }}/nginx/hetvleermuizenkind:/usr/share/nginx/html"
     environment:
-      - "TZ={{ general_timezone }}"
+      TZ: "{{ general_timezone }}"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.nginx-hetvleermuizenkind.entrypoints=websecure"
@@ -389,13 +423,13 @@ services:
     networks:
       - traefik
     environment:
-      # - "DEBUG=1"
-      - "TZ={{ general_timezone }}"
-      - "UPSTREAM_DNS_SERVER=udp:host.docker.internal:53"
-      - "DOH_HTTP_PREFIX=/dns-query"
-      - "DOH_SERVER_TIMEOUT=10"
-      - "DOH_SERVER_TRIES=3"
-      - "DOH_SERVER_VERBOSE=false"
+      # DEBUG: "1"
+      TZ: "{{ general_timezone }}"
+      UPSTREAM_DNS_SERVER: "udp:host.docker.internal:53"
+      DOH_HTTP_PREFIX: "/dns-query"
+      DOH_SERVER_TIMEOUT: "10"
+      DOH_SERVER_TRIES: "3"
+      DOH_SERVER_VERBOSE: "false"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.doh-server.entrypoints=websecure"
@@ -419,14 +453,7 @@ services:
       - traefik
       - glitchtip
     environment:
-      - "TZ={{ general_timezone }}"
-      - "PORT=8080"
-      - "DATABASE_URL=postgres://glitchtip:{{ app_glitchtip_db_pass }}@glitchtip-db:5432/glitchtip"
-      - "REDIS_HOST=glitchtip-redis"
-      - "SECRET_KEY={{ app_glitchtip_secret_key }}"
-      - "EMAIL_URL=smtp://{{ mailjet_username }}:{{ mailjet_password }}@{{ mailjet_host }}:{{ mailjet_port }}"
-      - "DEFAULT_FROM_EMAIL=glitchtip@{{ general_domain_default }}"
-      - "GLITCHTIP_DOMAIN=https://glitchtip.{{ general_domain_default }}"
+      <<: *glitchtip-env
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.glitchtip.entrypoints=websecure"
@@ -446,14 +473,7 @@ services:
     networks:
       - glitchtip
     environment:
-      - "TZ={{ general_timezone }}"
-      - "PORT=8080"
-      - "DATABASE_URL=postgres://glitchtip:{{ app_glitchtip_db_pass }}@glitchtip-db:5432/glitchtip"
-      - "REDIS_HOST=glitchtip-redis"
-      - "SECRET_KEY={{ app_glitchtip_secret_key }}"
-      - "EMAIL_URL=smtp://{{ mailjet_username }}:{{ mailjet_password }}@{{ mailjet_host }}:{{ mailjet_port }}"
-      - "DEFAULT_FROM_EMAIL=glitchtip@{{ general_domain_default }}"
-      - "GLITCHTIP_DOMAIN=https://glitchtip.{{ general_domain_default }}"
+      <<: *glitchtip-env
 
   glitchtip-migrate:
     <<: *defaults
@@ -468,14 +488,7 @@ services:
     networks:
       - glitchtip
     environment:
-      - "TZ={{ general_timezone }}"
-      - "PORT=8080"
-      - "DATABASE_URL=postgres://glitchtip:{{ app_glitchtip_db_pass }}@glitchtip-db:5432/glitchtip"
-      - "REDIS_HOST=glitchtip-redis"
-      - "SECRET_KEY={{ app_glitchtip_secret_key }}"
-      - "EMAIL_URL=smtp://{{ mailjet_username }}:{{ mailjet_password }}@{{ mailjet_host }}:{{ mailjet_port }}"
-      - "DEFAULT_FROM_EMAIL=glitchtip@{{ general_domain_default }}"
-      - "GLITCHTIP_DOMAIN=https://glitchtip.{{ general_domain_default }}"
+      <<: *glitchtip-env
 
   glitchtip-db:
     <<: *defaults
@@ -487,10 +500,10 @@ services:
       - "{{ general_path_appdata }}/glitchtip/db:/var/lib/postgresql/data"
       - "glitchtip-db-dump:/backup"
     environment:
-      - "TZ={{ general_timezone }}"
-      - "POSTGRES_USER=glitchtip"
-      - "POSTGRES_PASSWORD={{ app_glitchtip_db_pass }}"
-      - "POSTGRES_DB=glitchtip"
+      TZ: "{{ general_timezone }}"
+      POSTGRES_USER: "glitchtip"
+      POSTGRES_PASSWORD: "{{ app_glitchtip_db_pass }}"
+      POSTGRES_DB: "glitchtip"
 
   glitchtip-redis:
     <<: *defaults
@@ -499,7 +512,7 @@ services:
     networks:
       - glitchtip
     environment:
-      - "TZ={{ general_timezone }}"
+      TZ: "{{ general_timezone }}"
 
   # =========================
   # =        TORRENT        =
@@ -514,10 +527,10 @@ services:
       - "51413:51413"
       - "51413:51413/udp"
     environment:
-      - "TZ={{ general_timezone }}"
-      - "PUID=1000"
-      - "PGID=1000"
-      - "TRANSMISSION_WEB_HOME=/combustion-release/"
+      TZ: "{{ general_timezone }}"
+      PUID: "1000"
+      PGID: "1000"
+      TRANSMISSION_WEB_HOME: "/combustion-release/"
     volumes:
       - "{{ general_path_appdata }}/transmission/downloads:/downloads/incomplete"
       - "/data/media/Nazien:/downloads/complete"
@@ -529,6 +542,183 @@ services:
       - "traefik.http.routers.transmission.tls.certresolver=le-tls"
       - "traefik.http.routers.transmission.middlewares=forward-auth@file"
       - "traefik.http.services.transmission-{{ ansible_hostname }}.loadbalancer.server.port=9091"
+
+  # =========================
+  # =       MONITORING      =
+  # =========================
+  scrutiny:
+    <<: *defaults
+    image: analogj/scrutiny:latest
+    container_name: scrutiny
+    cap_add:
+      - SYS_RAWIO # Required for querying SMART data
+      - SYS_ADMIN # Required for querying NVMe drives
+    volumes:
+      - "./scrutiny/scrutiny.yaml:/scrutiny/config/scrutiny.yaml"
+      - "scrutiny-data:/data"
+      - "/run/udev:/run/udev:ro"
+    devices:
+      - "/dev/nvme0:/dev/nvme0"
+      - "/dev/sda:/dev/sda"
+      - "/dev/sdb:/dev/sdb"
+      - "/dev/sdc:/dev/sdc"
+      - "/dev/sdd:/dev/sdd"
+    networks:
+      - traefik
+    environment:
+      TZ: "{{ general_timezone }}"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.scrutiny.entrypoints=websecure"
+      - "traefik.http.routers.scrutiny.rule=Host(`smart-{{ ansible_hostname }}.{{ general_domain_default }}`)"
+      - "traefik.http.routers.scrutiny.tls.certresolver=le-tls"
+      - "traefik.http.routers.scrutiny.middlewares=forward-auth@file"
+
+  librenms:
+    <<: *defaults
+    image: librenms/librenms:latest
+    container_name: librenms
+    hostname: librenms
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    depends_on:
+      - librenms-db
+      - librenms-memcached
+      - librenms-msmtpd
+    volumes:
+      - "{{ general_path_appdata }}/librenms/librenms/data:/data"
+    networks:
+      - traefik
+      - librenms
+    environment:
+      <<: *librenms-env
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.librenms.entrypoints=websecure"
+      - "traefik.http.routers.librenms.rule=Host(`librenms.{{ general_domain_default }}`)"
+      - "traefik.http.routers.librenms.tls.certresolver=le-tls"
+      - "traefik.http.services.librenms-{{ ansible_hostname }}.loadbalancer.server.port=8000"
+
+  librenms-dispatcher:
+    <<: *defaults
+    image: librenms/librenms:latest
+    container_name: librenms-dispatcher
+    hostname: librenms-dispatcher
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    depends_on:
+      - librenms
+      - librenms-redis
+    networks:
+      - librenms
+    volumes:
+      - "{{ general_path_appdata }}/librenms/librenms/data:/data"
+    environment:
+      <<: *librenms-env
+      DISPATCHER_NODE_ID: "dispatcher1"
+      SIDECAR_DISPATCHER: "1"
+
+  librenms-syslogng:
+    <<: *defaults
+    image: librenms/librenms:latest
+    container_name: librenms-syslogng
+    hostname: librenms-syslogng
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    depends_on:
+      - librenms
+    networks:
+      - librenms
+    ports:
+      - "514:514"
+      - "514:514/udp"
+    volumes:
+      - "{{ general_path_appdata }}/librenms/librenms/data:/data"
+    environment:
+      <<: *librenms-env
+      SIDECAR_SYSLOGNG: "1"
+
+  librenms-snmptrapd:
+    <<: *defaults
+    image: librenms/librenms:latest
+    container_name: librenms-snmptrapd
+    hostname: librenms-snmptrapd
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    depends_on:
+      - librenms
+    networks:
+      - librenms
+    ports:
+      - "162:162"
+      - "162:162/udp"
+    volumes:
+      - "{{ general_path_appdata }}/librenms/librenms/data:/data"
+    environment:
+      <<: *librenms-env
+      SIDECAR_SNMPTRAPD: "1"
+
+  librenms-db:
+    <<: *defaults
+    image: mariadb:10.5
+    container_name: librenms-db
+    command:
+      - "mysqld"
+      - "--innodb-file-per-table=1"
+      - "--lower-case-table-names=0"
+      - "--character-set-server=utf8mb4"
+      - "--collation-server=utf8mb4_unicode_ci"
+    networks:
+      - librenms
+    volumes:
+      - "{{ general_path_appdata }}/librenms/mariadb/data:/var/lib/mysql"
+      - librenms-db-dump:/backup
+    environment:
+      TZ: "{{ general_timezone }}"
+      MYSQL_DATABASE: "librenms"
+      MYSQL_USER: "librenms"
+      MYSQL_ROOT_PASSWORD: "{{ app_librenms_db_pass_root }}"
+      MYSQL_PASSWORD: "{{ app_librenms_db_pass_librenms }}"
+
+  librenms-memcached:
+    <<: *defaults
+    image: memcached:alpine
+    container_name: librenms-memcached
+    networks:
+      - librenms
+    environment:
+      TZ: "{{ general_timezone }}"
+
+  librenms-redis:
+    <<: *defaults
+    image: redis:5.0-alpine
+    container_name: librenms-redis
+    networks:
+      - librenms
+    environment:
+      TZ: "{{ general_timezone }}"
+
+  librenms-msmtpd:
+    <<: *defaults
+    image: crazymax/msmtpd:latest
+    container_name: librenms-msmtpd
+    networks:
+      - librenms
+    environment:
+      TZ: "{{ general_timezone }}"
+      SMTP_HOST: "{{ mailjet_host }}"
+      SMTP_PORT: "{{ mailjet_port }}"
+      SMTP_TLS: "on"
+      SMTP_STARTTLS: "on"
+      SMTP_TLS_CHECKCERT: "on"
+      SMTP_AUTH: "on"
+      SMTP_USER: "{{ mailjet_username }}"
+      SMTP_PASSWORD: "{{ mailjet_password }}"
+      SMTP_FROM: "librenms@{{ general_domain_default }}"
 
   # =========================
   # =        LOGGING        =
@@ -543,16 +733,16 @@ services:
     volumes:
       - "{{ general_path_appdata }}/grafana/data:/var/lib/grafana"
     environment:
-      - "TZ={{ general_timezone }}"
-      - "GF_SECURITY_ADMIN_USER={{ app_grafana_username }}"
-      - "GF_SECURITY_ADMIN_PASSWORD={{ app_grafana_password }}"
-      - "GF_SECURITY_DISABLE_GRAVATAR=true"
-      - "GF_SMTP_ENABLED=true"
-      - "GF_SMTP_HOST={{ mailjet_host }}:{{ mailjet_port }}"
-      - "GF_SMTP_USER={{ mailjet_username }}"
-      - "GF_SMTP_PASSWORD={{ mailjet_password }}"
-      - "GF_SMTP_FROM_ADDRESS=grafana@{{ general_domain_default }}"
-      - "GF_SMTP_FROM_NAME=Grafana - JenswBE"
+      TZ: "{{ general_timezone }}"
+      GF_SECURITY_ADMIN_USER: "{{ app_grafana_username }}"
+      GF_SECURITY_ADMIN_PASSWORD: "{{ app_grafana_password }}"
+      GF_SECURITY_DISABLE_GRAVATAR: "true"
+      GF_SMTP_ENABLED: "true"
+      GF_SMTP_HOST: "{{ mailjet_host }}:{{ mailjet_port }}"
+      GF_SMTP_USER: "{{ mailjet_username }}"
+      GF_SMTP_PASSWORD: "{{ mailjet_password }}"
+      GF_SMTP_FROM_ADDRESS: "grafana@{{ general_domain_default }}"
+      GF_SMTP_FROM_NAME: "Grafana - JenswBE"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.grafana.entrypoints=websecure"
@@ -575,7 +765,7 @@ services:
       - ./loki/config.yml:/etc/loki/config.yml:ro
       - "{{ general_path_appdata }}/loki/data:/loki"
     environment:
-      - "TZ={{ general_timezone }}"
+      TZ: "{{ general_timezone }}"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.loki.entrypoints=websecure"
@@ -599,38 +789,7 @@ services:
     networks:
       - loki
     environment:
-      - "TZ={{ general_timezone }}"
-
-  # =========================
-  # =         SMART         =
-  # =========================
-  scrutiny:
-    <<: *defaults
-    image: analogj/scrutiny:latest
-    container_name: scrutiny
-    cap_add:
-      - SYS_RAWIO # Required for querying SMART data
-      - SYS_ADMIN # Required for querying NVMe drives
-    volumes:
-      - "./scrutiny/scrutiny.yaml:/scrutiny/config/scrutiny.yaml"
-      - "scrutiny-data:/data"
-      - "/run/udev:/run/udev:ro"
-    devices:
-      - "/dev/nvme0:/dev/nvme0"
-      - "/dev/sda:/dev/sda"
-      - "/dev/sdb:/dev/sdb"
-      - "/dev/sdc:/dev/sdc"
-      - "/dev/sdd:/dev/sdd"
-    networks:
-      - traefik
-    environment:
-      - "TZ={{ general_timezone }}"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.scrutiny.entrypoints=websecure"
-      - "traefik.http.routers.scrutiny.rule=Host(`smart-{{ ansible_hostname }}.{{ general_domain_default }}`)"
-      - "traefik.http.routers.scrutiny.tls.certresolver=le-tls"
-      - "traefik.http.routers.scrutiny.middlewares=forward-auth@file"
+      TZ: "{{ general_timezone }}"
 
   # =========================
   # =         BACKUP        =
@@ -646,6 +805,8 @@ services:
       # Backup locations
       - "glitchtip-db-dump:/mnt/source/glitchtip/dbdump:ro"
       - "{{ general_path_appdata }}/home-automation/home-assistant/config:/mnt/source/home-automation/home-assistant/config:ro"
+      - "librenms-db-dump:/mnt/source/librenms/dbdump:ro"
+      - "{{ general_path_appdata }}/librenms/librenms/data:/mnt/source/librenms/data:ro"
       - "nc-db-dump:/mnt/source/nextcloud/dbdump:ro"
       - "{{ general_path_appdata }}/nextcloud/nextcloud/data:/mnt/source/nextcloud/data:ro"
       - "{{ general_path_appdata }}/nextcloud/nextcloud/config:/mnt/source/nextcloud/config:ro"
@@ -660,10 +821,10 @@ services:
     devices:
       - "/dev/fuse:/dev/fuse" # Required for borg mount
     environment:
-      - "TZ={{ general_timezone }}"
-      - "BORG_PASSPHRASE={{ app_borgmatic_borg_passphrase }}"
-      - "BORG_HOSTNAME_IS_UNIQUE=yes" # Automatically removes stale locks
-      - "BORG_HOST_ID={{ ansible_hostname }}"
+      TZ: "{{ general_timezone }}"
+      BORG_PASSPHRASE: "{{ app_borgmatic_borg_passphrase }}"
+      BORG_HOSTNAME_IS_UNIQUE: "yes" # Automatically removes stale locks
+      BORG_HOST_ID: "{{ ansible_hostname }}"
 
 #################################################################
 #                            NETWORKS                           #
@@ -674,6 +835,9 @@ networks:
 
   home-automation:
     name: home-automation
+
+  librenms:
+    name: librenms
 
   miniflux:
     name: miniflux
@@ -692,6 +856,7 @@ networks:
 #################################################################
 volumes:
   glitchtip-db-dump:
+  librenms-db-dump:
   nc-db-dump:
   promtail-positions:
   scrutiny-data:

@@ -1,5 +1,5 @@
 - name: Setup NFS
-  become: yes
+  become: true
   tags: ["setup", "nfs"]
   block:
     - name: Load NFS modules

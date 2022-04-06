@@ -1,0 +1,39 @@
+- name: Install and configure SNMP daemon
+  become: true
+  tags: ["setup", "snmpd"]
+  block:
+    - name: SNMP daemon - Ensure is installed
+      ansible.builtin.package: name=snmpd state=present
+
+    - name: SNMP daemon - Enable on all IPv4 interfaces (Access should be limited with firewall)
+      register: snmp_daemon_address
+      ansible.builtin.lineinfile:
+        path: /etc/snmp/snmpd.conf
+        regexp: "^#?agentaddress "
+        line: agentaddress udp:161
+
+    - name: SNMP daemon - Create community with full access
+      register: snmp_daemon_community
+      ansible.builtin.lineinfile:
+        path: /etc/snmp/snmpd.conf
+        regexp: "^rocommunity full"
+        line: rocommunity full default
+
+    - name: SNMP daemon - Set location
+      register: snmp_daemon_location
+      ansible.builtin.lineinfile:
+        path: /etc/snmp/snmpd.conf
+        regexp: "^sysLocation"
+        line: "sysLocation {{ app_snmpd_location }}"
+
+    - name: SNMP daemon - Restart if config was changed
+      when: snmp_daemon_address.changed or snmp_daemon_community.changed or snmp_daemon_location.changed
+      ansible.builtin.service:
+        name: snmpd
+        state: restarted
+
+    - name: SNMP daemon - Enable on boot
+      ansible.builtin.service:
+        name: snmpd
+        state: started
+        enabled: true

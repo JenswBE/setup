@@ -1,9 +1,13 @@
 - name: Install, configure, and enable UFW
-  become: yes
+  become: true
   tags: ["setup", "firewall"]
   block:
     - name: UFW - Ensure is installed
       ansible.builtin.package: name=ufw state=present
+
+    - name: UFW - Clear current firewall rules
+      community.general.ufw:
+        state: reset
 
     - name: UFW - Allow SSH
       community.general.ufw:
@@ -16,6 +20,7 @@
         rule: allow
         port: "{{ item.port | string }}"
         proto: "{{ item.proto }}"
+        from_ip: "{{ item.from_ip }}"
       with_items: "{{ firewall_additional_ports }}"
 
     - name: UFW - Enable firewall

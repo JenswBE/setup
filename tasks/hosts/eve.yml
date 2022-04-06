@@ -14,17 +14,17 @@
   tags: ["systemd"]
 
 - name: Force systemd reload
-  become: yes
+  become: true
   systemd:
-    daemon_reload: yes
+    daemon_reload: true
   tags: ["systemd"]
 
 - name: Enable systemd services and timers
-  become: yes
+  become: true
   systemd:
     name: "{{ item }}"
     state: started
-    enabled: yes
+    enabled: true
   with_items:
     - bjoetiek-dump-db.timer
     - docker-update-containers.timer
