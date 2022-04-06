@@ -1,5 +1,5 @@
 - name: Setup Wireguard
-  become: yes
+  become: true
   tags: ["setup", "wireguard"]
   block:
     - name: Install Wireguard
@@ -18,5 +18,5 @@
     - name: Enable Wireguard on boot
       ansible.builtin.systemd:
         name: wg-quick@wg0
-        enabled: yes
+        enabled: true
         state: started

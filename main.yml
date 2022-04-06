@@ -13,11 +13,11 @@
 
   roles:
     - name: geerlingguy.security
-      become: yes
+      become: true
       tags: ["setup"]
 
     - name: geerlingguy.docker
-      become: yes
+      become: true
       tags: ["setup"]
 
   tasks:
@@ -40,6 +40,9 @@
 
     - include_tasks: tasks/docker_logging.yml
       tags: ["setup"]
+
+    - include_tasks: tasks/snmpd.yml
+      tags: ["setup", "snmpd"]
 
     - include_tasks: "tasks/hosts/{{ ansible_hostname }}.yml"
       tags: ["always"]

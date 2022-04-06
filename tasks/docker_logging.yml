@@ -1,5 +1,5 @@
 - name: Setup rsyslog for Docker containers
-  become: yes
+  become: true
   block:
     - name: Copy rsyslog config
       register: rsyslog_config

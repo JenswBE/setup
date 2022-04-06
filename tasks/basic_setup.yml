@@ -1,61 +1,61 @@
 - name: Basic setup
-  become: yes
+  become: true
   block:
-  - name: Set timezone
-    ansible.builtin.timezone:
-      name: "{{ general_timezone }}"
+    - name: Set timezone
+      ansible.builtin.timezone:
+        name: "{{ general_timezone }}"
 
-  - name: Install base packages
-    ansible.builtin.package:
-      state: present
-      name: "{{ item }}"
-    with_items: "{{ packages_base }}"
+    - name: Install base packages
+      ansible.builtin.package:
+        state: present
+        name: "{{ item }}"
+      with_items: "{{ packages_base }}"
 
-  - name: Create opt directories - Root access only
-    ansible.builtin.file:
-      path: "/opt/{{ item }}"
-      state: directory
-      owner: "root"
-      group: "root"
-      mode: 0700
-    with_items:
-      - appdata
-      - conf
+    - name: Create opt directories - Root access only
+      ansible.builtin.file:
+        path: "/opt/{{ item }}"
+        state: directory
+        owner: "root"
+        group: "root"
+        mode: 0700
+      with_items:
+        - appdata
+        - conf
 
-  - name: Create opt directories - Read access
-    ansible.builtin.file:
-      path: "/opt/{{ item }}"
-      state: directory
-      owner: "root"
-      group: "root"
-      mode: 0755
-    with_items:
-      - bin
+    - name: Create opt directories - Read access
+      ansible.builtin.file:
+        path: "/opt/{{ item }}"
+        state: directory
+        owner: "root"
+        group: "root"
+        mode: 0755
+      with_items:
+        - bin
 
-  - name: Limit log size to 100MB
-    register: journald_limit
-    ansible.builtin.lineinfile:
-      path: /etc/systemd/journald.conf
-      regexp: "^#?SystemMaxUse="
-      line: SystemMaxUse=100M
+    - name: Limit log size to 100MB
+      register: journald_limit
+      ansible.builtin.lineinfile:
+        path: /etc/systemd/journald.conf
+        regexp: "^#?SystemMaxUse="
+        line: SystemMaxUse=100M
 
-  - name: Restart Journalctl if config was changed
-    when: journald_limit.changed
-    ansible.builtin.service:
-      name: systemd-journald
-      state: restarted
+    - name: Restart Journalctl if config was changed
+      when: journald_limit.changed
+      ansible.builtin.service:
+        name: systemd-journald
+        state: restarted
 
-  - name: Copy docker config
-    register: docker_config
-    ansible.builtin.copy:
-      src: docker-daemon.json
-      dest: /etc/docker/daemon.json
-      owner: root
-      group: root
-      mode: 0644
+    - name: Copy docker config
+      register: docker_config
+      ansible.builtin.copy:
+        src: docker-daemon.json
+        dest: /etc/docker/daemon.json
+        owner: root
+        group: root
+        mode: 0644
 
-  - name: Restart docker if config was changed
-    when: docker_config.changed
-    ansible.builtin.service:
-      name: docker
-      state: restarted
+    - name: Restart docker if config was changed
+      when: docker_config.changed
+      ansible.builtin.service:
+        name: docker
+        state: restarted

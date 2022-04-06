@@ -2,13 +2,22 @@
 firewall_additional_ports:
   - port: 23 # Borg server
     proto: tcp
+    from_ip: any
   - port: 80 # Traefik HTTP
     proto: tcp
+    from_ip: any
+  - port: 161 # SNMP Daemon
+    proto: udp
+    from_ip: 10.10.0.0/24 # Wireguard only
   - port: 443 # Traefik HTTPS
     proto: tcp
+    from_ip: any
   - port: 22000 # Syncthing TCP
     proto: tcp
+    from_ip: any
   - port: 22000 # Syncthing QUIC
     proto: udp
+    from_ip: any
   - port: 51820 # Wireguard
     proto: udp
+    from_ip: any

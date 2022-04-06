@@ -1,5 +1,5 @@
 - name: Setup mail on failed systemd unit
-  become: yes
+  become: true
   block:
     - name: Add user systemd-mailjet
       ansible.builtin.user:
@@ -21,4 +21,3 @@
         owner: systemd-mailjet
         group: systemd-mailjet
         mode: 0400
-

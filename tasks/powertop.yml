@@ -1,5 +1,5 @@
 - name: Setup powertop
-  become: yes
+  become: true
   tags: ["setup", "powertop"]
   block:
     - name: Install powertop
@@ -17,10 +17,10 @@
 
     - name: Force systemd reload
       ansible.builtin.systemd:
-        daemon_reload: yes
+        daemon_reload: true
 
     - name: Enable automatic powertop tuning
       ansible.builtin.systemd:
         name: powertop
         state: started
-        enabled: yes
+        enabled: true
