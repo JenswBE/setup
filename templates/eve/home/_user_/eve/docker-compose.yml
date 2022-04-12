@@ -683,22 +683,22 @@ services:
   # =   CANDYLICIOUS                                                          =
   # =   https://github.com/JenswBE/candylicious-frontend                      =
   # ===========================================================================
-  candylicious-frontend:
+  candylicious-test-frontend:
     <<: *defaults
     image: jenswbe/candylicious-frontend:latest
-    container_name: candylicious-frontend
+    container_name: candylicious-test-frontend
     networks:
       - traefik
       - candylicious-test
     environment:
       - "TZ={{ general_timezone }}"
       - "BACKEND_URL_INTERNAL=http://candylicious-test-backend:8080"
-      - "BACKEND_URL_EXTERNAL=https://backend.{{ general_domain_candylicious }}/api"
+      - "BACKEND_URL_EXTERNAL=https://test-backend.{{ general_domain_candylicious }}/api"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.candylicious-frontend.entrypoints=websecure"
-      - "traefik.http.routers.candylicious-frontend.rule=Host(`candylicious.{{ general_domain_default }}`)"
-      - "traefik.http.routers.candylicious-frontend.tls.certresolver=le-tls"
+      - "traefik.http.routers.candylicious-test-frontend.entrypoints=websecure"
+      - "traefik.http.routers.candylicious-test-frontend.rule=Host(`test.{{ general_domain_candylicious }}`)"
+      - "traefik.http.routers.candylicious-test-frontend.tls.certresolver=le-tls"
 
   candylicious-test-admin:
     <<: *defaults
@@ -712,14 +712,14 @@ services:
       - "AUTH_CLIENT_ID={{ app_candylicious_test_auth_client_id }}"
       - "AUTH_STATE={{ app_candylicious_test_auth_state }}"
       - "AUTH_URL_OIDC_CONFIG=https://auth.{{ general_domain_candylicious }}/realms/candylicious/.well-known/openid-configuration"
-      - "AUTH_URL_LOGOUT_REDIRECT=https://beheer.{{ general_domain_candylicious }}/login"
+      - "AUTH_URL_LOGOUT_REDIRECT=https://test-beheer.{{ general_domain_candylicious }}/login"
       - "BACKEND_URL_INTERNAL=http://candylicious-test-backend:8080"
-      - "BACKEND_URL_EXTERNAL=https://backend.{{ general_domain_candylicious }}/api"
-      - "PRODUCT_URL_TEMPLATE=https://{{ general_domain_candylicious }}/producten/$${p.id}/$${p.name}"
+      - "BACKEND_URL_EXTERNAL=https://test-backend.{{ general_domain_candylicious }}/api"
+      - "PRODUCT_URL_TEMPLATE=https://test.{{ general_domain_candylicious }}/producten/$${p.id}/$${p.name}"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.candylicious-test-admin.entrypoints=websecure"
-      - "traefik.http.routers.candylicious-test-admin.rule=Host(`beheer.{{ general_domain_candylicious }}`)"
+      - "traefik.http.routers.candylicious-test-admin.rule=Host(`test-beheer.{{ general_domain_candylicious }}`)"
       - "traefik.http.routers.candylicious-test-admin.tls.certresolver=le-tls"
       - "traefik.http.services.candylicious-test-admin-{{ ansible_hostname }}.loadbalancer.server.port=8080"
 
@@ -746,7 +746,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.candylicious-test-backend.entrypoints=websecure"
-      - "traefik.http.routers.candylicious-test-backend.rule=Host(`backend.{{ general_domain_candylicious }}`)"
+      - "traefik.http.routers.candylicious-test-backend.rule=Host(`test-backend.{{ general_domain_candylicious }}`)"
       - "traefik.http.routers.candylicious-test-backend.tls.certresolver=le-tls"
       - "traefik.http.routers.candylicious-test-backend.middlewares=candylicious-cors@file"
 
@@ -791,7 +791,7 @@ services:
       - "FEATURES_CONTENT_LIST=vacatures:HTML"
       - "FEATURES_EVENTS_WHOLE_DAYS_ONLY=true"
       - "FEATURES_MANUFACTURERS_ENABLED=false"
-      - "IMAGE_PROXY_BASE_URL=https://backend.{{ general_domain_candylicious }}/images/"
+      - "IMAGE_PROXY_BASE_URL=https://test-backend.{{ general_domain_candylicious }}/images/"
       - "IMAGE_PROXY_KEY={{ app_candylicious_test_image_proxy_key }}"
       - "IMAGE_PROXY_SALT={{ app_candylicious_test_image_proxy_salt }}"
       - "IMAGE_PROXY_ALLOWED_CONFIGS=100:100:FIT,150:150:FIT,400:400:FIT,550:550:FIT"
