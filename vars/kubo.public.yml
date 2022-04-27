@@ -1,47 +1,38 @@
 # Firewall
 firewall_additional_ports:
   - port: 80 # Traefik HTTP
-    proto: tcp
-    from_ip: any
+    protos: [tcp]
+    from_networks: [any]
   - port: 111 # NFS (v3 only)
-    proto: tcp
-    from_ip: 192.168.0.0/16
-  - port: 111 # NFS (v3 only)
-    proto: udp
-    from_ip: 192.168.0.0/16
+    protos: [tcp, udp]
+    from_networks: [local_ipv4, local_ipv6]
   - port: 161 # SNMP
-    proto: udp
-    from_ip: 172.16.0.0/12
+    protos: [udp]
+    from_networks: [docker_ipv4]
   - port: 443 # Traefik HTTPS
-    proto: tcp
-    from_ip: any
-  - port: 2049 # NFS
-    proto: tcp
-    from_ip: 192.168.0.0/16
-  - port: 2049 # NFS (v3 only)
-    proto: udp
-    from_ip: 192.168.0.0/16
+    protos: [tcp]
+    from_networks: [any]
+  - port: 2049 # NFS (UDP is v3 only)
+    protos: [tcp, udp]
+    from_networks: [local_ipv4, local_ipv6]
   - port: 8080 # UniFi
-    proto: tcp
-    from_ip: 192.168.0.0/16
-  - port: 22000 # Syncthing TCP
-    proto: tcp
-    from_ip: any
-  - port: 22000 # Syncthing QUIC
-    proto: udp
-    from_ip: any
+    protos: [tcp]
+    from_networks: [local_ipv4, local_ipv6]
+  - port: 22000 # Syncthing TCP and QUIC
+    protos: [tcp, udp]
+    from_networks: [any]
   - port: 32400 # Plex
-    proto: tcp
-    from_ip: any
+    protos: [tcp]
+    from_networks: [any]
+  - port: 32765 # NFS (v3 only)
+    protos: [tcp, udp]
+    from_networks: [local_ipv4, local_ipv6]
   - port: 32767 # NFS (v3 only)
-    proto: tcp
-    from_ip: 192.168.0.0/16
-  - port: 32767 # NFS (v3 only)
-    proto: udp
-    from_ip: 192.168.0.0/16
+    protos: [tcp, udp]
+    from_networks: [local_ipv4, local_ipv6]
   - port: 51820 # Wireguard
-    proto: udp
-    from_ip: any
+    protos: [udp]
+    from_networks: [any]
 
 # Nextcloud
 app_nextcloud_apps_disable: "firstrunwizard,dashboard,weather_status"

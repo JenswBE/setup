@@ -15,13 +15,20 @@
         port: "{{ firewall_ssh_port | string }}"
         proto: tcp
 
+    - name: UFW - Parse firewall ports
+      connection: local
+      register: parse_ports
+      become: false
+      ansible.builtin.shell:
+        cmd: python helpers/parse_firewall_ports.py '{{ firewall_additional_ports | to_json }}'
+
     - name: UFW - Allow additional ports
       community.general.ufw:
         rule: allow
         port: "{{ item.port | string }}"
         proto: "{{ item.proto }}"
-        from_ip: "{{ item.from_ip }}"
-      with_items: "{{ firewall_additional_ports }}"
+        from_ip: "{{ lookup('vars', 'network_' + item.from_network) }}"
+      loop: "{{ parse_ports.stdout | from_json }}"
 
     - name: UFW - Enable firewall
       community.general.ufw:
