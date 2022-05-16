@@ -36,7 +36,7 @@
       tags: ["setup", "firewall"]
 
     - include_tasks: tasks/mail_on_failed_unit.yml
-      tags: ["setup"]
+      tags: ["setup", "mail_on_failed_unit"]
 
     - include_tasks: tasks/docker_logging.yml
       tags: ["setup"]
