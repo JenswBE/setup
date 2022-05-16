@@ -548,14 +548,14 @@ services:
   # =========================
   scrutiny:
     <<: *defaults
-    image: analogj/scrutiny:latest
+    image: ghcr.io/analogj/scrutiny:latest
     container_name: scrutiny
     cap_add:
       - SYS_RAWIO # Required for querying SMART data
       - SYS_ADMIN # Required for querying NVMe drives
     volumes:
-      - "./scrutiny/scrutiny.yaml:/scrutiny/config/scrutiny.yaml"
-      - "scrutiny-data:/data"
+      - "./scrutiny/scrutiny.yaml:/opt/scrutiny/config/scrutiny.yaml"
+      - "scrutiny-data:/opt/scrutiny/influxdb"
       - "/run/udev:/run/udev:ro"
     devices:
       - "/dev/nvme0:/dev/nvme0"
