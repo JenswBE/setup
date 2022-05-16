@@ -8,7 +8,11 @@ web:
     location: /data/scrutiny.db
   src:
     frontend:
-      path: /scrutiny/web
+      path: /opt/scrutiny/web
+  influxdb:
+    host: scrutiny-influxdb
+    port: 8086
+    retention_policy: true
 
 log:
   file: "" #absolute or relative paths allowed, eg. web.log
