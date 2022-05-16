@@ -721,77 +721,6 @@ services:
       SMTP_FROM: "librenms@{{ general_domain_default }}"
 
   # =========================
-  # =        LOGGING        =
-  # =========================
-  grafana:
-    <<: *defaults
-    image: grafana/grafana:latest
-    container_name: grafana
-    networks:
-      - traefik
-      - loki
-    volumes:
-      - "{{ general_path_appdata }}/grafana/data:/var/lib/grafana"
-    environment:
-      TZ: "{{ general_timezone }}"
-      GF_SECURITY_ADMIN_USER: "{{ app_grafana_username }}"
-      GF_SECURITY_ADMIN_PASSWORD: "{{ app_grafana_password }}"
-      GF_SECURITY_DISABLE_GRAVATAR: "true"
-      GF_SMTP_ENABLED: "true"
-      GF_SMTP_HOST: "{{ mailjet_host }}:{{ mailjet_port }}"
-      GF_SMTP_USER: "{{ mailjet_username }}"
-      GF_SMTP_PASSWORD: "{{ mailjet_password }}"
-      GF_SMTP_FROM_ADDRESS: "grafana@{{ general_domain_default }}"
-      GF_SMTP_FROM_NAME: "Grafana - JenswBE"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.grafana.entrypoints=websecure"
-      - "traefik.http.routers.grafana.rule=Host(`grafana.{{ general_domain_default }}`)"
-      - "traefik.http.routers.grafana.tls.certresolver=le-tls"
-      - "traefik.http.services.grafana-{{ ansible_hostname }}.loadbalancer.server.port=3000"
-
-  loki:
-    <<: *defaults
-    image: grafana/loki:2.3.0
-    container_name: loki
-    command: -config.file=/etc/loki/config.yml
-    user: "{{ ansible_real_user_id }}"
-    networks:
-      - traefik
-      - loki
-    ports:
-      - "3100:3100"
-    volumes:
-      - ./loki/config.yml:/etc/loki/config.yml:ro
-      - "{{ general_path_appdata }}/loki/data:/loki"
-    environment:
-      TZ: "{{ general_timezone }}"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.loki.entrypoints=websecure"
-      - "traefik.http.routers.loki.rule=Host(`loki.{{ general_domain_default }}`)"
-      - "traefik.http.routers.loki.tls.certresolver=le-tls"
-      - "traefik.http.routers.loki.middlewares=loki-auth@file"
-      - "traefik.http.routers.loki-ready.entrypoints=websecure"
-      - "traefik.http.routers.loki-ready.rule=Host(`loki.{{ general_domain_default }}`) && PathPrefix(`/ready`)"
-      - "traefik.http.routers.loki-ready.tls.certresolver=le-tls"
-      - "traefik.http.services.loki-{{ ansible_hostname }}.loadbalancer.server.port=3100"
-
-  promtail:
-    <<: *defaults
-    image: grafana/promtail:2.3.0
-    container_name: promtail
-    command: -config.file=/etc/promtail/config.yml
-    volumes:
-      - ./promtail/config.yml:/etc/promtail/config.yml:ro
-      - promtail-positions:/positions
-      - /var/log:/var/log:ro
-    networks:
-      - loki
-    environment:
-      TZ: "{{ general_timezone }}"
-
-  # =========================
   # =         BACKUP        =
   # =========================
   borgmatic:
@@ -848,9 +777,6 @@ networks:
   traefik:
     name: traefik
 
-  loki:
-    name: loki
-
 #################################################################
 #                            VOLUMES                            #
 #################################################################
@@ -858,6 +784,5 @@ volumes:
   glitchtip-db-dump:
   librenms-db-dump:
   nc-db-dump:
-  promtail-positions:
   scrutiny-data:
   traefik-cert:

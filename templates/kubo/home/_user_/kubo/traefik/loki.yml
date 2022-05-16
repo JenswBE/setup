@@ -1,5 +1,0 @@
-http:
-  middlewares:
-    loki-auth:
-      basicauth:
-        users: "{{ app_loki_users }}"

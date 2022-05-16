@@ -1065,21 +1065,6 @@ services:
       - "traefik.http.services.wip-{{ ansible_hostname }}.loadbalancer.server.port=8080"
 
   # =========================
-  # =        LOGGING        =
-  # =========================
-  promtail:
-    <<: *defaults
-    image: grafana/promtail:2.3.0
-    container_name: promtail
-    command: -config.file=/etc/promtail/config.yml
-    volumes:
-      - ./promtail/config.yml:/etc/promtail/config.yml:ro
-      - promtail-positions:/positions
-      - /var/log:/var/log:ro
-    environment:
-      - "TZ={{ general_timezone }}"
-
-  # =========================
   # =         BACKUP        =
   # =========================
   nc-calcardbackup:
@@ -1144,7 +1129,6 @@ volumes:
   nc-calcardbackup:
   oud-turnhoutsgebak-test-db-data:
   passit-db-dump:
-  promtail-positions:
   snipe-it-db-dump:
   traefik-cert:
 
