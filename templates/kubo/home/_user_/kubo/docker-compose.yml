@@ -550,12 +550,14 @@ services:
     <<: *defaults
     image: ghcr.io/analogj/scrutiny:latest
     container_name: scrutiny
+    depends_on:
+      - scrutiny-influxdb
     cap_add:
       - SYS_RAWIO # Required for querying SMART data
       - SYS_ADMIN # Required for querying NVMe drives
     volumes:
       - "./scrutiny/scrutiny.yaml:/opt/scrutiny/config/scrutiny.yaml"
-      - "scrutiny-data:/opt/scrutiny/influxdb"
+      - "scrutiny-data:/data"
       - "/run/udev:/run/udev:ro"
     devices:
       - "/dev/nvme0:/dev/nvme0"
@@ -565,6 +567,7 @@ services:
       - "/dev/sdd:/dev/sdd"
     networks:
       - traefik
+      - scrutiny
     environment:
       TZ: "{{ general_timezone }}"
     labels:
@@ -573,6 +576,17 @@ services:
       - "traefik.http.routers.scrutiny.rule=Host(`smart-{{ ansible_hostname }}.{{ general_domain_default }}`)"
       - "traefik.http.routers.scrutiny.tls.certresolver=le-tls"
       - "traefik.http.routers.scrutiny.middlewares=forward-auth@file"
+
+  scrutiny-influxdb:
+    <<: *defaults
+    image: influxdb:2.2
+    container_name: scrutiny-influxdb
+    volumes:
+      - "scrutiny-influxdb:/var/lib/influxdb2"
+    networks:
+      - scrutiny
+    environment:
+      TZ: "{{ general_timezone }}"
 
   librenms:
     <<: *defaults
@@ -774,6 +788,9 @@ networks:
   nextcloud:
     name: nextcloud
 
+  scrutiny:
+    name: scrutiny
+
   traefik:
     name: traefik
 
@@ -785,4 +802,5 @@ volumes:
   librenms-db-dump:
   nc-db-dump:
   scrutiny-data:
+  scrutiny-influxdb:
   traefik-cert:
