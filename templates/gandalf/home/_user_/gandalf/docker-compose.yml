@@ -104,27 +104,11 @@ services:
       - "PUID={{ ansible_real_user_id }}"
       - "PGID={{ ansible_real_group_id }}"
 
-  # =========================
-  # =        LOGGING        =
-  # =========================
-  promtail:
-    <<: *defaults
-    image: grafana/promtail:2.3.0
-    container_name: promtail
-    command: -config.file=/etc/promtail/config.yml
-    volumes:
-      - ./promtail/config.yml:/etc/promtail/config.yml:ro
-      - promtail-positions:/positions
-      - /var/log:/var/log:ro
-    environment:
-      - "TZ={{ general_timezone }}"
-
 #################################################################
 #                            VOLUMES                            #
 #################################################################
 volumes:
   borgserver-sshkeys-host:
-  promtail-positions:
   traefik-cert:
 
 # #################################################################
