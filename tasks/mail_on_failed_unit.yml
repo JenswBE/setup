@@ -1,23 +1,28 @@
 - name: Setup mail on failed systemd unit
   become: true
+  tags: ["setup", "mail_on_failed_unit"]
   block:
-    - name: Add user systemd-mailjet
-      ansible.builtin.user:
-        name: systemd-mailjet
-        system: true
+    - name: Get latest release of smtp-cli
+      community.general.github_release:
+        user: JenswBE
+        repo: smtp-cli
+        action: latest_release
+      register: smtp_cli_latest
+      become: false
+      connection: local
 
-    - name: Copy systemd-mailjet binary
-      ansible.builtin.copy:
-        src: systemd-mailjet
-        dest: /opt/bin/systemd-mailjet
-        owner: systemd-mailjet
-        group: systemd-mailjet
-        mode: 0500
+    - name: Get latest smtp-cli binary
+      ansible.builtin.get_url:
+        url: "https://github.com/JenswBE/smtp-cli/releases/download/{{ smtp_cli_latest['tag'] }}/smtp-cli_{{ smtp_cli_latest['tag'] }}_linux_amd64"
+        dest: /opt/bin/smtp-cli
+        group: root
+        owner: root
+        mode: 0755
 
-    - name: Set systemd-mailjet config
+    - name: Set smtp-cli config
       ansible.builtin.template:
-        src: "systemd-mailjet.conf"
-        dest: /opt/conf/systemd-mailjet.conf
-        owner: systemd-mailjet
-        group: systemd-mailjet
+        src: "smtp-cli.conf"
+        dest: /opt/conf/smtp-cli.conf
+        owner: root
+        group: root
         mode: 0400

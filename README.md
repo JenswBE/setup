@@ -45,6 +45,9 @@ Without this option, the playbook will fail.
 # Install roles
 ansible-galaxy role install -r requirements.yml
 
+# Install other requirements
+sudo pip install -r requirements.txt
+
 # Run complete setup for a host
 ansible-playbook main.yml --ask-vault-pass --ask-become-pass --limit <HOSTNAME>
 
