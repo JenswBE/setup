@@ -412,7 +412,7 @@ services:
       - "traefik.http.routers.nginx-hetvleermuizenkind.rule=Host(`hetvleermuizenkind.{{ general_domain_default }}`)"
       - "traefik.http.routers.nginx-hetvleermuizenkind.tls.certresolver=le-tls"
 
-    # =========================
+  # =========================
   # =         HOMER         =
   # =========================
   homer:
@@ -432,7 +432,7 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.homer.entrypoints=websecure"
       - "traefik.http.routers.homer.rule=Host(`start.{{ general_domain_default }}`)"
-      # - "traefik.http.routers.homer.tls.certresolver=le-tls"
+      - "traefik.http.routers.homer.tls.certresolver=le-tls"
 
   # =========================
   # =          DNS          =
