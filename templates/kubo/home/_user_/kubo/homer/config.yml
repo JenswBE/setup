@@ -123,15 +123,10 @@ services:
         url: "https://assets.jensw.be"
         <<: *tag_eve
 
-      - name: "Grafana"
-        logo: "assets/logos/grafana.png"
-        url: "https://grafana.jensw.be"
+      - name: "LibreNMS"
+        logo: "assets/logos/librenms.png"
+        url: "https://librenms.jensw.be"
         <<: *tag_kubo
-
-      - name: "Pi-hole"
-        logo: "assets/logos/pi-hole.png"
-        url: "https://dns.jensw.be/admin"
-        <<: *tag_eve
 
       - name: "Scrutiny S.M.A.R.T."
         logo: "assets/logos/scrutiny.png"
