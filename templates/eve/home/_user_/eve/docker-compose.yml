@@ -210,19 +210,6 @@ services:
       - "POSTGRES_PASSWORD={{ app_passit_db_pass }}"
 
   # =========================
-  # =      IMAP-ALERTER     =
-  # =========================
-  imap-alerter:
-    <<: *defaults
-    image: jenswbe/imap-alerter:latest
-    container_name: imap-alerter
-    volumes:
-      - ./imap-alerter:/app/config
-      - "{{ general_path_appdata }}/imap-alerter/imap-alerter/data:/app/data"
-    environment:
-      - "TZ={{ general_timezone }}"
-
-  # =========================
   # = IMAP SAVE ATTACHMENTS =
   # =========================
   isa-fetchmail:
