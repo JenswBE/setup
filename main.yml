@@ -35,6 +35,9 @@
     - include_tasks: tasks/firewall.yml
       tags: ["setup", "firewall"]
 
+    - include_tasks: tasks/crowdsec.yml
+      tags: ["setup", "crowdsec"]
+
     - include_tasks: tasks/mail_on_failed_unit.yml
       tags: ["setup", "mail_on_failed_unit"]
 

@@ -67,6 +67,7 @@
   tags: ["always"]
 
 - name: Delete temporary folder
+  become: true
   ansible.builtin.file:
     path: "{{ tmp_dir.path }}"
     state: absent

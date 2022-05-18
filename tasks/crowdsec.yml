@@ -1,0 +1,42 @@
+- name: Install and configure CrowdSec
+  become: true
+  tags: ["setup", "crowdsec"]
+  block:
+    - name: CrowdSec - Add GPG key
+      ansible.builtin.apt_key:
+        url: https://packagecloud.io/crowdsec/crowdsec/gpgkey
+        state: present
+
+    - name: CrowdSec - Add Repository
+      ansible.builtin.apt_repository:
+        repo: "deb https://packagecloud.io/crowdsec/crowdsec/{{ ansible_distribution | lower  }} {{ansible_distribution_release | lower}} main"
+        state: present
+
+    - name: CrowdSec - Ensure NFTables bouncer is installed
+      ansible.builtin.package: name=crowdsec-firewall-bouncer-nftables state=present
+
+    - name: CrowdSec - Set API key for NFTables bouncer
+      register: crowdsec_nftables_bouncer_api_key
+      ansible.builtin.lineinfile:
+        path: /etc/crowdsec/bouncers/crowdsec-firewall-bouncer.yaml
+        regexp: "^#?api_key:"
+        line: "api_key: {{ app_crowdsec_bouncer_firewall_key }}"
+
+    - name: CrowdSec - Set API URL for NFTables bouncer
+      register: crowdsec_nftables_bouncer_api_url
+      ansible.builtin.lineinfile:
+        path: /etc/crowdsec/bouncers/crowdsec-firewall-bouncer.yaml
+        regexp: "^#?api_url:"
+        line: "api_url: http://127.0.0.1:9000/"
+
+    - name: CrowdSec - Restart NFTables bouncer if config was changed
+      when: crowdsec_nftables_bouncer_api_key.changed or crowdsec_nftables_bouncer_api_url.changed
+      ansible.builtin.service:
+        name: crowdsec-firewall-bouncer
+        state: restarted
+
+    - name: CrowdSec - Enable NFTables bouncer on boot
+      ansible.builtin.service:
+        name: crowdsec-firewall-bouncer
+        state: started
+        enabled: true
