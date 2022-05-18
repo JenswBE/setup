@@ -435,31 +435,6 @@ services:
       - "traefik.http.routers.homer.tls.certresolver=le-tls"
 
   # =========================
-  # =          DNS          =
-  # =========================
-  doh-server:
-    <<: *defaults
-    image: satishweb/doh-server:latest
-    container_name: doh-server
-    hostname: doh-server
-    networks:
-      - traefik
-    environment:
-      # DEBUG: "1"
-      TZ: "{{ general_timezone }}"
-      UPSTREAM_DNS_SERVER: "udp:host.docker.internal:53"
-      DOH_HTTP_PREFIX: "/dns-query"
-      DOH_SERVER_TIMEOUT: "10"
-      DOH_SERVER_TRIES: "3"
-      DOH_SERVER_VERBOSE: "false"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.doh-server.entrypoints=websecure"
-      - "traefik.http.routers.doh-server.rule=Host(`{{ app_dns_domain_prefix }}.dns.{{ general_domain_default }}`)"
-      - "traefik.http.routers.doh-server.tls.certresolver=le-tls"
-      - "traefik.http.routers.doh-server.middlewares=doh-server-ratelimit@file, doh-server-compress@file"
-
-  # =========================
   # =     ERROR LOGGING     =
   # =========================
   # Go to GlitchTip url /register to create first user
