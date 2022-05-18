@@ -14,7 +14,7 @@ firewall_additional_ports:
     from_networks: [any]
 
 # GoatCounter
-app_goatcounter_version: v2.0.4
+app_goatcounter_version: v2.2.3
 
 # Nextcloud
 app_nextcloud_apps_disable: "firstrunwizard"
