@@ -1,0 +1,5 @@
+# SSHD logs
+filenames:
+  - /var/log/auth.log
+labels:
+  type: syslog

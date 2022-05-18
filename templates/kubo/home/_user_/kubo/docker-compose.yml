@@ -735,6 +735,32 @@ services:
       SMTP_FROM: "librenms@{{ general_domain_default }}"
 
   # =========================
+  # =        CROWDSEC       =
+  # =========================
+  crowdsec:
+    <<: *defaults
+    image: crowdsecurity/crowdsec:{{ crowdsec_version }}
+    container_name: crowdsec
+    ports:
+      - 127.0.0.1:9000:8080
+    environment:
+      TZ: "{{ general_timezone }}"
+      COLLECTIONS: >-
+        crowdsecurity/http-cve
+        crowdsecurity/linux
+        crowdsecurity/nextcloud
+        crowdsecurity/traefik
+      GID: "{{ ansible_real_group_id }}"
+      BOUNCER_KEY_firewall: "{{ app_crowdsec_bouncer_firewall_key }}"
+    volumes:
+      # Config
+      - ./crowdsec/acquis.yaml:/etc/crowdsec/acquis.yaml
+      - crowdsec-db:/var/lib/crowdsec/data/
+      - crowdsec-config:/etc/crowdsec/
+      # Logs
+      - /var/log/auth.log:/var/log/auth.log:ro
+
+  # =========================
   # =         BACKUP        =
   # =========================
   borgmatic:
@@ -798,6 +824,8 @@ networks:
 #                            VOLUMES                            #
 #################################################################
 volumes:
+  crowdsec-config:
+  crowdsec-db:
   glitchtip-db-dump:
   librenms-db-dump:
   nc-db-dump:

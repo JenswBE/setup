@@ -1065,6 +1065,32 @@ services:
       - "traefik.http.services.wip-{{ ansible_hostname }}.loadbalancer.server.port=8080"
 
   # =========================
+  # =        CROWDSEC       =
+  # =========================
+  crowdsec:
+    <<: *defaults
+    image: crowdsecurity/crowdsec:{{ crowdsec_version }}
+    container_name: crowdsec
+    ports:
+      - 127.0.0.1:9000:8080
+    environment:
+      TZ: "{{ general_timezone }}"
+      COLLECTIONS: >-
+        crowdsecurity/http-cve
+        crowdsecurity/linux
+        crowdsecurity/nextcloud
+        crowdsecurity/traefik
+      GID: "{{ ansible_real_group_id }}"
+      BOUNCER_KEY_firewall: "{{ app_crowdsec_bouncer_firewall_key }}"
+    volumes:
+      # Config
+      - ./crowdsec/acquis.yaml:/etc/crowdsec/acquis.yaml
+      - crowdsec-db:/var/lib/crowdsec/data/
+      - crowdsec-config:/etc/crowdsec/
+      # Logs
+      - /var/log/auth.log:/var/log/auth.log:ro
+
+  # =========================
   # =         BACKUP        =
   # =========================
   nc-calcardbackup:
@@ -1123,6 +1149,8 @@ volumes:
   bjoetiek-db-dump:
   bjoetiek-test-db-data:
   candylicious-test-db-data:
+  crowdsec-config:
+  crowdsec-db:
   isa-output:
   keycloak-db-dump:
   nc-db-dump:
