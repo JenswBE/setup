@@ -2,11 +2,21 @@ http:
   middlewares:
     secure-https:
       headers:
-        stsSeconds: 15552000
-        sslredirect: true
+        # Based on https://owasp.org/www-project-secure-headers/#div-bestpractices
+        contentTypeNosniff: true
+        customBrowserXssValue: 0
+        frameDeny: true
+        referrerPolicy: no-referrer
+        stsIncludeSubdomains: true
+        stsSeconds: 31536000
 
     forward-auth:
       forwardAuth:
         address: http://traefik-forward-auth:4181
         authResponseHeaders:
           - X-Forwarded-User
+
+tls:
+  options:
+    default:
+      minVersion: VersionTLS12
