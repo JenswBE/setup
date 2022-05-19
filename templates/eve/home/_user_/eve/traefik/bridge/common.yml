@@ -2,8 +2,13 @@ http:
   middlewares:
     secure-https:
       headers:
-        stsSeconds: 15552000
-        sslredirect: true
+        # Based on https://owasp.org/www-project-secure-headers/#div-bestpractices
+        contentTypeNosniff: true
+        customBrowserXssValue: 0
+        frameDeny: true
+        referrerPolicy: no-referrer
+        stsIncludeSubdomains: true
+        stsSeconds: 31536000
 
     forward-auth:
       forwardAuth:
@@ -16,3 +21,8 @@ http:
         regex: "^(https?)://www\\.(.+)"
         replacement: "${1}://${2}"
         permanent: true
+
+tls:
+  options:
+    default:
+      minVersion: VersionTLS12

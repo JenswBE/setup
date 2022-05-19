@@ -2,8 +2,13 @@ http:
   middlewares:
     secure-https:
       headers:
-        stsSeconds: 15552000
-        sslredirect: true
+        # Based on https://owasp.org/www-project-secure-headers/#div-bestpractices
+        contentTypeNosniff: true
+        customBrowserXssValue: 0
+        frameDeny: true
+        referrerPolicy: no-referrer
+        stsIncludeSubdomains: true
+        stsSeconds: 31536000
 
     forward-auth:
       forwardAuth:
@@ -15,3 +20,6 @@ tls:
   certificates:
     - certFile: /conf/certs/ha.crt
       keyFile: /conf/certs/ha.key
+  options:
+    default:
+      minVersion: VersionTLS12
