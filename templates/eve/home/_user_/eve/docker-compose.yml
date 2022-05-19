@@ -15,12 +15,27 @@ services:
   # =========================
   # =         PROXY         =
   # =========================
+  traefik-host:
+    <<: *defaults
+    image: traefik:latest
+    container_name: traefik-host
+    network_mode: host
+    command:
+      # - "--log.level=DEBUG"
+      - "--providers.file.directory=/conf"
+      - "--providers.file.watch=true"
+      - "--entrypoints.tcp80.address=:80"
+      - "--entrypoints.tcp443.address=:443"
+    volumes:
+      - ./traefik/host:/conf:ro
+
   traefik:
     <<: *defaults
     image: traefik:latest
     container_name: traefik
     command:
       # - "--log.level=DEBUG"
+      - "--accesslog.filepath=/access-logs/access.log"
       - "--providers.file.directory=/conf"
       - "--providers.file.watch=true"
       - "--providers.docker=true"
@@ -28,8 +43,10 @@ services:
       - "--providers.docker.exposedbydefault=false"
       - "--providers.docker.constraints=!(LabelRegex(`bjoetiek.env`,`.+`) || LabelRegex(`candylicious.env`,`.+`) || LabelRegex(`oud-turnhoutsgebak.env`,`.+`))"
       - "--entrypoints.websecure.address=:443"
+      - "--entrypoints.websecure.proxyProtocol.trustedIPs={{ network_any_private }}"
       - "--entrypoints.websecure.http.middlewares=secure-https@file"
       - "--entrypoints.web.address=:80"
+      - "--entrypoints.web.proxyProtocol.trustedIPs={{ network_any_private }}"
       - "--entrypoints.web.http.redirections.entryPoint.to=websecure"
       - "--entrypoints.web.http.redirections.entryPoint.scheme=https"
       - "--certificatesresolvers.le-tls.acme.tlsChallenge=true"
@@ -47,9 +64,10 @@ services:
     networks:
       - traefik
     volumes:
-      - "./traefik:/conf:ro"
-      - "/var/run/docker.sock:/var/run/docker.sock:ro"
-      - "traefik-cert:/letsencrypt/"
+      - ./traefik/bridge:/conf:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - traefik-cert:/letsencrypt/
+      - traefik-access-logs:/access-logs
     environment:
       - "TZ={{ general_timezone }}"
 
@@ -1043,7 +1061,6 @@ services:
       COLLECTIONS: >-
         crowdsecurity/http-cve
         crowdsecurity/linux
-        crowdsecurity/nextcloud
         crowdsecurity/traefik
       GID: "{{ ansible_real_group_id }}"
       BOUNCER_KEY_firewall: "{{ app_crowdsec_bouncer_firewall_key }}"
@@ -1054,6 +1071,7 @@ services:
       - crowdsec-config:/etc/crowdsec/
       # Logs
       - /var/log/auth.log:/var/log/auth.log:ro
+      - traefik-access-logs:/var/log/traefik:ro
 
   # =========================
   # =         BACKUP        =
@@ -1123,6 +1141,7 @@ volumes:
   oud-turnhoutsgebak-test-db-data:
   passit-db-dump:
   snipe-it-db-dump:
+  traefik-access-logs:
   traefik-cert:
 
 # #################################################################

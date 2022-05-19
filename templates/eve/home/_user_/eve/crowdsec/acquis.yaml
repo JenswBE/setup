@@ -3,3 +3,10 @@ filenames:
   - /var/log/auth.log
 labels:
   type: syslog
+
+---
+# Traefik logs
+filenames:
+  - /var/log/traefik/*.log
+labels:
+  type: traefik

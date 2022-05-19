@@ -49,20 +49,37 @@ services:
   # =========================
   # =         PROXY         =
   # =========================
+  traefik-host:
+    <<: *defaults
+    image: traefik:latest
+    container_name: traefik-host
+    network_mode: host
+    command:
+      # - "--log.level=DEBUG"
+      - "--providers.file.directory=/conf"
+      - "--providers.file.watch=true"
+      - "--entrypoints.tcp80.address=:80"
+      - "--entrypoints.tcp443.address=:443"
+    volumes:
+      - ./traefik/host:/conf:ro
+
   traefik:
     <<: *defaults
     image: traefik:latest
     container_name: traefik
     command:
       # - "--log.level=DEBUG"
+      - "--accesslog.filepath=/access-logs/access.log"
       - "--providers.file.directory=/conf"
       - "--providers.file.watch=true"
       - "--providers.docker=true"
       - "--providers.docker.network=traefik"
       - "--providers.docker.exposedbydefault=false"
       - "--entrypoints.websecure.address=:443"
+      - "--entrypoints.websecure.proxyProtocol.trustedIPs={{ network_any_private }}"
       - "--entrypoints.websecure.http.middlewares=secure-https@file"
       - "--entrypoints.web.address=:80"
+      - "--entrypoints.web.proxyProtocol.trustedIPs={{ network_any_private }}"
       - "--entrypoints.web.http.redirections.entryPoint.to=websecure"
       - "--entrypoints.web.http.redirections.entryPoint.scheme=https"
       - "--certificatesresolvers.le-tls.acme.tlsChallenge=true"
@@ -79,14 +96,15 @@ services:
       - "--api=true"
       - "--ping.manualrouting=true"
     ports:
-      - 80:80
-      - 443:443
+      - 127.0.0.1:2080:80
+      - 127.0.0.1:2443:443
     networks:
       - traefik
     volumes:
-      - ./traefik:/conf
+      - ./traefik/bridge:/conf:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - traefik-cert:/letsencrypt/
+      - traefik-cert:/letsencrypt
+      - traefik-access-logs:/access-logs
     environment:
       TZ: "{{ general_timezone }}"
 
@@ -229,7 +247,7 @@ services:
     <<: *defaults
     image: plexinc/pms-docker:latest
     container_name: plex
-    network_mode: "host"
+    network_mode: host
     volumes:
       - "/data/media:/data/media"
       - "{{ general_path_appdata }}/plex/config:/config"
@@ -745,7 +763,6 @@ services:
       COLLECTIONS: >-
         crowdsecurity/http-cve
         crowdsecurity/linux
-        crowdsecurity/nextcloud
         crowdsecurity/traefik
       GID: "{{ ansible_real_group_id }}"
       BOUNCER_KEY_firewall: "{{ app_crowdsec_bouncer_firewall_key }}"
@@ -756,6 +773,7 @@ services:
       - crowdsec-config:/etc/crowdsec/
       # Logs
       - /var/log/auth.log:/var/log/auth.log:ro
+      - traefik-access-logs:/var/log/traefik:ro
 
   # =========================
   # =         BACKUP        =
@@ -828,4 +846,5 @@ volumes:
   nc-db-dump:
   scrutiny-data:
   scrutiny-influxdb:
+  traefik-access-logs:
   traefik-cert:
