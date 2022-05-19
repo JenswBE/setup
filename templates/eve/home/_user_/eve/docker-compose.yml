@@ -15,6 +15,12 @@ services:
   # =========================
   # =         PROXY         =
   # =========================
+  # Having 2 Traefik instances (1 on host network and 1 on bridge network)
+  # allows to have the real client IP's available inside the bridged
+  # Treafik instance (using PROXY protocol). In case you would only have
+  # a single instance on the host network, you would loose all the convenience
+  # of the Docker provider support (not having to expose each service on a host
+  # port and auto-configuration of the services/loadbalancers).
   traefik-host:
     <<: *defaults
     image: traefik:latest
@@ -35,7 +41,7 @@ services:
     container_name: traefik
     command:
       # - "--log.level=DEBUG"
-      - "--accesslog.filepath=/access-logs/access.log"
+      - "--accesslog.filepath=/access-logs/access.log" # Used by CrowdSec
       - "--providers.file.directory=/conf"
       - "--providers.file.watch=true"
       - "--providers.docker=true"
