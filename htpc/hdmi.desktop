@@ -1,0 +1,5 @@
+[Desktop Entry]
+Type=Application
+Name=Geluid HDMI surround
+Icon=sound
+Exec=pactl set-card-profile 0 output:hdmi-surround

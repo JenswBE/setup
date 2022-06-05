@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.0
+Name=Fix Tab
+Comment=Map Caps Lock to Tab
+Exec=/bin/sh -c "DISPLAY=:0 xmodmap -e \"clear Lock\" -e \"keycode  66 = Tab ISO_Left_Tab Tab ISO_Left_Tab\" -e \"keycode  23 = Caps_Lock NoSymbol Caps_Lock\""
+Icon=/usr/share/icons/Humanity/actions/48/system-upgrade.svg
+Terminal=false
+Type=Application
+Categories=Utility;
