@@ -1,4 +1,4 @@
-# Desktop
+# Setup guide for desktops
 
 Installation instructions for Hercules (Workstation) and Charmeleon (Laptop)
 
