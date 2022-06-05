@@ -545,47 +545,34 @@ services:
   # =========================
   # =       MONITORING      =
   # =========================
-  scrutiny:
-    <<: *defaults
-    image: ghcr.io/analogj/scrutiny:latest
-    container_name: scrutiny
-    depends_on:
-      - scrutiny-influxdb
-    cap_add:
-      - SYS_RAWIO # Required for querying SMART data
-      - SYS_ADMIN # Required for querying NVMe drives
-    volumes:
-      - "./scrutiny/scrutiny.yaml:/opt/scrutiny/config/scrutiny.yaml"
-      - "scrutiny-data:/data"
-      - "/run/udev:/run/udev:ro"
-    devices:
-      - "/dev/nvme0:/dev/nvme0"
-      - "/dev/sda:/dev/sda"
-      - "/dev/sdb:/dev/sdb"
-      - "/dev/sdc:/dev/sdc"
-      - "/dev/sdd:/dev/sdd"
-    networks:
-      - traefik
-      - scrutiny
-    environment:
-      TZ: "{{ general_timezone }}"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.scrutiny.entrypoints=websecure"
-      - "traefik.http.routers.scrutiny.rule=Host(`smart-{{ ansible_hostname }}.{{ general_domain_default }}`)"
-      - "traefik.http.routers.scrutiny.tls.certresolver=le-tls"
-      - "traefik.http.routers.scrutiny.middlewares=forward-auth@file"
-
-  scrutiny-influxdb:
-    <<: *defaults
-    image: influxdb:2.2
-    container_name: scrutiny-influxdb
-    volumes:
-      - "scrutiny-influxdb:/var/lib/influxdb2"
-    networks:
-      - scrutiny
-    environment:
-      TZ: "{{ general_timezone }}"
+  # scrutiny:
+  #   <<: *defaults
+  #   image: ghcr.io/analogj/scrutiny:master-omnibus
+  #   container_name: scrutiny
+  #   cap_add:
+  #     - SYS_RAWIO # Required for querying SMART data
+  #     - SYS_ADMIN # Required for querying NVMe drives
+  #   volumes:
+  #     - "./scrutiny:/opt/scrutiny/config"
+  #     - "scrutiny-sqlite:/opt/scrutiny/sqlite"
+  #     - "scrutiny-influxdb:/opt/scrutiny/influxdb"
+  #     - "/run/udev:/run/udev:ro"
+  #   devices:
+  #     - "/dev/nvme0:/dev/nvme0"
+  #     - "/dev/sda:/dev/sda"
+  #     - "/dev/sdb:/dev/sdb"
+  #     - "/dev/sdc:/dev/sdc"
+  #     - "/dev/sdd:/dev/sdd"
+  #   networks:
+  #     - traefik
+  #   environment:
+  #     TZ: "{{ general_timezone }}"
+  #   labels:
+  #     - "traefik.enable=true"
+  #     - "traefik.http.routers.scrutiny.entrypoints=websecure"
+  #     - "traefik.http.routers.scrutiny.rule=Host(`smart-{{ ansible_hostname }}.{{ general_domain_default }}`)"
+  #     - "traefik.http.routers.scrutiny.tls.certresolver=le-tls"
+  #     - "traefik.http.routers.scrutiny.middlewares=forward-auth@file"
 
   librenms:
     <<: *defaults
@@ -813,9 +800,6 @@ networks:
   nextcloud:
     name: nextcloud
 
-  scrutiny:
-    name: scrutiny
-
   traefik:
     name: traefik
 
@@ -828,7 +812,7 @@ volumes:
   glitchtip-db-dump:
   librenms-db-dump:
   nc-db-dump:
-  scrutiny-data:
   scrutiny-influxdb:
+  scrutiny-sqlite:
   traefik-access-logs:
   traefik-cert:

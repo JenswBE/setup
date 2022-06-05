@@ -1,18 +1,8 @@
 version: 1
 
-web:
-  listen:
-    port: 8080
-    host: 0.0.0.0
-  database:
-    location: /data/scrutiny.db
-  src:
-    frontend:
-      path: /opt/scrutiny/web
-  influxdb:
-    host: scrutiny-influxdb
-    port: 8086
-    retention_policy: true
+database:
+  # can also set absolute path here
+  location: /opt/scrutiny/sqlite/scrutiny.db
 
 log:
   file: "" #absolute or relative paths allowed, eg. web.log
