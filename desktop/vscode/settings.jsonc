@@ -1,0 +1,43 @@
+{
+  "diffEditor.ignoreTrimWhitespace": false,
+  "docker.showStartPage": false,
+  "editor.bracketPairColorization.enabled": true,
+  "editor.fontFamily": "Cascadia Code",
+  "editor.fontLigatures": true,
+  "editor.formatOnSave": true,
+  "explorer.confirmDelete": false,
+  "explorer.confirmDragAndDrop": false,
+  "extensions.ignoreRecommendations": true,
+  "files.insertFinalNewline": true,
+  "git.autofetch": true,
+  "git.confirmSync": false,
+  "git.enableSmartCommit": true,
+  "gitlens.codeLens.enabled": false,
+  "gitlens.hovers.enabled": false,
+  "go.toolsGopath": "~/go",
+  "go.toolsManagement.autoUpdate": true,
+  "gopls": {
+    "build.allowModfileModifications": true,
+    "experimentalWorkspaceModule": true
+  },
+  "python.languageServer": "Pylance",
+  "python.showStartPage": false,
+  "redhat.telemetry.enabled": false,
+  "telemetry.enableCrashReporter": false,
+  "telemetry.enableTelemetry": false,
+  "terminal.integrated.persistentSessionReviveProcess": "never",
+  "workbench.colorTheme": "Dracula Pro",
+  "workbench.startupEditor": "none",
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[yaml]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
+}

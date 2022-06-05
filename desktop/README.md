@@ -11,21 +11,61 @@ Installation instructions for Hercules (Workstation) and Charmeleon (Laptop)
 - [Fedora 36](Fedora.md)
 - [Ubuntu 20.04](Ubuntu.md)
 
-### Tweak Gnome
+## Generic instructions
 
-- Keyboard & Mouse => Additional Layout Options => Caps Lock behavior => Make Caps Lock additional backspace
-- Top Bar => Activities Overview Hot Corner
-- Top Bar => Weekday (in Clock)
-- Top Bar => Weeknumbers (in Agenda)
-- Windows => Focus on Hover
-- Workspaces => Static Workspaces
-- Workspaces => Number of Workspaces = 1
+```bash
+# Configure git
+git config --global user.name "<NAME>"
+git config --global user.email "<NAME>"
+```
+
+### Gnome Tweaks
+
+- Appearance => Legacy Applications => Select "Adwaita-dark"
+- Top Bar => Clock => Enable "Weekday"
+- Top Bar => Calendar => Enable "Week Numbers"
+- Windows => Window Focus => Select "Focus on Hover"
 
 Startup applications:
 
 - Nextcloud
 - Syncthing
 - KeepassXC
+
+### VS Code
+
+```bash
+ln -fs "$(pwd)/vscode/settings.jsonc" ~/.config/Code/User/settings.json
+ln -fs "$(pwd)/vscode/keybindings.jsonc" ~/.config/Code/User/keybindings.json
+```
+
+```
+ext install esbenp.prettier-vscode
+ext install golang.go
+```
+
+### Dracula
+
+Install following files from Pro theme:
+
+- Fonts
+  - Cascadia Code
+- Themes
+  - VS Code
+
+Install following files from non-Pro theme:
+
+- [Gnome Terminal](https://draculatheme.com/gnome-terminal)
+
+```bash
+CUR_DIR=$(pwd)
+cd ~/Documents/
+git clone https://github.com/dracula/gnome-terminal
+cd gnome-terminal
+./install.sh # Interactive !!!
+echo "eval \`dircolors ${HOME:?}/.dir_colors/dircolors\`" >> ~/.bashrc
+cd ${CUR_DIR}
+```
 
 ### Setup WakeOnLAN and SSH
 
