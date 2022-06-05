@@ -437,28 +437,6 @@ services:
       - "traefik.http.routers.nginx-hetvleermuizenkind.tls.certresolver=le-tls"
 
   # =========================
-  # =         HOMER         =
-  # =========================
-  homer:
-    <<: *defaults
-    image: b4bz/homer:latest
-    container_name: homer
-    networks:
-      - traefik
-    volumes:
-      - "./homer/config.yml:/www/assets/config.yml:ro"
-      - "./homer/logos:/www/assets/logos:ro"
-    environment:
-      - "TZ={{ general_timezone }}"
-      - "UID={{ ansible_real_user_id }}"
-      - "GID={{ ansible_real_group_id }}"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.homer.entrypoints=websecure"
-      - "traefik.http.routers.homer.rule=Host(`start.{{ general_domain_default }}`)"
-      - "traefik.http.routers.homer.tls.certresolver=le-tls"
-
-  # =========================
   # =     ERROR LOGGING     =
   # =========================
   # Go to GlitchTip url /register to create first user
