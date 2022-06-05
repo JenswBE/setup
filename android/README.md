@@ -1,4 +1,4 @@
-# How-to setup Android
+# Setup guide for Android
 
 ## Backup
 - andOTP

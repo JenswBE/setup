@@ -1,8 +1,6 @@
-# Personal Ansible Stuff
+# Setup guide for servers
 
-## Conventions
-
-## naming convention
+## Naming conventions
 
 - App data: `<CATEGORY>/<SERVICE>/<FOLDER>` E.g. `nextcloud/mariadb/data`
 

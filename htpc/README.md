@@ -1,4 +1,4 @@
-# HTPC
+# Setup guide for HTPC's
 
 ## Distro specific instructions
 
