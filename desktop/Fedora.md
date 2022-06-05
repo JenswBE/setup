@@ -3,13 +3,27 @@
 ## Setup
 
 ```bash
+# Set hostname
+sudo hostnamectl hostname <HOSTNAME>
+
 # Update system
 sudo dnf update
+
+# Enable bluetooth scanning
+bluetoothctl scan on
 
 # Install useful software
 sudo dnf install -y https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm
 sudo dnf install -y https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
-sudo dnf install -y chromium gnome-tweaks keepassxc python3-devel python3-pip vim vlc nextcloud-client
+sudo dnf install -y \
+chromium \
+gnome-tweaks \
+keepassxc python3-devel \
+nextcloud-client \
+python3-pip \
+vim \
+vlc \
+zsh-syntax-highlighting
 sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 
 # Install media codecs
