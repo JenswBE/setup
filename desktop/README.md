@@ -60,6 +60,7 @@ ln -fs "$(pwd)/vscode/keybindings.jsonc" ~/.config/Code/User/keybindings.json
 ```
 ext install esbenp.prettier-vscode
 ext install golang.go
+ext install octref.vetur
 ```
 
 ### Dracula
