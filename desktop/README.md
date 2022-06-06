@@ -43,6 +43,10 @@ Startup applications:
 - Syncthing
 - KeepassXC
 
+### GNOME Files
+
+- General => Enable "Sort Folders Before Files"
+
 ### VS Code
 
 ```bash
