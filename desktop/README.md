@@ -96,7 +96,7 @@ AllowGroups ssh-users
 
 10. Reboot
 
-#### Arduino IDE
+### Arduino IDE
 
 1. Get [Arduino IDE](https://www.arduino.cc/en/Main/Software)
 2. Install pyserial with `python-serial` (required for esptool)
