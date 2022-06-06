@@ -26,7 +26,17 @@ sudo sed -i 's/HashKnownHosts yes/HashKnownHosts no' /etc/ssh/ssh_config
 # Install basic software
 # - hunspell/aspell/hyphen: Dutch spelling info for Libreoffice
 # - gedit-plugin-draw-spaces: Gedit plugin to show whitespace characters
-sudo apt install hunspell-nl aspell-nl hyphen-nl git vim gedit-plugin-draw-spaces gnome-tweaks curl build-essential
+sudo apt install -y \
+aspell-nl \
+build-essential \
+curl \
+gedit-plugin-draw-spaces \
+git \
+gnome-tweaks \
+hunspell-nl \
+hyphen-nl \
+nfs-common \
+vim
 
 # Config Git
 git config --global user.name "Jens Willemsens"
