@@ -17,6 +17,7 @@ sudo dnf install -y https://download1.rpmfusion.org/free/fedora/rpmfusion-free-r
 sudo dnf install -y https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
 sudo dnf install -y \
 chromium \
+flameshot \
 gnome-tweaks \
 keepassxc \
 nextcloud-client \

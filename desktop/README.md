@@ -27,6 +27,9 @@ git config --global user.email "<EMAIL>"
 - Online Accounts => Nextcloud => Disable "Files"
 - Sharing => Enable "Remote Login" (Only on fixed devices!)
 - Displays => Night Light => Enable "Night Light"
+- Keyboard => Keyboard Shortcuts => View and Customize Shortcuts
+  - Remove default `Print` => `Take a screenshot interactively` mapping
+  - Add custom mapping `Print` => `flameshot gui`
 - Region & Language => Your Account => Formats => Set to local format
 - Region & Language => Login Screen => Formats => Set to local format
 

@@ -30,6 +30,7 @@ sudo apt install -y \
 aspell-nl \
 build-essential \
 curl \
+flameshot \
 gedit-plugin-draw-spaces \
 git \
 gnome-tweaks \
