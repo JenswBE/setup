@@ -1,5 +1,12 @@
 # Dual-boot with Full Disk Encryption
 
+## Fedora 36
+
+1. Install Windows and ensure there is empty space for Fedora
+2. During installer in "INSTALLATION DESTINATION", enable "Encrypt my data"
+
+# Ubuntu 20.04
+
 Based on
 
 - https://wiki.archlinux.org/title/Dm-crypt/Encryptinganentiresystem#LVMon_LUKS
