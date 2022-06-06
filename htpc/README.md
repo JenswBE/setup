@@ -68,7 +68,7 @@ Next, double click the file
 
 #### Auto start on boot
 
-1. Start Gnome Tweak Tool
+1. Start GNOME Tweak Tool
 2. Startup applications => Add => Plex Media Player
 
 #### Settings
@@ -91,7 +91,7 @@ Next, double click the file
 ### Force HDMI audio on boot
 
 1. Copy `hdmi.desktop` to `~/.local/share/applications/`
-2. Start Gnome Tweak Tool
+2. Start GNOME Tweak Tool
 3. Startup applications => Add => Geluid HDMI surround
 
 ### Hyperion
@@ -109,7 +109,7 @@ sudo apt-get update && sudo apt install -y hyperion
 sudo usermod -a -G dialout ${USER}
 
 #
-# 1. Enable "Hyperion" in Gnome Tweak Tool at startup
+# 1. Enable "Hyperion" in GNOME Tweak Tool at startup
 # 2. Visit http://http://localhost:8090 and import config in Configuration => General
 #
 ```

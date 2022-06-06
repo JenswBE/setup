@@ -16,10 +16,21 @@ Installation instructions for Hercules (Workstation) and Charmeleon (Laptop)
 ```bash
 # Configure git
 git config --global user.name "<NAME>"
-git config --global user.email "<NAME>"
+git config --global user.email "<EMAIL>"
 ```
 
-### Gnome Tweaks
+### GNOME
+
+- Appearance => Style => Select "Dark"
+- Privacy => File History & Trash => Trash & Temporary Files => Enable "Automatically Delete Trash Content"
+- Privacy => File History & Trash => Trash & Temporary Files => Automatically Delete Period => Set "7 days"
+- Online Accounts => Nextcloud => Disable "Files"
+- Sharing => Enable "Remote Login" (Only on fixed devices!)
+- Displays => Night Light => Enable "Night Light"
+- Region & Language => Your Account => Formats => Set to local format
+- Region & Language => Login Screen => Formats => Set to local format
+
+### GNOME Tweaks
 
 - Appearance => Legacy Applications => Select "Adwaita-dark"
 - Top Bar => Clock => Enable "Weekday"
@@ -55,7 +66,7 @@ Install following files from Pro theme:
 
 Install following files from non-Pro theme:
 
-- [Gnome Terminal](https://draculatheme.com/gnome-terminal)
+- [GNOME Terminal](https://draculatheme.com/gnome-terminal)
 
 ```bash
 CUR_DIR=$(pwd)
