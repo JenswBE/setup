@@ -18,8 +18,9 @@ sudo dnf install -y https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-non
 sudo dnf install -y \
 chromium \
 gnome-tweaks \
-keepassxc python3-devel \
+keepassxc \
 nextcloud-client \
+python3-devel \
 python3-pip \
 syncthing \
 vim \
