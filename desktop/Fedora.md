@@ -21,10 +21,14 @@ gnome-tweaks \
 keepassxc python3-devel \
 nextcloud-client \
 python3-pip \
+syncthing \
 vim \
 vlc \
 zsh-syntax-highlighting
 sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+
+# Start Syncthing
+systemctl enable --user --now syncthing
 
 # Install media codecs
 sudo dnf install -y gstreamer1-plugins-{bad-\*,good-\*,base} gstreamer1-plugin-openh264 gstreamer1-libav --exclude=gstreamer1-plugins-bad-free-devel
