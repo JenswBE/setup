@@ -35,7 +35,7 @@ git clone https://github.com/JenswBE/htpc.git ~/$HOSTNAME
 cp ~/$HOSTNAME/fix-tab.desktop ~/.local/share/applications/
 
 #
-# Enable "Fix Tab" in Gnome Tweak Tool at startup
+# Enable "Fix Tab" in GNOME Tweak Tool at startup
 #
 
 # Prevent audio buzzing
