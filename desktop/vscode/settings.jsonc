@@ -23,8 +23,7 @@
   "python.languageServer": "Pylance",
   "python.showStartPage": false,
   "redhat.telemetry.enabled": false,
-  "telemetry.enableCrashReporter": false,
-  "telemetry.enableTelemetry": false,
+  "telemetry.telemetryLevel": "off",
   "terminal.integrated.persistentSessionReviveProcess": "never",
   "workbench.colorTheme": "Dracula Pro",
   "workbench.startupEditor": "none",
@@ -38,6 +37,18 @@
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[vue]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[html]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[css]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascript]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   }
 }
