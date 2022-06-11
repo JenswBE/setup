@@ -40,11 +40,11 @@ As a failsafe, it's mandatory to use `--limit` option.
 Without this option, the playbook will fail.
 
 ```bash
+# Install Python requirements
+sudo pip install -r requirements.txt
+
 # Install roles
 ansible-galaxy role install -r requirements.yml
-
-# Install other requirements
-sudo pip install -r requirements.txt
 
 # Run complete setup for a host
 ansible-playbook main.yml --ask-vault-pass --ask-become-pass --limit <HOSTNAME>
