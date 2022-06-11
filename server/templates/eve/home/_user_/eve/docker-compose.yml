@@ -630,7 +630,11 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.spellebel.entrypoints=websecure"
-      - "traefik.http.routers.spellebel.rule=Host(`nieuw.{{ general_domain_spellebel }}`)"
+      - >-
+        traefik.http.routers.spellebel.rule=Host(
+          `{{ general_domain_spellebel }}`,
+          `nieuw.{{ general_domain_spellebel }}`,
+        )
       - "traefik.http.routers.spellebel.tls.certresolver=le-tls"
       - "traefik.http.services.spellebel-{{ ansible_hostname }}.loadbalancer.server.port=8080"
 
@@ -955,6 +959,7 @@ services:
       - >-
         traefik.http.routers.goatcounter.rule=Host(
           `stats.{{ general_domain_default }}`,
+          `stats-spellebel.{{ general_domain_default }}`,
           `stats.{{ general_domain_bjoetiek }}`,
           `stats.{{ general_domain_klokracing }}`,
           `stats.{{ general_domain_tuinfeest }}`,
