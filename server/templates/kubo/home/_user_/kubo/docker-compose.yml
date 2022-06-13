@@ -761,7 +761,6 @@ services:
       - "glitchtip-db-dump:/mnt/source/glitchtip/dbdump:ro"
       - "{{ general_path_appdata }}/home-automation/home-assistant/config:/mnt/source/home-automation/home-assistant/config:ro"
       - "librenms-db-dump:/mnt/source/librenms/dbdump:ro"
-      - "{{ general_path_appdata }}/librenms/librenms/data:/mnt/source/librenms/data:ro"
       - "nc-db-dump:/mnt/source/nextcloud/dbdump:ro"
       - "{{ general_path_appdata }}/nextcloud/nextcloud/data:/mnt/source/nextcloud/data:ro"
       - "{{ general_path_appdata }}/nextcloud/nextcloud/config:/mnt/source/nextcloud/config:ro"
