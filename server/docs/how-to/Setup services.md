@@ -6,15 +6,13 @@
 
 1. Execute `ssh-keygen` and create a new ssh key with blank passphrase
 2. Add public key to allowed ssh keys at remote host (depending on service)
-3. Init repo if required with `docker exec borgmatic sh -c "borgmatic --init --encryption repokey-blake2"`
-4. Perform a backup to test the setup with `docker exec borgmatic sh -c "borgmatic --verbosity 1"`
+3. Init repo if required with `docker exec borgmatic borgmatic --init --encryption repokey-blake2`
+4. Perform a backup to test the setup with `docker exec borgmatic borgmatic --verbosity 1`
 5. Optional: Backup your repo key file with below command. Your file will be available at `borgmatic/borgmatic.d/repokey.html`.
 
 ```bash
 # Export repo key to ~/eve/borgmatic/borgmatic.d/repokey.html
-docker exec borgmatic sh -c "BORG_RSH=\"ssh -p${BORGMATIC_PORT:?} -i /root/.ssh/BorgHost\" \
-                             borg key export --qr-html ${BORGMATIC_USER:?}@${BORGMATIC_HOST:?}:${BORGMATIC_PATH:?} \
-                             /etc/borgmatic.d/repokey.html"
+docker exec borgmatic borgmatic borg key export --qr-html /etc/borgmatic.d/repokey.html
 ```
 
 ### GoatCounter
