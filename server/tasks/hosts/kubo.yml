@@ -38,6 +38,7 @@
     - fatrace-btrfs.service
     - glitchtip-dump-db.timer
     - librenms-dump-db.timer
+    - miniflux-dump-db.timer
     - mnt-btrfs.mount
     - nextcloud-cron.timer
     - nextcloud-dump-db.timer
