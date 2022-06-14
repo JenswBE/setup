@@ -1,0 +1,6 @@
+[Unit]
+Description=Dump MiniFlux DB for backup
+OnFailure=unit-fail-mail@%n.service
+
+[Service]
+ExecStart=/usr/bin/docker exec miniflux-db /bin/sh -c "pg_dump --verbose --format=c --blobs --dbname=miniflux --username=miniflux --no-password --file=/backup/miniflux.pg_dump"
