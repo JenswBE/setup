@@ -637,6 +637,11 @@ services:
         )
       - "traefik.http.routers.spellebel.tls.certresolver=le-tls"
       - "traefik.http.services.spellebel-{{ ansible_hostname }}.loadbalancer.server.port=8080"
+      # WWW redirect
+      - "traefik.http.routers.spellebel-www-redirect.entrypoints=websecure"
+      - "traefik.http.routers.spellebel-www-redirect.rule=Host(`www.{{ general_domain_spellebel }}`)"
+      - "traefik.http.routers.spellebel-www-redirect.tls.certresolver=le-tls"
+      - "traefik.http.routers.spellebel-www-redirect.middlewares=redirect-www-to-root@file"
 
   spellebel-test:
     <<: *defaults
