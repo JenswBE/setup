@@ -50,5 +50,6 @@
   },
   "[javascript]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
-  }
+  },
+  "gitlens.hovers.currentLine.over": "line"
 }
