@@ -1,5 +1,3 @@
-version: "3.7"
-
 #################################################################
 #                            DEFAULTS                           #
 #################################################################
@@ -212,7 +210,7 @@ services:
       - "IS_PRIVATE_ORG_MODE=True"
       - "PRIVATE_ORG_MODE_DOMAIN_WHITELIST={{ general_domain_tuinfeest }}"
       - "SECRET_KEY={{ app_passit_secret_key }}"
-      - "EMAIL_URL=smtp+tls://{{ mailjet_tuinfeest_username }}:{{ mailjet_tuinfeest_password }}@{{ mailjet_host }}:{{ mailjet_port }}"
+      - "EMAIL_URL=smtp+tls://{{ mailjet_tuinfeest_username }}:{{ mailjet_tuinfeest_password }}@{{ mailjet_host }}:{{ mailjet_port_starttls }}"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.passit.entrypoints=websecure"
@@ -627,6 +625,13 @@ services:
       - traefik
     environment:
       - "TZ={{ general_timezone }}"
+      - "SENTRY_DSN={{ app_spellebel_sentry_dsn }}"
+      - "SMTP_HOST={{ mailjet_host }}"
+      - "SMTP_PORT={{ mailjet_port_ssl }}"
+      - "SMTP_USERNAME={{ mailjet_username }}"
+      - "SMTP_PASSWORD={{ mailjet_password }}"
+      - "SMTP_FROM=www.spellebel.be <spellebel@{{ general_domain_default }}>"
+      - "SMTP_TO=Team Spellebel <spulmer-gezocht@{{ general_domain_spellebel }}>"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.spellebel.entrypoints=websecure"
@@ -651,6 +656,12 @@ services:
       - traefik
     environment:
       - "TZ={{ general_timezone }}"
+      - "SMTP_HOST={{ mailjet_host }}"
+      - "SMTP_PORT={{ mailjet_port_ssl }}"
+      - "SMTP_USERNAME={{ mailjet_username }}"
+      - "SMTP_PASSWORD={{ mailjet_password }}"
+      - "SMTP_FROM=www.spellebel.be <website-spellebel@{{ general_domain_default }}>"
+      - "SMTP_TO=Team Spellebel <spulmer-gezocht@{{ general_domain_spellebel }}>"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.spellebel-test.entrypoints=websecure"

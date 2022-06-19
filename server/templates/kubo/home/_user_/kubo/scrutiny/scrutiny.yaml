@@ -12,4 +12,4 @@ log:
 # Shoutrrr's documentation: https://containrrr.dev/shoutrrr/services/overview/
 notify:
   urls:
-    - "smtp://{{ mailjet_username }}:{{ mailjet_password }}@{{ mailjet_host }}:{{ mailjet_port }}/?fromAddress=host.{{ ansible_hostname }}@{{ general_domain_default }}&toAddresses=admin.{{ ansible_hostname }}@{{ general_domain_default }}"
+    - "smtp://{{ mailjet_username }}:{{ mailjet_password }}@{{ mailjet_host }}:{{ mailjet_port_starttls }}/?fromAddress=host.{{ ansible_hostname }}@{{ general_domain_default }}&toAddresses=admin.{{ ansible_hostname }}@{{ general_domain_default }}"

@@ -1,5 +1,3 @@
-version: "3.7"
-
 #################################################################
 #                    DEFAULTS AND COMMON ENVS                   #
 #################################################################
@@ -14,7 +12,7 @@ x-glitchtip-env: &glitchtip-env
   DATABASE_URL: "postgres://glitchtip:{{ app_glitchtip_db_pass }}@glitchtip-db:5432/glitchtip"
   REDIS_HOST: "glitchtip-redis"
   SECRET_KEY: "{{ app_glitchtip_secret_key }}"
-  EMAIL_URL: "smtp://{{ mailjet_username }}:{{ mailjet_password }}@{{ mailjet_host }}:{{ mailjet_port }}"
+  EMAIL_URL: "smtp://{{ mailjet_username }}:{{ mailjet_password }}@{{ mailjet_host }}:{{ mailjet_port_starttls }}"
   DEFAULT_FROM_EMAIL: "glitchtip@{{ general_domain_default }}"
   GLITCHTIP_DOMAIN: "https://glitchtip.{{ general_domain_default }}"
 
@@ -712,7 +710,7 @@ services:
     environment:
       TZ: "{{ general_timezone }}"
       SMTP_HOST: "{{ mailjet_host }}"
-      SMTP_PORT: "{{ mailjet_port }}"
+      SMTP_PORT: "{{ mailjet_port_starttls }}"
       SMTP_TLS: "on"
       SMTP_STARTTLS: "on"
       SMTP_TLS_CHECKCERT: "on"

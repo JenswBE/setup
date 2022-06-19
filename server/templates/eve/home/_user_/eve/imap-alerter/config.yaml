@@ -16,12 +16,12 @@ accounts:
     password: "{{ mailjet_password }}"
     smtp_from: "imap-alerter@{{ general_domain_default }}"
     smtp_host: "{{ mailjet_host }}"
-    smtp_port: "{{ mailjet_port }}"
+    smtp_port: "{{ mailjet_port_starttls }}"
     smtp_tls: true
 
 alerts:
- - monitor: watch
-   sender: notify
-   alert:
-     - "imap-alerter@{{ general_domain_default }}"
-   subject: New mail on GS
+  - monitor: watch
+    sender: notify
+    alert:
+      - "imap-alerter@{{ general_domain_default }}"
+    subject: New mail on GS
