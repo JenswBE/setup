@@ -15,7 +15,7 @@ notify:
   provider: email
   data:
     host: "{{ mailjet_host }}"
-    port: "{{ mailjet_port }}"
+    port: "{{ mailjet_port_starttls }}"
     tls: True
     username: "{{ mailjet_username }}"
     password: "{{ mailjet_password }}"
