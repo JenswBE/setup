@@ -587,6 +587,8 @@ services:
       - librenms-msmtpd
     volumes:
       - "{{ general_path_appdata }}/librenms/librenms/data:/data"
+      - "./librenms/config:/data/config"
+      - "./librenms/templates:/data/alert-templates/"
     networks:
       - traefik
       - librenms
