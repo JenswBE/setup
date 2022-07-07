@@ -982,6 +982,27 @@ services:
         )
 
   # =========================
+  # =         UPTIME        =
+  # =========================
+  uptime-kuma:
+    <<: *defaults
+    image: louislam/uptime-kuma:1
+    container_name: uptime-kuma
+    volumes:
+      - "{{ general_path_appdata }}/uptime-kuma/data:/app/data"
+    networks:
+      - traefik
+    environment:
+      - "TZ={{ general_timezone }}"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.uptime-kuma.entrypoints=websecure"
+      - "traefik.http.routers.uptime-kuma.rule=Host(`uptime.{{ general_domain_default }}`)"
+      - "traefik.http.routers.uptime-kuma.tls.certresolver=le-tls"
+      - "traefik.http.routers.uptime-kuma.middlewares=forward-auth@file"
+      - "traefik.http.services.uptime-kuma-{{ ansible_hostname }}.loadbalancer.server.port=3001"
+
+  # =========================
   # =          AUTH         =
   # =========================
   keycloak:
