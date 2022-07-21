@@ -17,6 +17,10 @@ Installation instructions for Hercules (Workstation) and Charmeleon (Laptop)
 # Configure git
 git config --global user.name "<NAME>"
 git config --global user.email "<EMAIL>"
+
+# Setup Go template support for Prettier
+# Based on https://github.com/NiklasPor/prettier-plugin-go-template/issues/58#issuecomment-1085060511
+sudo npm i -g prettier prettier-plugin-go-template
 ```
 
 ### GNOME
