@@ -1,6 +1,7 @@
 # Setup guide for Android
 
 ## Backup
+
 - andOTP
 - AnySoftKeyboard
 - NewPipe
@@ -27,6 +28,7 @@
 
 #### Repo's
 
+- Collabora Office: https://www.collaboraoffice.com/downloads/fdroid/repo/
 - microG: https://github.com/microg/GmsCore/wiki/Downloads#microg-f-droid-repository
 - Nebulo: https://github.com/Ch4t4r/Nebulo#f-droid
 - NewPipe https://newpipe.net/FAQ/tutorials/install-add-fdroid-repo/
@@ -37,6 +39,7 @@
 - [andOTP](https://f-droid.org/en/packages/org.shadowice.flocke.andotp/)
 - [AnySoftKeyboard](https://f-droid.org/packages/com.menny.android.anysoftkeyboard/) + [Dutch lang pack](https://f-droid.org/packages/com.anysoftkeyboard.languagepack.dutch_oss/)
 - [Aurora Store](https://f-droid.org/en/packages/com.aurora.store/)
+- Collabora Office
 - [DAVx5](https://f-droid.org/en/packages/at.bitfire.davdroid)
 - [Déjà Vu](https://f-droid.org/en/packages/org.fitchfamily.android.dejavu) (UnifiedNlp backend)
 - [Document Viewer](https://f-droid.org/en/packages/org.sufficientlysecure.viewer/) (PDF reader)
