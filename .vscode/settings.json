@@ -1,0 +1,9 @@
+{
+  "yaml.schemas": {
+    "https://json.schemastore.org/traefik-v2.json": [
+      "file:///home/jens/Dev/setup/server/templates/eve/home/_user_/eve/traefik/bridge/nextcloud.yml",
+      "file:///home/jens/Dev/setup/server/templates/eve/home/_user_/eve/traefik/bridge/gocommerce.yml",
+      "file:///home/jens/Dev/setup/server/templates/eve/home/_user_/eve/traefik/bridge/common.yml"
+    ]
+  }
+}
