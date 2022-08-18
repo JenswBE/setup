@@ -45,7 +45,6 @@ services:
       - "--providers.docker=true"
       - "--providers.docker.network=traefik"
       - "--providers.docker.exposedbydefault=false"
-      - "--providers.docker.constraints=!(LabelRegex(`bjoetiek.env`,`.+`) || LabelRegex(`candylicious.env`,`.+`) || LabelRegex(`oud-turnhoutsgebak.env`,`.+`))"
       - "--entrypoints.websecure.address=:443"
       - "--entrypoints.websecure.proxyProtocol.trustedIPs={{ network_any_private }}"
       - "--entrypoints.websecure.http.middlewares=secure-https@file"
@@ -309,7 +308,7 @@ services:
   # ===========================================================================
   bjoetiek-frontend:
     <<: *defaults
-    image: jenswbe/bjoetiek-y-frontend:v2.2.1
+    image: jenswbe/bjoetiek-y-frontend:v2.3.1
     container_name: bjoetiek-frontend
     networks:
       - bjoetiek
@@ -317,7 +316,7 @@ services:
     environment:
       - "TZ={{ general_timezone }}"
       - "SENTRY_DSN={{ app_bjoetiek_sentry_dsn }}"
-      - "BACKEND_URL_INTERNAL=http://bjoetiek-backend:8080"
+      - "BACKEND_URL_INTERNAL=http://bjoetiek-backend:8080/api"
       - "BACKEND_URL_EXTERNAL=https://backend.{{ general_domain_bjoetiek }}/api"
     labels:
       - "traefik.enable=true"
@@ -329,109 +328,46 @@ services:
       - "traefik.http.routers.bjoetiek-frontend-www-redirect.tls.certresolver=le-tls"
       - "traefik.http.routers.bjoetiek-frontend-www-redirect.middlewares=redirect-www-to-root@file"
 
-  bjoetiek-admin:
-    <<: *defaults
-    image: jenswbe/go-commerce-admin:v0.3.0
-    container_name: bjoetiek-admin
-    networks:
-      - bjoetiek
-      - traefik
-    environment:
-      - "TZ={{ general_timezone }}"
-      - "AUTH_CLIENT_ID={{ app_bjoetiek_auth_client_id }}"
-      - "AUTH_STATE={{ app_bjoetiek_auth_state }}"
-      - "AUTH_URL_AUTHORIZATION=https://auth.{{ general_domain_bjoetiek }}/realms/bjoetiek/protocol/openid-connect/auth"
-      - "AUTH_URL_TOKEN=https://auth.{{ general_domain_bjoetiek }}/realms/bjoetiek/protocol/openid-connect/token"
-      - "AUTH_URL_USERINFO=https://auth.{{ general_domain_bjoetiek }}/realms/bjoetiek/protocol/openid-connect/userinfo"
-      - "AUTH_URL_LOGOUT=https://auth.{{ general_domain_bjoetiek }}/realms/bjoetiek/protocol/openid-connect/logout"
-      - "AUTH_URL_LOGOUT_REDIRECT=https://beheer.{{ general_domain_bjoetiek }}/login"
-      - "BACKEND_URL_INTERNAL=http://bjoetiek-backend:8080"
-      - "BACKEND_URL_EXTERNAL=https://backend.{{ general_domain_bjoetiek }}/api"
-      - "PRODUCT_URL_TEMPLATE=https://{{ general_domain_bjoetiek }}/producten/$${p.id}/$${p.name}"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.bjoetiek-admin.entrypoints=websecure"
-      - "traefik.http.routers.bjoetiek-admin.rule=Host(`beheer.{{ general_domain_bjoetiek }}`)"
-      - "traefik.http.routers.bjoetiek-admin.tls.certresolver=le-tls"
-      - "traefik.http.services.bjoetiek-admin-{{ ansible_hostname }}.loadbalancer.server.port=8080"
-
-  bjoetiek-backend-proxy:
-    <<: *defaults
-    image: traefik:v2.5
-    container_name: bjoetiek-backend-proxy
-    command:
-      # - "--log.level=DEBUG"
-      - "--providers.docker=true"
-      - "--providers.docker.network=bjoetiek"
-      - "--providers.docker.exposedbydefault=false"
-      - "--providers.docker.constraints=Label(`bjoetiek.env`,`backend-production`)"
-      - "--entrypoints.web.address=:80"
-    networks:
-      - bjoetiek
-      - traefik
-    volumes:
-      - "/var/run/docker.sock:/var/run/docker.sock:ro"
-    environment:
-      - "TZ={{ general_timezone }}"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.bjoetiek-backend.entrypoints=websecure"
-      - "traefik.http.routers.bjoetiek-backend.rule=Host(`backend.{{ general_domain_bjoetiek }}`)"
-      - "traefik.http.routers.bjoetiek-backend.tls.certresolver=le-tls"
-      - "traefik.http.routers.bjoetiek-backend.middlewares=bjoetiek-cors@file"
-
-  bjoetiek-imgproxy:
-    <<: *defaults
-    image: darthsim/imgproxy:v2
-    container_name: bjoetiek-imgproxy
-    environment:
-      - "IMGPROXY_KEY={{ app_bjoetiek_image_proxy_key }}"
-      - "IMGPROXY_SALT={{ app_bjoetiek_image_proxy_salt }}"
-      - "IMGPROXY_LOCAL_FILESYSTEM_ROOT=/images"
-      - "IMGPROXY_MAX_SRC_RESOLUTION=64"
-    networks:
-      - bjoetiek
-    volumes:
-      - "{{ general_path_appdata }}/bjoetiek/backend/images:/images:ro"
-    labels:
-      - "bjoetiek.env=backend-production"
-      - "traefik.enable=true"
-      - "traefik.http.routers.images.entrypoints=web"
-      - "traefik.http.routers.images.rule=PathPrefix(`/images`)"
-      - "traefik.http.routers.images.middlewares=strip-images-prefix"
-      - "traefik.http.middlewares.strip-images-prefix.stripPrefix.prefixes=/images"
-
   bjoetiek-backend:
     <<: *defaults
-    image: jenswbe/go-commerce:v0.4.0
+    image: jenswbe/go-commerce:v0.5.1
     container_name: bjoetiek-backend
     depends_on:
       - bjoetiek-db
     networks:
       - bjoetiek
+      - traefik
     volumes:
       - "{{ general_path_appdata }}/bjoetiek/backend/images:/images"
     environment:
       - "TZ={{ general_timezone }}"
-      - "AUTH_OIDC_ISSUER_URL=https://auth.{{ general_domain_bjoetiek }}/realms/bjoetiek"
+      - "AUTH_OIDC_ISSUER_URL={{ app_bjoetiek_auth_oidc_issuer_url }}"
+      - "AUTH_OIDC_CLIENT_ID={{ app_bjoetiek_auth_oidc_client_id }}"
+      - "AUTH_OIDC_CLIENT_SECRET={{ app_bjoetiek_auth_oidc_client_secret }}"
+      - "AUTH_SESSION_AUTH_KEY={{ app_bjoetiek_auth_session_auth_key }}"
+      - "AUTH_SESSION_ENC_KEY={{ app_bjoetiek_auth_session_enc_key }}"
       - "DATABASE_DEFAULT_HOST=bjoetiek-db"
       - "DATABASE_DEFAULT_USER=bjoetiek"
       - "DATABASE_DEFAULT_PASSWORD={{ app_bjoetiek_db_pass }}"
       - "DATABASE_DEFAULT_DATABASE=bjoetiek"
       - "FEATURES_CONTENT_ENABLED=false"
       - "FEATURES_EVENTS_ENABLED=false"
+      - "FEATURES_PRODUCTS_PUBLIC_URL_TEMPLATE=https://{{ general_domain_bjoetiek }}/{% raw %}producten/{{ .ID.String }}/{{ .Name }}{% endraw %}"
       - "IMAGE_PROXY_BASE_URL=https://backend.{{ general_domain_bjoetiek }}/images/"
       - "IMAGE_PROXY_KEY={{ app_bjoetiek_image_proxy_key }}"
       - "IMAGE_PROXY_SALT={{ app_bjoetiek_image_proxy_salt }}"
       - "IMAGE_PROXY_ALLOWED_CONFIGS=100:100:FIT,150:150:FIT,400:400:FIT,550:550:FIT"
       - "STORAGE_IMAGES_PATH=/images"
     labels:
-      - "bjoetiek.env=backend-production"
       - "traefik.enable=true"
-      - "traefik.http.routers.backend.entrypoints=web"
-      - "traefik.http.routers.backend.rule=PathPrefix(`/api`)"
-      - "traefik.http.routers.backend.middlewares=strip-api-prefix"
-      - "traefik.http.middlewares.strip-api-prefix.stripPrefix.prefixes=/api"
+      - "traefik.http.routers.bjoetiek-backend.entrypoints=websecure"
+      - >-
+        traefik.http.routers.bjoetiek-backend.rule=Host(
+          `backend.{{ general_domain_bjoetiek }}`,
+          `beheer.{{ general_domain_bjoetiek }}`,
+        ) && !PathPrefix(`/images`)
+      - "traefik.http.routers.bjoetiek-backend.tls.certresolver=le-tls"
+      - "traefik.http.routers.bjoetiek-backend.middlewares=bjoetiek-cors@file"
 
   bjoetiek-db:
     <<: *defaults
@@ -446,6 +382,26 @@ services:
       - "TZ={{ general_timezone }}"
       - "POSTGRES_USER=bjoetiek"
       - "POSTGRES_PASSWORD={{ app_bjoetiek_db_pass }}"
+
+  bjoetiek-imgproxy:
+    <<: *defaults
+    image: darthsim/imgproxy:v2
+    container_name: bjoetiek-imgproxy
+    environment:
+      - "IMGPROXY_KEY={{ app_bjoetiek_image_proxy_key }}"
+      - "IMGPROXY_SALT={{ app_bjoetiek_image_proxy_salt }}"
+      - "IMGPROXY_LOCAL_FILESYSTEM_ROOT=/images"
+      - "IMGPROXY_MAX_SRC_RESOLUTION=64"
+    networks:
+      - traefik
+    volumes:
+      - "{{ general_path_appdata }}/bjoetiek/backend/images:/images:ro"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.bjoetiek-imgproxy.entrypoints=websecure"
+      - "traefik.http.routers.bjoetiek-imgproxy.rule=Host(`backend.{{ general_domain_bjoetiek }}`) && PathPrefix(`/images`)"
+      - "traefik.http.routers.bjoetiek-imgproxy.tls.certresolver=le-tls"
+      - "traefik.http.routers.bjoetiek-imgproxy.middlewares=strip-images-prefix@file"
 
   # ===========================================================================
   # =   BJOETIEK Y - Test                                                     =
@@ -470,27 +426,6 @@ services:
       - "traefik.http.routers.bjoetiek-test-frontend.entrypoints=websecure"
       - "traefik.http.routers.bjoetiek-test-frontend.rule=Host(`test.{{ general_domain_bjoetiek }}`)"
       - "traefik.http.routers.bjoetiek-test-frontend.tls.certresolver=le-tls"
-
-  bjoetiek-test-imgproxy:
-    <<: *defaults
-    image: darthsim/imgproxy:latest
-    container_name: bjoetiek-test-imgproxy
-    environment:
-      - "IMGPROXY_KEY={{ app_bjoetiek_test_image_proxy_key }}"
-      - "IMGPROXY_SALT={{ app_bjoetiek_test_image_proxy_salt }}"
-      - "IMGPROXY_LOCAL_FILESYSTEM_ROOT=/images"
-      - "IMGPROXY_MAX_SRC_RESOLUTION=64"
-    networks:
-      - traefik
-    volumes:
-      - "{{ general_path_appdata }}/bjoetiek/backend-test/images:/images:ro"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.bjoetiek-test-imgproxy.entrypoints=websecure"
-      - "traefik.http.routers.bjoetiek-test-imgproxy.rule=Host(`test-backend.{{ general_domain_bjoetiek }}`) && PathPrefix(`/images`)"
-      - "traefik.http.routers.bjoetiek-test-imgproxy.tls.certresolver=le-tls"
-      - "traefik.http.routers.bjoetiek-test-imgproxy.middlewares=strip-images-prefix"
-      - "traefik.http.middlewares.strip-images-prefix.stripPrefix.prefixes=/images"
 
   bjoetiek-test-backend:
     <<: *defaults
@@ -545,6 +480,26 @@ services:
       - "TZ={{ general_timezone }}"
       - "POSTGRES_USER=bjoetiek-test"
       - "POSTGRES_PASSWORD=bjoetiek-test"
+
+  bjoetiek-test-imgproxy:
+    <<: *defaults
+    image: darthsim/imgproxy:latest
+    container_name: bjoetiek-test-imgproxy
+    environment:
+      - "IMGPROXY_KEY={{ app_bjoetiek_test_image_proxy_key }}"
+      - "IMGPROXY_SALT={{ app_bjoetiek_test_image_proxy_salt }}"
+      - "IMGPROXY_LOCAL_FILESYSTEM_ROOT=/images"
+      - "IMGPROXY_MAX_SRC_RESOLUTION=64"
+    networks:
+      - traefik
+    volumes:
+      - "{{ general_path_appdata }}/bjoetiek/backend-test/images:/images:ro"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.bjoetiek-test-imgproxy.entrypoints=websecure"
+      - "traefik.http.routers.bjoetiek-test-imgproxy.rule=Host(`test-backend.{{ general_domain_bjoetiek }}`) && PathPrefix(`/images`)"
+      - "traefik.http.routers.bjoetiek-test-imgproxy.tls.certresolver=le-tls"
+      - "traefik.http.routers.bjoetiek-test-imgproxy.middlewares=strip-images-prefix@file"
 
   # ===========================================================================
   # =   SPELLEBEL                                                             =
@@ -642,27 +597,6 @@ services:
       - "traefik.http.routers.candylicious-test-frontend.rule=Host(`test.{{ general_domain_candylicious }}`)"
       - "traefik.http.routers.candylicious-test-frontend.tls.certresolver=le-tls"
 
-  candylicious-test-imgproxy:
-    <<: *defaults
-    image: darthsim/imgproxy:latest
-    container_name: candylicious-test-imgproxy
-    environment:
-      - "IMGPROXY_KEY={{ app_candylicious_test_image_proxy_key }}"
-      - "IMGPROXY_SALT={{ app_candylicious_test_image_proxy_salt }}"
-      - "IMGPROXY_LOCAL_FILESYSTEM_ROOT=/images"
-      - "IMGPROXY_MAX_SRC_RESOLUTION=64"
-    networks:
-      - traefik
-    volumes:
-      - "{{ general_path_appdata }}/candylicious/backend-test/images:/images:ro"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.candylicious-test-imgproxy.entrypoints=websecure"
-      - "traefik.http.routers.candylicious-test-imgproxy.rule=Host(`test-backend.{{ general_domain_candylicious }}`) && PathPrefix(`/images`)"
-      - "traefik.http.routers.candylicious-test-imgproxy.tls.certresolver=le-tls"
-      - "traefik.http.routers.candylicious-test-imgproxy.middlewares=strip-images-prefix"
-      - "traefik.http.middlewares.strip-images-prefix.stripPrefix.prefixes=/images"
-
   candylicious-test-backend:
     <<: *defaults
     image: jenswbe/go-commerce:latest
@@ -718,6 +652,26 @@ services:
       - "TZ={{ general_timezone }}"
       - "POSTGRES_USER=candylicious-test"
       - "POSTGRES_PASSWORD=candylicious-test"
+
+  candylicious-test-imgproxy:
+    <<: *defaults
+    image: darthsim/imgproxy:latest
+    container_name: candylicious-test-imgproxy
+    environment:
+      - "IMGPROXY_KEY={{ app_candylicious_test_image_proxy_key }}"
+      - "IMGPROXY_SALT={{ app_candylicious_test_image_proxy_salt }}"
+      - "IMGPROXY_LOCAL_FILESYSTEM_ROOT=/images"
+      - "IMGPROXY_MAX_SRC_RESOLUTION=64"
+    networks:
+      - traefik
+    volumes:
+      - "{{ general_path_appdata }}/candylicious/backend-test/images:/images:ro"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.candylicious-test-imgproxy.entrypoints=websecure"
+      - "traefik.http.routers.candylicious-test-imgproxy.rule=Host(`test-backend.{{ general_domain_candylicious }}`) && PathPrefix(`/images`)"
+      - "traefik.http.routers.candylicious-test-imgproxy.tls.certresolver=le-tls"
+      - "traefik.http.routers.candylicious-test-imgproxy.middlewares=strip-images-prefix@file"
 
   # ===========================================================================
   # =   OUD-TURNHOUTS GEBAK                                                   =

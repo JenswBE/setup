@@ -23,3 +23,8 @@ http:
         accessControlAllowMethods: "*"
         accessControlAllowOriginListRegex: '^https?://(.+\.)?{{ general_domain_oud_turnhoutsgebak | regex_escape() }}$'
         addVaryHeader: true
+
+    strip-images-prefix:
+      stripPrefix:
+        prefixes:
+          - /images
