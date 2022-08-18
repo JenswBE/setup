@@ -14,6 +14,14 @@ Installation instructions for Hercules (Workstation) and Charmeleon (Laptop)
 ## Generic instructions
 
 ```bash
+# Configure bash
+tee -a ~/.bashrc <<EOF
+export HISTCONTROL='ignoreboth'
+export HISTSIZE=5000
+export HISTFILESIZE=-1
+export PS1='[\u@\h \w]\$ '
+EOF
+
 # Configure git
 git config --global user.name "<NAME>"
 git config --global user.email "<EMAIL>"
