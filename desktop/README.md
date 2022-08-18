@@ -25,6 +25,7 @@ EOF
 # Configure git
 git config --global user.name "<NAME>"
 git config --global user.email "<EMAIL>"
+git config --global pull.ff only
 
 # Setup Go template support for Prettier
 # Based on https://github.com/NiklasPor/prettier-plugin-go-template/issues/58#issuecomment-1085060511
