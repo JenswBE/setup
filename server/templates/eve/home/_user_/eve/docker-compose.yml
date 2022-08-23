@@ -308,7 +308,7 @@ services:
   # ===========================================================================
   bjoetiek-frontend:
     <<: *defaults
-    image: jenswbe/bjoetiek-y-frontend:v2.3.1
+    image: jenswbe/bjoetiek-y-frontend:v2.4.0
     container_name: bjoetiek-frontend
     networks:
       - bjoetiek
