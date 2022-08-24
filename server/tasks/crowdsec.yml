@@ -2,15 +2,29 @@
   become: true
   tags: ["setup", "crowdsec"]
   block:
-    - name: CrowdSec - Add GPG key
-      ansible.builtin.apt_key:
-        url: https://packagecloud.io/crowdsec/crowdsec/gpgkey
-        state: present
+    - name: Add repo for Ubuntu
+      when: ansible_distribution == 'Ubuntu'
+      block:
+        - name: CrowdSec - Add GPG key
+          ansible.builtin.apt_key:
+            url: https://packagecloud.io/crowdsec/crowdsec/gpgkey
+            state: present
 
-    - name: CrowdSec - Add Repository
-      ansible.builtin.apt_repository:
-        repo: "deb https://packagecloud.io/crowdsec/crowdsec/{{ ansible_distribution | lower  }} {{ansible_distribution_release | lower}} main"
-        state: present
+        - name: CrowdSec - Add Repository
+          ansible.builtin.apt_repository:
+            repo: "deb https://packagecloud.io/crowdsec/crowdsec/{{ ansible_distribution | lower  }} {{ansible_distribution_release | lower}} main"
+            state: present
+
+    - name: Add repo for Fedora
+      when: ansible_distribution == 'Fedora'
+      block:
+        - name: CrowdSec - Add Repository
+          ansible.builtin.get_url:
+            url: "https://packagecloud.io/install/repositories/crowdsec/crowdsec/config_file.repo?os=fedora&dist={{ ansible_distribution_major_version }}"
+            dest: /etc/yum.repos.d/crowdsec_crowdsec.repo
+            group: root
+            owner: root
+            mode: 0644
 
     - name: CrowdSec - Ensure NFTables bouncer is installed
       ansible.builtin.package: name=crowdsec-firewall-bouncer-nftables state=present

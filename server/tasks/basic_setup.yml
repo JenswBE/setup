@@ -53,6 +53,7 @@
         owner: root
         group: root
         mode: 0644
+      when: setup_docker | bool
 
     - name: Restart docker if config was changed
       when: docker_config.changed
