@@ -1,3 +1,6 @@
+# Docker
+setup_docker: true
+
 # Firewall
 firewall_additional_ports:
   - port: 23 # Borg server

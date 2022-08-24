@@ -17,7 +17,7 @@ crowdsec_version: v1.3.4
 
 # Docker
 docker_users: []
-docker_compose_version: "v2.6.0"
+docker_compose_version: "v2.10.1"
 docker_compose_path: "/usr/libexec/docker/cli-plugins/docker-compose" # Also used for systemd units
 
 # Firewall
@@ -34,5 +34,5 @@ packages_base:
 # Security
 security_autoupdate_reboot_time: "05:00"
 security_autoupdate_reboot: true
-security_fail2ban_enabled: false
+security_fail2ban_enabled: false # Handled by CrowdSec
 security_ssh_password_authentication: "yes"

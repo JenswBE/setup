@@ -7,33 +7,41 @@
   pre_tasks:
     - name: Use of limit arg is mandatory
       fail:
-        msg: "you must use -l or --limit - when you really want to use all hosts, use -l 'all'"
+        msg: "You must use -l or --limit - when you really want to use all hosts, use -l 'all'"
       when: ansible_limit is not defined
       run_once: true
 
-  roles:
-    - name: geerlingguy.security
-      become: true
-      tags: ["setup"]
+    - name: Check if supported distro
+      fail:
+        msg: "Only following distro's are supported: Fedora, Ubuntu. You are running {{ ansible_distribution }}"
+      when: ansible_distribution not in ['Fedora', 'Ubuntu']
 
-    - name: geerlingguy.docker
-      become: true
-      tags: ["setup"]
-
-  tasks:
     - name: Load public host specific vars
       include_vars: "{{ ansible_hostname }}.public.yml"
-      tags: ["always"]
 
     - name: Load secret host specific vars
       include_vars: "{{ ansible_hostname }}.secret.yml"
-      tags: ["always"]
 
+  tasks:
     - include_tasks: tasks/basic_setup.yml
       tags: ["setup"]
 
-    - include_tasks: tasks/firewall.yml
+    - include_role:
+        name: geerlingguy.security
+        apply:
+          become: true
+      tags: ["setup"]
+
+    - include_role:
+        name: geerlingguy.docker
+        apply:
+          become: true
+      tags: ["setup"]
+      when: setup_docker | bool
+
+    - include_tasks: tasks/firewall_ubuntu.yml
       tags: ["setup", "firewall"]
+      when: ansible_distribution == 'Ubuntu'
 
     - include_tasks: tasks/crowdsec.yml
       tags: ["setup", "crowdsec"]
@@ -43,6 +51,7 @@
 
     - include_tasks: tasks/docker_logging.yml
       tags: ["setup"]
+      when: setup_docker | bool
 
     - include_tasks: tasks/snmpd.yml
       tags: ["setup", "snmpd"]
