@@ -1,0 +1,11 @@
+[Unit]
+Description=Update all Docker containers
+OnFailure=unit-fail-mail@%n.service
+
+[Service]
+WorkingDirectory={{ ansible_user_dir }}/{{ ansible_hostname }}
+ExecStartPre={{ docker_compose_path }} pull
+ExecStartPre={{ docker_compose_path }} build --pull
+ExecStart={{ docker_compose_path }} up -d
+ExecStartPost=/usr/bin/docker image prune -f
+ExecStartPost=/usr/bin/docker builder prune -f

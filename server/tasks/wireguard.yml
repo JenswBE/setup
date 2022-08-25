@@ -3,11 +3,10 @@
   tags: ["setup", "wireguard"]
   block:
     - name: Install Wireguard
-      ansible.builtin.package:
-        state: present
-        name: wireguard
+      ansible.builtin.package: name=wireguard state=present
 
     - name: Setup Wireguard config
+      register: wireguard_config
       ansible.builtin.template:
         src: "wireguard.conf.j2"
         dest: "/etc/wireguard/wg0.conf"
@@ -20,3 +19,9 @@
         name: wg-quick@wg0
         enabled: true
         state: started
+
+    - name: Restart Wireguard if config was changed
+      when: wireguard_config.changed
+      ansible.builtin.systemd:
+        name: wg-quick@wg0
+        state: restarted

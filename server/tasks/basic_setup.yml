@@ -53,10 +53,20 @@
         owner: root
         group: root
         mode: 0644
-      when: setup_docker | bool
 
     - name: Restart docker if config was changed
       when: docker_config.changed
       ansible.builtin.service:
         name: docker
         state: restarted
+
+    - name: Ensure LUKS prompt uses correct keymap # Based on https://askubuntu.com/a/1071945
+      register: initramfs_config
+      ansible.builtin.lineinfile:
+        path: /etc/initramfs-tools/initramfs.conf
+        regexp: "^#?KEYMAP="
+        line: "KEYMAP=Y"
+
+    - name: Update initramfs if config was changed
+      when: initramfs_config.changed
+      ansible.builtin.command: update-initramfs -u

@@ -19,7 +19,7 @@
     daemon_reload: true
   tags: ["systemd", "mail_on_failed_unit"]
 
-- name: Enable systemd services and timers
+- name: Enable systemd timers
   become: true
   systemd:
     name: "{{ item }}"

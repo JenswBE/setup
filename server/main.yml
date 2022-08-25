@@ -1,10 +1,4 @@
 - hosts: all
-
-  vars:
-    is_fedora: "{{ ansible_distribution == 'Fedora' }}"
-    is_ubuntu: "{{ ansible_distribution == 'Ubuntu' }}"
-    supported_distros: ["Fedora", "Ubuntu"]
-
   vars_files:
     - vars/basics.public.yml
     - vars/basics.secret.yml
@@ -17,12 +11,6 @@
       run_once: true
       tags: ["always"]
 
-    - name: Check if supported distro
-      ansible.builtin.fail:
-        msg: "Only following distro's are supported: {{ supported_distros | join(', ') }}. You are running {{ ansible_distribution }}"
-      when: ansible_distribution not in supported_distros
-      tags: ["always"]
-
     - name: Load public host specific vars
       ansible.builtin.include_vars: "{{ ansible_hostname }}.public.yml"
       tags: ["always"]
@@ -31,22 +19,18 @@
       ansible.builtin.include_vars: "{{ ansible_hostname }}.secret.yml"
       tags: ["always"]
 
+  roles:
+    - role: geerlingguy.security
+      become: true
+      tags: ["setup"]
+
+    - role: geerlingguy.docker
+      become: true
+      tags: ["setup"]
+
   tasks:
     - ansible.builtin.include_tasks: tasks/basic_setup.yml
       tags: ["setup"]
-
-    - ansible.builtin.include_role:
-        name: geerlingguy.security
-        apply:
-          become: true
-      tags: ["setup"]
-
-    - ansible.builtin.include_role:
-        name: geerlingguy.docker
-        apply:
-          become: true
-      tags: ["setup"]
-      when: setup_docker | bool
 
     - ansible.builtin.include_tasks: tasks/firewall_ubuntu.yml
       tags: ["setup", "firewall"]
@@ -60,7 +44,6 @@
 
     - ansible.builtin.include_tasks: tasks/docker_logging.yml
       tags: ["setup"]
-      when: setup_docker | bool
 
     - ansible.builtin.include_tasks: tasks/snmpd.yml
       tags: ["setup", "snmpd"]

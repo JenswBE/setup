@@ -3,9 +3,7 @@
   tags: ["setup", "snmpd"]
   block:
     - name: SNMP daemon - Ensure is installed
-      ansible.builtin.package:
-        name: "{{ is_ubuntu | ternary('snmpd', 'net-snmp') }}"
-        state: present
+      ansible.builtin.package: name=snmpd state=present
 
     - name: SNMP daemon - Enable on all IPv4 interfaces (Access should be limited with firewall)
       register: snmp_daemon_address
