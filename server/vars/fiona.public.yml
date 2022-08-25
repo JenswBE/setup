@@ -1,5 +1,8 @@
 # Firewall
-firewall_additional_ports: []
+firewall_additional_ports:
+  - port: 7500 # Tang
+    protos: [tcp]
+    from_networks: [local_ipv4, local_ipv6]
 
 # Security
 security_autoupdate_reboot_time: "03:00"
