@@ -1,12 +1,5 @@
-# Docker
-setup_docker: false # Uses Podman
-
-# Packages
-# Limited subset of default "packages_base"
-packages_base:
-  - htop
-  - rsync
-  - vim
+# Firewall
+firewall_additional_ports: []
 
 # Security
-security_autoupdate_enabled: false # TODO: Remove once https://github.com/geerlingguy/ansible-role-security/pull/97/files is merged
+security_autoupdate_reboot_time: "03:00"

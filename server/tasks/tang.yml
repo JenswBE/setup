@@ -1,0 +1,12 @@
+- name: Setup Tang
+  become: true
+  tags: ["setup", "tang"]
+  block:
+    - name: Install Tang
+      ansible.builtin.package: name=tang state=present
+
+    - name: Enable Tang socket on boot
+      ansible.builtin.systemd:
+        name: tangd.socket
+        enabled: true
+        state: started
