@@ -3,7 +3,7 @@
   tags: ["setup", "crowdsec"]
   block:
     - name: Add repo for Ubuntu
-      when: ansible_distribution == 'Ubuntu'
+      when: is_ubuntu
       block:
         - name: CrowdSec - Add GPG key
           ansible.builtin.apt_key:
@@ -16,7 +16,7 @@
             state: present
 
     - name: Add repo for Fedora
-      when: ansible_distribution == 'Fedora'
+      when: is_fedora
       block:
         - name: CrowdSec - Add Repository
           ansible.builtin.get_url:
