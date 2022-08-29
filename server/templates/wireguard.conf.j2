@@ -1,14 +1,17 @@
 [Interface]
-Address = {{ app_wireguard_ip_address }}
-PrivateKey = {{ app_wireguard_private_key }}
-ListenPort = 51820
+Address = {{ wg_config.ip_address }}
+PrivateKey = {{ wg_config.private_key }}
+ListenPort = 5182{{ wg_interface_index }}
 
-{% for peer in app_wireguard_peers %}
+{% for peer in wg_config.peers %}
 [Peer]
 {% if peer.endpoint %}
 Endpoint = {{ peer.endpoint }}
 {% endif %}
 PublicKey = {{ peer.public_key }}
+{% if peer.psk %}
+PresharedKey = {{ peer.psk }}
+{% endif %}
 AllowedIPs = {{ peer.allowed_ips }}
 
 {% endfor %}

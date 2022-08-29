@@ -6,7 +6,7 @@
       community.general.modprobe:
         name: "{{ item }}"
         state: present
-      with_items:
+      loop:
         - nfs
         - nfsd
 

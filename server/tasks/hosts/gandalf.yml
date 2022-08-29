@@ -1,4 +1,8 @@
 - include_tasks: tasks/wireguard.yml
+  vars:
+    wg_interface_index: "{{ item.key }}"
+    wg_config: "{{ item.value }}"
+  loop: "{{ app_wireguard | dict2items }}"
   tags: ["setup", "wireguard"]
 
 - name: Copy systemd system unit templates
@@ -25,7 +29,7 @@
     name: "{{ item }}"
     state: started
     enabled: true
-  with_items:
+  loop:
     - docker-update-containers.timer
   tags: ["systemd"]
 

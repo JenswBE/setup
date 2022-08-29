@@ -1,4 +1,5 @@
 # Firewall
+firewall_allow_vpn_routing: false
 firewall_additional_ports:
   - comment: Borg server
     port: 23
