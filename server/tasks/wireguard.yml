@@ -9,19 +9,19 @@
       register: wireguard_config
       ansible.builtin.template:
         src: "wireguard.conf.j2"
-        dest: "/etc/wireguard/wg0.conf"
+        dest: "/etc/wireguard/wg{{ wg_interface_index }}.conf"
         owner: root
         group: root
         mode: 0600
 
     - name: Enable Wireguard on boot
       ansible.builtin.systemd:
-        name: wg-quick@wg0
+        name: "wg-quick@wg{{ wg_interface_index }}"
         enabled: true
         state: started
 
     - name: Restart Wireguard if config was changed
       when: wireguard_config.changed
       ansible.builtin.systemd:
-        name: wg-quick@wg0
+        name: "wg-quick@wg{{ wg_interface_index }}"
         state: restarted

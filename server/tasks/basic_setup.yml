@@ -9,7 +9,7 @@
       ansible.builtin.package:
         state: present
         name: "{{ item }}"
-      with_items: "{{ packages_base }}"
+      loop: "{{ packages_base }}"
 
     - name: Create opt directories - Root access only
       ansible.builtin.file:
@@ -18,7 +18,7 @@
         owner: "root"
         group: "root"
         mode: 0700
-      with_items:
+      loop:
         - appdata
         - conf
 
@@ -29,7 +29,7 @@
         owner: "root"
         group: "root"
         mode: 0755
-      with_items:
+      loop:
         - bin
 
     - name: Limit log size to 100MB

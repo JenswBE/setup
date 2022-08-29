@@ -1,4 +1,5 @@
 # Firewall
+firewall_allow_vpn_routing: true
 firewall_additional_ports:
   - comment: SNMP Daemon
     port: 161
@@ -8,6 +9,10 @@ firewall_additional_ports:
     port: 7500
     protos: [tcp]
     from_networks: [local_ipv4, local_ipv6]
+  - comment: Wireguard
+    port: 51821
+    protos: [udp]
+    from_networks: [any]
 
 # Security
 security_autoupdate_reboot_time: "03:00"
