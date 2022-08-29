@@ -32,9 +32,8 @@
     - ansible.builtin.include_tasks: tasks/basic_setup.yml
       tags: ["setup"]
 
-    - ansible.builtin.include_tasks: tasks/firewall_ubuntu.yml
+    - ansible.builtin.include_tasks: tasks/firewall.yml
       tags: ["setup", "firewall"]
-      when: ansible_distribution == 'Ubuntu'
 
     - ansible.builtin.include_tasks: tasks/crowdsec.yml
       tags: ["setup", "crowdsec"]

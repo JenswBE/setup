@@ -1,36 +1,47 @@
 # Firewall
 firewall_additional_ports:
-  - port: 80 # Traefik HTTP
+  - comment: Traefik HTTP
+    port: 80
     protos: [tcp]
     from_networks: [any]
-  - port: 111 # NFS (v3 only)
+  - comment: NFS (v3 only)
+    port: 111
     protos: [tcp, udp]
     from_networks: [local_ipv4, local_ipv6]
-  - port: 161 # SNMP
+  - comment: SNMP Daemon
+    port: 161
     protos: [udp]
     from_networks: [docker_ipv4]
-  - port: 443 # Traefik HTTPS
+  - comment: Traefik HTTPS
+    port: 443
     protos: [tcp]
     from_networks: [any]
-  - port: 2049 # NFS (UDP is v3 only)
+  - comment: NFS (UDP is v3 only)
+    port: 2049
     protos: [tcp, udp]
     from_networks: [local_ipv4, local_ipv6]
-  - port: 8080 # UniFi
+  - comment: UniFi
+    port: 8080
     protos: [tcp]
     from_networks: [local_ipv4, local_ipv6]
-  - port: 22000 # Syncthing TCP and QUIC
+  - comment: Syncthing TCP and QUIC
+    port: 22000
     protos: [tcp, udp]
     from_networks: [any]
-  - port: 32400 # Plex
+  - comment: Plex
+    port: 32400
     protos: [tcp]
     from_networks: [any]
-  - port: 32765 # NFS (v3 only)
+  - comment: NFS (v3 only)
+    port: 32765
     protos: [tcp, udp]
     from_networks: [local_ipv4, local_ipv6]
-  - port: 32767 # NFS (v3 only)
+  - comment: NFS (v3 only)
+    port: 32767
     protos: [tcp, udp]
     from_networks: [local_ipv4, local_ipv6]
-  - port: 51820 # Wireguard
+  - comment: Wireguard
+    port: 51820
     protos: [udp]
     from_networks: [any]
 

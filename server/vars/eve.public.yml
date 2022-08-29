@@ -1,15 +1,19 @@
 # Firewall
 firewall_additional_ports:
-  - port: 80 # Traefik HTTP
+  - comment: Traefik HTTP
+    port: 80
     protos: [tcp]
     from_networks: [any]
-  - port: 161 # SNMP Daemon
+  - comment: SNMP Daemon
+    port: 161
     protos: [udp]
     from_networks: [wireguard_ipv4]
-  - port: 443 # Traefik HTTPS
+  - comment: Traefik HTTPS
+    port: 443
     protos: [tcp]
     from_networks: [any]
-  - port: 51820 # Wireguard
+  - comment: Wireguard
+    port: 51820
     protos: [udp]
     from_networks: [any]
 
