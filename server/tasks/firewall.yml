@@ -24,6 +24,7 @@
 
     - name: UFW - Allow additional ports
       community.general.ufw:
+        comment: "{{ item.comment }}"
         rule: allow
         port: "{{ item.port | string }}"
         proto: "{{ item.proto }}"
