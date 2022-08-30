@@ -14,7 +14,7 @@
       ansible.builtin.copy:
         dest: "/etc/modules-load.d/nfs.conf"
         owner: root
-        mode: 0644
+        mode: "644"
         content: |
           nfs
           nfsd

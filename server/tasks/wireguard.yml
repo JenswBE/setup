@@ -12,7 +12,7 @@
         dest: "/etc/wireguard/wg{{ wg_interface_index }}.conf"
         owner: root
         group: root
-        mode: 0600
+        mode: "600"
 
     - name: Enable Wireguard on boot
       ansible.builtin.systemd:

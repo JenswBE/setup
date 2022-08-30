@@ -9,7 +9,7 @@
         regexp: '^#?\s*DNSStubListener='
         line: "DNSStubListener=no"
         state: present
-        mode: 0644
+        mode: "644"
       register: disable_dns_stub_listener
 
     - name: Create a symbolic link

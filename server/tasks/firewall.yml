@@ -31,7 +31,7 @@
         from_ip: "{{ lookup('vars', 'network_' + item.from_network) }}"
       loop: "{{ parse_ports.stdout | from_json }}"
 
-    - name: Setup NAT routing for VPN
+    - name: Setup routing for VPN
       when: firewall_allow_vpn_routing
       block:
         - name: Enable sysctl forwarding in UFW
@@ -44,22 +44,13 @@
             - net/ipv6/conf/default/forwarding
             - net/ipv6/conf/all/forwarding
 
-        - name: Setup NAT for VPN in UFW
-          ansible.builtin.blockinfile:
-            path: /etc/ufw/before.rules
-            block: |
-              *nat
-              :POSTROUTING ACCEPT [0:0]
-              -A POSTROUTING -s 10.11.0.0/24 -o enp2s0 -j MASQUERADE
-              COMMIT
-
         - name: UFW - Allow public routing
           community.general.ufw:
             comment: Allow VPN traffic forwarding
             rule: allow
             route: true
             interface_in: wg1
-            interface_out: enp2s0
+            interface_out: 60vpn
 
     - name: UFW - Enable firewall
       community.general.ufw:

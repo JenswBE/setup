@@ -9,7 +9,7 @@
       file:
         owner: root
         group: root
-        mode: 0755
+        mode: "755"
         path: /etc/systemd/system/tangd.socket.d
         state: directory
 
@@ -19,7 +19,7 @@
         dest: /etc/systemd/system/tangd.socket.d/override.conf
         owner: root
         group: root
-        mode: 0644
+        mode: "644"
 
     - name: Enable Tang socket on boot
       ansible.builtin.systemd:
