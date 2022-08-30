@@ -38,7 +38,7 @@
     dest: "{{ tmp_dir.path }}/{{ item.path }}"
     owner: "{{ destination_owner }}"
     group: "{{ destination_group }}"
-    mode: "{{ destination_mode_dirs }}"
+    mode: "{{ destination_mode_files }}"
   with_filetree: templates/{{ templates_folder }}
   when: item.state == 'file' and item.path is search(".+\.(png|jpg)$")
   changed_when: false
@@ -56,6 +56,9 @@
     owner: true
     perms: true
     recursive: true
+    rsync_opts:
+      - "--chown={{ destination_owner }}:{{ destination_group }}"
+      - "--chmod=D{{ destination_mode_dirs }},F{{ destination_mode_files }}"
     delete: "{{ destination_delete_extra }}"
   delegate_to: "{{ inventory_hostname }}"
   register: rsync_output

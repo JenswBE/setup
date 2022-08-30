@@ -17,7 +17,7 @@
         state: directory
         owner: "root"
         group: "root"
-        mode: 0700
+        mode: "700"
       loop:
         - appdata
         - conf
@@ -28,7 +28,7 @@
         state: directory
         owner: "root"
         group: "root"
-        mode: 0755
+        mode: "755"
       loop:
         - bin
 
@@ -52,7 +52,7 @@
         dest: /etc/docker/daemon.json
         owner: root
         group: root
-        mode: 0644
+        mode: "644"
 
     - name: Restart docker if config was changed
       when: docker_config.changed

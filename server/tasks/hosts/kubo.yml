@@ -18,8 +18,8 @@
     - destination_folder: "/etc/systemd/system"
     - destination_owner: root
     - destination_group: root
-    - destination_mode_files: 0600
-    - destination_mode_dirs: 0700
+    - destination_mode_files: "600"
+    - destination_mode_dirs: "700"
     - destination_delete_extra: false
   tags: ["systemd", "mail_on_failed_unit"]
 
@@ -58,7 +58,7 @@
     - destination_folder: "{{ ansible_user_dir }}/{{ ansible_hostname }}"
     - destination_owner: "{{ ansible_real_user_id }}"
     - destination_group: "{{ ansible_real_group_id }}"
-    - destination_mode_files: 0600
-    - destination_mode_dirs: 0700
+    - destination_mode_files: "600"
+    - destination_mode_dirs: "700"
     - destination_delete_extra: true
   tags: ["docker"]

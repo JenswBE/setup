@@ -13,7 +13,7 @@
         dest: "/etc/systemd/system/powertop.service"
         owner: root
         group: root
-        mode: 0644
+        mode: "644"
 
     - name: Force systemd reload
       ansible.builtin.systemd:

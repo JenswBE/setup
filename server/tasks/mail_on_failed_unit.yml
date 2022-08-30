@@ -17,7 +17,7 @@
         dest: /opt/bin/smtp-cli
         group: root
         owner: root
-        mode: 0755
+        mode: "755"
 
     - name: Set smtp-cli config
       ansible.builtin.template:
@@ -25,4 +25,4 @@
         dest: /opt/conf/smtp-cli.conf
         owner: root
         group: root
-        mode: 0400
+        mode: "400"

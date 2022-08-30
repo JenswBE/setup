@@ -1,3 +1,22 @@
+- name: Copy systemd network templates
+  include_tasks: tasks/helpers/copy_templates_folder.yml
+  vars:
+    - templates_folder: "{{ ansible_hostname }}/etc/systemd/network"
+    - destination_folder: "/etc/systemd/network"
+    - destination_owner: root
+    - destination_group: root
+    - destination_mode_files: "644"
+    - destination_mode_dirs: "755"
+    - destination_delete_extra: true
+  tags: ["networkd"]
+
+- name: Restart systemd-networkd
+  become: true
+  systemd:
+    name: systemd-networkd
+    state: restarted
+  tags: ["networkd"]
+
 - include_tasks: tasks/tang.yml
   tags: ["setup", "tang"]
 
@@ -8,15 +27,15 @@
   loop: "{{ app_wireguard | dict2items }}"
   tags: ["setup", "wireguard"]
 
-- name: Copy systemd system unit templates
+- name: Copy systemd unit templates
   include_tasks: tasks/helpers/copy_templates_folder.yml
   vars:
     - templates_folder: "{{ ansible_hostname }}/etc/systemd/system"
     - destination_folder: "/etc/systemd/system"
     - destination_owner: root
     - destination_group: root
-    - destination_mode_files: 0600
-    - destination_mode_dirs: 0700
+    - destination_mode_files: "600"
+    - destination_mode_dirs: "700"
     - destination_delete_extra: false
   tags: ["systemd", "mail_on_failed_unit"]
 
@@ -43,7 +62,7 @@
     - destination_folder: "{{ ansible_user_dir }}/{{ ansible_hostname }}"
     - destination_owner: "{{ ansible_real_user_id }}"
     - destination_group: "{{ ansible_real_group_id }}"
-    - destination_mode_files: 0600
-    - destination_mode_dirs: 0700
+    - destination_mode_files: "600"
+    - destination_mode_dirs: "700"
     - destination_delete_extra: true
   tags: ["docker"]

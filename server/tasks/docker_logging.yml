@@ -8,7 +8,7 @@
         dest: /etc/rsyslog.d/40-docker.conf
         owner: root
         group: root
-        mode: 0644
+        mode: "644"
 
     - name: Create logging directories
       ansible.builtin.file:
@@ -16,7 +16,7 @@
         state: directory
         owner: syslog
         group: adm
-        mode: 0775
+        mode: "775"
 
     - name: Restart rsyslog if config was changed
       when: rsyslog_config.changed
@@ -30,4 +30,4 @@
         dest: /etc/logrotate.d/docker
         owner: root
         group: root
-        mode: 0644
+        mode: "644"
