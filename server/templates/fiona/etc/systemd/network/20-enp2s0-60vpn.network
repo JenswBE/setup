@@ -16,5 +16,9 @@ Gateway=192.168.60.1
 Table=60
 
 [RoutingPolicyRule]
-From=192.168.60.1/24
+IncomingInterface=60vpn
+Table=60
+
+[RoutingPolicyRule]
+IncomingInterface=wg1
 Table=60

@@ -1,7 +1,10 @@
 [Interface]
-Address = {{ wg_config.ip_address }}
+{% for address in wg_config.ip_addresses %}
+Address = {{ address }}
+{% endfor %}
 PrivateKey = {{ wg_config.private_key }}
 ListenPort = 5182{{ wg_interface_index }}
+Table = {{ wg_config.routing_table }}
 
 {% for peer in wg_config.peers %}
 [Peer]
@@ -12,6 +15,6 @@ PublicKey = {{ peer.public_key }}
 {% if peer.psk %}
 PresharedKey = {{ peer.psk }}
 {% endif %}
-AllowedIPs = {{ peer.allowed_ips }}
+AllowedIPs = {{ peer.allowed_ips | join(', ') }}
 
 {% endfor %}

@@ -32,7 +32,7 @@
       loop: "{{ parse_ports.stdout | from_json }}"
 
     - name: Setup routing for VPN
-      when: firewall_allow_vpn_routing
+      when: firewall_vpn_routing_enabled
       block:
         - name: Enable sysctl forwarding in UFW
           ansible.builtin.lineinfile:
@@ -44,13 +44,21 @@
             - net/ipv6/conf/default/forwarding
             - net/ipv6/conf/all/forwarding
 
-        - name: UFW - Allow public routing
+        - name: UFW - Allow VPN traffic forwarding
           community.general.ufw:
             comment: Allow VPN traffic forwarding
             rule: allow
             route: true
-            interface_in: wg1
-            interface_out: 60vpn
+            interface_in: "{{ firewall_vpn_routing_vpn_interface }}"
+            interface_out: "{{ firewall_vpn_routing_outgoing_interface }}"
+
+        - name: UFW - Allow VPN traffic replies
+          community.general.ufw:
+            comment: Allow VPN traffic replies
+            rule: allow
+            route: true
+            interface_in: "{{ firewall_vpn_routing_outgoing_interface }}"
+            interface_out: "{{ firewall_vpn_routing_vpn_interface }}"
 
     - name: UFW - Enable firewall
       community.general.ufw:

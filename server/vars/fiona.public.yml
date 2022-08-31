@@ -1,5 +1,7 @@
 # Firewall
-firewall_allow_vpn_routing: true
+firewall_vpn_routing_enabled: true
+firewall_vpn_routing_vpn_interface: "wg1"
+firewall_vpn_routing_outgoing_interface: "60vpn"
 firewall_additional_ports:
   - comment: SNMP Daemon
     port: 161
