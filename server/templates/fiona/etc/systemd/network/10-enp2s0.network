@@ -3,7 +3,6 @@ Name=enp2s0
 Type=ether
 
 [Network]
-VLAN=50srv
 VLAN=60vpn
 DHCP=yes
 LinkLocalAddressing=ipv6
