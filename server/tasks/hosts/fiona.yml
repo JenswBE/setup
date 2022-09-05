@@ -17,8 +17,11 @@
     state: restarted
   tags: ["networkd"]
 
-- include_tasks: tasks/tang.yml
+- include_tasks: tasks/nbde_tang.yml
   tags: ["setup", "tang"]
+
+- include_tasks: tasks/nbde_clevis_luks.yml
+  tags: ["setup", "clevis"]
 
 - include_tasks: tasks/wireguard.yml
   vars:
