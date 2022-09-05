@@ -14,12 +14,18 @@
         state: directory
 
     - name: Override Tang port
+      register: override_tang_port
       ansible.builtin.copy:
-        src: docker-daemon.json
+        src: tangd.socket.override.conf
         dest: /etc/systemd/system/tangd.socket.d/override.conf
         owner: root
         group: root
         mode: "644"
+
+    - name: Reload systemd daemon
+      when: override_tang_port.changed
+      systemd:
+        daemon_reload: true
 
     - name: Enable Tang socket on boot
       ansible.builtin.systemd:
