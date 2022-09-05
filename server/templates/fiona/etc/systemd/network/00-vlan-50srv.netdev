@@ -1,6 +1,0 @@
-[NetDev]
-Name=50srv
-Kind=vlan
-
-[VLAN]
-Id=50
