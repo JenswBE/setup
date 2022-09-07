@@ -20,6 +20,15 @@
           # Use multiple Tang servers
           sudo clevis luks bind -d /dev/${LUKS_DEVICE:?} sss '{"t":1,"pins":{"tang":[{"url":"http://kubo.jensw.lan:7500"},{"url":"http://fiona.jensw.lan:7500"}]}}'
 
+          # Client - Ubuntu
+          sudo apt install clevis clevis-luks clevis-initramfs
+          sudo update-initramfs -u -k 'all' 
+
+          # Client - Fedora
+          sudo dnf install clevis clevis-luks clevis-dracut
+          sudo grubby --update-kernel=ALL --args="rd.neednet=1"
+          sudo dracut -fv --regenerate-all
+
           # See for more info
           https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/security_hardening/configuring-automated-unlocking-of-encrypted-volumes-using-policy-based-decryption_security-hardening#example_2_shared_secret_on_a_tang_server_and_a_tpm_device
           https://semanticlab.net/sysadmin/encryption/Network-bound-disk-encryption-in-ubuntu-20.04/
