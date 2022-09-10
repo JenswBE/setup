@@ -56,6 +56,7 @@
     enabled: true
   loop:
     - docker-update-containers.timer
+    - update-ip-on-dynv6.timer
   tags: ["systemd"]
 
 - name: Copy home/_user_/eve templates

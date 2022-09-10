@@ -55,6 +55,7 @@
     - nextcloud-maps-scan-photos.timer
     - nextcloud-preview-generator.timer
     - nextcloud-update-apps.timer
+    - update-ip-on-dynv6.timer
   tags: ["systemd"]
 
 - name: Copy home/_user_/kubo templates
