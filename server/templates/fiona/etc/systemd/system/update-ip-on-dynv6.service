@@ -1,0 +1,5 @@
+[Unit]
+Description=Update IP on DynV6
+
+[Service]
+ExecStart=/usr/bin/curl 'https://ipv4.dynv6.com/api/update?zone={{ app_dynv6_zone }}&ipv4=auto&token={{ app_dynv6_token }}'
