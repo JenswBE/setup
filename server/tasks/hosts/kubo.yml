@@ -10,6 +10,9 @@
 - include_tasks: tasks/nbde_clevis_luks.yml
   tags: ["setup", "clevis"]
 
+- include_tasks: tasks/nut_server.yml
+  tags: ["setup", "nut"]
+
 - include_tasks: tasks/wireguard.yml
   vars:
     wg_interface_index: "{{ item.key }}"
