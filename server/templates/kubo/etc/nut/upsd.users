@@ -1,0 +1,8 @@
+# See https://networkupstools.org/docs/man/upsd.users.html
+
+{% for user in app_nut_users %}
+[{{ user }}]
+  password = {{ app_nut_users[user].password }}
+  upsmon {{ app_nut_users[user].upsmon }}
+
+{% endfor %}
