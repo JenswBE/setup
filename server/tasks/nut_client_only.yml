@@ -2,13 +2,10 @@
   become: true
   tags: ["setup", "nut"]
   block:
-    - name: Install NUT
+    - name: Install NUT client
       ansible.builtin.package:
         state: present
-        name: "{{ item }}"
-      loop:
-        - nut
-        - nut-server
+        name: nut-client
 
     - name: Copy NUT config
       include_tasks: tasks/helpers/copy_templates_folder.yml
@@ -20,3 +17,19 @@
         - destination_mode_files: "640"
         - destination_mode_dirs: "750"
         - destination_delete_extra: false
+
+    - name: Copy upssched-cmd
+      ansible.builtin.copy:
+        src: "upssched-cmd"
+        dest: "/usr/sbin/upssched-cmd"
+        owner: "root"
+        group: "nut"
+        mode: "755"
+
+    - name: Force restart NUT services
+      ansible.builtin.service:
+        name: rsyslog
+        state: restarted
+      loop:
+        - nut-client
+        - nut-monitor
