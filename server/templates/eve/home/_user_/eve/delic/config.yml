@@ -1,24 +1,37 @@
-# https://github.com/JenswBE/python-dead-link-checker
+# https://github.com/JenswBE/dead-link-checker
 
 verbose: False
-workers_per_site: 8
 
 cron: "0 13 * * *"
 
-sites:
-  - https://bjoetiek-y.be
-  - https://jensw.be
-  - https://klokracing.be
-  - https://tuinfeestbeerse.be
+health_check:
+  url: "https://hc-ping.com/{{ app_delic_ping_id }}"
 
-notify:
-  provider: email
-  data:
-    host: "{{ mailjet_host }}"
-    port: "{{ mailjet_port_starttls }}"
-    tls: True
-    username: "{{ mailjet_username }}"
-    password: "{{ mailjet_password }}"
-    from: "DeLiC <delic@{{ general_domain_default }}>"
-    to: "{{ general_mail_admin }}@{{ general_domain_default }}"
-    subject: Broken links found
+notifiers:
+  - name: email_technical_en
+    url: "smtp://{{ mailjet_username }}:{{ mailjet_password }}@{{ mailjet_host }}:{{ mailjet_port_ssl }}/?from=delic@{{ general_domain_default }}&to={{ general_mail_admin }}@{{ general_domain_default }}&usehtml=true&subject=Broken%20links%20found"
+    template_name: technical_en
+
+sites:
+  - url: https://bjoetiek-y.be
+    notify:
+      - email_technical_en
+
+  - url: https://dokterlinks.wordpress.com/
+    ignored_links:
+      - ^https://dokterlinks.wordpress.com/wp-admin
+      - ^https://wordpress.com/log-in
+    notify:
+      - email_technical_en
+
+  - url: https://jensw.be
+    notify:
+      - email_technical_en
+
+  - url: https://klokracing.be
+    notify:
+      - email_technical_en
+
+  - url: https://tuinfeestbeerse.be
+    notify:
+      - email_technical_en

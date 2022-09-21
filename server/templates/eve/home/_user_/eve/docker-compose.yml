@@ -240,7 +240,7 @@ services:
     image: jenswbe/dead-link-checker:latest
     container_name: delic
     volumes:
-      - "./delic/config.yml:/config.yml"
+      - "./delic/config.yml:/config.yml:ro,z"
     environment:
       - "TZ={{ general_timezone }}"
 
