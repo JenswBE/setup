@@ -1,3 +1,6 @@
+# Docker
+docker_apt_arch: arm64 # See https://github.com/geerlingguy/ansible-role-docker/issues/290
+
 # Firewall
 firewall_vpn_routing_enabled: false
 firewall_vpn_routing_vpn_interface: ""
