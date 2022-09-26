@@ -1,5 +1,6 @@
 - name: Basic setup
   become: true
+  tags: ["setup"]
   block:
     - name: Set timezone
       ansible.builtin.timezone:

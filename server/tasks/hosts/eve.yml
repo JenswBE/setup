@@ -23,7 +23,7 @@
     daemon_reload: true
   tags: ["systemd", "mail_on_failed_unit"]
 
-- name: Enable systemd timers
+- name: Enable systemd timers and mounts
   become: true
   systemd:
     name: "{{ item }}"
@@ -31,6 +31,7 @@
     enabled: true
   loop:
     - bjoetiek-dump-db.timer
+    - data.mount
     - docker-update-containers.timer
     - isa-rclone.timer
     - keycloak-dump-db.timer

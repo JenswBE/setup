@@ -1,6 +1,6 @@
 roles:
   - name: geerlingguy.docker
-    version: 5.1.0
+    version: 5.2.1
 
   - name: geerlingguy.security
     version: 2.2.0

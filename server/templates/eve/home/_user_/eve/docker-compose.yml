@@ -76,7 +76,9 @@ services:
 
   traefik-forward-auth:
     <<: *defaults
-    image: thomseddon/traefik-forward-auth:2
+    # Workaround while awaiting https://github.com/thomseddon/traefik-forward-auth/issues/112
+    # image: thomseddon/traefik-forward-auth:2
+    build: ./traefik-forward-auth
     container_name: traefik-forward-auth
     networks:
       - traefik
@@ -166,30 +168,30 @@ services:
   # =========================
   # =         PASSIT        =
   # =========================
-  passit:
-    <<: *defaults
-    image: passit/passit:stable
-    container_name: passit
-    networks:
-      - passit
-      - traefik
-    environment:
-      - "TZ={{ general_timezone }}"
-      - "DATABASE_SERVICE_NAME=passit-db"
-      - "DATABASE_NAME=passit"
-      - "DATABASE_USER=passit"
-      - "DATABASE_PASSWORD={{ app_passit_db_pass }}"
-      - "DEFAULT_FROM_EMAIL=passit@{{ general_domain_tuinfeest }}"
-      - "EMAIL_CONFIRMATION_HOST=passit.{{ general_domain_tuinfeest }}"
-      - "IS_PRIVATE_ORG_MODE=True"
-      - "PRIVATE_ORG_MODE_DOMAIN_WHITELIST={{ general_domain_tuinfeest }}"
-      - "SECRET_KEY={{ app_passit_secret_key }}"
-      - "EMAIL_URL=smtp+tls://{{ mailjet_tuinfeest_username }}:{{ mailjet_tuinfeest_password }}@{{ mailjet_host }}:{{ mailjet_port_starttls }}"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.passit.entrypoints=websecure"
-      - "traefik.http.routers.passit.rule=Host(`wachtwoorden.{{ general_domain_tuinfeest }}`)"
-      - "traefik.http.routers.passit.tls.certresolver=le-tls"
+  # passit:
+  #   <<: *defaults
+  #   image: passit/passit:stable
+  #   container_name: passit
+  #   networks:
+  #     - passit
+  #     - traefik
+  #   environment:
+  #     - "TZ={{ general_timezone }}"
+  #     - "DATABASE_SERVICE_NAME=passit-db"
+  #     - "DATABASE_NAME=passit"
+  #     - "DATABASE_USER=passit"
+  #     - "DATABASE_PASSWORD={{ app_passit_db_pass }}"
+  #     - "DEFAULT_FROM_EMAIL=passit@{{ general_domain_tuinfeest }}"
+  #     - "EMAIL_CONFIRMATION_HOST=passit.{{ general_domain_tuinfeest }}"
+  #     - "IS_PRIVATE_ORG_MODE=True"
+  #     - "PRIVATE_ORG_MODE_DOMAIN_WHITELIST={{ general_domain_tuinfeest }}"
+  #     - "SECRET_KEY={{ app_passit_secret_key }}"
+  #     - "EMAIL_URL=smtp+tls://{{ mailjet_tuinfeest_username }}:{{ mailjet_tuinfeest_password }}@{{ mailjet_host }}:{{ mailjet_port_starttls }}"
+  #   labels:
+  #     - "traefik.enable=true"
+  #     - "traefik.http.routers.passit.entrypoints=websecure"
+  #     - "traefik.http.routers.passit.rule=Host(`wachtwoorden.{{ general_domain_tuinfeest }}`)"
+  #     - "traefik.http.routers.passit.tls.certresolver=le-tls"
 
   passit-db:
     <<: *defaults
