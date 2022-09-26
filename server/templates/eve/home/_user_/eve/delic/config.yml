@@ -11,6 +11,9 @@ notifiers:
   - name: email_technical_en
     url: "smtp://{{ mailjet_username }}:{{ mailjet_password }}@{{ mailjet_host }}:{{ mailjet_port_ssl }}/?from=delic@{{ general_domain_default }}&to={{ general_mail_admin }}@{{ general_domain_default }}&usehtml=true&subject=Broken%20links%20found"
     template_name: technical_en
+  - name: email_simple_nl
+    url: "smtp://{{ mailjet_username }}:{{ mailjet_password }}@{{ mailjet_host }}:{{ mailjet_port_ssl }}/?from=delic@{{ general_domain_default }}&to={{ general_mail_admin }}@{{ general_domain_default }}&usehtml=true&subject=Defecte%20links%20gevonden"
+    template_name: simple_nl
 
 sites:
   - url: https://bjoetiek-y.be
@@ -23,6 +26,7 @@ sites:
       - ^https://wordpress.com/log-in
     notify:
       - email_technical_en
+      - email_simple_nl
 
   - url: https://jensw.be
     notify:
