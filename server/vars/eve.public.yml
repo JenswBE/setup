@@ -1,5 +1,7 @@
-# Docker
+# General
 docker_apt_arch: arm64 # See https://github.com/geerlingguy/ansible-role-docker/issues/290
+docker_compose_arch: aarch64
+general_path_appdata: "/data"
 
 # Firewall
 firewall_vpn_routing_enabled: false

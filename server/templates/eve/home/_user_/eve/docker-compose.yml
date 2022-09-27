@@ -387,7 +387,7 @@ services:
 
   bjoetiek-imgproxy:
     <<: *defaults
-    image: darthsim/imgproxy:v2
+    image: darthsim/imgproxy:v3
     container_name: bjoetiek-imgproxy
     environment:
       - "IMGPROXY_KEY={{ app_bjoetiek_image_proxy_key }}"
