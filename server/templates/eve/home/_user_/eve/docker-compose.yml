@@ -310,7 +310,7 @@ services:
   # ===========================================================================
   bjoetiek-frontend:
     <<: *defaults
-    image: jenswbe/bjoetiek-y-frontend:v2.4.0
+    image: jenswbe/bjoetiek-y-frontend:latest
     container_name: bjoetiek-frontend
     networks:
       - bjoetiek
@@ -332,7 +332,7 @@ services:
 
   bjoetiek-backend:
     <<: *defaults
-    image: jenswbe/go-commerce:v0.5.1
+    image: jenswbe/go-commerce:latest
     container_name: bjoetiek-backend
     depends_on:
       - bjoetiek-db
@@ -509,7 +509,7 @@ services:
   # ===========================================================================
   spellebel:
     <<: *defaults
-    image: jenswbe/spellebel-frontend:stable
+    image: jenswbe/spellebel-frontend:latest
     container_name: spellebel
     networks:
       - traefik
@@ -766,6 +766,7 @@ services:
     build:
       context: goatcounter
       args:
+        - "arch={{ app_goatcounter_arch }}"
         - "version={{ app_goatcounter_version }}"
     container_name: goatcounter
     user: "{{ ansible_real_user_id }}"

@@ -26,6 +26,7 @@ firewall_additional_ports:
     from_networks: [any]
 
 # GoatCounter
+app_goatcounter_arch: arm64
 app_goatcounter_version: v2.2.3
 
 # Nextcloud
