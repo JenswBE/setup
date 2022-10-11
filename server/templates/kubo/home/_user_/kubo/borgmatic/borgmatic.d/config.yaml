@@ -3,7 +3,7 @@ location:
     - /mnt/source
 
   repositories:
-    - "{{ app_borgmatic_ssh_user }}@{{ app_borgmatic_ssh_host }}:{{ app_borgmatic_remote_folder }}"
+    - "ssh://{{ app_borgmatic_ssh_user }}@{{ app_borgmatic_ssh_host }}:{{ app_borgmatic_remote_folder }}"
 
 storage:
   compression: lz4
