@@ -20,13 +20,13 @@ sites:
     notify:
       - email_technical_en
 
-  - url: https://dokterlinks.wordpress.com/
-    ignored_links:
-      - ^https://dokterlinks.wordpress.com/wp-admin
-      - ^https://wordpress.com/log-in
-    notify:
-      - email_technical_en
-      - email_simple_nl
+  # - url: https://dokterlinks.wordpress.com/
+  #   ignored_links:
+  #     - ^https://dokterlinks.wordpress.com/wp-admin
+  #     - ^https://wordpress.com/log-in
+  #   notify:
+  #     - email_technical_en
+  #     - email_simple_nl
 
   - url: https://jensw.be
     notify:
