@@ -30,6 +30,16 @@ git config --global pull.ff only
 # Setup Go template support for Prettier
 # Based on https://github.com/NiklasPor/prettier-plugin-go-template/issues/58#issuecomment-1085060511
 sudo npm i -g prettier prettier-plugin-go-template
+
+# Install rtl8811au drivers
+# Based on:
+#   - https://docs.alfa.com.tw/Support/Linux/RTL8811AU/
+#   - https://github.com/aircrack-ng/rtl8812au
+git clone -b v5.6.4.2 https://github.com/aircrack-ng/rtl8812au.git
+cd rtl*
+sudo dnf update # Important as "dkms" might install a newer kernel, but not modules for e.g. existing wireless devices.
+sudo dnf install dkms
+sudo make dkms_install
 ```
 
 ### GNOME
