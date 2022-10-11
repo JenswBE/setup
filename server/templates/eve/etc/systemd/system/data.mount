@@ -1,13 +1,7 @@
-[Unit] 
-Before=remote-fs.target docker.service 
-After=iscsi.service 
-Requires=iscsi.service
-
 [Mount]
-What=/dev/disk/by-uuid/ca1fead0-4596-4fe3-9f05-a817259658ba
+What=/dev/oracleoci/oraclevdb
 Where=/data
 Type=ext4
-Options=_netdev
 
 [Install]
-WantedBy=remote-fs.target  
+WantedBy=multi-user.target
