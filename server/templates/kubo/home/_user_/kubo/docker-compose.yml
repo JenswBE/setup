@@ -515,15 +515,11 @@ services:
   # =========================
   # =        TORRENT        =
   # =========================
-  transmission:
-    <<: *defaults
+  transmission: # "extra_hosts" in default config is not compatible with "network_mode"
+    restart: always
     image: linuxserver/transmission:latest
     container_name: transmission
-    networks:
-      - traefik
-    ports:
-      - "51413:51413"
-      - "51413:51413/udp"
+    network_mode: service:transmission-vpn
     environment:
       TZ: "{{ general_timezone }}"
       PUID: "1000"
@@ -533,6 +529,25 @@ services:
       - "{{ general_path_appdata }}/transmission/downloads:/downloads/incomplete"
       - "/data/media/Nazien:/downloads/complete"
       - "{{ general_path_appdata }}/transmission/config:/config"
+
+  transmission-vpn:
+    <<: *defaults
+    image: ghcr.io/wfg/openvpn-client:latest
+    container_name: transmission-vpn
+    networks:
+      - traefik
+    environment:
+      TZ: "{{ general_timezone }}"
+      KILL_SWITCH: nftables
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun
+    volumes:
+      - "./transmission-vpn/config.ovpn:/data/vpn/config.ovpn:ro"
+      - "./transmission-vpn/mullvad_ca.crt:/data/vpn/mullvad_ca.crt:ro"
+      - "./transmission-vpn/mullvad_userpass.txt:/data/vpn/mullvad_userpass.txt:ro"
+      - "./transmission-vpn/update-resolv-conf:/data/vpn/update-resolv-conf:ro"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.transmission.entrypoints=websecure"
