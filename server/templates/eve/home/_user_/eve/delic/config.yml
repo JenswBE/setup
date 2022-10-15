@@ -33,6 +33,8 @@ sites:
       - email_technical_en
 
   - url: https://klokracing.be
+    ignored_links:
+      - ^https://lambrettascooters.com # Known issue with TLS chain. Company is informed.
     notify:
       - email_technical_en
 
