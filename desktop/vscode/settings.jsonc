@@ -70,8 +70,7 @@
   "go.toolsGopath": "~/go",
   "go.toolsManagement.autoUpdate": true,
   "gopls": {
-    "build.allowModfileModifications": true,
-    "experimentalWorkspaceModule": true
+    "build.allowModfileModifications": true
   },
   "prettier.prettierPath": "/usr/lib/node_modules/prettier",
   "python.languageServer": "Pylance",
