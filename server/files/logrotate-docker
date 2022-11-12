@@ -1,9 +1,0 @@
-# Based on https://techroads.org/docker-logging-to-the-local-os-that-works-with-compose-and-rsyslog/
-
-/var/log/containers/*.log {
-    su syslog adm
-    weekly
-    rotate 4
-    missingok
-    compress
-}

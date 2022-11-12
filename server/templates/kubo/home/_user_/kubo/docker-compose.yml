@@ -588,6 +588,71 @@ services:
   #     - "traefik.http.routers.scrutiny.tls.certresolver=le-tls"
   #     - "traefik.http.routers.scrutiny.middlewares=forward-auth@file"
 
+  graylog:
+    <<: *defaults
+    image: graylog/graylog:4.3
+    container_name: graylog
+    entrypoint: /usr/bin/tini -- wait-for-it graylog-elasticsearch:9200 --  /docker-entrypoint.sh
+    volumes:
+      # WARNING: ElasticSearch expects the data folder been owned by 1100:1100!
+      - "{{ general_path_appdata }}/graylog/graylog/config:/usr/share/graylog/config"
+      - "{{ general_path_appdata }}/graylog/graylog/journal:/usr/share/graylog/journal"
+    networks:
+      - traefik
+      - graylog
+    ports:
+      - 1514:1514 # Syslog TCP
+      - 1514:1514/udp # Syslog UDP
+      - 12201:12201 # GELF TCP
+      - 12201:12201/udp # GELF UDP
+    environment:
+      - GRAYLOG_PASSWORD_SECRET={{ app_graylog_secret }}
+      - GRAYLOG_ROOT_PASSWORD_SHA2={{ app_graylog_admin_password | hash('sha256') }}
+      - GRAYLOG_HTTP_EXTERNAL_URI=https://logs.{{ general_domain_default }}/
+      - GRAYLOG_ELASTICSEARCH_HOSTS=http://graylog-elasticsearch:9200
+      - GRAYLOG_MONGODB_URI=mongodb://graylog-mongodb/graylog
+    depends_on:
+      - graylog-mongodb
+      - graylog-elasticsearch
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.graylog.entrypoints=websecure"
+      - "traefik.http.routers.graylog.rule=Host(`logs.{{ general_domain_default }}`)"
+      - "traefik.http.routers.graylog.tls.certresolver=le-tls"
+      - "traefik.http.services.graylog-{{ ansible_hostname }}.loadbalancer.server.port=9000"
+
+  graylog-elasticsearch:
+    <<: *defaults
+    image: docker.elastic.co/elasticsearch/elasticsearch-oss:7.10.2
+    container_name: graylog-elasticsearch
+    environment:
+      - http.host=0.0.0.0
+      - transport.host=localhost
+      - network.host=0.0.0.0
+      - "ES_JAVA_OPTS=-Dlog4j2.formatMsgNoLookups=true -Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    deploy:
+      resources:
+        limits:
+          memory: 1g
+    networks:
+      - graylog
+    volumes:
+      # WARNING: ElasticSearch expects the data folder been owned by 1000:1000!
+      - "{{ general_path_appdata }}/graylog/elasticsearch/data:/usr/share/elasticsearch/data"
+
+  graylog-mongodb:
+    <<: *defaults
+    image: mongo:4.2
+    container_name: graylog-mongodb
+    networks:
+      - graylog
+    volumes:
+      - "{{ general_path_appdata }}/graylog/mongodb/data:/data/db"
+
   librenms:
     <<: *defaults
     image: librenms/librenms:latest
@@ -635,27 +700,6 @@ services:
       <<: *librenms-env
       DISPATCHER_NODE_ID: "dispatcher1"
       SIDECAR_DISPATCHER: "1"
-
-  librenms-syslogng:
-    <<: *defaults
-    image: librenms/librenms:latest
-    container_name: librenms-syslogng
-    hostname: librenms-syslogng
-    cap_add:
-      - NET_ADMIN
-      - NET_RAW
-    depends_on:
-      - librenms
-    networks:
-      - librenms
-    ports:
-      - "514:514"
-      - "514:514/udp"
-    volumes:
-      - "{{ general_path_appdata }}/librenms/librenms/data:/data"
-    environment:
-      <<: *librenms-env
-      SIDECAR_SYSLOGNG: "1"
 
   librenms-snmptrapd:
     <<: *defaults
@@ -803,6 +847,9 @@ services:
 networks:
   glitchtip:
     name: glitchtip
+
+  graylog:
+    name: graylog
 
   home-automation:
     name: home-automation

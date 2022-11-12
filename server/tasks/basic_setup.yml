@@ -46,21 +46,6 @@
         name: systemd-journald
         state: restarted
 
-    - name: Copy docker config
-      register: docker_config
-      ansible.builtin.copy:
-        src: docker-daemon.json
-        dest: /etc/docker/daemon.json
-        owner: root
-        group: root
-        mode: "644"
-
-    - name: Restart docker if config was changed
-      when: docker_config.changed
-      ansible.builtin.service:
-        name: docker
-        state: restarted
-
     - name: Ensure LUKS prompt uses correct keymap # Based on https://askubuntu.com/a/1071945
       register: initramfs_config
       ansible.builtin.lineinfile:
