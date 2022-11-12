@@ -280,6 +280,8 @@ services:
       - /dev/dri/card0:/dev/dri/card0
     networks:
       - traefik
+    ports:
+      - "8096:8096"
     volumes:
       - "/data/media:/media"
       - "{{ general_path_appdata }}/jellyfin/config:/config"

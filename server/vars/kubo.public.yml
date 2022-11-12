@@ -39,6 +39,10 @@ firewall_additional_ports:
     port: 8080
     protos: [tcp]
     from_networks: [local_ipv4, local_ipv6]
+  - comment: Jellyfin
+    port: 8096
+    protos: [tcp]
+    from_networks: [local_ipv4, local_ipv6]
   - comment: Graylog - GELF
     port: 12201
     protos: [tcp, udp]
