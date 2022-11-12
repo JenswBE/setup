@@ -1,4 +1,4 @@
-- name: Setup NFS
+- name: Disable systemd-resolved DNSStubListener
   become: true
   tags: ["setup", "dns"]
   block:

@@ -1,0 +1,39 @@
+#################################################################
+#                            DEFAULTS                           #
+#################################################################
+x-defaults: &defaults
+  restart: always
+  extra_hosts:
+    - "host.docker.internal:host-gateway"
+
+#################################################################
+#                            SERVICES                           #
+#################################################################
+services:
+  blocky:
+    <<: *defaults
+    image: ghcr.io/0xerr0r/blocky:latest
+    container_name: blocky
+    ports:
+      - "53:53/tcp" # DNS TCP
+      - "53:53/udp" # DNS UDP
+    volumes:
+      - ./blocky/config.yml:/app/config.yml:ro
+
+  blocky-pixelserv-tls: # Serves transparent pixels for Blocky
+    <<: *defaults
+    image: imthai/pixelserv-tls:latest
+    container_name: blocky-pixelserv-tls
+    ports:
+      - "80:80" # HTTP
+      - "443:443" # HTTPS
+    volumes:
+      # MANUAL ACTION: Add /root/ca/ca.crt and /root/ca/ca.key with root only access.
+      # sudo /root/ca/
+      # sudo chmod 700 /root/ca/
+      # sudo touch /root/ca/ca.key
+      # sudo chmod 600 /root/ca/ca.key
+      # sudo nano /root/ca/ca.key
+      # sudo nano /root/ca/ca.crt
+      # sudo chmod 600 /root/ca/ca.crt
+      - /root/ca:/var/cache/pixelserv

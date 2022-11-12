@@ -1,6 +1,9 @@
 - include_tasks: tasks/logging.yml
   tags: ["setup", "logging"]
 
+- include_tasks: tasks/disable_systemd_resolved_stub.yml
+  tags: ["setup", "dns"]
+
 - name: Copy systemd network templates
   include_tasks: tasks/helpers/copy_templates_folder.yml
   vars:
@@ -65,10 +68,10 @@
     - update-ip-on-dynv6.timer
   tags: ["systemd"]
 
-- name: Copy home/_user_/eve templates
+- name: Copy home/_user_/fiona templates
   include_tasks: tasks/helpers/copy_templates_folder.yml
   vars:
-    - templates_folder: "{{ ansible_hostname }}/home/_user_/eve"
+    - templates_folder: "{{ ansible_hostname }}/home/_user_/fiona"
     - destination_folder: "{{ ansible_user_dir }}/{{ ansible_hostname }}"
     - destination_owner: "{{ ansible_real_user_id }}"
     - destination_group: "{{ ansible_real_group_id }}"
