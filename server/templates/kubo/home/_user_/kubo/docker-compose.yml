@@ -247,7 +247,7 @@ services:
       POSTGRES_PASSWORD: "{{ app_miniflux_db_pass }}"
 
   # =========================
-  # =          PLEX         =
+  # =       MULTIMEDIA      =
   # =========================
   plex:
     <<: *defaults
@@ -263,8 +263,33 @@ services:
     #   - "/dev/dri/renderD128:/dev/dri/renderD128"
     environment:
       TZ: "{{ general_timezone }}"
-      PLEX_UID: "1000"
-      PLEX_GID: "1000"
+      PLEX_UID: "{{ ansible_real_user_id }}"
+      PLEX_GID: "{{ ansible_real_group_id }}"
+
+  jellyfin:
+    <<: *defaults
+    image: jellyfin/jellyfin:latest
+    container_name: jellyfin
+    user: "{{ ansible_real_user_id }}:{{ ansible_real_group_id }}"
+    group_add: # By id as these may not exist within the container. Needed to provide permissions to the VAAPI Devices
+      - "107" # Group "render"
+      - "44" # Group "video"
+    devices:
+      # VAAPI Devices
+      - /dev/dri/renderD128:/dev/dri/renderD128
+      - /dev/dri/card0:/dev/dri/card0
+    networks:
+      - traefik
+    volumes:
+      - "/data/media:/media"
+      - "{{ general_path_appdata }}/jellyfin/config:/config"
+      - "{{ general_path_appdata }}/jellyfin/cache:/cache"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.jellyfin.entrypoints=websecure"
+      - "traefik.http.routers.jellyfin.rule=Host(`jellyfin.{{ general_domain_default }}`)"
+      - "traefik.http.routers.jellyfin.tls.certresolver=le-tls"
+      - "traefik.http.services.jellyfin-{{ ansible_hostname }}.loadbalancer.server.port=8096"
 
   # =========================
   # =   TINY MEDIA MANAGER  =
