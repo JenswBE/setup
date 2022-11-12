@@ -68,7 +68,7 @@ services:
       - traefik-cert:/letsencrypt/
       - traefik-access-logs:/access-logs
     environment:
-      - "TZ={{ general_timezone }}"
+      TZ: "{{ general_timezone }}"
 
   traefik-forward-auth:
     <<: *defaults
@@ -77,12 +77,13 @@ services:
     networks:
       - traefik
     environment:
-      - "COOKIE_DOMAIN={{ general_domain_default }}"
-      - "DEFAULT_PROVIDER=oidc"
-      - "SECRET={{ app_traefik_forward_auth_secret }}"
-      - "PROVIDERS_OIDC_ISSUER_URL={{ app_traefik_forward_auth_oidc_issuer_url }}"
-      - "PROVIDERS_OIDC_CLIENT_ID={{ app_traefik_forward_auth_oidc_client_id }}"
-      - "PROVIDERS_OIDC_CLIENT_SECRET={{ app_traefik_forward_auth_oidc_client_secret }}"
+      TZ: "{{ general_timezone }}"
+      COOKIE_DOMAIN: "{{ general_domain_default }}"
+      DEFAULT_PROVIDER: oidc
+      SECRET=: "{{ app_traefik_forward_auth_secret }}"
+      PROVIDERS_OIDC_ISSUER_URL: "{{ app_traefik_forward_auth_oidc_issuer_url }}"
+      PROVIDERS_OIDC_CLIENT_ID: "{{ app_traefik_forward_auth_oidc_client_id }}"
+      PROVIDERS_OIDC_CLIENT_SECRET: "{{ app_traefik_forward_auth_oidc_client_secret }}"
 
   # =========================
   # =       SYNCTHING       =
@@ -100,7 +101,7 @@ services:
       - "{{ general_path_appdata }}/syncthing/config:/var/syncthing"
       - "{{ general_path_appdata }}/syncthing/data:/data"
     environment:
-      - "TZ={{ general_timezone }}"
+      TZ: "{{ general_timezone }}"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.syncthing.entrypoints=websecure"
@@ -122,9 +123,9 @@ services:
       - "./borgserver:/sshkeys/clients:ro"
       - "borgserver-sshkeys-host:/sshkeys/host"
     environment:
-      - "TZ={{ general_timezone }}"
-      - "PUID={{ ansible_real_user_id }}"
-      - "PGID={{ ansible_real_group_id }}"
+      TZ: "{{ general_timezone }}"
+      PUID: "{{ ansible_real_user_id }}"
+      PGID: "{{ ansible_real_group_id }}"
 
   # =========================
   # =        CROWDSEC       =

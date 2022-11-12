@@ -24,7 +24,7 @@ services:
     networks:
       - traefik
     environment:
-      - "TZ={{ general_timezone }}"
+      TZ: "{{ general_timezone }}"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.nginx-tuinfeest-archive-{{ year }}.entrypoints=websecure"

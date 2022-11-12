@@ -22,7 +22,7 @@ firewall_additional_ports:
   - comment: Graylog - Syslog
     port: 1514
     protos: [tcp, udp]
-    from_networks: [docker_ipv4, local_ipv4, local_ipv6]
+    from_networks: [docker_ipv4, local_ipv4, local_ipv6, wireguard_ipv4]
   - comment: NFS (UDP is v3 only)
     port: 2049
     protos: [tcp, udp]
@@ -42,7 +42,7 @@ firewall_additional_ports:
   - comment: Graylog - GELF
     port: 12201
     protos: [tcp, udp]
-    from_networks: [docker_ipv4, local_ipv4, local_ipv6]
+    from_networks: [docker_ipv4, local_ipv4, local_ipv6, wireguard_ipv4]
   - comment: Syncthing TCP and QUIC
     port: 22000
     protos: [tcp, udp]

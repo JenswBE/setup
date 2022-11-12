@@ -119,6 +119,7 @@ services:
     networks:
       - traefik
     environment:
+      TZ: "{{ general_timezone }}"
       COOKIE_DOMAIN: "{{ general_domain_default }}"
       DEFAULT_PROVIDER: "oidc"
       SECRET: "{{ app_traefik_forward_auth_secret }}"
@@ -606,11 +607,12 @@ services:
       - 12201:12201 # GELF TCP
       - 12201:12201/udp # GELF UDP
     environment:
-      - GRAYLOG_PASSWORD_SECRET={{ app_graylog_secret }}
-      - GRAYLOG_ROOT_PASSWORD_SHA2={{ app_graylog_admin_password | hash('sha256') }}
-      - GRAYLOG_HTTP_EXTERNAL_URI=https://logs.{{ general_domain_default }}/
-      - GRAYLOG_ELASTICSEARCH_HOSTS=http://graylog-elasticsearch:9200
-      - GRAYLOG_MONGODB_URI=mongodb://graylog-mongodb/graylog
+      TZ: "{{ general_timezone }}"
+      GRAYLOG_PASSWORD_SECRET: "{{ app_graylog_secret }}"
+      GRAYLOG_ROOT_PASSWORD_SHA2: "{{ app_graylog_admin_password | hash('sha256') }}"
+      GRAYLOG_HTTP_EXTERNAL_URI: "https://logs.{{ general_domain_default }}/"
+      GRAYLOG_ELASTICSEARCH_HOSTS: http://graylog-elasticsearch:9200
+      GRAYLOG_MONGODB_URI: mongodb://graylog-mongodb/graylog
     depends_on:
       - graylog-mongodb
       - graylog-elasticsearch
@@ -626,10 +628,11 @@ services:
     image: docker.elastic.co/elasticsearch/elasticsearch-oss:7.10.2
     container_name: graylog-elasticsearch
     environment:
-      - http.host=0.0.0.0
-      - transport.host=localhost
-      - network.host=0.0.0.0
-      - "ES_JAVA_OPTS=-Dlog4j2.formatMsgNoLookups=true -Xms512m -Xmx512m"
+      TZ: "{{ general_timezone }}"
+      http.host: "0.0.0.0"
+      transport.host: localhost
+      network.host: "0.0.0.0"
+      ES_JAVA_OPTS: -Dlog4j2.formatMsgNoLookups=true -Xms512m -Xmx512m
     ulimits:
       memlock:
         soft: -1
@@ -648,6 +651,8 @@ services:
     <<: *defaults
     image: mongo:4.2
     container_name: graylog-mongodb
+    environment:
+      TZ: "{{ general_timezone }}"
     networks:
       - graylog
     volumes:

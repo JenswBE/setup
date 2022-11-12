@@ -1,0 +1,14 @@
+port: 53
+
+upstream:
+  default:
+    - 192.168.50.1
+
+blocking:
+  blockType: 192.168.50.60
+  blackLists:
+    base:
+      - https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/gambling-porn/hosts
+  clientGroupsBlock:
+    default:
+      - base
