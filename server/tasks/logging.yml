@@ -1,0 +1,33 @@
+- name: Setup logging to Graylog
+  become: true
+  tags: ["setup", "logging"]
+  block:
+    - name: Copy rsyslog config
+      register: rsyslog_config
+      ansible.builtin.template:
+        src: rsyslog-99-graylog.conf
+        dest: /etc/rsyslog.d/rsyslog-99-graylog.conf
+        owner: root
+        group: root
+        mode: "644"
+
+    - name: Restart rsyslog if config was changed
+      when: rsyslog_config.changed
+      ansible.builtin.service:
+        name: rsyslog
+        state: restarted
+
+    - name: Copy docker config
+      register: docker_config
+      ansible.builtin.template:
+        src: docker-daemon.json
+        dest: /etc/docker/daemon.json
+        owner: root
+        group: root
+        mode: "644"
+
+    - name: Restart docker if config was changed
+      when: docker_config.changed
+      ansible.builtin.service:
+        name: docker
+        state: restarted

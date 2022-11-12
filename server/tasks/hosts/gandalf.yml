@@ -1,3 +1,6 @@
+- include_tasks: tasks/logging.yml
+  tags: ["setup", "logging"]
+
 - include_tasks: tasks/wireguard.yml
   vars:
     wg_interface_index: "{{ item.key }}"

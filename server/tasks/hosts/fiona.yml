@@ -1,3 +1,6 @@
+- include_tasks: tasks/logging.yml
+  tags: ["setup", "logging"]
+
 - name: Copy systemd network templates
   include_tasks: tasks/helpers/copy_templates_folder.yml
   vars:

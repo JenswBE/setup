@@ -1,0 +1,7 @@
+{
+  "icc": false,
+  "log-driver": "gelf",
+  "log-opts": {
+    "gelf-address": "udp://{{ app_graylog_server }}:12201"
+  }
+}
