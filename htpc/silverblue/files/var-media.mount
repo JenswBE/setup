@@ -1,0 +1,11 @@
+[Unit]
+Description=Mount /var/media
+
+[Mount]
+What=kubo.jensw.lan:/data/media
+Where=/var/media
+Type=nfs
+Options=noexec,nosuid,nofail,noatime
+
+[Install]
+WantedBy=multi-user.target

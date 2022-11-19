@@ -1,0 +1,69 @@
+- hosts: all
+
+  tasks:
+    - name: Add /var/media mount
+      become: true
+      register: add_var_media_mount
+      ansible.builtin.copy:
+        src: var-media.mount
+        dest: /etc/systemd/system/var-media.mount
+        owner: root
+        group: root
+        mode: "644"
+
+    - name: Force systemd reload
+      become: true
+      when: add_var_media_mount.changed
+      systemd:
+        daemon_reload: true
+
+    - name: Enable /var/media mount
+      become: true
+      systemd:
+        name: var-media.mount
+        state: started
+        enabled: true
+
+    - name: Add Flatpak remote for Flathub
+      community.general.flatpak_remote:
+        name: flathub-unfiltered
+        method: user
+        flatpakrepo_url: https://dl.flathub.org/repo/flathub.flatpakrepo
+
+    - name: Update metadata
+      ansible.builtin.command: flatpak update --user --appstream
+      changed_when: False
+
+    - name: Install apps
+      community.general.flatpak:
+        method: user
+        remote: flathub-unfiltered
+        name:
+          - com.github.Eloston.UngoogledChromium
+          - com.github.iwalton3.jellyfin-media-player
+          - org.keepassxc.KeePassXC
+          # Apparently has better codec support than pre-installed one.
+          # See https://fedoramagazine.org/how-i-customize-fedora-silverblue-and-fedora-kinoite/.
+          - org.mozilla.firefox
+          - tv.kodi.Kodi
+
+    - name: Ensure Kodi has access to /var/media
+      ansible.builtin.command: flatpak override --user tv.kodi.Kodi --filesystem=home --filesystem=/var/media
+      changed_when: False
+
+    - name: Configure GNOME
+      ansible.builtin.command: dconf write "{{ item.key }}" "{{ item.value }}"
+      loop: "{{ settings | dict2items }}"
+      vars:
+        settings:
+          /org/gnome/desktop/interface/color-scheme: "'prefer-dark'"
+          /org/gnome/desktop/interface/enable-hot-corners: "false"
+          /org/gnome/desktop/notifications/show-banners: "false"
+          /org/gnome/desktop/privacy/disable-camera: "true"
+          /org/gnome/desktop/privacy/disable-microphone: "true"
+          /org/gnome/desktop/screensaver/lock-enabled: "false"
+          /org/gnome/desktop/session/idle-delay: "uint32 0"
+          /org/gnome/desktop/wm/preferences/num-workspaces: "1"
+          /org/gnome/mutter/dynamic-workspaces: "false"
+          /org/gnome/settings-daemon/plugins/power/power-button-action: "'interactive'"
+          /org/gnome/system/location/enabled: "false"
