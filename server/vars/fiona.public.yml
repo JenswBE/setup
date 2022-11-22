@@ -10,7 +10,7 @@ firewall_additional_ports:
   - comment: SNMP Daemon
     port: 161
     protos: [udp]
-    from_networks: [wireguard_ipv4]
+    from_networks: [local_ipv4]
   - comment: Tang (https://github.com/latchset/tang)
     port: 7500
     protos: [tcp]
