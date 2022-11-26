@@ -9,7 +9,6 @@ Services which are backed up:
   - `keycloak-db` (Postgres): DB data
   - `nc-db` (MariaDB): DB data for Nextcloud
   - `nextcloud` (Nextcloud): User files, config, calendars and addressbooks
-  - `passit-db` (Postgres): DB data
   - `snipe-it-db` (MariaDB): DB data
 - Gandalf
   - N/A
