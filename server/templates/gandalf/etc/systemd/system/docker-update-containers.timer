@@ -1,9 +1,0 @@
-[Unit]
-Description=Update Docker containers every night
-
-[Timer]
-OnCalendar=*-*-* 04:30:00
-Persistent=false
-
-[Install]
-WantedBy=timers.target
