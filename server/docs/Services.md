@@ -11,7 +11,6 @@
 - [MiniFlux](https://hub.docker.com/r/miniflux/miniflux) (Kubo)
 - [Nextcloud](https://hub.docker.com/_/nextcloud) (Eve and Kubo)
 - [Nginx](https://hub.docker.com/r/_/nginx) (Eve and Kubo)
-- [Passit](https://hub.docker.com/r/passit/passit) (Eve)
 - [Plex](https://hub.docker.com/r/plexinc/pms-docker) (Kubo)
 - [Scrutiny](https://github.com/AnalogJ/scrutiny) (Kubo)
 - [Snipe-IT](https://snipeitapp.com/) (Eve)

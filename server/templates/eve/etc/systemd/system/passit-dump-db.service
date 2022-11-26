@@ -1,6 +1,0 @@
-[Unit]
-Description=Dump Passit DB for backup
-OnFailure=unit-fail-mail@%n.service
-
-[Service]
-ExecStart=/usr/bin/docker exec passit-db /bin/sh -c "pg_dump --verbose --format=c --blobs --dbname=passit --username=passit --no-password --file=/backup/passit.pg_dump"
