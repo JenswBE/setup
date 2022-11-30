@@ -89,10 +89,6 @@ services:
       - "--certificatesresolvers.le-tls.acme.tlsChallenge=true"
       - "--certificatesresolvers.le-tls.acme.email={{ general_mail_admin }}@{{ general_domain_default }}"
       - "--certificatesresolvers.le-tls.acme.storage=/letsencrypt/acme.json"
-      - "--certificatesresolvers.le-tls-x1.acme.tlsChallenge=true"
-      - "--certificatesresolvers.le-tls-x1.acme.email={{ general_mail_admin }}@{{ general_domain_default }}"
-      - "--certificatesresolvers.le-tls-x1.acme.storage=/letsencrypt/acme-x1.json"
-      - "--certificatesresolvers.le-tls-x1.acme.preferredChain=ISRG Root X1"
       - "--certificatesresolvers.le-tls-staging.acme.tlsChallenge=true"
       - "--certificatesresolvers.le-tls-staging.acme.email={{ general_mail_admin }}@{{ general_domain_default }}"
       - "--certificatesresolvers.le-tls-staging.acme.storage=/letsencrypt/acme-staging.json"
@@ -416,10 +412,6 @@ services:
       - "traefik.http.routers.nextcloud.rule=Host(`nextcloud-media.{{ general_domain_default }}`)"
       - "traefik.http.routers.nextcloud.tls.certresolver=le-tls"
       - "traefik.http.routers.nextcloud.middlewares=nextcloud-redirect-dav@file, nextcloud-redirect-webfinger@file"
-      - "traefik.http.routers.nextcloud-x1.entrypoints=websecure"
-      - "traefik.http.routers.nextcloud-x1.rule=Host(`nextcloud-media-x1.{{ general_domain_default }}`)"
-      - "traefik.http.routers.nextcloud-x1.tls.certresolver=le-tls-x1"
-      - "traefik.http.routers.nextcloud-x1.middlewares=nextcloud-redirect-dav@file, nextcloud-redirect-webfinger@file"
 
   nc-db:
     <<: *defaults
