@@ -255,7 +255,8 @@ services:
     container_name: plex
     network_mode: host
     volumes:
-      - "/data/media:/data/media"
+      - "/data/bulk/media:/data/media"
+      - "/data/important/Photos:/data/Photos"
       - "{{ general_path_appdata }}/plex/config:/config"
       - "{{ general_path_appdata }}/plex/transcode:/transcode"
     # devices: # for QuickSync support
@@ -283,7 +284,8 @@ services:
     ports:
       - "8096:8096"
     volumes:
-      - "/data/media:/media"
+      - "/data/bulk/media:/media"
+      - "/data/important/Photos:/Photos"
       - "{{ general_path_appdata }}/jellyfin/config:/config"
       - "{{ general_path_appdata }}/jellyfin/cache:/cache"
     labels:
@@ -303,7 +305,7 @@ services:
     networks:
       - traefik
     volumes:
-      - "/data/media:/media"
+      - "/data/bulk/media:/media"
       - "{{ general_path_appdata }}/tmm/config:/config"
     environment:
       TZ: "{{ general_timezone }}"
@@ -331,7 +333,7 @@ services:
       - "22000:22000"
     volumes:
       - "{{ general_path_appdata }}/syncthing/config:/var/syncthing"
-      - "/data/media/Music:/data/music"
+      - "/data/bulk/media/Music:/data/music"
     environment:
       TZ: "{{ general_timezone }}"
       PUID: "1000"
@@ -353,7 +355,7 @@ services:
     ports:
       - "445:445"
     volumes:
-      - "/data/ps2-roms:/data/ps2"
+      - "/data/bulk/ps2-roms:/data/ps2"
     environment:
       TZ: "{{ general_timezone }}"
       USERID: "{{ ansible_real_user_id }}"
@@ -380,7 +382,8 @@ services:
       - "32767:32767"
       - "32767:32767/udp"
     volumes:
-      - "/data/media:/data/media"
+      - "/data/bulk/media:/data/media"
+      - "/data/important/Photos:/data/photos"
       - "./nfs/exports:/etc/exports:ro"
     environment:
       TZ: "{{ general_timezone }}"
@@ -555,7 +558,7 @@ services:
       TRANSMISSION_WEB_HOME: "/combustion-release/"
     volumes:
       - "{{ general_path_appdata }}/transmission/downloads:/downloads/incomplete"
-      - "/data/media/Nazien:/downloads/complete"
+      - "/data/bulk/media/Nazien:/downloads/complete"
       - "{{ general_path_appdata }}/transmission/config:/config"
 
   transmission-vpn:
@@ -857,8 +860,8 @@ services:
       - "nc-db-dump:/mnt/source/nextcloud/dbdump:ro"
       - "{{ general_path_appdata }}/nextcloud/nextcloud/data:/mnt/source/nextcloud/data:ro"
       - "{{ general_path_appdata }}/nextcloud/nextcloud/config:/mnt/source/nextcloud/config:ro"
-      - "/data/media/Photos:/mnt/source/plex/photos:ro"
-      - "/data/media/Music:/mnt/source/plex/music:ro"
+      - "/data/important/Photos:/mnt/source/plex/photos:ro"
+      - "/data/bulk/media/Music:/mnt/source/plex/music:ro"
       # Config and cache
       - "./borgmatic/borgmatic.d:/etc/borgmatic.d"
       - "./borgmatic/ssh:/root/.ssh"

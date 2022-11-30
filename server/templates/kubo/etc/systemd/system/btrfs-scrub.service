@@ -1,7 +1,0 @@
-[Unit]
-Description=Scrub BTRFS data drives
-OnFailure=unit-fail-mail@%n.service
-
-[Service]
-Type=simple
-ExecStart=/usr/bin/btrfs scrub start -Bd /data

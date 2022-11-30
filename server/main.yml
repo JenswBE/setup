@@ -41,9 +41,6 @@
     - ansible.builtin.include_tasks: tasks/mail_on_failed_unit.yml
       tags: ["setup", "mail_on_failed_unit"]
 
-    - ansible.builtin.include_tasks: tasks/docker_logging.yml
-      tags: ["setup"]
-
     - ansible.builtin.include_tasks: tasks/snmpd.yml
       tags: ["setup", "snmpd"]
 

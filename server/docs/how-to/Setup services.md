@@ -65,17 +65,17 @@ done
 Go to https://app.plex.tv to setup following libraries:
 
 - Films
-  - /data/media/Movies
-  - /data/optimized/movies
-  - /data/media/Nazien
+  - /data/bulk/media/Movies
+  - /data/bulk/optimized/movies
+  - /data/bulk/media/Nazien
 - TV Series
-  - /data/media/TV Shows
-  - /data/optimized/shows
-  - /data/media/Nazien
+  - /data/bulk/media/TV Shows
+  - /data/bulk/optimized/shows
+  - /data/bulk/media/Nazien
 - Foto's
-  - /data/media/Photos
+  - /data/important/Photos
 - Muziek
-  - /data/media/Music
+  - /data/bulk/media/Music
 
 ### Syncthing
 
