@@ -1,6 +1,6 @@
 # Eve
 
-Hetzner VPS
+VPS
 
 ## Scheduled jobs
 

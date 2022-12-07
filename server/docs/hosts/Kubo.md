@@ -1,4 +1,4 @@
-# Olaf
+# Kubo
 
 Home NAS
 
@@ -15,6 +15,9 @@ Home NAS
 
 ### 02:00 Prepare backup
 
+- Dump Glitchtip DB (`templates/eve/etc/systemd/system/glitchtip-dump-db.timer`)
+- Dump LibreNMS DB (`templates/eve/etc/systemd/system/librenms-dump-db.timer`)
+- Dump Miniflux DB (`templates/eve/etc/systemd/system/miniflux-dump-db.timer`)
 - Dump Nextcloud DB (`templates/eve/etc/systemd/system/nextcloud-dump-db.timer`)
 
 ### 03:00 Perform backup
@@ -29,3 +32,4 @@ Home NAS
 ### System tasks
 
 - 05:00 Update and restart (unattended updates)
+- 06:00 First of month: Scrub BTRFS filesystem (`templates/olaf/etc/systemd/system/btrfs-scrub-*.timer`)
