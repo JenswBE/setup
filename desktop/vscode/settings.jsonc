@@ -1,6 +1,5 @@
 {
   "diffEditor.ignoreTrimWhitespace": false,
-  "docker.showStartPage": false,
   "editor.bracketPairColorization.enabled": true,
   "editor.fontFamily": "Cascadia Code",
   "editor.fontLigatures": true,
@@ -69,12 +68,7 @@
   "go.buildTags": "e2e",
   "go.toolsGopath": "~/go",
   "go.toolsManagement.autoUpdate": true,
-  "gopls": {
-    "build.allowModfileModifications": true
-  },
   "prettier.prettierPath": "/usr/lib/node_modules/prettier",
-  "python.languageServer": "Pylance",
-  "python.showStartPage": false,
   "redhat.telemetry.enabled": false,
   "telemetry.telemetryLevel": "off",
   "terminal.integrated.persistentSessionReviveProcess": "never",
