@@ -1,0 +1,7 @@
+require ["fileinto", "imap4flags"];
+
+if allof(address :is :localpart "To" "contact", address :contains "From" "mailjet"){
+  setflag "\\Seen";
+  fileinto "INBOX.Junk";
+  stop;
+}
