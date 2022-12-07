@@ -53,7 +53,7 @@ do
 done
 
 # Install usefull apps
-export NEXTCLOUD_APPS_INSTALL=contacts,calendar,tasks,notes,groupfolders,quota_warning,previewgenerator,apporder
+export NEXTCLOUD_APPS_INSTALL=apporder,calendar,contacts,groupfolders,maps,notes,photos,previewgenerator,quota_warning,recognize,tasks
 for NC_APP in ${NEXTCLOUD_APPS_INSTALL};
 do
   docker exec -it -u www-data nextcloud php occ app:install ${NC_APP}
