@@ -1,0 +1,7 @@
+require ["fileinto", "imap4flags"];
+
+if allof(address :is :localpart "To" "contact", address :matches :domain "From" ["redabc.top", "*.redabc.top"]){
+  setflag "\\Seen";
+  fileinto "Junk";
+  stop;
+}
