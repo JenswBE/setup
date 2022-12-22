@@ -64,6 +64,7 @@ See https://iode.tech/en/iodeos-installation/
 - [OsmAnd](https://f-droid.org/en/packages/net.osmand.plus)
 - [QR & Barcode Scanner](https://f-droid.org/en/packages/com.example.barcodescanner/)
 - [RedReader](https://f-droid.org/en/packages/org.quantumbadger.redreader)
+- [Syncthing](https://f-droid.org/en/packages/com.nutomic.syncthingandroid/)
 
 ### Aurora Store
 
