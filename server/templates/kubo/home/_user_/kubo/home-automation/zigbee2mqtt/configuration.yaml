@@ -17,8 +17,11 @@ advanced:
   pan_id: 0x1a63
 
 devices:
+  "0x84ba20fffe7321f6":
+    friendly_name: button_bedroom_gwen
+    legacy: false
   "0xec1bbdfffe9f5aaa":
-    friendly_name: button_bedroom_bed
+    friendly_name: button_bedroom_jens
     legacy: false
   "0xec1bbdfffe9c3b0e":
     friendly_name: button_bedroom_living
