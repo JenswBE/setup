@@ -1,0 +1,57 @@
+---
+- hosts: jingles
+  remote_user: jens
+  become: yes
+
+  tasks:
+    - name: Upgrade system
+      apt: upgrade=dist update_cache=true
+
+    - name: Install dependencies
+      ansible.builtin.package:
+        state: present
+        name: "{{ item }}"
+      loop:
+        - espeak
+        - mpd
+        - mpc
+
+    - name: Copy mpd config file
+      ansible.builtin.copy:
+        src: mpd.conf
+        dest: /etc/mpd.conf
+        owner: mpd
+        group: audio
+        mode: "640"
+        backup: true
+
+    - name: Grant users pulse access
+      command: adduser {{item}} pulse-access
+      with_items:
+        - root
+        - willemsensj
+        - mpd
+
+    - name: Install alsa-utils
+      apt: pkg=alsa-utils state=installed
+
+    - name: Unmute ALSA
+      command: amixer sset Master {{item}}
+      with_items:
+        - unmute
+        - 100%
+        - 75%
+
+    - name: Copy radio program
+      ansible.builtin.copy:
+        src: radio.py
+        dest: /usr/bin/radio
+        owner: root
+        group: root
+        mode: "555"
+
+    - name: restart machine
+      shell: sleep 2 && shutdown -r now "Ansible updates triggered"
+      async: 1
+      poll: 0
+      ignore_errors: true
