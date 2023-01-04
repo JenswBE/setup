@@ -58,7 +58,7 @@ PrivateKey = ${WG_CLIENT_PRIVATE_KEY}
 
 [Peer]
 PublicKey = ${WG_SERVER_PUBLIC_KEY}
-AllowedIPs = 10.10.0.1/32
+AllowedIPs = 10.10.0.50/32
 Endpoint = ${WG_SERVER_HOSTNAME}:51820
 PersistentKeepalive = 25
 PresharedKey = ${WG_PRESHARED_KEY}
