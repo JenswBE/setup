@@ -1,0 +1,10 @@
+[Unit]
+Description=Radio
+ 
+[Install]
+WantedBy=multi-user.target
+ 
+[Service]
+Type=simple
+PrivateTmp=true
+ExecStart=/usr/bin/radio 

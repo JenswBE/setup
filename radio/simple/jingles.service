@@ -1,0 +1,12 @@
+[Unit]
+Description=Jingles
+After=network.target
+
+[Install]
+WantedBy=multi-user.target
+
+[Service]
+Type=simple
+Restart=always
+# See https://www.vrt.be/nl/aanbod/kijk-en-luister/radio-luisteren/streamingslinks-radio/
+ExecStart=mplayer -nolirc -nojoystick -noar -noconsolecontrols -nomouseinput -ao alsa -loop 0 -cache 2048 "http://icecast.vrtcdn.be/ra2ant-high.mp3"
