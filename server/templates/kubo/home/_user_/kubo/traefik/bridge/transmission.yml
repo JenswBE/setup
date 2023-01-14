@@ -1,0 +1,5 @@
+http:
+  middlewares:
+    transmission-system-auth:
+      basicauth:
+        users: "{{ app_transmission_system_users }}"
