@@ -205,6 +205,24 @@ services:
       - "TZ={{ general_timezone }}"
 
   # ===========================================================================
+  # =   EMAIL USERNAME GENERATOR                                              =
+  # =   https://github.com/JenswBE/email-username-generator                   =
+  # ===========================================================================
+  email-username-generator:
+    <<: *defaults
+    image: jenswbe/email-username-generator:stable
+    container_name: email-username-generator
+    networks:
+      - traefik
+    environment:
+      - "TZ={{ general_timezone }}"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.email-username-generator.entrypoints=websecure"
+      - "traefik.http.routers.email-username-generator.rule=Host(`ext.{{ general_domain_default }}`)"
+      - "traefik.http.routers.email-username-generator.tls.certresolver=le-tls"
+
+  # ===========================================================================
   # =   Snipe-IT Asset Management                                             =
   # =   https://snipeitapp.com/                                               =
   # ===========================================================================
