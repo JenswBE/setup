@@ -1,9 +1,14 @@
 linters:
   enable-all: true
   disable:
+    - cyclop
     - deadcode # Deprecated
     - exhaustivestruct # Deprecated
     - exhaustruct
+    - funlen
+    - gci
+    - gochecknoglobals
+    - gocognit
     - golint # Deprecated
     - gomnd
     - ifshort # Deprecated
