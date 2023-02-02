@@ -13,13 +13,16 @@ linters:
     - gomnd
     - ifshort # Deprecated
     - interfacer # Deprecated
+    - lll
     - maligned # Deprecated
     - nlreturn
+    - nonamedreturns
     - nosnakecase # Deprecated
     - rowserrcheck # Not supported with generics. See https://github.com/golangci/golangci-lint/issues/2649.
     - scopelint # Deprecated
     - sqlclosecheck # Not supported with generics. See https://github.com/golangci/golangci-lint/issues/2649.
     - structcheck # Deprecated
+    - tagliatelle
     - testpackage
     - varcheck # Deprecated
     - varnamelen
