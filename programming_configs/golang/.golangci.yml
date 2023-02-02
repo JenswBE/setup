@@ -12,6 +12,7 @@ linters:
     - golint # Deprecated
     - gomnd
     - ifshort # Deprecated
+    - interfacebloat
     - interfacer # Deprecated
     - lll
     - maligned # Deprecated
