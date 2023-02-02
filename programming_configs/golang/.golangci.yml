@@ -16,6 +16,7 @@ linters:
     - ifshort # Deprecated
     - interfacebloat
     - interfacer # Deprecated
+    - ireturn # Doesn't work correctly with generics
     - lll
     - maligned # Deprecated
     - nlreturn
