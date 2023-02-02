@@ -19,6 +19,7 @@ linters:
     - ireturn # Doesn't work correctly with generics
     - lll
     - maligned # Deprecated
+    - nilnil
     - nlreturn
     - nonamedreturns
     - nosnakecase # Deprecated
