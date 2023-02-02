@@ -1,0 +1,27 @@
+linters:
+  enable-all: true
+  disable:
+    - deadcode # Deprecated
+    - exhaustivestruct # Deprecated
+    - exhaustruct
+    - golint # Deprecated
+    - gomnd
+    - ifshort # Deprecated
+    - interfacer # Deprecated
+    - maligned # Deprecated
+    - nlreturn
+    - nosnakecase # Deprecated
+    - rowserrcheck # Not supported with generics. See https://github.com/golangci/golangci-lint/issues/2649.
+    - scopelint # Deprecated
+    - sqlclosecheck # Not supported with generics. See https://github.com/golangci/golangci-lint/issues/2649.
+    - structcheck # Deprecated
+    - testpackage
+    - varcheck # Deprecated
+    - varnamelen
+    - wastedassign # Not supported with generics. See https://github.com/golangci/golangci-lint/issues/2649.
+    - wsl
+
+linters-settings:
+  paralleltest:
+    # Ignore missing calls to `t.Parallel()` and only report incorrect uses of it.
+    ignore-missing: true

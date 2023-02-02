@@ -1,0 +1,3 @@
+# Programming configs
+
+This folder contains common configs by programming language for linters, security checks, ...
