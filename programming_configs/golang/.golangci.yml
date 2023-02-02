@@ -9,6 +9,7 @@ linters:
     - gci
     - gochecknoglobals
     - gocognit
+    - godot
     - golint # Deprecated
     - gomnd
     - ifshort # Deprecated
