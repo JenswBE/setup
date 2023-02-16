@@ -38,6 +38,18 @@
     type: action
     subtype: 'off'
     discovery_id: 0xec1bbdfffe239446 action_off
+  - platform: device
+    domain: mqtt
+    device_id: 71ccbf98f3f8a857019723e65b7981f5
+    type: action
+    subtype: 'on'
+    discovery_id: 0x84ba20fffe7321f6 action_on
+  - platform: device
+    domain: mqtt
+    device_id: 71ccbf98f3f8a857019723e65b7981f5
+    type: action
+    subtype: 'off'
+    discovery_id: 0x84ba20fffe7321f6 action_off
   condition: []
   action:
   - event: bedroom_press
@@ -71,6 +83,18 @@
     type: action
     subtype: brightness_move_down
     discovery_id: 0xec1bbdfffe239446 action_brightness_move_down
+  - platform: device
+    domain: mqtt
+    device_id: 71ccbf98f3f8a857019723e65b7981f5
+    type: action
+    subtype: brightness_move_up
+    discovery_id: 0x84ba20fffe7321f6 action_brightness_move_up
+  - platform: device
+    domain: mqtt
+    device_id: 71ccbf98f3f8a857019723e65b7981f5
+    type: action
+    subtype: brightness_move_down
+    discovery_id: 0x84ba20fffe7321f6 action_brightness_move_down
   condition: []
   action:
   - event: bedroom_long_press

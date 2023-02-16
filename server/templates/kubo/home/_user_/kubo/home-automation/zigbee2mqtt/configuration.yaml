@@ -10,6 +10,9 @@ mqtt:
   base_topic: zigbee2mqtt
   server: "mqtt://ha-mosquitto"
 
+ota:
+    disable_automatic_update_check: true
+
 serial:
   port: /dev/zigbee
 
