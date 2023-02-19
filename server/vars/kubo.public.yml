@@ -43,6 +43,10 @@ firewall_additional_ports:
     port: 8096
     protos: [tcp]
     from_networks: [local_ipv4, local_ipv6]
+  - comment: Traefik internal (HTTP proxy to VMs)
+    port: 8100
+    protos: [tcp]
+    from_networks: [docker_ipv4]
   - comment: Graylog - GELF
     port: 12201
     protos: [tcp, udp]

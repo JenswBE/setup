@@ -1,5 +1,38 @@
 http:
   middlewares:
+    transmission-set-host:
+      headers:
+        customRequestHeaders:
+          Host: "transmission"
     transmission-system-auth:
       basicauth:
         users: "{{ app_transmission_system_users }}"
+
+  routers:
+    # For users
+    transmission:
+      entrypoints: ["websecure"]
+      rule: "Host(`torrent.{{ general_domain_default }}`)"
+      service: transmission
+      tls:
+        certresolver: le-tls
+      middlewares:
+        - forward-auth
+        - transmission-set-host
+
+    # For healthchecks and other integrations
+    transmission-system:
+      entrypoints: ["websecure"]
+      rule: "Host(`torrent-system.{{ general_domain_default }}`)"
+      service: transmission
+      tls:
+        certresolver: le-tls
+      middlewares:
+        - transmission-system-auth
+        - transmission-set-host
+
+  services:
+    transmission:
+      loadBalancer:
+        servers:
+          - url: "http://host.docker.internal:8100/"

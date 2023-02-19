@@ -1,0 +1,17 @@
+<filter name='wireguard-only'>
+  <!-- allow outgoing traffic to Wireguard IP -->
+  <rule action='accept' direction='out'>
+    <udp dstipaddr='{{ app_transmission_wireguard_endpoint_ip }}' dstportstart='51820' />
+  </rule>
+
+  <!-- allow incoming traffic from Wireguard IP -->
+  <rule action='accept' direction='in'>
+    <udp srcipaddr='{{ app_transmission_wireguard_endpoint_ip }}' srcportstart='51820' />
+  </rule>
+
+  <!-- drop all other traffic -->
+  <rule action='drop' direction='inout'>
+    <all/>
+  </rule>
+
+</filter>

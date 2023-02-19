@@ -40,6 +40,14 @@
         regexp: "^#?SystemMaxUse="
         line: SystemMaxUse=100M
 
+    - name: Ensure a RSA keypair exists
+      community.crypto.openssh_keypair:
+        path: "{{ ansible_user_dir }}/.ssh/id_rsa"
+        regenerate: never
+        owner: "{{ ansible_real_user_id }}"
+        group: "{{ ansible_real_group_id }}"
+        mode: "600"
+
     - name: Restart Journalctl if config was changed
       when: journald_limit.changed
       ansible.builtin.service:

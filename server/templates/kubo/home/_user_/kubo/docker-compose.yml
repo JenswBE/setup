@@ -64,6 +64,7 @@ services:
       - "--providers.file.watch=true"
       - "--entrypoints.tcp80.address=:80"
       - "--entrypoints.tcp443.address=:443"
+      - "--entrypoints.webinternal.address=:8100"
     volumes:
       - ./traefik/host:/conf:ro
 
@@ -534,54 +535,6 @@ services:
       - glitchtip
     environment:
       TZ: "{{ general_timezone }}"
-
-  # =========================
-  # =        TORRENT        =
-  # =========================
-  transmission: # "extra_hosts" in default config is not compatible with "network_mode"
-    restart: always
-    image: linuxserver/transmission:latest
-    container_name: transmission
-    network_mode: service:transmission-vpn
-    environment:
-      TZ: "{{ general_timezone }}"
-      PUID: "1000"
-      PGID: "1000"
-      TRANSMISSION_WEB_HOME: "/combustion-release/"
-    volumes:
-      - "{{ general_path_appdata }}/transmission/downloads:/downloads/incomplete"
-      - "/data/bulk/media/Nazien:/downloads/complete"
-      - "{{ general_path_appdata }}/transmission/config:/config"
-
-  transmission-vpn:
-    <<: *defaults
-    image: ghcr.io/wfg/openvpn-client:latest
-    container_name: transmission-vpn
-    networks:
-      - traefik
-    environment:
-      TZ: "{{ general_timezone }}"
-      KILL_SWITCH: nftables
-    cap_add:
-      - NET_ADMIN
-    devices:
-      - /dev/net/tun
-    volumes:
-      - "./transmission-vpn/config.ovpn:/data/vpn/config.ovpn:ro"
-      - "./transmission-vpn/mullvad_ca.crt:/data/vpn/mullvad_ca.crt:ro"
-      - "./transmission-vpn/mullvad_userpass.txt:/data/vpn/mullvad_userpass.txt:ro"
-      - "./transmission-vpn/update-resolv-conf:/data/vpn/update-resolv-conf:ro"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.transmission.entrypoints=websecure"
-      - "traefik.http.routers.transmission.rule=Host(`torrent.{{ general_domain_default }}`)"
-      - "traefik.http.routers.transmission.tls.certresolver=le-tls"
-      - "traefik.http.routers.transmission.middlewares=forward-auth@file"
-      - "traefik.http.routers.transmission-system.entrypoints=websecure"
-      - "traefik.http.routers.transmission-system.rule=Host(`torrent-system.{{ general_domain_default }}`)"
-      - "traefik.http.routers.transmission-system.tls.certresolver=le-tls"
-      - "traefik.http.routers.transmission-system.middlewares=transmission-system-auth@file"
-      - "traefik.http.services.transmission-{{ ansible_hostname }}.loadbalancer.server.port=9091"
 
   # =========================
   # =       MONITORING      =

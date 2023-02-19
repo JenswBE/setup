@@ -47,10 +47,10 @@ sudo pip install -r requirements.txt
 ansible-galaxy role install -r requirements.yml
 
 # Run complete setup for a host
-ansible-playbook main.yml --ask-vault-pass --ask-become-pass --limit <HOSTNAME>
+ansible-playbook main.yml --limit <HOSTNAME>
 
 # To only run Docker steps
-ansible-playbook main.yml --ask-vault-pass --ask-become-pass --tags docker --limit <HOSTNAME>
+ansible-playbook main.yml --tags docker --limit <HOSTNAME>
 
 # Available tags:
 #   - setup

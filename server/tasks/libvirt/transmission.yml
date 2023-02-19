@@ -1,0 +1,72 @@
+- name: libvirt Transmission setup
+  become: true
+  tags: ["setup", "libvirt", "transmission"]
+  block:
+    - name: Read public SSH key
+      register: ssh_pubkey
+      ansible.builtin.slurp:
+        src: "{{ ansible_user_dir }}/.ssh/id_rsa.pub"
+
+    - name: Copy CoreOS config
+      register: transmission_coreos_config
+      ansible.builtin.template:
+        src: libvirt/transmission/core-os.bu
+        dest: /opt/libvirt/transmission.bu
+        owner: root
+        group: root
+        mode: "644"
+
+    - name: Compile CoreOS config
+      when: transmission_coreos_config.changed
+      ansible.builtin.command:
+        chdir: /opt/libvirt
+        cmd: /opt/bin/butane --pretty --strict transmission.bu -o transmission.ign
+
+    - name: Check Transmission image exists
+      register: transmission_image
+      stat:
+        path: /var/lib/libvirt/images/transmission.qcow2
+
+    - name: Fetch CoreOS metadata
+      when: not transmission_image.stat.exists
+      register: coreos_metadata
+      ansible.builtin.uri:
+        url: https://builds.coreos.fedoraproject.org/streams/stable.json
+
+    - name: Set latest CoreOS version
+      when: not transmission_image.stat.exists
+      ansible.builtin.set_fact: latest_coreos_url="{{ coreos_metadata.json.architectures.x86_64.artifacts.qemu.formats['qcow2.xz'].disk.location }}"
+
+    - name: Get CoreOS image
+      when: not transmission_image.stat.exists
+      ansible.builtin.get_url:
+        url: "{{ latest_coreos_url }}"
+        dest: /var/lib/libvirt/images/transmission.qcow2.xz
+        group: root
+        owner: root
+        mode: "644"
+
+    - name: Extract CoreOS image
+      when: not transmission_image.stat.exists
+      ansible.builtin.command:
+        chdir: /var/lib/libvirt/images
+        cmd: unxz transmission.qcow2.xz
+
+    - name: Define VM
+      community.libvirt.virt:
+        command: define
+        xml: "{{ lookup('ansible.builtin.template', 'libvirt/transmission/machine.xml') }}"
+        autostart: yes
+
+    - name: Ensure VM can read ignition file
+      ansible.builtin.template:
+        src: libvirt/transmission/apparmor.txt
+        dest: /etc/apparmor.d/libvirt/libvirt-47da3a13-c0c2-480e-a740-ff9d556679f3
+        owner: root
+        group: root
+        mode: "644"
+
+    - name: Ensure VM is running
+      community.libvirt.virt:
+        name: transmission
+        state: running
