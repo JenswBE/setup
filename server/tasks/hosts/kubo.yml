@@ -16,6 +16,12 @@
 - include_tasks: tasks/nut_client_server.yml
   tags: ["setup", "nut"]
 
+- include_tasks: tasks/libvirt/setup.yml
+  tags: ["setup", "libvirt"]
+
+- include_tasks: tasks/libvirt/transmission.yml
+  tags: ["setup", "libvirt", "transmission"]
+
 - include_tasks: tasks/wireguard.yml
   vars:
     wg_interface_index: "{{ item.key }}"

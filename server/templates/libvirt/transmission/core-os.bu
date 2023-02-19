@@ -1,0 +1,200 @@
+variant: fcos
+version: 1.4.0
+passwd:
+  users:
+    - name: core
+      ssh_authorized_keys:
+        - "{{ ssh_pubkey['content'] | b64decode | trim }}"
+
+storage:
+  files:
+    # Basic setup
+    - path: /etc/hostname
+      mode: 0644
+      contents:
+        inline: kubo-transmission
+
+    # Network setup
+    - path: /etc/NetworkManager/conf.d/noauto.conf
+      mode: 0644
+      contents:
+        inline: |
+          [main]
+          # Do not do automatic (DHCP/SLAAC) configuration on ethernet devices
+          # with no other matching connections.
+          no-auto-default=*
+
+    - path: /etc/NetworkManager/system-connections/Host.nmconnection
+      mode: 0600
+      contents:
+        inline: |
+          [connection]
+          id=Host
+          uuid=200c2d16-edbe-3267-ba72-bb5a933833ad
+          type=ethernet
+          interface-name=enp1s0
+
+          [ipv4]
+          method=manual
+          address1=192.168.100.10/24
+          never-default=true
+          may-fail=false
+
+          [ipv6]
+          method=disabled
+
+    - path: /etc/NetworkManager/system-connections/Internet.nmconnection
+      mode: 0600
+      contents:
+        inline: |
+          [connection]
+          id=Internet
+          uuid=f13061a5-220c-349d-b55c-0d95eb9926a9
+          type=ethernet
+          interface-name=enp2s0
+
+          [ipv4]
+          method=manual
+          address1=192.168.210.10/24,192.168.210.1
+          dns=192.168.210.1;
+          may-fail=false
+
+          [ipv6]
+          method=disabled
+
+    - path: /etc/NetworkManager/dispatcher.d/99-remove-prefix-route
+      mode: 0700
+      contents:
+        inline: |
+          #!/usr/bin/bash
+          # This is a NetworkManager dispatcher script for deleting the
+          # prefix route of interface enp2s0. I didn't found a way to
+          # disable this behavior. With this route present, Wireguard
+          # doesn't work as intended.
+          ip route del 192.168.210.0/24 dev enp2s0 || true
+
+    - path: /etc/zincati/config.d/55-updates-strategy.toml
+      contents:
+        inline: |
+          [updates]
+          strategy = "periodic"
+          [[updates.periodic.window]]
+          days = [ "Sat" ]
+          start_time = "05:00"
+          length_minutes = 60
+
+    - path: /etc/sysctl.d/90-ipv4-ip-forward.conf
+      mode: 0644
+      contents:
+        inline: |
+          net.ipv4.ip_forward = 1
+
+    - path: /etc/sysctl.d/90-ipv6-ip-forwarding.conf
+      mode: 0644
+      contents:
+        inline: |
+          net.ipv6.conf.all.forwarding = 1
+
+    - path: /etc/wireguard/wg0.conf
+      mode: 0600
+      contents:
+        inline: |
+          [Interface]
+          PrivateKey = {{ app_transmission_wireguard_private_key }}
+          Address = {{ app_transmission_wireguard_addresses }}
+          DNS = {{ app_transmission_wireguard_dns }}
+          PostUp = iptables -I OUTPUT ! -o %i -m mark ! --mark $(wg show %i fwmark) -m addrtype ! --dst-type LOCAL -j REJECT && ip6tables -I OUTPUT ! -o %i -m mark ! --mark $(wg show %i fwmark) -m addrtype ! --dst-type LOCAL -j REJECT && iptables -I OUTPUT -p tcp -o enp1s0 -m multiport --sport 22,8080 -m conntrack --ctstate ESTABLISHED -j ACCEPT
+          PreDown = iptables -D OUTPUT ! -o %i -m mark ! --mark $(wg show %i fwmark) -m addrtype ! --dst-type LOCAL -j REJECT && ip6tables -D OUTPUT ! -o %i -m mark ! --mark $(wg show %i fwmark) -m addrtype ! --dst-type LOCAL -j REJECT && iptables -D OUTPUT -p tcp -o enp1s0 -m multiport --sport 22,8080 -m conntrack --ctstate ESTABLISHED -j ACCEPT
+
+          [Peer]
+          PublicKey = GE2WP6hmwVggSvGVWLgq2L10T3WM2VspnUptK5F4B0U=
+          AllowedIPs = 0.0.0.0/0,::0/0
+          Endpoint = {{ app_transmission_wireguard_endpoint_ip }}:51820
+
+  links:
+    - path: /etc/localtime
+      target: "../usr/share/zoneinfo/{{ general_timezone }}"
+
+systemd:
+  units:
+    - name: var-mnt-transmission_config.mount
+      enabled: true
+      contents: |
+        [Unit]
+        Description=Mount Transmission config directory
+
+        [Mount]
+        Type=virtiofs
+        What=transmission_config
+        Where=/var/mnt/transmission_config
+
+        [Install]
+        WantedBy=multi-user.target
+
+    - name: var-mnt-downloads_incomplete.mount
+      enabled: true
+      contents: |
+        [Unit]
+        Description=Mount incomplete downloads directory
+
+        [Mount]
+        Type=virtiofs
+        What=downloads_incomplete
+        Where=/var/mnt/downloads_incomplete
+
+        [Install]
+        WantedBy=multi-user.target
+
+    - name: var-mnt-downloads_complete.mount
+      enabled: true
+      contents: |
+        [Unit]
+        Description=Mount complete downloads directory
+
+        [Mount]
+        Type=virtiofs
+        What=downloads_complete
+        Where=/var/mnt/downloads_complete
+
+        [Install]
+        WantedBy=multi-user.target
+
+    - name: wg-quick@wg0.service
+      enabled: true
+
+    - name: transmission.service
+      enabled: true
+      contents: |
+        [Unit]
+        Description=Transmission
+        Wants=network-online.target
+        After=network-online.target
+        Requires=var-mnt-transmission_config.mount
+        After=var-mnt-transmission_config.mount
+        Requires=var-mnt-downloads_incomplete.mount
+        After=var-mnt-downloads_incomplete.mount
+        Requires=var-mnt-downloads_complete.mount
+        After=var-mnt-downloads_complete.mount
+
+        [Service]
+        TimeoutStartSec=0
+        ExecStartPre=-/bin/podman kill transmission
+        ExecStartPre=-/bin/podman rm transmission
+        ExecStartPre=/bin/podman pull docker.io/linuxserver/transmission:latest
+        ExecStart=/bin/podman run \
+                --name transmission \
+                --env 'TZ={{ general_timezone }}' \
+                --env 'PUID=1000' \
+                --env 'PGID=1000' \
+                --env 'PEERPORT={{ app_transmission_peer_port }}' \
+                --publish 8080:9091 \
+                --publish {{ app_transmission_peer_port }}:{{ app_transmission_peer_port }} \
+                --volume '/var/mnt/transmission_config:/config' \
+                --volume '/var/mnt/downloads_incomplete:/downloads/incomplete' \
+                --volume '/var/mnt/downloads_complete:/downloads/complete' \
+                --security-opt label=disable \
+                --label io.containers.autoupdate=registry \
+                docker.io/linuxserver/transmission:latest
+
+        [Install]
+        WantedBy=multi-user.target

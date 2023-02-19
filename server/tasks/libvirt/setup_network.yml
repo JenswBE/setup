@@ -1,0 +1,15 @@
+- name: libvirt setup network
+  become: true
+  tags: ["setup", "libvirt"]
+  block:
+    - name: Define network
+      community.libvirt.virt_net:
+        name: "{{ network_name }}"
+        command: define
+        xml: '{{ lookup("ansible.builtin.template", network_template_path) }}'
+        autostart: yes
+
+    - name: Activate network
+      community.libvirt.virt_net:
+        name: "{{ network_name }}"
+        state: active
