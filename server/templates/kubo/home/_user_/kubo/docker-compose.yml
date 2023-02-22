@@ -195,6 +195,7 @@ services:
       - home-automation
     volumes:
       - "./home-automation/mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro"
+      - "ha-mosquitto-data:/mosquitto/data/"
     environment:
       TZ: "{{ general_timezone }}"
 
@@ -857,6 +858,7 @@ volumes:
   crowdsec-config:
   crowdsec-db:
   glitchtip-db-dump:
+  ha-mosquitto-data:
   librenms-db-dump:
   miniflux-db-dump:
   nc-db-dump:
