@@ -72,6 +72,7 @@
   "redhat.telemetry.enabled": false,
   "telemetry.telemetryLevel": "off",
   "terminal.integrated.persistentSessionReviveProcess": "never",
+  "terminal.integrated.sendKeybindingsToShell": true,
   "workbench.colorTheme": "Dracula Pro",
   "workbench.startupEditor": "none",
   "[css]": {
