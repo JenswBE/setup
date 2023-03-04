@@ -1,5 +1,7 @@
 # How-to: Scan documents recto-verso
 
+**Note: SimpleScan supports this out of the box nowadays!**
+
 ## 1. Scanning
 
 1. Scan all front sides from feeder

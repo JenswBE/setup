@@ -15,6 +15,48 @@ flatpak update --appstream
 flatpak update
 rpm-ostree upgrade
 
+# Setup auto-update
+sudo tee /etc/systemd/system/flatpak-automatic.service <<EOF
+[Unit]
+Description=flatpak Automatic Update
+Documentation=man:flatpak(1)
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/flatpak update -y
+
+[Install]
+WantedBy=multi-user.target
+EOF
+sudo tee /etc/systemd/system/flatpak-automatic.timer <<EOF
+[Unit]
+Description=flatpak Automatic Update Trigger
+Documentation=man:flatpak(1)
+
+[Timer]
+OnBootSec=5m
+OnCalendar=0/6:00:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target
+EOF
+sudo tee /etc/rpm-ostreed.conf <<EOF
+# Entries in this file show the compile time defaults.
+# You can change settings by editing this file.
+# For option meanings, see rpm-ostreed.conf(5).
+
+[Daemon]
+AutomaticUpdatePolicy=stage
+IdleExitTimeout=60
+EOF
+sudo systemctl daemon-reload
+sudo systemctl enable --now /etc/systemd/system/flatpak-automatic.timer
+sudo systemctl enable --now rpm-ostreed-automatic.timer
+sudo systemctl enable --now rpm-ostree-countme.timer
+
 # Use Firefox from Flathub (more codecs)
 sudo rpm-ostree override remove firefox-langpacks firefox
 sudo flatpak install flathub-unfiltered org.mozilla.firefox
@@ -51,6 +93,7 @@ distrobox-create -Y -i public.ecr.aws/ubuntu/ubuntu:${UBUNTU_VERSION:?} -n ubunt
 distrobox-create -Y -i registry.fedoraproject.org/fedora-toolbox:${FEDORA_VERSION:?} --name fedora-toolbox-main
 
 # Setup GNOME
+gnome-extensions enable appindicatorsupport@rgcjonas.gmail.com
 dconf load / <<EOF
 [org/gnome/desktop/interface]
 clock-show-weekday=true
