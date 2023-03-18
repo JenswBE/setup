@@ -13,6 +13,7 @@ Services which are backed up:
 - Gandalf
   - N/A
 - Kubo
+  - `github-backup` (GitHub Backup): All GitHub repo's
   - `glitchtip-db` (Postgres): DB data
   - `ha` (Home Assistant): Config files
   - `librenms-db` (MariaDB): DB data
@@ -24,6 +25,10 @@ Services which are backed up:
 ## Validations
 
 To validate the backups, first follow [instructions to mount the archive](Restore%20Borg%20backup.md).
+
+### GitHub Backup
+
+**COMPLETE_ME**
 
 ### GoatCounter
 
