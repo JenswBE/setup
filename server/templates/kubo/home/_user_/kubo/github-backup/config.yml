@@ -1,0 +1,4 @@
+Username: JenswBE
+PersonalAccessToken: "{{ app_github_backup_pat }}"
+RemoveRedundantFolders: true
+BackupPath: /backup

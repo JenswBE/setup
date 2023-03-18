@@ -59,6 +59,7 @@
     - data-bulk.mount
     - data-important.mount
     - docker-update-containers.timer
+    - github-backup.timer
     - glitchtip-dump-db.timer
     - librenms-dump-db.timer
     - miniflux-dump-db.timer
