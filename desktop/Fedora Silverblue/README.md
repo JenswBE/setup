@@ -63,7 +63,7 @@ sudo flatpak install flathub-unfiltered org.mozilla.firefox
 
 # Install other software
 flatpak_install="flatpak install flathub-unfiltered --assumeyes --noninteractive --or-update"
-sudo $flatpak_install org.keepassxc.KeePassXC org.libreoffice.LibreOffice
+sudo $flatpak_install org.keepassxc.KeePassXC org.libreoffice.LibreOffice org.gnome.SimpleScan
 $flatpak_install --user com.nextcloud.desktopclient.nextcloud
 
 # Overlay packages
