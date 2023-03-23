@@ -5,6 +5,11 @@ x-defaults: &defaults
   restart: always
   extra_hosts:
     - "host.docker.internal:host-gateway"
+  deploy:
+    resources:
+      limits:
+        cpus: "2"
+        memory: 512M
 
 #################################################################
 #                            SERVICES                           #
@@ -21,7 +26,7 @@ services:
   # port and auto-configuration of the services/loadbalancers).
   traefik-host:
     <<: *defaults
-    image: traefik:latest
+    image: docker.io/library/traefik:latest
     container_name: traefik-host
     network_mode: host
     command:
@@ -35,7 +40,7 @@ services:
 
   traefik:
     <<: *defaults
-    image: traefik:latest
+    image: docker.io/library/traefik:latest
     container_name: traefik
     command:
       # - "--log.level=DEBUG"
@@ -77,7 +82,7 @@ services:
   traefik-forward-auth:
     <<: *defaults
     # Workaround while awaiting https://github.com/thomseddon/traefik-forward-auth/issues/112
-    # image: thomseddon/traefik-forward-auth:2
+    # image: docker.io/thomseddon/traefik-forward-auth:2
     build: ./traefik-forward-auth
     container_name: traefik-forward-auth
     networks:
@@ -118,10 +123,15 @@ services:
       - "traefik.http.routers.nextcloud.rule=Host(`nextcloud.{{ general_domain_default }}`, `bestanden.{{ general_domain_tuinfeest }}`)"
       - "traefik.http.routers.nextcloud.tls.certresolver=le-tls"
       - "traefik.http.routers.nextcloud.middlewares=nextcloud-redirect-dav@file, nextcloud-redirect-webfinger@file"
+    deploy:
+      resources:
+        limits:
+          cpus: "3"
+          memory: 4G
 
   nc-db:
     <<: *defaults
-    image: mariadb:10.6
+    image: docker.io/library/mariadb:10.6
     container_name: nc-db
     command: --transaction-isolation=READ-COMMITTED --log-bin=ROW --innodb-read-only-compressed=OFF
     networks:
@@ -151,7 +161,7 @@ services:
   # =========================
   nginx-tuinfeest-beta:
     <<: *defaults
-    image: nginxinc/nginx-unprivileged:alpine
+    image: docker.io/nginxinc/nginx-unprivileged:alpine
     container_name: nginx-tuinfeest-beta
     networks:
       - traefik
@@ -170,7 +180,7 @@ services:
   # =========================
   isa-fetchmail:
     <<: *defaults
-    image: jenswbe/imap-save-attachments:latest
+    image: docker.io/jenswbe/imap-save-attachments:latest
     container_name: isa-fetchmail
     volumes:
       - ./isa/fetchmailrc:/config/.fetchmailrc
@@ -181,7 +191,7 @@ services:
 
   isa-rclone:
     <<: *defaults
-    image: rclone/rclone:latest
+    image: docker.io/rclone/rclone:latest
     container_name: isa-rclone
     command: "move /data/ nextcloud:{{ app_isa_rclone_dav_path }} --delete-empty-src-dirs --verbose"
     restart: "no" # Will be called by systemd timer
@@ -197,7 +207,7 @@ services:
   # ===========================================================================
   delic:
     <<: *defaults
-    image: jenswbe/dead-link-checker:latest
+    image: docker.io/jenswbe/dead-link-checker:latest
     container_name: delic
     volumes:
       - "./delic/config.yml:/config.yml:ro,z"
@@ -210,7 +220,7 @@ services:
   # ===========================================================================
   email-username-generator:
     <<: *defaults
-    image: jenswbe/email-username-generator:stable
+    image: docker.io/jenswbe/email-username-generator:stable
     container_name: email-username-generator
     networks:
       - traefik
@@ -228,7 +238,7 @@ services:
   # ===========================================================================
   snipe-it:
     <<: *defaults
-    image: linuxserver/snipe-it:latest
+    image: docker.io/linuxserver/snipe-it:latest
     container_name: snipe-it
     depends_on:
       - snipe-it-db
@@ -255,7 +265,7 @@ services:
 
   snipe-it-db:
     <<: *defaults
-    image: mariadb:10
+    image: docker.io/library/mariadb:10
     container_name: snipe-it-db
     networks:
       - snipe-it
@@ -286,7 +296,7 @@ services:
   # ===========================================================================
   bjoetiek-frontend:
     <<: *defaults
-    image: jenswbe/bjoetiek-y-frontend:v2.4.1
+    image: docker.io/jenswbe/bjoetiek-y-frontend:v2.4.1
     container_name: bjoetiek-frontend
     networks:
       - bjoetiek
@@ -308,7 +318,7 @@ services:
 
   bjoetiek-backend:
     <<: *defaults
-    image: jenswbe/go-commerce:v0.5.2
+    image: docker.io/jenswbe/go-commerce:v0.5.2
     container_name: bjoetiek-backend
     depends_on:
       - bjoetiek-db
@@ -349,7 +359,7 @@ services:
 
   bjoetiek-db:
     <<: *defaults
-    image: postgres:13-alpine
+    image: docker.io/library/postgres:13-alpine
     container_name: bjoetiek-db
     networks:
       - bjoetiek
@@ -363,7 +373,7 @@ services:
 
   bjoetiek-imgproxy:
     <<: *defaults
-    image: darthsim/imgproxy:v3
+    image: docker.io/darthsim/imgproxy:v3
     container_name: bjoetiek-imgproxy
     environment:
       - "IMGPROXY_KEY={{ app_bjoetiek_image_proxy_key }}"
@@ -389,7 +399,7 @@ services:
   # ===========================================================================
   bjoetiek-test-frontend:
     <<: *defaults
-    image: jenswbe/bjoetiek-y-frontend:latest
+    image: docker.io/jenswbe/bjoetiek-y-frontend:latest
     container_name: bjoetiek-test-frontend
     networks:
       - bjoetiek-test
@@ -407,7 +417,7 @@ services:
 
   bjoetiek-test-backend:
     <<: *defaults
-    image: jenswbe/go-commerce:latest
+    image: docker.io/jenswbe/go-commerce:latest
     container_name: bjoetiek-test-backend
     depends_on:
       - bjoetiek-test-db
@@ -448,7 +458,7 @@ services:
 
   bjoetiek-test-db:
     <<: *defaults
-    image: postgres:13-alpine
+    image: docker.io/library/postgres:13-alpine
     container_name: bjoetiek-test-db
     networks:
       - bjoetiek-test
@@ -461,7 +471,7 @@ services:
 
   bjoetiek-test-imgproxy:
     <<: *defaults
-    image: darthsim/imgproxy:latest
+    image: docker.io/darthsim/imgproxy:latest
     container_name: bjoetiek-test-imgproxy
     environment:
       - "IMGPROXY_KEY={{ app_bjoetiek_test_image_proxy_key }}"
@@ -485,7 +495,7 @@ services:
   # ===========================================================================
   spellebel:
     <<: *defaults
-    image: jenswbe/spellebel-frontend:stable
+    image: docker.io/jenswbe/spellebel-frontend:stable
     container_name: spellebel
     networks:
       - traefik
@@ -516,7 +526,7 @@ services:
 
   spellebel-test:
     <<: *defaults
-    image: jenswbe/spellebel-frontend:latest
+    image: docker.io/jenswbe/spellebel-frontend:latest
     container_name: spellebel-test
     networks:
       - traefik
@@ -537,7 +547,7 @@ services:
 
   drpr:
     <<: *defaults
-    image: jenswbe/docker-rest-puller-restarter:stable
+    image: docker.io/jenswbe/docker-rest-puller-restarter:stable
     container_name: drpr
     networks:
       - traefik
@@ -560,7 +570,7 @@ services:
   # ===========================================================================
   candylicious-test-frontend:
     <<: *defaults
-    image: jenswbe/candylicious-frontend:latest
+    image: docker.io/jenswbe/candylicious-frontend:latest
     container_name: candylicious-test-frontend
     networks:
       - candylicious-test
@@ -577,7 +587,7 @@ services:
 
   candylicious-test-backend:
     <<: *defaults
-    image: jenswbe/go-commerce:latest
+    image: docker.io/jenswbe/go-commerce:latest
     container_name: candylicious-test-backend
     depends_on:
       - candylicious-test-db
@@ -620,7 +630,7 @@ services:
 
   candylicious-test-db:
     <<: *defaults
-    image: postgres:13-alpine
+    image: docker.io/library/postgres:13-alpine
     container_name: candylicious-test-db
     networks:
       - candylicious-test
@@ -633,7 +643,7 @@ services:
 
   candylicious-test-imgproxy:
     <<: *defaults
-    image: darthsim/imgproxy:latest
+    image: docker.io/darthsim/imgproxy:latest
     container_name: candylicious-test-imgproxy
     environment:
       - "IMGPROXY_KEY={{ app_candylicious_test_image_proxy_key }}"
@@ -657,7 +667,7 @@ services:
   # ===========================================================================
   oud-turnhoutsgebak-frontend:
     <<: *defaults
-    image: jenswbe/oud-turnhoutsgebak-frontend:latest
+    image: docker.io/jenswbe/oud-turnhoutsgebak-frontend:latest
     container_name: oud-turnhoutsgebak-frontend
     networks:
       - oud-turnhoutsgebak-test
@@ -685,7 +695,7 @@ services:
 
   oud-turnhoutsgebak-test-backend:
     <<: *defaults
-    image: jenswbe/go-commerce:latest
+    image: docker.io/jenswbe/go-commerce:latest
     container_name: oud-turnhoutsgebak-test-backend
     depends_on:
       - oud-turnhoutsgebak-test-db
@@ -723,7 +733,7 @@ services:
 
   oud-turnhoutsgebak-test-db:
     <<: *defaults
-    image: postgres:13-alpine
+    image: docker.io/library/postgres:13-alpine
     container_name: oud-turnhoutsgebak-test-db
     networks:
       - oud-turnhoutsgebak-test
@@ -770,7 +780,7 @@ services:
   # =========================
   uptime-kuma:
     <<: *defaults
-    image: louislam/uptime-kuma:1
+    image: docker.io/louislam/uptime-kuma:1
     container_name: uptime-kuma
     volumes:
       - "{{ general_path_appdata }}/uptime-kuma/data:/app/data"
@@ -822,10 +832,15 @@ services:
           `auth.{{ general_domain_candylicious }}`,
         )
       - "traefik.http.services.keycloak-{{ ansible_hostname }}.loadbalancer.server.port=8080"
+    deploy:
+      resources:
+        limits:
+          cpus: "2"
+          memory: 4G
 
   keycloak-db:
     <<: *defaults
-    image: postgres:12-alpine
+    image: docker.io/library/postgres:12-alpine
     container_name: keycloak-db
     networks:
       - keycloak
@@ -843,7 +858,7 @@ services:
   # =========================
   maintenance:
     <<: *defaults
-    image: nginxinc/nginx-unprivileged:alpine
+    image: docker.io/nginxinc/nginx-unprivileged:alpine
     container_name: maintenance
     user: "{{ ansible_real_user_id }}"
     networks:
@@ -862,7 +877,7 @@ services:
 
   wip:
     <<: *defaults
-    image: nginxinc/nginx-unprivileged:alpine
+    image: docker.io/nginxinc/nginx-unprivileged:alpine
     container_name: wip
     user: "{{ ansible_real_user_id }}"
     networks:
@@ -884,7 +899,7 @@ services:
   # =========================
   crowdsec:
     <<: *defaults
-    image: crowdsecurity/crowdsec:{{ crowdsec_version }}
+    image: docker.io/crowdsecurity/crowdsec:{{ crowdsec_version }}
     container_name: crowdsec
     ports:
       - 127.0.0.1:9000:8080
@@ -910,7 +925,7 @@ services:
   # =========================
   nc-calcardbackup:
     <<: *defaults
-    image: waja/calcardbackup:latest
+    image: docker.io/waja/calcardbackup:latest
     container_name: nc-calcardbackup
     networks:
       - backup-nc-db
@@ -926,7 +941,7 @@ services:
 
   borgmatic:
     <<: *defaults
-    image: b3vis/borgmatic:latest
+    image: docker.io/b3vis/borgmatic:latest
     container_name: borgmatic
     privileged: true # Required for borg mount
     cap_add:
@@ -956,6 +971,11 @@ services:
       - "BORG_PASSPHRASE={{ app_borgmatic_borg_passphrase }}"
       - "BORG_HOSTNAME_IS_UNIQUE=yes" # Automatically removes stale locks
       - "BORG_HOST_ID={{ ansible_hostname }}"
+    deploy:
+      resources:
+        limits:
+          cpus: "3"
+          memory: 4G
 
 # #################################################################
 # #                            VOLUMES                            #

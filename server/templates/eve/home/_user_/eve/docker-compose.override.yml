@@ -9,6 +9,11 @@ x-defaults: &defaults
   restart: always
   extra_hosts:
     - "host.docker.internal:host-gateway"
+  deploy:
+    resources:
+      limits:
+        cpus: "2"
+        memory: 512M
 
 #################################################################
 #                            SERVICES                           #
@@ -18,7 +23,7 @@ services:
 {% for year in range(2019,2022+1) %}
   nginx-tuinfeest-archive-{{ year }}:
     <<: *defaults
-    image: nginxinc/nginx-unprivileged:alpine
+    image: docker.io/nginxinc/nginx-unprivileged:alpine
     container_name: "nginx-tf-archive-{{ year }}"
     user: "{{ ansible_real_user_id }}"
     networks:

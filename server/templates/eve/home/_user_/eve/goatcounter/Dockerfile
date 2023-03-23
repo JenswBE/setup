@@ -1,4 +1,6 @@
-FROM alpine:latest as builder
+ARG GOATCOUNTER_IMAGE=docker.io/library/alpine:latest
+
+FROM ${GOATCOUNTER_IMAGE} as builder
 
 ARG arch
 ARG version
@@ -7,7 +9,7 @@ RUN wget "https://github.com/arp242/goatcounter/releases/download/${version:?}/g
 RUN gunzip goatcounter.gz
 RUN chmod +x goatcounter
 
-FROM alpine:latest
+FROM ${GOATCOUNTER_IMAGE}
 RUN mkdir /db
 COPY --from=builder goatcounter /usr/local/bin/goatcounter
 EXPOSE 80
