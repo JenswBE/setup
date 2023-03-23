@@ -5,6 +5,11 @@ x-defaults: &defaults
   restart: always
   extra_hosts:
     - "host.docker.internal:host-gateway"
+  deploy:
+    resources:
+      limits:
+        cpus: "2"
+        memory: 512M
 
 x-glitchtip-env: &glitchtip-env
   TZ: "{{ general_timezone }}"
@@ -55,7 +60,7 @@ services:
   # port and auto-configuration of the services/loadbalancers).
   traefik-host:
     <<: *defaults
-    image: traefik:latest
+    image: docker.io/library/traefik:latest
     container_name: traefik-host
     network_mode: host
     command:
@@ -70,7 +75,7 @@ services:
 
   traefik:
     <<: *defaults
-    image: traefik:latest
+    image: docker.io/library/traefik:latest
     container_name: traefik
     command:
       # - "--log.level=DEBUG"
@@ -111,7 +116,7 @@ services:
 
   traefik-forward-auth:
     <<: *defaults
-    image: thomseddon/traefik-forward-auth:2
+    image: docker.io/thomseddon/traefik-forward-auth:2
     container_name: traefik-forward-auth
     networks:
       - traefik
@@ -129,7 +134,7 @@ services:
   # =========================
   unifi-controller:
     <<: *defaults
-    image: linuxserver/unifi-controller:latest
+    image: docker.io/linuxserver/unifi-controller:latest
     container_name: unifi-controller
     environment:
       TZ: "{{ general_timezone }}"
@@ -153,7 +158,7 @@ services:
   # =========================
   ha:
     <<: *defaults
-    image: homeassistant/home-assistant:stable
+    image: docker.io/homeassistant/home-assistant:stable
     container_name: ha
     networks:
       - traefik
@@ -173,7 +178,7 @@ services:
 
   ha-zigbee2mqtt:
     <<: *defaults
-    image: koenkk/zigbee2mqtt:latest
+    image: docker.io/koenkk/zigbee2mqtt:latest
     container_name: ha-zigbee2mqtt
     networks:
       - home-automation
@@ -189,7 +194,7 @@ services:
 
   ha-mosquitto:
     <<: *defaults
-    image: eclipse-mosquitto:latest
+    image: docker.io/library/eclipse-mosquitto:latest
     container_name: ha-mosquitto
     networks:
       - home-automation
@@ -204,7 +209,7 @@ services:
   # =========================
   miniflux:
     <<: *defaults
-    image: miniflux/miniflux:latest
+    image: docker.io/miniflux/miniflux:latest
     container_name: miniflux
     networks:
       - traefik
@@ -232,7 +237,7 @@ services:
 
   miniflux-db:
     <<: *defaults
-    image: postgres:13-alpine
+    image: docker.io/library/postgres:13-alpine
     container_name: miniflux-db
     networks:
       - miniflux
@@ -249,7 +254,7 @@ services:
   # =========================
   plex:
     <<: *defaults
-    image: plexinc/pms-docker:latest
+    image: docker.io/plexinc/pms-docker:latest
     container_name: plex
     network_mode: host
     volumes:
@@ -264,10 +269,15 @@ services:
       TZ: "{{ general_timezone }}"
       PLEX_UID: "{{ ansible_real_user_id }}"
       PLEX_GID: "{{ ansible_real_group_id }}"
+    deploy:
+      resources:
+        limits:
+          cpus: "7"
+          memory: 4G
 
   jellyfin:
     <<: *defaults
-    image: jellyfin/jellyfin:latest
+    image: docker.io/jellyfin/jellyfin:latest
     container_name: jellyfin
     user: "{{ ansible_real_user_id }}:{{ ansible_real_group_id }}"
     group_add: # By id as these may not exist within the container. Needed to provide permissions to the VAAPI Devices
@@ -292,13 +302,18 @@ services:
       - "traefik.http.routers.jellyfin.rule=Host(`jellyfin.{{ general_domain_default }}`)"
       - "traefik.http.routers.jellyfin.tls.certresolver=le-tls"
       - "traefik.http.services.jellyfin-{{ ansible_hostname }}.loadbalancer.server.port=8096"
+    deploy:
+      resources:
+        limits:
+          cpus: "7"
+          memory: 4G
 
   # =========================
   # =   TINY MEDIA MANAGER  =
   # =========================
   tmm:
     <<: *defaults
-    image: romancin/tinymediamanager:latest
+    image: docker.io/romancin/tinymediamanager:latest
     container_name: tmm
     networks:
       - traefik
@@ -316,13 +331,18 @@ services:
       - "traefik.http.routers.tmm.tls.certresolver=le-tls"
       - "traefik.http.routers.tmm.middlewares=forward-auth@file"
       - "traefik.http.services.tmm-{{ ansible_hostname }}.loadbalancer.server.port=5800"
+    deploy:
+      resources:
+        limits:
+          cpus: "2"
+          memory: 2G
 
   # =========================
   # =       SYNCTHING       =
   # =========================
   syncthing:
     <<: *defaults
-    image: syncthing/syncthing:1
+    image: docker.io/syncthing/syncthing:1
     container_name: syncthing
     hostname: "{{ ansible_hostname }}"
     networks:
@@ -348,7 +368,7 @@ services:
   # =========================
   samba:
     <<: *defaults
-    image: dperson/samba:latest
+    image: docker.io/dperson/samba:latest
     container_name: samba
     ports:
       - "445:445"
@@ -367,7 +387,7 @@ services:
   # =========================
   nfs:
     <<: *defaults
-    image: erichough/nfs-server:latest
+    image: docker.io/erichough/nfs-server:latest
     container_name: nfs
     privileged: true # Required for mount several filesystems inside the container to support its operation
     ports:
@@ -414,10 +434,15 @@ services:
       - "traefik.http.routers.nextcloud.rule=Host(`nextcloud-media.{{ general_domain_default }}`)"
       - "traefik.http.routers.nextcloud.tls.certresolver=le-tls"
       - "traefik.http.routers.nextcloud.middlewares=nextcloud-redirect-dav@file, nextcloud-redirect-webfinger@file"
+    deploy:
+      resources:
+        limits:
+          cpus: "7"
+          memory: 4G
 
   nc-db:
     <<: *defaults
-    image: mariadb:10.6
+    image: docker.io/library/mariadb:10.6
     command: --transaction-isolation=READ-COMMITTED --log-bin=ROW --innodb-read-only-compressed=OFF
     container_name: nc-db
     networks:
@@ -446,7 +471,7 @@ services:
   # =========================
   nginx-hetvleermuizenkind:
     <<: *defaults
-    image: nginx:latest
+    image: docker.io/library/nginx:latest
     container_name: nginx-hetvleermuizenkind
     networks:
       - traefik
@@ -466,7 +491,7 @@ services:
   # Go to GlitchTip url /register to create first user
   glitchtip:
     <<: *defaults
-    image: glitchtip/glitchtip
+    image: docker.io/glitchtip/glitchtip:latest
     container_name: glitchtip
     hostname: "glitchtip.{{ general_domain_default }}" # Prevents unvalidated sender in Mailjet
     depends_on:
@@ -486,7 +511,7 @@ services:
 
   glitchtip-worker:
     <<: *defaults
-    image: glitchtip/glitchtip
+    image: docker.io/glitchtip/glitchtip:latest
     container_name: glitchtip-worker
     command: celery -A glitchtip worker -B -l INFO
     hostname: "glitchtip.{{ general_domain_default }}" # Prevents unvalidated sender in Mailjet
@@ -500,7 +525,7 @@ services:
 
   glitchtip-migrate:
     <<: *defaults
-    image: glitchtip/glitchtip
+    image: docker.io/glitchtip/glitchtip:latest
     container_name: glitchtip-migrate
     hostname: "glitchtip.{{ general_domain_default }}" # Prevents unvalidated sender in Mailjet
     restart: "no" # Only run on "docker compose up"
@@ -515,7 +540,7 @@ services:
 
   glitchtip-db:
     <<: *defaults
-    image: postgres:13-alpine
+    image: docker.io/library/postgres:13-alpine
     container_name: glitchtip-db
     networks:
       - glitchtip
@@ -530,7 +555,7 @@ services:
 
   glitchtip-redis:
     <<: *defaults
-    image: redis
+    image: docker.io/library/redis:latest
     container_name: glitchtip-redis
     networks:
       - glitchtip
@@ -542,7 +567,7 @@ services:
   # =========================
   # scrutiny:
   #   <<: *defaults
-  #   image: ghcr.io/analogj/scrutiny:master-omnibus
+  #   image: docker.io/ghcr.io/analogj/scrutiny:master-omnibus
   #   container_name: scrutiny
   #   cap_add:
   #     - SYS_RAWIO # Required for querying SMART data
@@ -571,7 +596,7 @@ services:
 
   graylog:
     <<: *defaults
-    image: graylog/graylog:4.3
+    image: docker.io/graylog/graylog:4.3
     container_name: graylog
     entrypoint: /usr/bin/tini -- wait-for-it graylog-elasticsearch:9200 --  /docker-entrypoint.sh
     volumes:
@@ -602,10 +627,15 @@ services:
       - "traefik.http.routers.graylog.rule=Host(`logs.{{ general_domain_default }}`)"
       - "traefik.http.routers.graylog.tls.certresolver=le-tls"
       - "traefik.http.services.graylog-{{ ansible_hostname }}.loadbalancer.server.port=9000"
+    deploy:
+      resources:
+        limits:
+          cpus: "4"
+          memory: 4G
 
   graylog-elasticsearch:
     <<: *defaults
-    image: docker.elastic.co/elasticsearch/elasticsearch-oss:7.10.2
+    image: docker.io/docker.elastic.co/elasticsearch/elasticsearch-oss:7.10.2
     container_name: graylog-elasticsearch
     environment:
       TZ: "{{ general_timezone }}"
@@ -617,19 +647,20 @@ services:
       memlock:
         soft: -1
         hard: -1
-    deploy:
-      resources:
-        limits:
-          memory: 1g
     networks:
       - graylog
     volumes:
       # WARNING: ElasticSearch expects the data folder been owned by 1000:1000!
       - "{{ general_path_appdata }}/graylog/elasticsearch/data:/usr/share/elasticsearch/data"
+    deploy:
+      resources:
+        limits:
+          cpus: "4"
+          memory: 4G
 
   graylog-mongodb:
     <<: *defaults
-    image: mongo:4.2
+    image: docker.io/library/mongo:4.2
     container_name: graylog-mongodb
     environment:
       TZ: "{{ general_timezone }}"
@@ -640,7 +671,7 @@ services:
 
   librenms:
     <<: *defaults
-    image: librenms/librenms:latest
+    image: docker.io/librenms/librenms:latest
     container_name: librenms
     hostname: librenms
     cap_add:
@@ -668,7 +699,7 @@ services:
 
   librenms-dispatcher:
     <<: *defaults
-    image: librenms/librenms:latest
+    image: docker.io/librenms/librenms:latest
     container_name: librenms-dispatcher
     hostname: librenms-dispatcher
     cap_add:
@@ -688,7 +719,7 @@ services:
 
   librenms-snmptrapd:
     <<: *defaults
-    image: librenms/librenms:latest
+    image: docker.io/librenms/librenms:latest
     container_name: librenms-snmptrapd
     hostname: librenms-snmptrapd
     cap_add:
@@ -709,7 +740,7 @@ services:
 
   librenms-db:
     <<: *defaults
-    image: mariadb:10.5
+    image: docker.io/library/mariadb:10.5
     container_name: librenms-db
     command:
       - "mysqld"
@@ -731,7 +762,7 @@ services:
 
   librenms-memcached:
     <<: *defaults
-    image: memcached:alpine
+    image: docker.io/library/memcached:alpine
     container_name: librenms-memcached
     networks:
       - librenms
@@ -740,7 +771,7 @@ services:
 
   librenms-redis:
     <<: *defaults
-    image: redis:5.0-alpine
+    image: docker.io/library/redis:5.0-alpine
     container_name: librenms-redis
     networks:
       - librenms
@@ -749,7 +780,7 @@ services:
 
   librenms-msmtpd:
     <<: *defaults
-    image: crazymax/msmtpd:latest
+    image: docker.io/crazymax/msmtpd:latest
     container_name: librenms-msmtpd
     networks:
       - librenms
@@ -770,7 +801,7 @@ services:
   # =========================
   crowdsec:
     <<: *defaults
-    image: crowdsecurity/crowdsec:{{ crowdsec_version }}
+    image: docker.io/crowdsecurity/crowdsec:{{ crowdsec_version }}
     container_name: crowdsec
     ports:
       - 127.0.0.1:9000:8080
@@ -807,7 +838,7 @@ services:
 
   borgmatic:
     <<: *defaults
-    image: b3vis/borgmatic:latest
+    image: docker.io/b3vis/borgmatic:latest
     container_name: borgmatic
     privileged: true # Required for borg mount
     cap_add:
@@ -837,6 +868,11 @@ services:
       BORG_PASSPHRASE: "{{ app_borgmatic_borg_passphrase }}"
       BORG_HOSTNAME_IS_UNIQUE: "yes" # Automatically removes stale locks
       BORG_HOST_ID: "{{ ansible_hostname }}"
+    deploy:
+      resources:
+        limits:
+          cpus: "4"
+          memory: 4G
 
 #################################################################
 #                            NETWORKS                           #

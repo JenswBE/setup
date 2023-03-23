@@ -5,6 +5,11 @@ x-defaults: &defaults
   restart: always
   extra_hosts:
     - "host.docker.internal:host-gateway"
+  deploy:
+    resources:
+      limits:
+        cpus: "2"
+        memory: 512M
 
 #################################################################
 #                            SERVICES                           #
@@ -22,7 +27,7 @@ services:
 
   blocky-pixelserv-tls: # Serves transparent pixels for Blocky
     <<: *defaults
-    image: imthai/pixelserv-tls:latest
+    image: docker.io/imthai/pixelserv-tls:latest
     container_name: blocky-pixelserv-tls
     ports:
       - "80:80" # HTTP
