@@ -522,6 +522,11 @@ services:
       - glitchtip
     environment:
       <<: *glitchtip-env
+    deploy:
+      resources:
+        limits:
+          cpus: "2"
+          memory: 2G
 
   glitchtip-migrate:
     <<: *defaults
