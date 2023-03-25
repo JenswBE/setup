@@ -35,6 +35,7 @@ sites:
   - url: https://klokracing.be
     ignored_links:
       - ^https://lambrettascooters.com # Known issue with TLS chain. Company is informed.
+      - ^https://www.yamahamotorsports.com/scooter # Page returns content, but with status 404.
     notify:
       - email_technical_en
 
