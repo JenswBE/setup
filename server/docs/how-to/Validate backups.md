@@ -28,7 +28,16 @@ To validate the backups, first follow [instructions to mount the archive](Restor
 
 ### GitHub Backup
 
-**COMPLETE_ME**
+```bash
+# List backup source
+sudo docker compose run -it --entrypoint "/bin/sh -c" github-backup "/usr/bin/find /backup -type d -name refs -exec sh -c 'cd {}/..; git log -1 --all --date-order --format=\"%cI => \${PWD##*/}\"' \; | sort -r | head -n 3"
+
+# List backup contents
+# Since Borgmatic uses BusyBox which doesn't support "execdir",
+# we have to use the "cd {}/.." trick instead.
+sudo docker exec borgmatic apk add git
+sudo docker exec borgmatic sh -c "find /mnt/borg/mnt/source/github-backup/backup -type d -name refs -exec bash -c 'cd {}/..; git log -1 --all --date-order --format=\"%cI => \${PWD##*/}\"' \; | sort -r | head -n 3"
+```
 
 ### GoatCounter
 
