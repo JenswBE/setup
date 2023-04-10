@@ -17,7 +17,7 @@ crowdsec_version: v1.3.4
 
 # Docker
 docker_users: []
-docker_compose_version: "v2.13.0"
+docker_compose_version: "v2.17.2"
 docker_compose_path: "/usr/libexec/docker/cli-plugins/docker-compose" # Also used for systemd units
 
 # Firewall
