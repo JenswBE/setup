@@ -3,9 +3,9 @@
   tags: ["setup", "crowdsec"]
   block:
     - name: CrowdSec - Add GPG key
-      ansible.builtin.apt_key:
+      ansible.builtin.get_url:
         url: https://packagecloud.io/crowdsec/crowdsec/gpgkey
-        state: present
+        dest: /etc/apt/trusted.gpg.d/crowdsec.asc
 
     - name: CrowdSec - Add Repository
       ansible.builtin.apt_repository:

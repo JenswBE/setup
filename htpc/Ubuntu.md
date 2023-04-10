@@ -46,6 +46,6 @@ sudo sed -i 's/^load-module module-suspend-on-idle/# load-module module-suspend-
 # Probably fix by kernel version bump from 3.13 to 3.15.
 # See https://xanmod.org/
 echo 'deb http://deb.xanmod.org releases main' | sudo tee /etc/apt/sources.list.d/xanmod-kernel.list
-wget -qO - https://dl.xanmod.org/gpg.key | sudo apt-key --keyring /etc/apt/trusted.gpg.d/xanmod-kernel.gpg add -
+wget -qO - https://dl.xanmod.org/gpg.key -O /etc/apt/trusted.gpg.d/xanmod.asc
 sudo apt update && sudo apt install linux-xanmod
 ```
