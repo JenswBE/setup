@@ -44,6 +44,21 @@
         - internet
         - wireguard
 
+    - name: Setup Wireguard only filter
+      register: wireguard_only_filter
+      ansible.builtin.template:
+        src: libvirt/networks/nwfilter-wireguard-only.xml
+        dest: /etc/libvirt/nwfilter/wireguard-only.xml
+        owner: root
+        group: root
+        mode: "600"
+
+    - name: Restart libvirtd
+      when: wireguard_only_filter.changed
+      systemd:
+        name: libvirtd
+        state: restarted
+
     - name: Create /opt/libvirt directory
       ansible.builtin.file:
         path: /opt/libvirt
