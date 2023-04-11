@@ -1,3 +1,6 @@
+[Unit]
+OnFailure=unit-fail-mail@%n.service
+
 [Mount]
 What=/dev/disk/by-uuid/43efa3c6-787f-41fe-91cb-a1535803edc4
 Where=/data/bulk
