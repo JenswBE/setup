@@ -13,7 +13,7 @@
 
     - name: Get latest smtp-cli binary
       ansible.builtin.get_url:
-        url: "https://github.com/JenswBE/smtp-cli/releases/download/{{ smtp_cli_latest['tag'] }}/smtp-cli_{{ smtp_cli_latest['tag'] }}_linux_amd64"
+        url: "https://github.com/JenswBE/smtp-cli/releases/download/{{ smtp_cli_latest['tag'] }}/smtp-cli_{{ smtp_cli_latest['tag'] }}_linux_{{ golang_arch }}"
         dest: /opt/bin/smtp-cli
         group: root
         owner: root
