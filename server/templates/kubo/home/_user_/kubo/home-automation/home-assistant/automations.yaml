@@ -109,13 +109,13 @@
   condition:
   - condition: device
     type: is_off
-    device_id: faa83853d17e7c6884b246564bc48a75
-    entity_id: light.lamp_warm_white
+    device_id: 3a77735519124063c6dc9919671c7c47
+    entity_id: light.0x90ab96fffe15a1fb
     domain: light
   action:
   - type: turn_on
-    device_id: faa83853d17e7c6884b246564bc48a75
-    entity_id: light.lamp_warm_white
+    device_id: 3a77735519124063c6dc9919671c7c47
+    entity_id: light.0x90ab96fffe15a1fb
     domain: light
     brightness_pct: 100
   mode: single
@@ -128,13 +128,13 @@
   condition:
   - condition: device
     type: is_off
-    device_id: faa83853d17e7c6884b246564bc48a75
-    entity_id: light.lamp_warm_white
+    device_id: 3a77735519124063c6dc9919671c7c47
+    entity_id: light.0x90ab96fffe15a1fb
     domain: light
   action:
   - type: turn_on
-    device_id: faa83853d17e7c6884b246564bc48a75
-    entity_id: light.lamp_warm_white
+    device_id: 3a77735519124063c6dc9919671c7c47
+    entity_id: light.0x90ab96fffe15a1fb
     domain: light
     brightness_pct: 1
   mode: single
@@ -149,13 +149,13 @@
   condition:
   - condition: device
     type: is_on
-    device_id: faa83853d17e7c6884b246564bc48a75
-    entity_id: light.lamp_warm_white
+    device_id: 3a77735519124063c6dc9919671c7c47
+    entity_id: light.0x90ab96fffe15a1fb
     domain: light
   action:
   - type: turn_off
-    device_id: faa83853d17e7c6884b246564bc48a75
-    entity_id: light.lamp_warm_white
+    device_id: 3a77735519124063c6dc9919671c7c47
+    entity_id: light.0x90ab96fffe15a1fb
     domain: light
   mode: single
 - id: '1610806089787'
