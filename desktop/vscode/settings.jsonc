@@ -69,6 +69,7 @@
     }
   },
   "go.buildTags": "e2e",
+  "go.formatTool": "gofumpt",
   "go.toolsGopath": "~/go",
   "go.toolsManagement.autoUpdate": true,
   "prettier.prettierPath": "/usr/local/lib/node_modules/prettier",
