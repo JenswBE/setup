@@ -442,7 +442,7 @@ services:
 
   nc-db:
     <<: *defaults
-    image: docker.io/library/mariadb:10.6
+    image: docker.io/library/mariadb:10.11
     command: --transaction-isolation=READ-COMMITTED --log-bin=ROW --innodb-read-only-compressed=OFF
     container_name: nc-db
     networks:
@@ -745,7 +745,7 @@ services:
 
   librenms-db:
     <<: *defaults
-    image: docker.io/library/mariadb:10.5
+    image: docker.io/library/mariadb:10.11
     container_name: librenms-db
     command:
       - "mysqld"
