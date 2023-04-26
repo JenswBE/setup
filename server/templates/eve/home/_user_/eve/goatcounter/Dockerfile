@@ -5,7 +5,7 @@ FROM ${GOATCOUNTER_IMAGE} as builder
 ARG arch
 ARG version
 
-RUN wget "https://github.com/arp242/goatcounter/releases/download/${version:?}/goatcounter-dev-linux-${arch:?}.gz" -O goatcounter.gz
+RUN wget "https://github.com/arp242/goatcounter/releases/download/${version:?}/goatcounter-${version:?}-linux-${arch:?}.gz" -O goatcounter.gz
 RUN gunzip goatcounter.gz
 RUN chmod +x goatcounter
 
