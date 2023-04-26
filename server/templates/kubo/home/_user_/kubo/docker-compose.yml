@@ -665,7 +665,7 @@ services:
 
   graylog-mongodb:
     <<: *defaults
-    image: docker.io/library/mongo:4.2
+    image: docker.io/library/mongo:4.4
     container_name: graylog-mongodb
     environment:
       TZ: "{{ general_timezone }}"
