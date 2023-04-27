@@ -140,7 +140,7 @@ services:
       TZ: "{{ general_timezone }}"
       PUID: "1000"
       PGID: "1000"
-      MEM_LIMIT: "512M"
+      MEM_LIMIT: "512"
     volumes:
       - "{{ general_path_appdata }}/unifi-controller/config:/config"
     ports:
