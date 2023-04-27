@@ -442,6 +442,8 @@ services:
 
   nc-db:
     <<: *defaults
+    # Nextcloud currently only supports up to 10.6.
+    # See https://docs.nextcloud.com/server/26/admin_manual/installation/system_requirements.html
     image: docker.io/library/mariadb:10.6
     command: --transaction-isolation=READ-COMMITTED --log-bin=ROW --innodb-read-only-compressed=OFF
     container_name: nc-db
@@ -745,6 +747,8 @@ services:
 
   librenms-db:
     <<: *defaults
+    # Unfortunately, LibreNMS doesn't provide any docs on supported DB version.
+    # Therefore, keeping this version until they explicitly announce a newer version to work.
     image: docker.io/library/mariadb:10.5
     container_name: librenms-db
     command:
