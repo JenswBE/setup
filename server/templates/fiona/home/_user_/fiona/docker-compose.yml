@@ -15,6 +15,9 @@ x-defaults: &defaults
 #                            SERVICES                           #
 #################################################################
 services:
+  # ==========================
+  # =         BLOCKY         =
+  # ==========================
   blocky:
     <<: *defaults
     image: ghcr.io/0xerr0r/blocky:latest
@@ -42,3 +45,28 @@ services:
       # sudo nano /root/ca/ca.crt
       # sudo chmod 600 /root/ca/ca.crt
       - /root/ca:/var/cache/pixelserv
+
+  # ==========================
+  # =    UNIFI CONTROLLER    =
+  # ==========================
+  unifi-controller:
+    <<: *defaults
+    image: docker.io/linuxserver/unifi-controller:latest
+    container_name: unifi-controller
+    environment:
+      TZ: "{{ general_timezone }}"
+      PUID: "1000"
+      PGID: "1000"
+      MEM_LIMIT: "1024"
+      MEM_STARTUP: "1024"
+    volumes:
+      - "{{ general_path_appdata }}/unifi-controller/config:/config"
+    ports:
+      - "10001:10001/udp" # Required for AP discovery
+      - "8080:8080" # Required for device communication
+      - "8443:8443"
+    deploy:
+      resources:
+        limits:
+          cpus: "2"
+          memory: 2G
