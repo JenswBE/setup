@@ -748,8 +748,9 @@ services:
   librenms-db:
     <<: *defaults
     # Unfortunately, LibreNMS doesn't provide any docs on supported DB version.
-    # Therefore, keeping this version until they explicitly announce a newer version to work.
-    image: docker.io/library/mariadb:10.5
+    # They support Ubuntu 22.04, which currently (2023-04-27) has version 10.6
+    # See https://packages.ubuntu.com/jammy/mariadb-server
+    image: docker.io/library/mariadb:10.6
     container_name: librenms-db
     command:
       - "mysqld"
@@ -780,7 +781,10 @@ services:
 
   librenms-redis:
     <<: *defaults
-    image: docker.io/library/redis:5.0-alpine
+    # Unfortunately, LibreNMS doesn't provide any docs on supported Redis version.
+    # They support Ubuntu 22.04, which currently (2023-04-27) has version 6.0.
+    # See https://packages.ubuntu.com/jammy/redis
+    image: docker.io/library/redis:6.0-alpine
     container_name: librenms-redis
     networks:
       - librenms
