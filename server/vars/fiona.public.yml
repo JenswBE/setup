@@ -15,6 +15,14 @@ firewall_additional_ports:
     port: 7500
     protos: [tcp]
     from_networks: [local_ipv4, local_ipv6]
+  - comment: UniFi - Device communication
+    port: 8080
+    protos: [tcp]
+    from_networks: [local_ipv4, local_ipv6]
+  - comment: UniFi - AP discovery
+    port: 10001
+    protos: [udp]
+    from_networks: [local_ipv4, local_ipv6]
   - comment: Wireguard
     port: 51821
     protos: [udp]
