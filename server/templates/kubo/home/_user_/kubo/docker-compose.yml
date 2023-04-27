@@ -776,7 +776,7 @@ services:
 
   librenms-redis:
     <<: *defaults
-    image: docker.io/library/redis:5.0-alpine
+    image: docker.io/library/redis:7.0-alpine
     container_name: librenms-redis
     networks:
       - librenms
