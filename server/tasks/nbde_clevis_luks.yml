@@ -22,7 +22,7 @@
 
           # Client - Ubuntu
           sudo apt install clevis clevis-luks clevis-initramfs
-          sudo update-initramfs -u -k 'all' 
+          sudo update-initramfs -u -k 'all'
 
           # Client - Fedora
           sudo dnf install clevis clevis-luks clevis-dracut

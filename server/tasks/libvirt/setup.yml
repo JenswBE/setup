@@ -1,4 +1,4 @@
-- name: libvirt setup
+- name: Setup libvirt
   become: true
   tags: ["setup", "libvirt"]
   block:
@@ -35,10 +35,10 @@
         state: absent
 
     - name: Setup networks
-      include_tasks: tasks/libvirt/setup_network.yml
+      ansible.builtin.include_tasks: tasks/libvirt/setup_network.yml
       vars:
-        - network_name: "{{ item }}"
-        - network_template_path: "libvirt/networks/{{ item }}.xml"
+        network_name: "{{ item }}"
+        network_template_path: "libvirt/networks/{{ item }}.xml"
       loop:
         - host
         - internet
@@ -55,7 +55,7 @@
 
     - name: Restart libvirtd
       when: wireguard_only_filter.changed
-      systemd:
+      ansible.builtin.systemd:
         name: libvirtd
         state: restarted
 

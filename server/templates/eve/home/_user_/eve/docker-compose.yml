@@ -251,7 +251,7 @@ services:
       - "{{ general_path_appdata }}/snipe-it/snipe-it/config:/config"
     environment:
       - "TZ={{ general_timezone }}"
-      - "NGINX_APP_URL=:80"
+      - "APP_URL=https://assets.{{ general_domain_default }}"
       - "MYSQL_PORT_3306_TCP_ADDR=snipe-it-db"
       - "MYSQL_PORT_3306_TCP_PORT=3306"
       - "MYSQL_DATABASE=snipe"

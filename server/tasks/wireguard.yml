@@ -3,7 +3,9 @@
   tags: ["setup", "wireguard"]
   block:
     - name: Install Wireguard
-      ansible.builtin.package: name=wireguard state=present
+      ansible.builtin.package:
+        name: wireguard
+        state: present
 
     - name: Setup Wireguard config
       register: wireguard_config

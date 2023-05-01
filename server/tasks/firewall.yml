@@ -3,7 +3,9 @@
   tags: ["setup", "firewall"]
   block:
     - name: UFW - Ensure is installed
-      ansible.builtin.package: name=ufw state=present
+      ansible.builtin.package:
+        name: ufw
+        state: present
 
     - name: UFW - Clear current firewall rules
       community.general.ufw:
@@ -19,8 +21,8 @@
       connection: local
       register: parse_ports
       become: false
-      ansible.builtin.shell:
-        cmd: python3 helpers/parse_firewall_ports.py '{{ firewall_additional_ports | to_json }}'
+      ansible.builtin.command:
+        cmd: /usr/bin/python3 helpers/parse_firewall_ports.py '{{ firewall_additional_ports | to_json }}'
 
     - name: UFW - Allow additional ports
       community.general.ufw:

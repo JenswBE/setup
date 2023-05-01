@@ -1,4 +1,4 @@
-- name: libvirt Transmission setup
+- name: Setup libvirt Transmission
   become: true
   tags: ["setup", "libvirt", "transmission"]
   block:
@@ -24,7 +24,7 @@
 
     - name: Check Transmission image exists
       register: transmission_image
-      stat:
+      ansible.builtin.stat:
         path: /var/lib/libvirt/images/transmission.qcow2
 
     - name: Fetch CoreOS metadata
@@ -35,7 +35,8 @@
 
     - name: Set latest CoreOS version
       when: not transmission_image.stat.exists
-      ansible.builtin.set_fact: latest_coreos_url="{{ coreos_metadata.json.architectures.x86_64.artifacts.qemu.formats['qcow2.xz'].disk.location }}"
+      ansible.builtin.set_fact:
+        latest_coreos_url: "{{ coreos_metadata.json.architectures.x86_64.artifacts.qemu.formats['qcow2.xz'].disk.location }}"
 
     - name: Get CoreOS image
       when: not transmission_image.stat.exists
@@ -56,7 +57,7 @@
       community.libvirt.virt:
         command: define
         xml: "{{ lookup('ansible.builtin.template', 'libvirt/transmission/machine.xml') }}"
-        autostart: yes
+        autostart: true
 
     - name: Ensure VM can read ignition file
       ansible.builtin.template:
