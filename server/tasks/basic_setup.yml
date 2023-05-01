@@ -3,7 +3,7 @@
   tags: ["setup"]
   block:
     - name: Set timezone
-      ansible.builtin.timezone:
+      community.general.timezone:
         name: "{{ general_timezone }}"
 
     - name: Install base packages

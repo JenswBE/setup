@@ -23,6 +23,6 @@
 
     - name: Restart systemd-resolved
       when: disable_dns_stub_listener.changed
-      systemd:
+      ansible.builtin.systemd:
         name: "systemd-resolved"
         state: restarted

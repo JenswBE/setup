@@ -13,7 +13,7 @@
     owner: "{{ destination_owner }}"
     group: "{{ destination_group }}"
     mode: "{{ destination_mode_dirs }}"
-  with_filetree: templates/{{ templates_folder }}
+  with_community.general.filetree: templates/{{ templates_folder }}
   when: item.state == 'directory'
   changed_when: false
   tags: ["always"]
@@ -26,7 +26,7 @@
     owner: "{{ destination_owner }}"
     group: "{{ destination_group }}"
     mode: "{{ destination_mode_files }}"
-  with_filetree: templates/{{ templates_folder }}
+  with_community.general.filetree: templates/{{ templates_folder }}
   when: item.state == 'file' and item.path is not search(".+\.(png|jpg)$")
   changed_when: false
   tags: ["always"]
@@ -39,14 +39,14 @@
     owner: "{{ destination_owner }}"
     group: "{{ destination_group }}"
     mode: "{{ destination_mode_files }}"
-  with_filetree: templates/{{ templates_folder }}
+  with_community.general.filetree: templates/{{ templates_folder }}
   when: item.state == 'file' and item.path is search(".+\.(png|jpg)$")
   changed_when: false
   tags: ["always"]
 
 - name: Sync temporary dir to destination
   become: true
-  ansible.builtin.synchronize:
+  ansible.posix.synchronize:
     src: "{{ tmp_dir.path }}/"
     dest: "{{ destination_folder }}"
     archive: false

@@ -8,15 +8,15 @@
         name: nut-client
 
     - name: Copy NUT config
-      include_tasks: tasks/helpers/copy_templates_folder.yml
+      ansible.builtin.include_tasks: tasks/helpers/copy_templates_folder.yml
       vars:
-        - templates_folder: "{{ ansible_hostname }}/etc/nut"
-        - destination_folder: "/etc/nut"
-        - destination_owner: root
-        - destination_group: nut
-        - destination_mode_files: "640"
-        - destination_mode_dirs: "750"
-        - destination_delete_extra: false
+        templates_folder: "{{ ansible_hostname }}/etc/nut"
+        destination_folder: "/etc/nut"
+        destination_owner: root
+        destination_group: nut
+        destination_mode_files: "640"
+        destination_mode_dirs: "750"
+        destination_delete_extra: false
 
     - name: Copy upssched-cmd
       ansible.builtin.copy:
