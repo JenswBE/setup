@@ -1,4 +1,5 @@
-- hosts: all
+- name: Setup Fedora Silverblue on an HTPC
+  hosts: all
 
   tasks:
     - name: Add /var/media mount
@@ -14,12 +15,12 @@
     - name: Force systemd reload
       become: true
       when: add_var_media_mount.changed
-      systemd:
+      ansible.builtin.systemd:
         daemon_reload: true
 
     - name: Enable /var/media mount
       become: true
-      systemd:
+      ansible.builtin.systemd:
         name: var-media.mount
         state: started
         enabled: true
@@ -32,7 +33,7 @@
 
     - name: Update metadata
       ansible.builtin.command: flatpak update --user --appstream
-      changed_when: False
+      changed_when: false
 
     - name: Install apps
       community.general.flatpak:
@@ -49,7 +50,7 @@
 
     - name: Ensure Kodi has access to /var/media
       ansible.builtin.command: flatpak override --user tv.kodi.Kodi --filesystem=home --filesystem=/var/media
-      changed_when: False
+      changed_when: false
 
     - name: Add input-remapper repo
       become: true
