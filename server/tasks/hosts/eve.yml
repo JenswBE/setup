@@ -1,7 +1,9 @@
-- include_tasks: tasks/logging.yml
+- name: Include logging tasks
+  ansible.builtin.include_tasks: tasks/logging.yml
   tags: ["setup", "logging"]
 
-- include_tasks: tasks/wireguard.yml
+- name: Include Wireguard tasks
+  ansible.builtin.include_tasks: tasks/wireguard.yml
   vars:
     wg_interface_index: "{{ item.key }}"
     wg_config: "{{ item.value }}"
@@ -9,26 +11,26 @@
   tags: ["setup", "wireguard"]
 
 - name: Copy systemd system unit templates
-  include_tasks: tasks/helpers/copy_templates_folder.yml
+  ansible.builtin.include_tasks: tasks/helpers/copy_templates_folder.yml
   vars:
-    - templates_folder: "{{ ansible_hostname }}/etc/systemd/system"
-    - destination_folder: "/etc/systemd/system"
-    - destination_owner: root
-    - destination_group: root
-    - destination_mode_files: "600"
-    - destination_mode_dirs: "700"
-    - destination_delete_extra: false
+    templates_folder: "{{ ansible_hostname }}/etc/systemd/system"
+    destination_folder: "/etc/systemd/system"
+    destination_owner: root
+    destination_group: root
+    destination_mode_files: "600"
+    destination_mode_dirs: "700"
+    destination_delete_extra: false
   tags: ["systemd", "mail_on_failed_unit"]
 
 - name: Force systemd reload
   become: true
-  systemd:
+  ansible.builtin.systemd:
     daemon_reload: true
   tags: ["systemd", "mail_on_failed_unit"]
 
 - name: Enable systemd timers and mounts
   become: true
-  systemd:
+  ansible.builtin.systemd:
     name: "{{ item }}"
     state: started
     enabled: true
@@ -47,14 +49,21 @@
     - snipe-it-dump-db.timer
   tags: ["systemd"]
 
+- name: Docker login to GHCR
+  become: true
+  changed_when: false
+  ansible.builtin.command:
+    cmd: "/usr/bin/docker login -u USERNAME -p {{ docker_ghcr_personal_access_token }} ghcr.io"
+  tags: ["docker"]
+
 - name: Copy home/_user_/eve templates
-  include_tasks: tasks/helpers/copy_templates_folder.yml
+  ansible.builtin.include_tasks: tasks/helpers/copy_templates_folder.yml
   vars:
-    - templates_folder: "{{ ansible_hostname }}/home/_user_/eve"
-    - destination_folder: "{{ ansible_user_dir }}/{{ ansible_hostname }}"
-    - destination_owner: "{{ ansible_real_user_id }}"
-    - destination_group: "{{ ansible_real_group_id }}"
-    - destination_mode_files: "600"
-    - destination_mode_dirs: "700"
-    - destination_delete_extra: true
+    templates_folder: "{{ ansible_hostname }}/home/_user_/eve"
+    destination_folder: "{{ ansible_user_dir }}/{{ ansible_hostname }}"
+    destination_owner: "{{ ansible_real_user_id }}"
+    destination_group: "{{ ansible_real_group_id }}"
+    destination_mode_files: "600"
+    destination_mode_dirs: "700"
+    destination_delete_extra: true
   tags: ["docker"]
