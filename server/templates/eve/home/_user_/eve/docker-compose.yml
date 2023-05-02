@@ -989,8 +989,5 @@ networks:
   oud-turnhoutsgebak-test:
     name: oud-turnhoutsgebak-test
 
-  snipe-it:
-    name: snipe-it
-
   traefik:
     name: traefik
