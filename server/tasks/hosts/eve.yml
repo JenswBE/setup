@@ -46,7 +46,6 @@
     - nextcloud-maps-scan-photos.timer
     - nextcloud-preview-generator.timer
     - nextcloud-update-apps.timer
-    - snipe-it-dump-db.timer
   tags: ["systemd"]
 
 - name: Docker login to GHCR

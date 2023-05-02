@@ -21,7 +21,6 @@ VPS
 - Dump Keycloak DB (`templates/eve/etc/systemd/system/keycloak-dump-db.timer`)
 - Dump Nextcloud DB (`templates/eve/etc/systemd/system/nextcloud-dump-db.timer`)
 - Dump Nextcloud calendars and contacts (`templates/eve/etc/systemd/system/nextcloud-calcardbackup.timer`)
-- Dump Snipe-IT DB (`templates/eve/etc/systemd/system/snipe-it-dump-db.service`)
 
 ### 03:00 Perform backup
 

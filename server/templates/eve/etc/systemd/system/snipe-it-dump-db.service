@@ -1,6 +1,0 @@
-[Unit]
-Description=Dump Snipe-IT DB for backup
-OnFailure=unit-fail-mail@%n.service
-
-[Service]
-ExecStart=/usr/bin/docker exec snipe-it-db bash -c "mysqldump --default-character-set=utf8mb4 --single-transaction -u root -p$${MYSQL_ROOT_PASSWORD} snipe > /backup/snipe.sqldump"
