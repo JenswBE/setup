@@ -5,7 +5,7 @@ upstream:
     - 192.168.50.1
 
 blocking:
-  blockType: 192.168.50.60
+  blockType: 192.168.50.61
   blackLists:
     base:
       - https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/gambling-porn/hosts

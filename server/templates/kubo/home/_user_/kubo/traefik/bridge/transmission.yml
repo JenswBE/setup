@@ -5,13 +5,14 @@ http:
         customRequestHeaders:
           Host: "transmission"
     transmission-system-auth:
-      basicauth:
-        users: "{{ app_transmission_system_users }}"
+      basicAuth:
+        users:
+          - "{{ app_transmission_system_users }}"
 
   routers:
     # For users
     transmission:
-      entrypoints: ["websecure"]
+      entryPoints: ["websecure"]
       rule: "Host(`torrent.{{ general_domain_default }}`)"
       service: transmission
       tls:
@@ -22,7 +23,7 @@ http:
 
     # For healthchecks and other integrations
     transmission-system:
-      entrypoints: ["websecure"]
+      entryPoints: ["websecure"]
       rule: "Host(`torrent-system.{{ general_domain_default }}`)"
       service: transmission
       tls:
