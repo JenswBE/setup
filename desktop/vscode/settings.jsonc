@@ -75,6 +75,7 @@
   "prettier.prettierPath": "/usr/local/lib/node_modules/prettier",
   "redhat.telemetry.enabled": false,
   "telemetry.telemetryLevel": "off",
+  "terminal.integrated.allowChords": false,
   "terminal.integrated.persistentSessionReviveProcess": "never",
   "terminal.integrated.sendKeybindingsToShell": true,
   "workbench.colorTheme": "Dracula Pro",
