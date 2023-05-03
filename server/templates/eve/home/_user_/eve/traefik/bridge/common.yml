@@ -4,7 +4,7 @@ http:
       headers:
         # Based on https://owasp.org/www-project-secure-headers/#div-bestpractices
         contentTypeNosniff: true
-        customBrowserXssValue: 0
+        customBrowserXSSValue: "0"
         frameDeny: false # Gives troubles with Keycloak and seems impossible to override for single service
         referrerPolicy: no-referrer
         stsIncludeSubdomains: true

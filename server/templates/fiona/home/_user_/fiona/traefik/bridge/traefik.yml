@@ -1,0 +1,17 @@
+http:
+  routers:
+    api:
+      entryPoints: ["websecure"]
+      rule: "Host(`traefik-{{ ansible_hostname }}.{{ general_domain_local }}`)"
+      service: api@internal
+      tls:
+        certresolver: le-dns
+      middlewares:
+        - secure-https
+
+    ping:
+      entryPoints: ["websecure"]
+      rule: "Host(`ping-{{ ansible_hostname }}.{{ general_domain_local }}`)"
+      service: ping@internal
+      tls:
+        certresolver: le-dns

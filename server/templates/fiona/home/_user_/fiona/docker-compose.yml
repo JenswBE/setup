@@ -15,6 +15,68 @@ x-defaults: &defaults
 #                            SERVICES                           #
 #################################################################
 services:
+  # =========================
+  # =         PROXY         =
+  # =========================
+  # Having 2 Traefik instances (1 on host network and 1 on bridge network)
+  # allows to have the real client IP's available inside the bridged
+  # Treafik instance (using PROXY protocol). In case you would only have
+  # a single instance on the host network, you would loose all the convenience
+  # of the Docker provider support (not having to expose each service on a host
+  # port and auto-configuration of the services/loadbalancers).
+  traefik-host:
+    <<: *defaults
+    image: docker.io/library/traefik:latest
+    container_name: traefik-host
+    network_mode: host
+    command:
+      # - "--log.level=DEBUG"
+      - "--providers.file.directory=/conf"
+      - "--providers.file.watch=true"
+      - "--entrypoints.tcp80.address=:80"
+      - "--entrypoints.tcp443.address=:443"
+    volumes:
+      - ./traefik/host:/conf:ro
+
+  traefik:
+    <<: *defaults
+    image: docker.io/library/traefik:latest
+    container_name: traefik
+    command:
+      # - "--log.level=DEBUG"
+      - "--accesslog.filepath=/access-logs/access.log" # Used by CrowdSec
+      - "--providers.file.directory=/conf"
+      - "--providers.file.watch=true"
+      - "--providers.docker=true"
+      - "--providers.docker.network=traefik"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.websecure.address=:443"
+      - "--entrypoints.websecure.proxyProtocol.trustedIPs={{ network_any_private }}"
+      - "--entrypoints.websecure.http.middlewares=secure-https@file"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.web.proxyProtocol.trustedIPs={{ network_any_private }}"
+      - "--entrypoints.web.http.redirections.entryPoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entryPoint.scheme=https"
+      - "--certificatesresolvers.le-dns.acme.dnschallenge=true"
+      - "--certificatesresolvers.le-dns.acme.dnschallenge.provider=cloudflare"
+      - "--certificatesresolvers.le-dns.acme.email={{ general_mail_admin }}@{{ general_domain_default }}"
+      - "--certificatesresolvers.le-dns.acme.storage=/letsencrypt/acme-dns.json"
+      - "--api=true"
+      - "--ping.manualrouting=true"
+    ports:
+      - 127.0.0.1:2080:80
+      - 127.0.0.1:2443:443
+    networks:
+      - traefik
+    volumes:
+      - ./traefik/bridge:/conf:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - traefik-cert:/letsencrypt
+      - traefik-access-logs:/access-logs
+    environment:
+      TZ: "{{ general_timezone }}"
+      CF_DNS_API_TOKEN: "{{ app_traefik_cloudflare_token }}"
+
   # ==========================
   # =         BLOCKY         =
   # ==========================
@@ -45,6 +107,9 @@ services:
       # sudo nano /root/ca/ca.crt
       # sudo chmod 600 /root/ca/ca.crt
       - /root/ca:/var/cache/pixelserv
+    networks:
+      macvlan:
+        ipv4_address: 192.168.50.61
 
   # ==========================
   # =    UNIFI CONTROLLER    =
@@ -64,9 +129,33 @@ services:
     ports:
       - "10001:10001/udp" # Required for AP discovery
       - "8080:8080" # Required for device communication
-      - "8443:8443"
+      - "8443:8443" # Required for admin GUI
+    networks:
+      - traefik
     deploy:
       resources:
         limits:
           cpus: "2"
           memory: 2G
+
+#################################################################
+#                            NETWORKS                           #
+#################################################################
+networks:
+  traefik:
+    name: traefik
+
+  macvlan:
+    driver: macvlan
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.50.0/24
+          gateway: 192.168.50.1
+
+#################################################################
+#                            VOLUMES                            #
+#################################################################
+volumes:
+  traefik-access-logs:
+  traefik-cert:

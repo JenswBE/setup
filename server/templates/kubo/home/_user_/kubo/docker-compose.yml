@@ -92,12 +92,16 @@ services:
       - "--entrypoints.web.proxyProtocol.trustedIPs={{ network_any_private }}"
       - "--entrypoints.web.http.redirections.entryPoint.to=websecure"
       - "--entrypoints.web.http.redirections.entryPoint.scheme=https"
+      - "--certificatesresolvers.le-dns.acme.dnschallenge=true"
+      - "--certificatesresolvers.le-dns.acme.dnschallenge.provider=cloudflare"
+      - "--certificatesresolvers.le-dns.acme.email={{ general_mail_admin }}@{{ general_domain_default }}"
+      - "--certificatesresolvers.le-dns.acme.storage=/letsencrypt/acme-dns.json"
       - "--certificatesresolvers.le-tls.acme.tlsChallenge=true"
       - "--certificatesresolvers.le-tls.acme.email={{ general_mail_admin }}@{{ general_domain_default }}"
-      - "--certificatesresolvers.le-tls.acme.storage=/letsencrypt/acme.json"
+      - "--certificatesresolvers.le-tls.acme.storage=/letsencrypt/acme-tls.json"
       - "--certificatesresolvers.le-tls-staging.acme.tlsChallenge=true"
       - "--certificatesresolvers.le-tls-staging.acme.email={{ general_mail_admin }}@{{ general_domain_default }}"
-      - "--certificatesresolvers.le-tls-staging.acme.storage=/letsencrypt/acme-staging.json"
+      - "--certificatesresolvers.le-tls-staging.acme.storage=/letsencrypt/acme-tls-staging.json"
       - "--certificatesResolvers.le-tls-staging.acme.caServer=https://acme-staging-v02.api.letsencrypt.org/directory"
       - "--api=true"
       - "--ping.manualrouting=true"
@@ -113,6 +117,7 @@ services:
       - traefik-access-logs:/access-logs
     environment:
       TZ: "{{ general_timezone }}"
+      CF_DNS_API_TOKEN: "{{ app_traefik_cloudflare_token }}"
 
   traefik-forward-auth:
     <<: *defaults
@@ -149,7 +154,7 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.ha.entrypoints=websecure"
       - "traefik.http.routers.ha.rule=Host(`ha.{{ general_domain_local }}`)"
-      - "traefik.http.routers.ha.tls=true"
+      - "traefik.http.routers.ha.tls.certresolver=le-dns"
       - "traefik.http.services.ha-{{ ansible_hostname }}.loadbalancer.server.port=8123"
 
   ha-zigbee2mqtt:

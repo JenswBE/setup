@@ -1,7 +1,7 @@
 http:
   routers:
     api:
-      entrypoints: ["websecure"]
+      entryPoints: ["websecure"]
       rule: "Host(`traefik-{{ ansible_hostname }}.{{ general_domain_default }}`)"
       service: api@internal
       tls:
@@ -10,7 +10,7 @@ http:
         - forward-auth
 
     ping:
-      entrypoints: ["websecure"]
+      entryPoints: ["websecure"]
       rule: "Host(`ping-{{ ansible_hostname }}.{{ general_domain_default }}`)"
       service: ping@internal
       tls:
