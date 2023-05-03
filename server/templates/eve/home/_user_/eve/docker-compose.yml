@@ -324,7 +324,7 @@ services:
 
   bjoetiek-db:
     <<: *defaults
-    image: docker.io/library/postgres:13-alpine
+    image: docker.io/library/postgres:15-alpine
     container_name: bjoetiek-db
     networks:
       - bjoetiek
@@ -423,7 +423,7 @@ services:
 
   bjoetiek-test-db:
     <<: *defaults
-    image: docker.io/library/postgres:13-alpine
+    image: docker.io/library/postgres:15-alpine
     container_name: bjoetiek-test-db
     networks:
       - bjoetiek-test
@@ -595,7 +595,7 @@ services:
 
   candylicious-test-db:
     <<: *defaults
-    image: docker.io/library/postgres:13-alpine
+    image: docker.io/library/postgres:15-alpine
     container_name: candylicious-test-db
     networks:
       - candylicious-test
@@ -698,7 +698,7 @@ services:
 
   oud-turnhoutsgebak-test-db:
     <<: *defaults
-    image: docker.io/library/postgres:13-alpine
+    image: docker.io/library/postgres:15-alpine
     container_name: oud-turnhoutsgebak-test-db
     networks:
       - oud-turnhoutsgebak-test
@@ -805,7 +805,7 @@ services:
 
   keycloak-db:
     <<: *defaults
-    image: docker.io/library/postgres:12-alpine
+    image: docker.io/library/postgres:15-alpine
     container_name: keycloak-db
     networks:
       - keycloak
