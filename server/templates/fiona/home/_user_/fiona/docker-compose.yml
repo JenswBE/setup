@@ -94,9 +94,6 @@ services:
     <<: *defaults
     image: docker.io/imthai/pixelserv-tls:latest
     container_name: blocky-pixelserv-tls
-    ports:
-      - "192.168.50.61:80:80" # HTTP
-      - "192.168.50.61:443:443" # HTTPS
     volumes:
       # MANUAL ACTION: Add /root/ca/ca.crt and /root/ca/ca.key with root only access.
       # sudo /root/ca/
@@ -153,11 +150,14 @@ networks:
     name: traefik
 
   macvlan:
+    name: macvlan
     driver: macvlan
+    driver_opts:
+      parent: enp2s0
     ipam:
-      driver: default
       config:
         - subnet: 192.168.50.0/24
+          ip_range: 192.168.50.60/30 # .60 - .63
           gateway: 192.168.50.1
 
 #################################################################
