@@ -4,10 +4,18 @@ firewall_additional_ports:
     port: 53
     protos: [tcp, udp]
     from_networks: [docker_ipv4, local_ipv4, local_ipv6]
+  - comment: Traefik HTTP
+    port: 80
+    protos: [tcp]
+    from_networks: [local_ipv4, local_ipv6]
   - comment: SNMP Daemon
     port: 161
     protos: [udp]
     from_networks: [local_ipv4]
+  - comment: Traefik HTTPS
+    port: 443
+    protos: [tcp]
+    from_networks: [local_ipv4, local_ipv6]
   - comment: Tang (https://github.com/latchset/tang)
     port: 7500
     protos: [tcp]
