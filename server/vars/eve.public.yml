@@ -2,9 +2,6 @@
 general_path_appdata: "/data"
 
 # Firewall
-firewall_vpn_routing_enabled: false
-firewall_vpn_routing_vpn_interface: ""
-firewall_vpn_routing_outgoing_interface: ""
 firewall_additional_ports:
   - comment: Traefik HTTP
     port: 80

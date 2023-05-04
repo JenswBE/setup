@@ -1,12 +1,9 @@
 # Firewall
-firewall_vpn_routing_enabled: true
-firewall_vpn_routing_vpn_interface: "wg1"
-firewall_vpn_routing_outgoing_interface: "60vpn"
 firewall_additional_ports:
   - comment: Blocky
     port: 53
     protos: [tcp, udp]
-    from_networks: [docker_ipv4, local_ipv4, local_ipv6, wireguard_ipv4]
+    from_networks: [docker_ipv4, local_ipv4, local_ipv6]
   - comment: SNMP Daemon
     port: 161
     protos: [udp]
@@ -23,10 +20,6 @@ firewall_additional_ports:
     port: 10001
     protos: [udp]
     from_networks: [local_ipv4, local_ipv6]
-  - comment: Wireguard
-    port: 51821
-    protos: [udp]
-    from_networks: [any]
 
 # Security
 security_autoupdate_reboot_time: "03:00"

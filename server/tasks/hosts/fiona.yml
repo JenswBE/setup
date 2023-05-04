@@ -37,14 +37,6 @@
   ansible.builtin.include_tasks: tasks/nut_client_only.yml
   tags: ["setup", "nut"]
 
-- name: Include Wireguard tasks
-  ansible.builtin.include_tasks: tasks/wireguard.yml
-  vars:
-    wg_interface_index: "{{ item.key }}"
-    wg_config: "{{ item.value }}"
-  loop: "{{ app_wireguard | dict2items }}"
-  tags: ["setup", "wireguard"]
-
 - name: Copy systemd unit templates
   ansible.builtin.include_tasks: tasks/helpers/copy_templates_folder.yml
   vars:
@@ -71,7 +63,6 @@
     enabled: true
   loop:
     - docker-update-containers.timer
-    - update-ip-on-dynv6.timer
   tags: ["systemd"]
 
 - name: Copy home/_user_/fiona templates

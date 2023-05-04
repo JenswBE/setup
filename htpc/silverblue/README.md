@@ -1,12 +1,14 @@
 # Fedora Silverblue 37
 
 1. Enable SSH in Settings => Sharing => Remote Login
-2. Copy SSH ID: `ssh-copy-id rango.jensw.lan`
+2. Copy SSH ID: `ssh-copy-id rango.jensw.eu`
 3. Run ansible: `ansible-playbook main.yml`
 4. Execute following commands:
+
 ```bash
 sudo rpm-ostree override remove firefox firefox-langpacks
 ```
+
 5. Reboot
 
 ## Known issues

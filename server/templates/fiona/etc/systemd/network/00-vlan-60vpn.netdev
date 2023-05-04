@@ -1,6 +1,0 @@
-[NetDev]
-Name=60vpn
-Kind=vlan
-
-[VLAN]
-Id=60

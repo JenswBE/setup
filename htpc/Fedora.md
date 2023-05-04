@@ -41,7 +41,7 @@ sudo systemctl restart input-remapper
 
 # Setup NFS share
 sudo mkdir -p /kubo/media
-sudo tee -a /etc/fstab <<< 'kubo.jensw.lan:/data/media /kubo/media nfs noexec,nosuid,nofail,noatime 0 0'
+sudo tee -a /etc/fstab <<< 'kubo.jensw.eu:/data/media /kubo/media nfs noexec,nosuid,nofail,noatime 0 0'
 ```
 
 ## Config
