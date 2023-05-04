@@ -15,10 +15,10 @@
       ansible.builtin.pause:
         prompt: |
           # Use single Tang server
-          sudo clevis luks bind -d /dev/${LUKS_DEVICE:?} tang '{"url": "http://kubo.jensw.lan:7500"}'
+          sudo clevis luks bind -d /dev/${LUKS_DEVICE:?} tang '{"url": "http://kubo.jensw.eu:7500"}'
 
           # Use multiple Tang servers
-          sudo clevis luks bind -d /dev/${LUKS_DEVICE:?} sss '{"t":1,"pins":{"tang":[{"url":"http://kubo.jensw.lan:7500"},{"url":"http://fiona.jensw.lan:7500"}]}}'
+          sudo clevis luks bind -d /dev/${LUKS_DEVICE:?} sss '{"t":1,"pins":{"tang":[{"url":"http://kubo.jensw.eu:7500"},{"url":"http://fiona.jensw.eu:7500"}]}}'
 
           # Client - Ubuntu
           sudo apt install clevis clevis-luks clevis-initramfs

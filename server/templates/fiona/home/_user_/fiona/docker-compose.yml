@@ -95,8 +95,8 @@ services:
     image: docker.io/imthai/pixelserv-tls:latest
     container_name: blocky-pixelserv-tls
     ports:
-      - "80:80" # HTTP
-      - "443:443" # HTTPS
+      - "192.168.50.61:80:80" # HTTP
+      - "192.168.50.61:443:443" # HTTPS
     volumes:
       # MANUAL ACTION: Add /root/ca/ca.crt and /root/ca/ca.key with root only access.
       # sudo /root/ca/
@@ -129,9 +129,15 @@ services:
     ports:
       - "10001:10001/udp" # Required for AP discovery
       - "8080:8080" # Required for device communication
-      - "8443:8443" # Required for admin GUI
     networks:
       - traefik
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.unifi.entrypoints=websecure"
+      - "traefik.http.routers.unifi.rule=Host(`unifi.{{ general_domain_local }}`)"
+      - "traefik.http.routers.unifi.tls.certresolver=le-dns"
+      - "traefik.http.services.unifi-{{ ansible_hostname }}.loadbalancer.server.port=8443"
+      - "traefik.http.services.unifi-{{ ansible_hostname }}.loadbalancer.serverstransport=insecure@file"
     deploy:
       resources:
         limits:
