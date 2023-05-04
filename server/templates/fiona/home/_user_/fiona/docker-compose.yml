@@ -137,6 +137,7 @@ services:
       - "traefik.http.routers.unifi.rule=Host(`unifi.{{ general_domain_local }}`)"
       - "traefik.http.routers.unifi.tls.certresolver=le-dns"
       - "traefik.http.services.unifi-{{ ansible_hostname }}.loadbalancer.server.port=8443"
+      - "traefik.http.services.unifi-{{ ansible_hostname }}.loadbalancer.server.scheme=https"
       - "traefik.http.services.unifi-{{ ansible_hostname }}.loadbalancer.serverstransport=insecure@file"
     deploy:
       resources:
