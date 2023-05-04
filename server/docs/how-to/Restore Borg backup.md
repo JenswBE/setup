@@ -12,6 +12,7 @@ ARCHIVE=latest
 docker exec borgmatic borgmatic mount --archive ${ARCHIVE:?} --mount-point /mnt/borg
 
 # Copy required files to host
+# docker cp works as well, but you won't be able to glob without first tarring the files.
 docker exec borgmatic cp /mnt/borg/... /mnt/restore
 
 # Unmount archive
