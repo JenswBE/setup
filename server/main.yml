@@ -38,11 +38,11 @@
   roles:
     - role: geerlingguy.security
       become: true
-      tags: ["setup"]
+      tags: ["setup", "roles"]
 
     - role: geerlingguy.docker
       become: true
-      tags: ["setup"]
+      tags: ["setup", "roles"]
 
   tasks:
     - name: Include basic setup tasks
