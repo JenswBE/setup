@@ -5,7 +5,7 @@ OnFailure=unit-fail-mail@%n.service
 [Service]
 WorkingDirectory={{ ansible_user_dir }}/{{ ansible_hostname }}
 ExecStartPre={{ docker_path }} compose pull
-ExecStartPre={{ ddocker_path }} compose build --pull
+ExecStartPre={{ docker_path }} compose build --pull
 ExecStart={{ docker_path }} compose up -d
 ExecStartPost={{ docker_path }} image prune -f
 ExecStartPost={{ docker_path }} builder prune -f
