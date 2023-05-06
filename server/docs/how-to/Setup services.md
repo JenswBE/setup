@@ -1,6 +1,6 @@
 # Configure services
 
-## After `docker-compose up -d`
+## After `docker compose up -d`
 
 ### Borgmatic
 
@@ -20,7 +20,7 @@ docker exec borgmatic borgmatic borg key export --qr-html /etc/borgmatic.d/repok
 ```bash
 GC_HOST=stats.jensw.be
 GC_USER=$REPLACE_ME
-docker-compose run --rm goatcounter db create site -createdb -vhost=${GC_HOST} -user.email=${GC_USER}
+docker compose run --rm goatcounter db create site -createdb -vhost=${GC_HOST} -user.email=${GC_USER}
 ```
 
 ### Keycloak

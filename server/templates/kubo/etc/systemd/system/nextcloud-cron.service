@@ -3,4 +3,4 @@ Description=Nextcloud cron.php job
 OnFailure=unit-fail-mail@%n.service
 
 [Service]
-ExecStart=/usr/bin/docker exec --user www-data nextcloud php -f cron.php
+ExecStart={{ docker_path }} exec --user www-data nextcloud php -f cron.php

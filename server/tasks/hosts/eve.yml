@@ -52,7 +52,7 @@
   become: true
   changed_when: false
   ansible.builtin.command:
-    cmd: "/usr/bin/docker login -u USERNAME -p {{ docker_ghcr_personal_access_token }} ghcr.io"
+    cmd: "{{ docker_path }} login -u USERNAME -p {{ docker_ghcr_personal_access_token }} ghcr.io"
   tags: ["docker"]
 
 - name: Copy home/_user_/eve templates
