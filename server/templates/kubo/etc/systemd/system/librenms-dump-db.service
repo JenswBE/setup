@@ -3,4 +3,4 @@ Description=Dump LibreNMS DB for backup
 OnFailure=unit-fail-mail@%n.service
 
 [Service]
-ExecStart=/usr/bin/docker exec librenms-db bash -c "mysqldump --default-character-set=utf8mb4 --single-transaction -u root -p$${MYSQL_ROOT_PASSWORD} librenms > /backup/librenms.sqldump"
+ExecStart={{ docker_path }} exec librenms-db bash -c "mysqldump --default-character-set=utf8mb4 --single-transaction -u root -p$${MYSQL_ROOT_PASSWORD} librenms > /backup/librenms.sqldump"
