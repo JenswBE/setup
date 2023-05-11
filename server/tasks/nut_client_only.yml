@@ -7,11 +7,17 @@
         state: present
         name: nut-client
 
+    - name: Add the user 'nut' to group 'smtp-cli'
+      ansible.builtin.user:
+        name: nut
+        groups: smtp-cli
+        append: yes
+
     - name: Copy NUT config
       ansible.builtin.include_tasks: tasks/helpers/copy_templates_folder.yml
       vars:
-        templates_folder: "{{ ansible_hostname }}/etc/nut"
-        destination_folder: "/etc/nut"
+        templates_folder: nut/client_only/etc
+        destination_folder: /etc/nut
         destination_owner: root
         destination_group: nut
         destination_mode_files: "640"
@@ -19,11 +25,11 @@
         destination_delete_extra: false
 
     - name: Copy upssched-cmd
-      ansible.builtin.copy:
-        src: "upssched-cmd"
-        dest: "/usr/sbin/upssched-cmd"
-        owner: "root"
-        group: "nut"
+      ansible.builtin.template:
+        src: nut/client_only/upssched-cmd
+        dest: /usr/sbin/upssched-cmd
+        owner: root
+        group: nut
         mode: "755"
 
     - name: Force restart NUT services

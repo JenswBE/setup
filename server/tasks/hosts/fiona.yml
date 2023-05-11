@@ -33,8 +33,8 @@
   ansible.builtin.include_tasks: tasks/nbde_clevis_luks.yml
   tags: ["setup", "clevis"]
 
-- name: Include NUT client tasks
-  ansible.builtin.include_tasks: tasks/nut_client_only.yml
+- name: Include NUT server and client tasks
+  ansible.builtin.include_tasks: tasks/nut_client_server.yml
   tags: ["setup", "nut"]
 
 - name: Copy systemd unit templates

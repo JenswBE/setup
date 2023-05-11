@@ -2,6 +2,19 @@
   become: true
   tags: ["setup", "mail_on_failed_unit"]
   block:
+    - name: Ensure group "smtp-cli" exists
+      ansible.builtin.group:
+        name: smtp-cli
+        state: present
+
+    - name: Create /opt/smtp-cli directory
+      ansible.builtin.file:
+        path: /opt/smtp-cli
+        state: directory
+        owner: root
+        group: smtp-cli
+        mode: "750"
+
     - name: Get latest release of smtp-cli
       community.general.github_release:
         user: JenswBE
@@ -14,15 +27,15 @@
     - name: Get latest smtp-cli binary
       ansible.builtin.get_url:
         url: "https://github.com/JenswBE/smtp-cli/releases/download/{{ smtp_cli_latest['tag'] }}/smtp-cli_{{ smtp_cli_latest['tag'] }}_linux_{{ golang_arch }}"
-        dest: /opt/bin/smtp-cli
-        group: root
+        dest: /opt/smtp-cli/smtp-cli
         owner: root
+        group: smtp-cli
         mode: "755"
 
     - name: Set smtp-cli config
       ansible.builtin.template:
-        src: "smtp-cli.conf"
-        dest: /opt/conf/smtp-cli.conf
+        src: smtp-cli.conf
+        dest: /opt/smtp-cli/smtp-cli.conf
         owner: root
-        group: root
-        mode: "400"
+        group: smtp-cli
+        mode: "440"

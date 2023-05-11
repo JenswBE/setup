@@ -1,0 +1,6 @@
+#!/bin/sh
+case $1 in
+*)
+    logger -t upssched-cmd "Unrecognized command: $1"
+    ;;
+esac

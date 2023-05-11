@@ -1,0 +1,39 @@
+#!/bin/sh
+
+source /opt/smtp-cli/smtp-cli.conf
+SMTP_CLI=/opt/smtp-cli/smtp-cli
+SMTP_CLI_ARGS="--from-name \"${FROM_NAME:?}\" --from-address \"${FROM_EMAIL:?}\" --to-name \"${TO_NAME:?}\" --to-address \"${TO_EMAIL:?}\" --host "in-v3.mailjet.com" --username \"${USERNAME:?}\" --password \"${PASSWORD:?}\""
+
+case $1 in
+onbatt)
+    ${SMTP_CLI:?} ${SMTP_CLI_ARGS:?} --subject "UPS running on battery" <<< UPS is running on battery since 60 seconds.
+    ;;
+online)
+    ${SMTP_CLI:?} ${SMTP_CLI_ARGS:?} --subject "UPS power restored" <<< UPS is running on mains again.
+    ;;
+commbad)
+    ${SMTP_CLI:?} ${SMTP_CLI_ARGS:?} --subject "UPS connection broken" <<< Unable to contact UPS since 60 seconds.
+    ;;
+commok)
+    ${SMTP_CLI:?} ${SMTP_CLI_ARGS:?} --subject "UPS connection restored" <<< Contact with UPS has been restored.
+    ;;
+lowbatt)
+    ${SMTP_CLI:?} ${SMTP_CLI_ARGS:?} --subject "UPS BATTERY CRITICAL" <<< Battery level of UPS is critically low. Setting FSD flag ...
+    /usr/sbin/upsmon -c fsd
+    ;;
+fsd)
+    ${SMTP_CLI:?} ${SMTP_CLI_ARGS:?} --subject "UPS FSD FLAG SET" <<< FSD flag has been set. Preparing for shutdown ...
+    ;;
+shutdown)
+    ${SMTP_CLI:?} ${SMTP_CLI_ARGS:?} --subject "UPS SHUTDOWN" <<< Host is shutting down due to UPS.
+    ;;
+replbatt)
+    ${SMTP_CLI:?} ${SMTP_CLI_ARGS:?} --subject "Replace UPS battery" <<< The battery of the UPS should be replaced.
+    ;;
+nocomm)
+    ${SMTP_CLI:?} ${SMTP_CLI_ARGS:?} --subject "Unable to contact UPS" <<< The UPS can’t be contacted for monitoring.
+    ;;
+*)
+    ${SMTP_CLI:?} ${SMTP_CLI_ARGS:?} --subject "Unknown UPS command received" <<< I received unknown UPS command: $1.
+    ;;
+esac

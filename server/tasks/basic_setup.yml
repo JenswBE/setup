@@ -21,17 +21,6 @@
         mode: "700"
       loop:
         - appdata
-        - conf
-
-    - name: Create opt directories - Read access
-      ansible.builtin.file:
-        path: "/opt/{{ item }}"
-        state: directory
-        owner: "root"
-        group: "root"
-        mode: "755"
-      loop:
-        - bin
 
     - name: Limit log size to 100MB
       register: journald_limit

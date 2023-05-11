@@ -4,4 +4,4 @@ After=network.target
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/bash -c 'source /opt/conf/smtp-cli.conf; systemctl status -l %I | /opt/bin/smtp-cli --subject "Service %I failed" --from-name "${FROM_NAME:?}" --from-address "${FROM_EMAIL:?}" --to-name "${TO_NAME:?}" --to-address "${TO_EMAIL:?}" --host "in-v3.mailjet.com" --username "${USERNAME:?}" --password "${PASSWORD:?}"'
+ExecStart=/usr/bin/bash -c 'source /opt/smtp-cli/smtp-cli.conf; systemctl status -l %I | /opt/smtp-cli/smtp-cli --subject "Service %I failed" --from-name "${FROM_NAME:?}" --from-address "${FROM_EMAIL:?}" --to-name "${TO_NAME:?}" --to-address "${TO_EMAIL:?}" --host "in-v3.mailjet.com" --username "${USERNAME:?}" --password "${PASSWORD:?}"'
