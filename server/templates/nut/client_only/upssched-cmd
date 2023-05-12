@@ -1,6 +1,38 @@
 #!/bin/sh
+
+send_email () {
+    . /opt/smtp-cli/smtp-cli.conf # /bin/sh doesn't support "source"
+    echo "${2:?}" | /opt/smtp-cli/smtp-cli \
+        --from-name "${FROM_NAME:?}" \
+        --from-address "${FROM_EMAIL:?}" \
+        --to-name "${TO_NAME:?}" \
+        --to-address "${TO_EMAIL:?}" \
+        --host "in-v3.mailjet.com" \
+        --username "${USERNAME:?}" \
+        --password "${PASSWORD:?}" \
+        --subject "${1:?}"
+}
+
 case $1 in
+commbad)
+    send_email  "UPS server connection broken" "Unable to contact UPS server since 60 seconds."
+    ;;
+commok)
+    send_email  "UPS server connection restored" "Contact with UPS server has been restored."
+    ;;
+fsd)
+    send_email  "UPS FSD FLAG SET" "FSD flag has been set. Preparing for shutdown ..."
+    ;;
+shutdown)
+    send_email  "UPS SHUTDOWN" "Host is shutting down due to UPS."
+    ;;
+nocomm)
+    send_email  "Unable to contact UPS" "The UPS cannot be contacted for monitoring."
+    ;;
+noparent)
+    send_email  "upsmon parent process crashed" "The upsmon parent process crashed. Shutdown is impossible!"
+    ;;
 *)
-    logger -t upssched-cmd "Unrecognized command: $1"
+    send_email  "Unknown UPS command received" "I received an unknown UPS command: $1."
     ;;
 esac

@@ -26,7 +26,7 @@
         backup: true
 
     - name: Grant users pulse access
-      command: adduser {{item}} pulse-access
+      command: adduser {{ item }} pulse-access
       with_items:
         - root
         - willemsensj
@@ -36,7 +36,7 @@
       apt: pkg=alsa-utils state=installed
 
     - name: Unmute ALSA
-      command: amixer sset Master {{item}}
+      command: amixer sset Master {{ item }}
       with_items:
         - unmute
         - 100%

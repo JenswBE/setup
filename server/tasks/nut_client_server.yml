@@ -37,7 +37,7 @@
 
     - name: Force restart NUT services
       ansible.builtin.service:
-        name: rsyslog
+        name: "{{ item }}"
         state: restarted
       loop:
         - nut-server
