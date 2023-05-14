@@ -123,6 +123,7 @@ services:
       MEM_STARTUP: "1024"
     volumes:
       - "{{ general_path_appdata }}/unifi-controller/config:/config"
+      - "unifi-backup:/usr/lib/unifi/data/backup"
     ports:
       - "10001:10001/udp" # Required for AP discovery
       - "8080:8080" # Required for device communication
@@ -141,6 +142,38 @@ services:
         limits:
           cpus: "2"
           memory: 2G
+
+  # ==========================
+  # =         BACKUP         =
+  # ==========================
+  borgmatic:
+    <<: *defaults
+    image: docker.io/b3vis/borgmatic:latest
+    container_name: borgmatic
+    privileged: true # Required for borg mount
+    cap_add:
+      - SYS_ADMIN # Required for borg mount
+    volumes:
+      # Backup locations
+      - "unifi-backup:/mnt/source/unifi/backup:ro"
+      # Config and cache
+      - "./borgmatic/borgmatic.d:/etc/borgmatic.d"
+      - "./borgmatic/ssh:/root/.ssh"
+      - "{{ general_path_appdata }}/borgmatic/borgmatic/config:/root/.config/borg"
+      - "{{ general_path_appdata }}/borgmatic/borgmatic/cache:/root/.cache/borg"
+      - "{{ general_path_appdata }}/borgmatic/borgmatic/restore:/mnt/restore"
+    devices:
+      - "/dev/fuse:/dev/fuse" # Required for borg mount
+    environment:
+      - "TZ={{ general_timezone }}"
+      - "BORG_PASSPHRASE={{ app_borgmatic_borg_passphrase }}"
+      - "BORG_HOSTNAME_IS_UNIQUE=yes" # Automatically removes stale locks
+      - "BORG_HOST_ID={{ ansible_hostname }}"
+    deploy:
+      resources:
+        limits:
+          cpus: "3"
+          memory: 4G
 
 #################################################################
 #                            NETWORKS                           #
@@ -166,3 +199,4 @@ networks:
 volumes:
   traefik-access-logs:
   traefik-cert:
+  unifi-backup:
