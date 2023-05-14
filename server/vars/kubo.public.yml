@@ -36,6 +36,10 @@ firewall_additional_ports:
     port: 8100
     protos: [tcp]
     from_networks: [docker_ipv4]
+  - comment: Traefik MQTT
+    port: 8883
+    protos: [tcp]
+    from_networks: [any]
   - comment: Graylog - GELF
     port: 12201
     protos: [tcp, udp]

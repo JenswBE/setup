@@ -9,6 +9,8 @@ homeassistant:
 mqtt:
   base_topic: zigbee2mqtt
   server: "mqtt://ha-mosquitto"
+  user: zigbee2mqtt
+  password: "{{ app_zigbee2mqtt_mqtt_password }}"
 
 ota:
   disable_automatic_update_check: true

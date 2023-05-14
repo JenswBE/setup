@@ -69,6 +69,7 @@ services:
       - "--providers.file.watch=true"
       - "--entrypoints.tcp80.address=:80"
       - "--entrypoints.tcp443.address=:443"
+      - "--entrypoints.tcp8883.address=:8883" # MQTT
       - "--entrypoints.webinternal.address=:8100"
     volumes:
       - ./traefik/host:/conf:ro
@@ -92,6 +93,8 @@ services:
       - "--entrypoints.web.proxyProtocol.trustedIPs={{ network_any_private }}"
       - "--entrypoints.web.http.redirections.entryPoint.to=websecure"
       - "--entrypoints.web.http.redirections.entryPoint.scheme=https"
+      - "--entrypoints.mqtt.address=:8883"
+      - "--entrypoints.mqtt.proxyProtocol.trustedIPs={{ network_any_private }}"
       - "--certificatesresolvers.le-dns.acme.dnschallenge=true"
       - "--certificatesresolvers.le-dns.acme.dnschallenge.provider=cloudflare"
       - "--certificatesresolvers.le-dns.acme.email={{ general_mail_admin }}@{{ general_domain_default }}"
@@ -108,6 +111,7 @@ services:
     ports:
       - 127.0.0.1:2080:80
       - 127.0.0.1:2443:443
+      - 127.0.0.1:28883:8883
     networks:
       - traefik
     volumes:
@@ -178,12 +182,20 @@ services:
     image: docker.io/library/eclipse-mosquitto:latest
     container_name: ha-mosquitto
     networks:
+      - traefik
       - home-automation
     volumes:
       - "./home-automation/mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro"
+      - "./home-automation/mosquitto/password_file:/mosquitto/config/password_file"
       - "ha-mosquitto-data:/mosquitto/data/"
     environment:
       TZ: "{{ general_timezone }}"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.tcp.routers.mosquitto.entrypoints=mqtt"
+      - "traefik.tcp.routers.mosquitto.rule=HostSNI(`mqtt.{{ general_domain_local }}`)"
+      - "traefik.tcp.routers.mosquitto.tls.certresolver=le-dns"
+      - "traefik.tcp.services.mosquitto-{{ ansible_hostname }}.loadbalancer.server.port=1883"
 
   # =========================
   # =        MINIFLUX       =

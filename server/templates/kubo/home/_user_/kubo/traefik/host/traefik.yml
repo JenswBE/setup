@@ -12,6 +12,13 @@ tcp:
       tls:
         passthrough: true
 
+    to-bridge-8883:
+      entryPoints: [tcp8883]
+      rule: "HostSNI(`*`)"
+      service: bridge-8883
+      tls:
+        passthrough: true
+
   services:
     bridge-80:
       loadBalancer:
@@ -26,3 +33,10 @@ tcp:
           version: 2
         servers:
           - address: "127.0.0.1:2443"
+
+    bridge-8883:
+      loadBalancer:
+        proxyProtocol:
+          version: 2
+        servers:
+          - address: "127.0.0.1:28883"
