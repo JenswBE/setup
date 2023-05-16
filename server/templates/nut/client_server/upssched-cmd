@@ -13,39 +13,58 @@ send_email () {
         --subject "${1:?}"
 }
 
+BATTERY_LEVEL=$(upsc apc battery.charge)
+STATUS=$(upsc apc ups.status)
+MSG_SUFFIX="\n\nINFO:\n- level: ${BATTERY_LEVEL:-Unknown}/100\n- status: ${STATUS:-Unknown}"
+
+SUBJECT=""
+MSG=""
+
 case $1 in
 onbatt)
-    send_email "UPS running on battery" "UPS is running on battery since 60 seconds."
+    SUBJECT="UPS running on battery"
+    MSG="UPS is running on battery since 60 seconds."
     ;;
 online)
-    send_email  "UPS power restored" "UPS is running on mains again."
+    SUBJECT="UPS power restored"
+    MSG="UPS is running on mains again."
     ;;
 commbad)
-    send_email  "UPS connection broken" "Unable to contact UPS since 60 seconds."
+    SUBJECT="UPS connection broken"
+    MSG="Unable to contact UPS since 60 seconds."
     ;;
 commok)
-    send_email  "UPS connection restored" "Contact with UPS has been restored."
+    SUBJECT="UPS connection restored"
+    MSG="Contact with UPS has been restored."
     ;;
 lowbatt)
-    send_email  "UPS BATTERY CRITICAL" "Battery level of UPS is critically low. Setting FSD flag ..."
-    /usr/sbin/upsmon -c fsd
+    SUBJECT="UPS BATTERY CRITICAL"
+    MSG="Battery level of UPS is critically low!"
     ;;
 fsd)
-    send_email  "UPS FSD FLAG SET" "FSD flag has been set. Preparing for shutdown ..."
+    SUBJECT="UPS FSD FLAG SET"
+    MSG="FSD flag has been set. Preparing for shutdown ..."
     ;;
 shutdown)
-    send_email  "UPS SHUTDOWN" "Host is shutting down due to UPS."
+    SUBJECT="UPS SHUTDOWN"
+    MSG="Host is shutting down due to UPS."
     ;;
 replbatt)
-    send_email  "Replace UPS battery" "The battery of the UPS should be replaced."
+    SUBJECT="Replace UPS battery"
+    MSG="The battery of the UPS should be replaced."
     ;;
 nocomm)
-    send_email  "Unable to contact UPS" "The UPS cannot be contacted for monitoring."
+    SUBJECT="Unable to contact UPS"
+    MSG="The UPS cannot be contacted for monitoring."
     ;;
 noparent)
-    send_email  "upsmon parent process crashed" "The upsmon parent process crashed. Shutdown is impossible!"
+    SUBJECT="upsmon parent process crashed"
+    MSG="The upsmon parent process crashed. Shutdown is impossible!"
     ;;
 *)
-    send_email  "Unknown UPS command received" "I received an unknown UPS command: $1."
+    SUBJECT="Unknown UPS command received"
+    MSG="I received an unknown UPS command: $1."
     ;;
 esac
+
+send_email "${SUBJECT:?}" "${MSG:?} ${MSG_SUFFIX:?}"
