@@ -123,7 +123,7 @@ services:
       MEM_STARTUP: "1024"
     volumes:
       - "{{ general_path_appdata }}/unifi-controller/config:/config"
-      - "unifi-backup:/usr/lib/unifi/data/backup"
+      - "unifi-backup:/usr/lib/unifi/data/backup/autobackup"
     ports:
       - "10001:10001/udp" # Required for AP discovery
       - "8080:8080" # Required for device communication
