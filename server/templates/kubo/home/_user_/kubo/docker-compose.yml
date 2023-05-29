@@ -79,7 +79,7 @@ services:
     image: docker.io/library/traefik:latest
     container_name: traefik
     command:
-      # - "--log.level=DEBUG"
+      - "--log.level=DEBUG"
       - "--accesslog.filepath=/access-logs/access.log" # Used by CrowdSec
       - "--providers.file.directory=/conf"
       - "--providers.file.watch=true"
@@ -822,7 +822,7 @@ services:
   # =========================
   crowdsec:
     <<: *defaults
-    image: docker.io/crowdsecurity/crowdsec:{{ crowdsec_version }}
+    image: docker.io/crowdsecurity/crowdsec:v1.5.2
     container_name: crowdsec
     ports:
       - 127.0.0.1:9000:8080

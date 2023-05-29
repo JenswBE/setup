@@ -877,7 +877,7 @@ services:
   # =========================
   crowdsec:
     <<: *defaults
-    image: docker.io/crowdsecurity/crowdsec:{{ crowdsec_version }}
+    image: docker.io/crowdsecurity/crowdsec:v1.5.2
     container_name: crowdsec
     ports:
       - 127.0.0.1:9000:8080

@@ -18,22 +18,17 @@
         name: crowdsec-firewall-bouncer-nftables
         state: present
 
-    - name: CrowdSec - Set API key for NFTables bouncer
-      register: crowdsec_nftables_bouncer_api_key
-      ansible.builtin.lineinfile:
-        path: /etc/crowdsec/bouncers/crowdsec-firewall-bouncer.yaml
-        regexp: "^#?api_key:"
-        line: "api_key: {{ app_crowdsec_bouncer_firewall_key }}"
-
-    - name: CrowdSec - Set API URL for NFTables bouncer
-      register: crowdsec_nftables_bouncer_api_url
-      ansible.builtin.lineinfile:
-        path: /etc/crowdsec/bouncers/crowdsec-firewall-bouncer.yaml
-        regexp: "^#?api_url:"
-        line: "api_url: http://127.0.0.1:9000/"
+    - name: CrowdSec - Set local config for NFTables bouncer
+      register: crowdsec_nftables_bouncer
+      ansible.builtin.template:
+        src: crowdsec/bouncers/crowdsec-firewall-bouncer.yaml
+        dest: /etc/crowdsec/bouncers/crowdsec-firewall-bouncer.yaml.local
+        owner: root
+        group: root
+        mode: "600"
 
     - name: CrowdSec - Restart NFTables bouncer if config was changed
-      when: crowdsec_nftables_bouncer_api_key.changed or crowdsec_nftables_bouncer_api_url.changed
+      when: crowdsec_nftables_bouncer.changed
       ansible.builtin.service:
         name: crowdsec-firewall-bouncer
         state: restarted
