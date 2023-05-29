@@ -79,21 +79,34 @@ services:
     environment:
       - "TZ={{ general_timezone }}"
 
-  traefik-forward-auth:
+  oauth2-proxy:
     <<: *defaults
-    # Workaround while awaiting https://github.com/thomseddon/traefik-forward-auth/issues/112
-    # image: docker.io/thomseddon/traefik-forward-auth:2
-    build: ./traefik-forward-auth
-    container_name: traefik-forward-auth
+    image: quay.io/oauth2-proxy/oauth2-proxy:latest
+    container_name: oauth2-proxy
+    command: >
+      --http-address=0.0.0.0:4180
+      --reverse-proxy
+      --provider=keycloak-oidc
+      --oidc-issuer-url={{ app_oauth2_proxy_issuer_url }}
+      --client-id={{ app_oauth2_proxy_client_id }}
+      --client-secret={{ app_oauth2_proxy_client_secret }}
+      --code-challenge-method=S256
+      --email-domain=*
+      --cookie-domain={{ general_domain_default }}
+      --cookie-secret={{ app_oauth2_proxy_cookie_secret }}
     networks:
       - traefik
-    environment:
-      - "COOKIE_DOMAIN={{ general_domain_default }}"
-      - "DEFAULT_PROVIDER=oidc"
-      - "SECRET={{ app_traefik_forward_auth_secret }}"
-      - "PROVIDERS_OIDC_ISSUER_URL={{ app_traefik_forward_auth_oidc_issuer_url }}"
-      - "PROVIDERS_OIDC_CLIENT_ID={{ app_traefik_forward_auth_oidc_client_id }}"
-      - "PROVIDERS_OIDC_CLIENT_SECRET={{ app_traefik_forward_auth_oidc_client_secret }}"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.oauth2-proxy.entrypoints=websecure"
+      - "traefik.http.routers.oauth2-proxy.tls.certresolver=le-tls"
+      - >-
+        traefik.http.routers.oauth2-proxy.rule=Host(
+          `assets.{{ general_domain_default }}`,
+          `traefik-{{ ansible_hostname }}.{{ general_domain_default }}`,
+          `uptime.{{ general_domain_default }}`,
+        ) && PathPrefix(`/oauth2/`)
+      - "traefik.http.services.oauth2-proxy-{{ ansible_hostname }}.loadbalancer.server.port=4180"
 
   # =========================
   # =       NEXTCLOUD       =
@@ -251,13 +264,13 @@ services:
       - "traefik.http.routers.assets.entrypoints=websecure"
       - "traefik.http.routers.assets.rule=Host(`assets.{{ general_domain_default }}`)"
       - "traefik.http.routers.assets.tls.certresolver=le-tls"
-      - "traefik.http.routers.assets.middlewares=forward-auth@file"
+      - "traefik.http.routers.assets.middlewares=oauth2-proxy-handle-error@file, oauth2-proxy-forward-auth-infra@file"
 
   # ===========================================================================
   # =   BJOETIEK Y                                                            =
   # =   https://github.com/JenswBE/bjoetiek-y-frontend                        =
   # =   https://github.com/JenswBE/go-commerce                                =
-  # =   https://github.com/JenswBE/go-commerce-admin                           =
+  # =   https://github.com/JenswBE/go-commerce-admin                          =
   # ===========================================================================
   bjoetiek-frontend:
     <<: *defaults
@@ -758,7 +771,7 @@ services:
       - "traefik.http.routers.uptime-kuma.entrypoints=websecure"
       - "traefik.http.routers.uptime-kuma.rule=Host(`uptime.{{ general_domain_default }}`)"
       - "traefik.http.routers.uptime-kuma.tls.certresolver=le-tls"
-      - "traefik.http.routers.uptime-kuma.middlewares=forward-auth@file"
+      - "traefik.http.routers.uptime-kuma.middlewares=oauth2-proxy-handle-error@file, oauth2-proxy-forward-auth-infra@file"
       - "traefik.http.services.uptime-kuma-{{ ansible_hostname }}.loadbalancer.server.port=3001"
 
   # =========================
