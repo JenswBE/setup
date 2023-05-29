@@ -892,6 +892,7 @@ services:
     volumes:
       # Config
       - ./crowdsec/acquis.yaml:/etc/crowdsec/acquis.yaml
+      - ./crowdsec/postoverflows:/etc/crowdsec/postoverflows
       - crowdsec-db:/var/lib/crowdsec/data/
       - crowdsec-config:/etc/crowdsec/
       # Logs
