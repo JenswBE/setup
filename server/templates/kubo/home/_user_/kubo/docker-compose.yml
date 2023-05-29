@@ -146,6 +146,7 @@ services:
       - "traefik.http.routers.oauth2-proxy.tls.certresolver=le-tls"
       - >-
         traefik.http.routers.oauth2-proxy.rule=Host(
+          `dtu.{{ general_domain_default }}`,
           `smart-{{ ansible_hostname }}.{{ general_domain_default }}`,
           `tmm.{{ general_domain_default }}`,
           `torrent.{{ general_domain_default }}`,

@@ -12,9 +12,6 @@ general_path_appdata: "/opt/appdata"
 general_timezone: "Europe/Brussels"
 general_user: jens
 
-# CrowdSec
-crowdsec_version: v1.3.4
-
 # Docker
 docker_path: /usr/bin/docker # Used by systemd units
 docker_users: []

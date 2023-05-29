@@ -1,0 +1,17 @@
+http:
+  routers:
+    dtu:
+      entryPoints: ["websecure"]
+      rule: "Host(`dtu.{{ general_domain_default }}`)"
+      service: dtu
+      tls:
+        certresolver: le-tls
+      middlewares:
+        - oauth2-proxy-handle-error
+        - oauth2-proxy-forward-auth-sun
+
+  services:
+    dtu:
+      loadBalancer:
+        servers:
+          - url: "http://opendtu.{{ general_domain_local }}"
