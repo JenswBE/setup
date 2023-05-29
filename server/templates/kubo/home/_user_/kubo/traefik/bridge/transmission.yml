@@ -18,7 +18,8 @@ http:
       tls:
         certresolver: le-tls
       middlewares:
-        - forward-auth
+        - oauth2-proxy-handle-error
+        - oauth2-proxy-forward-auth-infra
         - transmission-set-host
 
     # For healthchecks and other integrations

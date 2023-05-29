@@ -1,0 +1,23 @@
+http:
+  middlewares:
+    oauth2-proxy-handle-error:
+      errors:
+        status:
+          - "401-403"
+        service: oauth2-proxy-{{ ansible_hostname }}@docker
+        query: /oauth2/sign_in
+
+    oauth2-proxy-forward-auth-infra:
+      forwardAuth:
+        address: http://oauth2-proxy:4180/oauth2/auth?allowed_groups=infra
+        trustForwardHeader: true
+
+    oauth2-proxy-forward-auth-sun:
+      forwardAuth:
+        address: http://oauth2-proxy:4180/oauth2/auth?allowed_groups=sun
+        trustForwardHeader: true
+
+    oauth2-proxy-forward-auth-media:
+      forwardAuth:
+        address: http://oauth2-proxy:4180/oauth2/auth?allowed_groups=media
+        trustForwardHeader: true

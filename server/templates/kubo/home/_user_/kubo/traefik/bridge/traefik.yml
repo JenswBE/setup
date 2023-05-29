@@ -7,8 +7,8 @@ http:
       tls:
         certresolver: le-tls
       middlewares:
-        - secure-https
-        - forward-auth
+        - oauth2-proxy-handle-error
+        - oauth2-proxy-forward-auth-infra
 
     ping:
       entryPoints: ["websecure"]

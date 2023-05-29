@@ -123,20 +123,35 @@ services:
       TZ: "{{ general_timezone }}"
       CF_DNS_API_TOKEN: "{{ app_traefik_cloudflare_token }}"
 
-  traefik-forward-auth:
+  oauth2-proxy:
     <<: *defaults
-    image: docker.io/thomseddon/traefik-forward-auth:2
-    container_name: traefik-forward-auth
+    image: quay.io/oauth2-proxy/oauth2-proxy:latest
+    container_name: oauth2-proxy
+    command: >
+      --http-address=0.0.0.0:4180
+      --reverse-proxy
+      --provider=keycloak-oidc
+      --oidc-issuer-url={{ app_oauth2_proxy_issuer_url }}
+      --client-id={{ app_oauth2_proxy_client_id }}
+      --client-secret={{ app_oauth2_proxy_client_secret }}
+      --code-challenge-method=S256
+      --email-domain=*
+      --cookie-domain={{ general_domain_default }}
+      --cookie-secret={{ app_oauth2_proxy_cookie_secret }}
     networks:
       - traefik
-    environment:
-      TZ: "{{ general_timezone }}"
-      COOKIE_DOMAIN: "{{ general_domain_default }}"
-      DEFAULT_PROVIDER: "oidc"
-      SECRET: "{{ app_traefik_forward_auth_secret }}"
-      PROVIDERS_OIDC_ISSUER_URL: "{{ app_traefik_forward_auth_oidc_issuer_url }}"
-      PROVIDERS_OIDC_CLIENT_ID: "{{ app_traefik_forward_auth_oidc_client_id }}"
-      PROVIDERS_OIDC_CLIENT_SECRET: "{{ app_traefik_forward_auth_oidc_client_secret }}"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.oauth2-proxy.entrypoints=websecure"
+      - "traefik.http.routers.oauth2-proxy.tls.certresolver=le-tls"
+      - >-
+        traefik.http.routers.oauth2-proxy.rule=Host(
+          `smart-{{ ansible_hostname }}.{{ general_domain_default }}`,
+          `tmm.{{ general_domain_default }}`,
+          `torrent.{{ general_domain_default }}`,
+          `traefik-{{ ansible_hostname }}.{{ general_domain_default }}`,
+        ) && PathPrefix(`/oauth2/`)
+      - "traefik.http.services.oauth2-proxy-{{ ansible_hostname }}.loadbalancer.server.port=4180"
 
   # =========================
   # =    HOME AUTOMATION    =
@@ -322,7 +337,7 @@ services:
       - "traefik.http.routers.tmm.entrypoints=websecure"
       - "traefik.http.routers.tmm.rule=Host(`tmm.{{ general_domain_default }}`)"
       - "traefik.http.routers.tmm.tls.certresolver=le-tls"
-      - "traefik.http.routers.tmm.middlewares=forward-auth@file"
+      - "traefik.http.routers.tmm.middlewares=oauth2-proxy-handle-error@file, oauth2-proxy-forward-auth-media@file"
       - "traefik.http.services.tmm-{{ ansible_hostname }}.loadbalancer.server.port=5800"
     deploy:
       resources:
@@ -592,7 +607,7 @@ services:
   #     - "traefik.http.routers.scrutiny.entrypoints=websecure"
   #     - "traefik.http.routers.scrutiny.rule=Host(`smart-{{ ansible_hostname }}.{{ general_domain_default }}`)"
   #     - "traefik.http.routers.scrutiny.tls.certresolver=le-tls"
-  #     - "traefik.http.routers.scrutiny.middlewares=forward-auth@file"
+  #     - "traefik.http.routers.scrutiny.middlewares=oauth2-proxy-handle-error@file, oauth2-proxy-forward-auth-infra@file"
 
   graylog:
     <<: *defaults
