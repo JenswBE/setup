@@ -1,29 +1,18 @@
 views:
-  - title: Home
+  - title: Battery
+    path: test
     type: panel
     badges: []
     cards:
-      - type: grid
-        cards:
-          - type: history-graph
-            entities:
-              - entity: sensor.0x680ae2fffe25bde4_battery
-            hours_to_show: 24
-            refresh_interval: 1
-          - type: history-graph
-            entities:
-              - entity: sensor.button_bedroom_bed_battery
-            hours_to_show: 24
-            refresh_interval: 1
-          - type: history-graph
-            entities:
-              - entity: sensor.button_bedroom_living_battery
-            hours_to_show: 24
-            refresh_interval: 1
-          - type: history-graph
-            entities:
-              - entity: sensor.button_bedroom_bathroom_battery
-            hours_to_show: 24
-            refresh_interval: 1
-        columns: 2
-        square: false
+      - type: history-graph
+        entities:
+          - name: Dimmer living
+            entity: sensor.0x680ae2fffe25bde4_battery
+          - name: Slaapkamer - Living
+            entity: sensor.button_bedroom_living_battery
+          - name: Slaapkamer - Badkamer
+            entity: sensor.button_bedroom_bathroom_battery
+          - name: Slaapkamer - Gwen
+            entity: sensor.button_bedroom_gwen_battery
+          - name: Slaapkamer - Jens
+            entity: sensor.button_bedroom_bed_battery

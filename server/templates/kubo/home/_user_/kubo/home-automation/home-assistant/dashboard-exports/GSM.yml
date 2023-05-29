@@ -22,5 +22,5 @@ views:
         entity: light.lamp_rgb
         name: Leeslamp
       - type: light
-        entity: light.lamp_warm_white
+        entity: light.0x90ab96fffe15a1fb
         name: Slaapkamer
