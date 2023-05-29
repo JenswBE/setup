@@ -96,6 +96,8 @@ services:
       --cookie-secret={{ app_oauth2_proxy_cookie_secret }}
     networks:
       - traefik
+    environment:
+      - "TZ={{ general_timezone }}"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.oauth2-proxy.entrypoints=websecure"
@@ -107,6 +109,23 @@ services:
           `uptime.{{ general_domain_default }}`,
         ) && PathPrefix(`/oauth2/`)
       - "traefik.http.services.oauth2-proxy-{{ ansible_hostname }}.loadbalancer.server.port=4180"
+
+  # Since the login page handling of OAuth2 Proxy is based on HTTP
+  # status code 401, it might conflict with an upstream reply.
+  # Therefore, this helper translates an error response of OAuth2 Proxy
+  # to status code 601. This prevents any conflicts.
+  oauth2-proxy-helper:
+    <<: *defaults
+    image: docker.io/library/caddy:2
+    container_name: oauth2-proxy-helper
+    networks:
+      - traefik
+    volumes:
+      - ./oauth2-proxy/helper/Caddyfile:/etc/caddy/Caddyfile
+      - oauth2-proxy-helper-config:/config
+      - oauth2-proxy-helper-data:/data
+    environment:
+      - "TZ={{ general_timezone }}"
 
   # =========================
   # =       NEXTCLOUD       =
@@ -968,6 +987,8 @@ volumes:
   keycloak-db-dump:
   nc-db-dump:
   nc-calcardbackup:
+  oauth2-proxy-helper-config:
+  oauth2-proxy-helper-data:
   oud-turnhoutsgebak-test-db-data:
   traefik-access-logs:
   traefik-cert:

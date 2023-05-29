@@ -1,0 +1,6 @@
+:80
+
+reverse_proxy http://oauth2-proxy:4180 {
+    @auth_error status 401 403
+    replace_status @auth_error 601
+}
