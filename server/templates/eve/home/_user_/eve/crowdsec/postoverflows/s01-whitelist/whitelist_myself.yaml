@@ -1,0 +1,6 @@
+name: jenswbe/whitelist_myself
+description: Whitelist the public IP of myself
+whitelist:
+  reason: dont ban own ip
+  expression:
+    - evt.Overflow.Alert.Source.IP in LookupHost('eve.{{ general_domain_default }}')
