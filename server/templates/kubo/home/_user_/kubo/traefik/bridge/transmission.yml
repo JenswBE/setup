@@ -19,7 +19,7 @@ http:
         certresolver: le-tls
       middlewares:
         - oauth2-proxy-handle-error
-        - oauth2-proxy-forward-auth-infra
+        - oauth2-proxy-forward-auth-media
         - transmission-set-host
 
     # For healthchecks and other integrations
