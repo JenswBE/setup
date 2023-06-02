@@ -3,6 +3,7 @@ linters:
   disable:
     - cyclop
     - deadcode # Deprecated
+    - depguard
     - dupl
     - exhaustivestruct # Deprecated
     - exhaustruct
