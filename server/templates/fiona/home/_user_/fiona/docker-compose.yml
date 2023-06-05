@@ -143,6 +143,32 @@ services:
           cpus: "2"
           memory: 2G
 
+  # =========================
+  # =        CROWDSEC       =
+  # =========================
+  crowdsec:
+    <<: *defaults
+    image: docker.io/crowdsecurity/crowdsec:v1.5.2
+    container_name: crowdsec
+    ports:
+      - 127.0.0.1:9000:8080
+    environment:
+      TZ: "{{ general_timezone }}"
+      COLLECTIONS: >-
+        crowdsecurity/http-cve
+        crowdsecurity/linux
+        crowdsecurity/traefik
+      GID: "{{ ansible_real_group_id }}"
+      BOUNCER_KEY_firewall: "{{ app_crowdsec_bouncer_firewall_key }}"
+    volumes:
+      # Config
+      - ./crowdsec/acquis.yaml:/etc/crowdsec/acquis.yaml
+      - crowdsec-db:/var/lib/crowdsec/data/
+      - crowdsec-config:/etc/crowdsec/
+      # Logs
+      - /var/log/auth.log:/var/log/auth.log:ro
+      - traefik-access-logs:/var/log/traefik:ro
+
   # ==========================
   # =         BACKUP         =
   # ==========================
@@ -197,6 +223,8 @@ networks:
 #                            VOLUMES                            #
 #################################################################
 volumes:
+  crowdsec-config:
+  crowdsec-db:
   traefik-access-logs:
   traefik-cert:
   unifi-backup:
