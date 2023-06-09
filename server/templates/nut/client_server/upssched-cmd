@@ -15,6 +15,7 @@ send_email () {
 
 BATTERY_LEVEL=$(upsc apc battery.charge)
 STATUS=$(upsc apc ups.status)
+FALSE_POSITIVE=$([[ "${BATTERY_LEVEL}" -ge "85" && "${STATUS}" == "OL LB RB" ]]; echo $?)
 MSG_SUFFIX="\n\nINFO:\n- level: ${BATTERY_LEVEL:-Unknown}/100\n- status: ${STATUS:-Unknown}"
 
 SUBJECT=""
@@ -38,6 +39,7 @@ commok)
     MSG="Contact with UPS has been restored."
     ;;
 lowbatt)
+    if [[ "${FALSE_POSITIVE}" == "1" ]] ; then exit 0 ; fi
     SUBJECT="UPS BATTERY CRITICAL"
     MSG="Battery level of UPS is critically low!"
     ;;
@@ -50,6 +52,7 @@ shutdown)
     MSG="Host is shutting down due to UPS."
     ;;
 replbatt)
+    if [[ "${FALSE_POSITIVE}" == "1" ]] ; then exit 0 ; fi
     SUBJECT="Replace UPS battery"
     MSG="The battery of the UPS should be replaced."
     ;;
