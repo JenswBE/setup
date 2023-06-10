@@ -38,6 +38,7 @@
     - bjoetiek-dump-db.timer
     - data.mount
     - docker-update-containers.timer
+    - goatcounter-dump-db.timer
     - isa-rclone.timer
     - keycloak-dump-db.timer
     - nextcloud-calcardbackup.timer
@@ -46,6 +47,8 @@
     - nextcloud-maps-scan-photos.timer
     - nextcloud-preview-generator.timer
     - nextcloud-update-apps.timer
+    - uptime-kuma-dump-db.timer
+    - vaultwarden-dump-db.timer
   tags: ["systemd"]
 
 - name: Docker login to GHCR

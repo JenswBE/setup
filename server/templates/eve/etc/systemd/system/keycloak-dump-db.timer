@@ -1,5 +1,5 @@
 [Unit]
-Description=Dump Keycloak every night for backup
+Description=Dump Keycloak DB every night for backup
 
 [Timer]
 OnCalendar=*-*-* 02:00:00

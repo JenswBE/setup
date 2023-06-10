@@ -9,8 +9,10 @@ Services which are backed up:
   - `keycloak-db` (Postgres): DB data
   - `nc-db` (MariaDB): DB data for Nextcloud
   - `nextcloud` (Nextcloud): User files, config, calendars and addressbooks
-- Gandalf
-  - N/A
+  - `uptime-kuma` (Uptime Kuma): SQLite DB
+  - `vaultwarden` (Vaultwarden): SQLite DB and data
+- Fiona
+  - `unifi-controller` (Unifi Controller): Network config
 - Kubo
   - `github-backup` (GitHub Backup): All GitHub repo's
   - `glitchtip-db` (Postgres): DB data
@@ -24,6 +26,15 @@ Services which are backed up:
 ## Validations
 
 To validate the backups, first follow [instructions to mount the archive](Restore%20Borg%20backup.md).
+Next, make following preparations:
+
+```bash
+# Make sure the restore directory of Borgmatic is empty
+sudo docker exec borgmatic sh -c 'rm -rf /mnt/restore/*'
+
+# Set env vars
+APPDATA_DIR=/opt/appdata
+```
 
 ### GitHub Backup
 
@@ -41,12 +52,12 @@ sudo docker exec borgmatic sh -c "find /mnt/borg/mnt/source/github-backup/backup
 ### GoatCounter
 
 ```bash
-# Copy GoatCounter DB to restore point
-sudo docker exec borgmatic cp /mnt/borg/mnt/source/goatcounter/db/goatcounter.sqlite3 /mnt/restore
+# Copy DB to restore point
+sudo docker exec borgmatic cp /mnt/borg/mnt/source/goatcounter/db/goatcounter.backup.sqlite3 /mnt/restore/goatcounter.sqlite3
 
 # Validate if backup contains recent site hits.
 # The accuracy of this check depens on the activity on your websites.
-sudo docker run --rm -v /opt/appdata/borgmatic/borgmatic/restore:/backup alpine sh -c 'apk add sqlite; sqlite3 --table /backup/goatcounter.sqlite3 "select s.link_domain, max(h.hour) from hit_counts h join sites s on h.site_id = s.site_id group by s.link_domain;"'
+sudo docker run --rm -v ${APPDATA_DIR:?}/borgmatic/borgmatic/restore:/backup alpine sh -c 'apk add sqlite; sqlite3 --table /backup/goatcounter.sqlite3 "SELECT s.link_domain, max(h.hour) FROM hit_counts h JOIN sites s ON h.site_id = s.site_id GROUP BY s.link_domain;"'
 ```
 
 ### GoCommerce
@@ -54,13 +65,15 @@ sudo docker run --rm -v /opt/appdata/borgmatic/borgmatic/restore:/backup alpine 
 ```bash
 # List 3 newest files in live service.
 # List directly on host as the GoCommerce container has no shell.
-sudo ls -Alt /opt/appdata/bjoetiek/backend/images | head -n 4
+sudo ls -Alt ${APPDATA_DIR:?}/bjoetiek/backend/images | head -n 4
 
 # Compare against 3 newest files in backup
 sudo docker exec borgmatic ls -Alt /mnt/borg/mnt/source/bjoetiek/backend/images | head -n 4
 ```
 
 ### Home Assistant
+
+TODO
 
 ### MariaDB
 
@@ -103,6 +116,8 @@ sudo docker exec borgmatic ls -Alth /mnt/borg/mnt/source/nextcloud/calcardbackup
 
 ### Plex
 
+TODO
+
 ### Postges
 
 ```bash
@@ -110,5 +125,31 @@ sudo docker exec borgmatic ls -Alth /mnt/borg/mnt/source/nextcloud/calcardbackup
 sudo docker exec borgmatic find /mnt/borg -name "*.pg_dump" -exec cp {} /mnt/restore \;
 
 # Check if backup files is correctly created
-sudo docker run --rm -v /opt/appdata/borgmatic/borgmatic/restore:/backup postgres:alpine bash -c 'for f in /backup/*.pg_dump; do echo $f; pg_restore --list $f | head -n 12; echo; done;'
+sudo docker run --rm -v ${APPDATA_DIR:?}/borgmatic/borgmatic/restore:/backup postgres:alpine bash -c 'for f in /backup/*.pg_dump; do echo $f; pg_restore --list $f | head -n 12; echo; done;'
+```
+
+### Unifi controller
+
+TODO
+
+### Uptime Kuma
+
+```bash
+# Copy DB to restore point
+sudo docker exec borgmatic cp /mnt/borg/mnt/source/uptime-kuma/data/kuma.backup.db /mnt/restore/kuma.sqlite3
+
+# Validate if backup contains recent heartbeats.
+# The accuracy of this check depens on frequency of the heartbeats.
+sudo docker run --rm -v ${APPDATA_DIR:?}/borgmatic/borgmatic/restore:/backup alpine sh -c 'apk add sqlite; sqlite3 --table /backup/kuma.sqlite3 "SELECT * FROM heartbeat ORDER BY time DESC LIMIT 3;"'
+```
+
+### Vaultwarden
+
+```bash
+# Copy DB to restore point
+sudo docker exec borgmatic cp /mnt/borg/mnt/source/vaultwarden/data/db.backup.sqlite3 /mnt/restore/vaultwarden.sqlite3
+
+# Validate if backup contains recent heartbeats.
+# The accuracy of this check depens on frequency of the heartbeats.
+sudo docker run --rm -v ${APPDATA_DIR:?}/borgmatic/borgmatic/restore:/backup alpine sh -c 'apk add sqlite; sqlite3 --table /backup/vaultwarden.sqlite3 "SELECT updated_at, name FROM devices ORDER BY updated_at DESC LIMIT 3;"'
 ```
