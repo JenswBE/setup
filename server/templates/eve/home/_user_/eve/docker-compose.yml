@@ -293,7 +293,7 @@ services:
   # ===========================================================================
   bjoetiek-frontend:
     <<: *defaults
-    image: docker.io/jenswbe/bjoetiek-y-frontend:v2.4.1
+    image: docker.io/jenswbe/bjoetiek-y-frontend:v2.5.0
     container_name: bjoetiek-frontend
     networks:
       - bjoetiek
