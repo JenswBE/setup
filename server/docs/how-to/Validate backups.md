@@ -116,7 +116,16 @@ sudo docker exec borgmatic ls -Alth /mnt/borg/mnt/source/nextcloud/calcardbackup
 
 ### Plex
 
-TODO
+```bash
+# List size and change date of 3 newest files before today
+# Since Plex doesn't support "find -newermt", we calculate the minutes since midnight locally.
+# This ensures a correct comparison. Based on https://stackoverflow.com/a/30374251
+MINS_SINCE_MIDNIGHT=$(( $(date "+10#%H * 60 + 10#%M") ))
+sudo docker exec plex sh -c "find /data/Photos -type f -mmin +${MINS_SINCE_MIDNIGHT:?} -exec stat -c '%Y %n' {} \; | sort -nr | head -n 3 | cut -d' ' -f2- | tr \\\n \\\0 | xargs -0 ls -lah"
+
+# Compare against files in backup
+sudo docker exec borgmatic sh -c "find /mnt/borg/mnt/source/plex/photos -type f -mmin +${MINS_SINCE_MIDNIGHT:?} -exec stat -c '%Y %n' {} \; | sort -nr | head -n 3 | cut -d' ' -f2- | tr \\\n \\\0 | xargs -0 ls -lah"
+```
 
 ### Postges
 
