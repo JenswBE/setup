@@ -149,7 +149,7 @@ sudo docker run --rm -v ${APPDATA_DIR:?}/borgmatic/borgmatic/restore:/backup alp
 # Copy DB to restore point
 sudo docker exec borgmatic cp /mnt/borg/mnt/source/vaultwarden/data/db.backup.sqlite3 /mnt/restore/vaultwarden.sqlite3
 
-# Validate if backup contains recent heartbeats.
-# The accuracy of this check depens on frequency of the heartbeats.
+# Validate if backup contains recent devices.
+# The accuracy of this check depens on how recently a device used Vaultwarden.
 sudo docker run --rm -v ${APPDATA_DIR:?}/borgmatic/borgmatic/restore:/backup alpine sh -c 'apk add sqlite; sqlite3 --table /backup/vaultwarden.sqlite3 "SELECT updated_at, name FROM devices ORDER BY updated_at DESC LIMIT 3;"'
 ```
