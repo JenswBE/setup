@@ -70,6 +70,7 @@
     - docker-update-containers.timer
     - github-backup.timer
     - glitchtip-dump-db.timer
+    - graylog-dump-mongodb.timer
     - librenms-dump-db.timer
     - miniflux-dump-db.timer
     - nextcloud-cron.timer

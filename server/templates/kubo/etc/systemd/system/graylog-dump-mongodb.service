@@ -1,0 +1,6 @@
+[Unit]
+Description=Dump Graylog MongoDB for backup
+OnFailure=unit-fail-mail@%n.service
+
+[Service]
+ExecStart={{ docker_path }} exec graylog-mongodb mongodump -o /backup

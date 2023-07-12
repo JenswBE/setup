@@ -16,6 +16,7 @@ Services which are backed up:
 - Kubo
   - `github-backup` (GitHub Backup): All GitHub repo's
   - `glitchtip-db` (Postgres): DB data
+  - `graylog-mongodb` (MongoDB): DB data
   - `ha` (Home Assistant): Config files
   - `librenms-db` (MariaDB): DB data
   - `miniflux-db` (Postgres): DB data
@@ -81,6 +82,10 @@ TODO
 # Check backup date of all MariaDB dumps
 sudo docker exec borgmatic find /mnt/borg -name "*.sqldump" -exec echo {} \; -exec tail -n1 {} \; -exec echo Number of tables: \; -exec bash -c "grep -F 'CREATE TABLE' {} | wc -l" \;
 ```
+
+### MongoDB
+
+TODO
 
 ### Nextcloud
 

@@ -701,6 +701,7 @@ services:
       - graylog
     volumes:
       - "{{ general_path_appdata }}/graylog/mongodb/data:/data/db"
+      - graylog-mongodb-dump:/backup
 
   librenms:
     <<: *defaults
@@ -886,6 +887,7 @@ services:
       # Backup locations
       - "github-backup:/mnt/source/github-backup/backup:ro"
       - "glitchtip-db-dump:/mnt/source/glitchtip/dbdump:ro"
+      - "graylog-mongodb-dump:/mnt/source/graylog/mongodb:ro"
       - "{{ general_path_appdata }}/home-automation/home-assistant/config:/mnt/source/home-automation/home-assistant/config:ro"
       - "librenms-db-dump:/mnt/source/librenms/dbdump:ro"
       - "miniflux-db-dump:/mnt/source/miniflux/dbdump:ro"
@@ -946,6 +948,7 @@ volumes:
   crowdsec-db:
   github-backup:
   glitchtip-db-dump:
+  graylog-mongodb-dump:
   ha-mosquitto-data:
   librenms-db-dump:
   miniflux-db-dump:
