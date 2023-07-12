@@ -651,6 +651,16 @@ services:
       GRAYLOG_HTTP_EXTERNAL_URI: "https://logs.{{ general_domain_default }}/"
       GRAYLOG_ELASTICSEARCH_HOSTS: http://graylog-elasticsearch:9200
       GRAYLOG_MONGODB_URI: mongodb://graylog-mongodb/graylog
+      GRAYLOG_TRANSPORT_EMAIL_ENABLED: "true"
+      GRAYLOG_TRANSPORT_EMAIL_HOSTNAME: "{{ mailjet_host }}"
+      GRAYLOG_TRANSPORT_EMAIL_PORT: "{{ mailjet_port_ssl }}"
+      GRAYLOG_TRANSPORT_EMAIL_USE_SSL: "true"
+      GRAYLOG_TRANSPORT_EMAIL_USE_TLS: "false"
+      GRAYLOG_TRANSPORT_EMAIL_USE_AUTH: "true"
+      GRAYLOG_TRANSPORT_EMAIL_AUTH_USERNAME: "{{ mailjet_username }}"
+      GRAYLOG_TRANSPORT_EMAIL_AUTH_PASSWORD: "{{ mailjet_password }}"
+      GRAYLOG_TRANSPORT_EMAIL_FROM_EMAIL: graylog@jensw.be
+      GRAYLOG_TRANSPORT_EMAIL_WEB_INTERFACE_URL: "https://logs.{{ general_domain_default }}"
     depends_on:
       - graylog-mongodb
       - graylog-elasticsearch
