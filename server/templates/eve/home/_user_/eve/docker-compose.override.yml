@@ -20,7 +20,7 @@ x-defaults: &defaults
 #################################################################
 services:
 # Ensure to add DNS entry before bumping!
-{% for year in range(2019,2022+1) %}
+{% for year in range(2019,2023+1) %}
   nginx-tuinfeest-archive-{{ year }}:
     <<: *defaults
     image: docker.io/nginxinc/nginx-unprivileged:alpine
