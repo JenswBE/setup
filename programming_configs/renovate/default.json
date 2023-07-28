@@ -5,5 +5,12 @@
   "html": {
     "enabled": true,
     "fileMatch": ["\\.(go)?html?$"]
-  }
+  },
+  "packageRules": [
+    {
+      "matchUpdateTypes": ["patch"],
+      "matchCurrentVersion": "!/^0/",
+      "automerge": true
+    }
+  ]
 }
