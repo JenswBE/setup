@@ -9,6 +9,11 @@ blocking:
   blackLists:
     base:
       - https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/gambling-porn/hosts
+  whiteLists:
+    base:
+      - |
+        aa.tweakers.nl
+        ab.tweakers.nl
   clientGroupsBlock:
     default:
       - base
