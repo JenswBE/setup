@@ -82,6 +82,7 @@ ln -fs "$(pwd)/vscode/keybindings.jsonc" ~/.config/Code/User/keybindings.json
 
 ```
 ext install eamodio.gitlens
+ext install emeraldwalk.RunOnSave
 ext install esbenp.prettier-vscode
 ext install golang.go
 ext install jinliming2.vscode-go-template

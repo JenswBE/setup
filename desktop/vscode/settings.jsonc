@@ -106,5 +106,14 @@
   },
   "[yaml]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "emeraldwalk.runonsave": {
+    "commands": [
+      {
+        "match": "\\.go$",
+        "isAsync": false,
+        "cmd": "if ! command -v tagalign &> /dev/null; then go install github.com/4meepo/tagalign/cmd/tagalign@latest; fi; tagalign  --fix --sort --strict ${fileDirname}"
+      }
+    ]
   }
 }
