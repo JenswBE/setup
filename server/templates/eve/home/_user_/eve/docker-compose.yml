@@ -293,16 +293,14 @@ services:
   # ===========================================================================
   bjoetiek-frontend:
     <<: *defaults
-    image: docker.io/jenswbe/bjoetiek-y-frontend:v2.5.0
+    image: docker.io/jenswbe/bjoetiek-y-frontend:v3.0.0
     container_name: bjoetiek-frontend
     networks:
       - bjoetiek
       - traefik
     environment:
       - "TZ={{ general_timezone }}"
-      - "SENTRY_DSN={{ app_bjoetiek_sentry_dsn }}"
-      - "BACKEND_URL_INTERNAL=http://bjoetiek-backend:8080/api"
-      - "BACKEND_URL_EXTERNAL=https://backend.{{ general_domain_bjoetiek }}/api"
+      - "BJOETIEK_Y_BACKEND_URL=http://bjoetiek-backend:8080/api"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.bjoetiek-frontend.entrypoints=websecure"
@@ -403,9 +401,7 @@ services:
       - traefik
     environment:
       - "TZ={{ general_timezone }}"
-      - "SENTRY_DSN={{ app_bjoetiek_sentry_dsn }}"
-      - "BACKEND_URL_INTERNAL=http://bjoetiek-test-backend:8080/api"
-      - "BACKEND_URL_EXTERNAL=https://test-backend.{{ general_domain_bjoetiek }}/api"
+      - "BJOETIEK_Y_BACKEND_URL=http://bjoetiek-test-backend:8080/api"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.bjoetiek-test-frontend.entrypoints=websecure"
