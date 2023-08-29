@@ -31,20 +31,6 @@ app_borgmatic_ssh_known_hosts: |
 app_borgmatic_remote_folder: ""
 app_borgmatic_ping_id: "" # Ping ID for healthchecks.io
 
-# Candylicious
-# See https://github.com/JenswBE/go-commerce for more info on expected values
-app_candylicious_db_pass: ""
-app_candylicious_image_proxy_key: ""
-app_candylicious_image_proxy_salt: ""
-app_candylicious_sentry_dsn: ""
-app_candylicious_test_auth_oidc_issuer_url: ""
-app_candylicious_test_auth_oidc_client_id: ""
-app_candylicious_test_auth_oidc_client_secret: ""
-app_candylicious_test_auth_session_auth_key: ""
-app_candylicious_test_auth_session_enc_key: ""
-app_candylicious_test_image_proxy_key: ""
-app_candylicious_test_image_proxy_salt: ""
-
 # CrowdSec
 app_crowdsec_bouncer_firewall_key: "" # Alphanumeric string
 
@@ -84,16 +70,6 @@ app_nextcloud_db_pass_root: ""
 app_nextcloud_db_pass_nextcloud: ""
 app_nextcloud_apps_disable: "firstrunwizard"
 app_nextcloud_apps_install: "contacts,calendar,tasks,notes,groupfolders,quota_warning,previewgenerator,apporder"
-
-# Oud-TurnhoutsGebak
-# See https://github.com/JenswBE/go-commerce for more info on expected values
-app_oud_turnhoutsgebak_db_pass: ""
-app_oud_turnhoutsgebak_sentry_dsn: ""
-app_oud_turnhoutsgebak_test_auth_oidc_issuer_url: ""
-app_oud_turnhoutsgebak_test_auth_oidc_client_id: ""
-app_oud_turnhoutsgebak_test_auth_oidc_client_secret: ""
-app_oud_turnhoutsgebak_test_auth_session_auth_key: ""
-app_oud_turnhoutsgebak_test_auth_session_enc_key: ""
 
 # SNMP Daemon
 app_snmpd_location: "" # Location reported by SNMP where the device is located
