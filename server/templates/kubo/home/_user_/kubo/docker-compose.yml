@@ -470,7 +470,7 @@ services:
     <<: *defaults
     # Nextcloud currently only supports up to 10.6.
     # See https://docs.nextcloud.com/server/27/admin_manual/installation/system_requirements.html
-    image: docker.io/library/mariadb:10.6
+    image: docker.io/library/mariadb:11.1
     command: --transaction-isolation=READ-COMMITTED --log-bin=ROW --innodb-read-only-compressed=OFF
     container_name: nc-db
     networks:
@@ -787,7 +787,7 @@ services:
     # Unfortunately, LibreNMS doesn't provide any docs on supported DB version.
     # They support Ubuntu 22.04, which currently (2023-04-27) has version 10.6
     # See https://packages.ubuntu.com/jammy/mariadb-server
-    image: docker.io/library/mariadb:10.6
+    image: docker.io/library/mariadb:11.1
     container_name: librenms-db
     command:
       - "mysqld"
