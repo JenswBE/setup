@@ -293,7 +293,7 @@ services:
   # ===========================================================================
   bjoetiek-frontend:
     <<: *defaults
-    image: docker.io/jenswbe/bjoetiek-y-frontend:v3.1.0
+    image: docker.io/jenswbe/bjoetiek-y-frontend:v3.1.1
     container_name: bjoetiek-frontend
     networks:
       - bjoetiek
@@ -301,6 +301,7 @@ services:
     environment:
       - "TZ={{ general_timezone }}"
       - "BJOETIEK_Y_BACKEND_URL=http://bjoetiek-backend:8080/api"
+      - "NO_COLOR=true"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.bjoetiek-frontend.entrypoints=websecure"
@@ -402,6 +403,7 @@ services:
     environment:
       - "TZ={{ general_timezone }}"
       - "BJOETIEK_Y_BACKEND_URL=http://bjoetiek-test-backend:8080/api"
+      - "NO_COLOR=true"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.bjoetiek-test-frontend.entrypoints=websecure"
