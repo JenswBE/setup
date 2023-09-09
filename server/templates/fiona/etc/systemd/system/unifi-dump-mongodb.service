@@ -1,0 +1,7 @@
+[Unit]
+Description=Dump UniFi MongoDB for backup
+OnFailure=unit-fail-mail@%n.service
+
+[Service]
+ExecStart={{ docker_path }} exec unifi-mongodb mongodump -u {{ app_unifi_mongodb_user }} -p {{ app_unifi_mongodb_password }} -d unifi -o /backup/unifi
+ExecStartPost={{ docker_path }} exec unifi-mongodb mongodump -u {{ app_unifi_mongodb_user }} -p {{ app_unifi_mongodb_password }} -d unifi_stat -o /backup/unifi_stat

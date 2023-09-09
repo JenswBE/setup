@@ -25,3 +25,7 @@ app_snmpd_location: "" # Location reported by SNMP where the device is located
 #   - https://doc.traefik.io/traefik/https/acme/#providers
 #   - https://dash.cloudflare.com/profile/api-tokens
 app_traefik_cloudflare_token: ""
+
+# Unifi Network Application
+app_unifi_mongodb_user: ""
+app_unifi_mongodb_password: ""
