@@ -183,7 +183,7 @@ services:
       # Backup locations
       - "unifi-backup:/mnt/source/unifi/backup:ro"
       # Config and cache
-      - "./borgmatic/borgmatic.d:/etc/borgmatic.d"
+      - "./borgmatic/borgmatic.d/config.yaml:/etc/borgmatic.d/config.yaml"
       - "./borgmatic/ssh:/root/.ssh"
       - "{{ general_path_appdata }}/borgmatic/borgmatic/config:/root/.config/borg"
       - "{{ general_path_appdata }}/borgmatic/borgmatic/cache:/root/.cache/borg"
@@ -192,6 +192,7 @@ services:
       - "/dev/fuse:/dev/fuse" # Required for borg mount
     environment:
       - "TZ={{ general_timezone }}"
+      - "BACKUP_CRON=0 3 * * *"
       - "BORG_PASSPHRASE={{ app_borgmatic_borg_passphrase }}"
       - "BORG_HOSTNAME_IS_UNIQUE=yes" # Automatically removes stale locks
       - "BORG_HOST_ID={{ ansible_hostname }}"
