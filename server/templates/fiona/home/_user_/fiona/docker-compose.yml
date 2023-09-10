@@ -152,7 +152,7 @@ services:
 
   unifi-mongodb:
     <<: *defaults
-    build: ./unifi
+    build: ./unifi/mongodb
     image: docker.io/library/mongo:4.4
     container_name: unifi-mongodb
     environment:
