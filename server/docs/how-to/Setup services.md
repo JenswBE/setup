@@ -45,6 +45,9 @@ docker exec -u www-data nextcloud php occ config:system:set trusted_proxies 0 --
 # Disable skeleton dir (default files)
 docker exec -u www-data nextcloud php occ config:system:set skeletondirectory --value=""
 
+# Disable system address book
+docker exec -u www-data nextcloud php occ config:app:set dav system_addressbook_exposed --value=no
+
 # Disable unwanted apps
 export NEXTCLOUD_APPS_DISABLE=firstrunwizard
 for NC_APP in ${NEXTCLOUD_APPS_DISABLE};
