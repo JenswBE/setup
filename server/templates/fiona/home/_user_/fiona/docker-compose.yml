@@ -216,11 +216,11 @@ services:
     devices:
       - "/dev/fuse:/dev/fuse" # Required for borg mount
     environment:
-      - "TZ={{ general_timezone }}"
-      - "BACKUP_CRON=0 3 * * *"
-      - "BORG_PASSPHRASE={{ app_borgmatic_borg_passphrase }}"
-      - "BORG_HOSTNAME_IS_UNIQUE=yes" # Automatically removes stale locks
-      - "BORG_HOST_ID={{ ansible_hostname }}"
+      TZ: "{{ general_timezone }}"
+      BACKUP_CRON: "0 3 * * *"
+      BORG_PASSPHRASE: "{{ app_borgmatic_borg_passphrase }}"
+      BORG_HOSTNAME_IS_UNIQUE: "yes" # Automatically removes stale locks
+      BORG_HOST_ID: "{{ ansible_hostname }}"
     deploy:
       resources:
         limits:

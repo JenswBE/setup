@@ -77,7 +77,7 @@ services:
       - traefik-cert:/letsencrypt/
       - traefik-access-logs:/access-logs
     environment:
-      - "TZ={{ general_timezone }}"
+      TZ: "{{ general_timezone }}"
 
   oauth2-proxy:
     <<: *defaults
@@ -127,7 +127,7 @@ services:
       - oauth2-proxy-helper-config:/config
       - oauth2-proxy-helper-data:/data
     environment:
-      - "TZ={{ general_timezone }}"
+      TZ: "{{ general_timezone }}"
 
   # =========================
   # =       NEXTCLOUD       =
@@ -146,11 +146,11 @@ services:
       - "{{ general_path_appdata }}/nextcloud/nextcloud/config:/var/www/html"
       - "{{ general_path_appdata }}/nextcloud/nextcloud/data:/var/www/html/data"
     environment:
-      - "TZ={{ general_timezone }}"
-      - "MYSQL_DATABASE=nextcloud"
-      - "MYSQL_USER=nextcloud"
-      - "MYSQL_PASSWORD={{ app_nextcloud_db_pass_nextcloud }}"
-      - "MYSQL_HOST=nc-db"
+      TZ: "{{ general_timezone }}"
+      MYSQL_DATABASE: nextcloud
+      MYSQL_USER: nextcloud
+      MYSQL_PASSWORD: "{{ app_nextcloud_db_pass_nextcloud }}"
+      MYSQL_HOST: nc-db
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.nextcloud.entrypoints=websecure"
@@ -177,11 +177,11 @@ services:
       - "{{ general_path_appdata }}/nextcloud/mariadb/data:/var/lib/mysql"
       - nc-db-dump:/backup
     environment:
-      - "TZ={{ general_timezone }}"
-      - "MYSQL_ROOT_PASSWORD={{ app_nextcloud_db_pass_root }}"
-      - "MYSQL_PASSWORD={{ app_nextcloud_db_pass_nextcloud }}"
-      - "MYSQL_DATABASE=nextcloud"
-      - "MYSQL_USER=nextcloud"
+      TZ: "{{ general_timezone }}"
+      MYSQL_ROOT_PASSWORD: "{{ app_nextcloud_db_pass_root }}"
+      MYSQL_PASSWORD: "{{ app_nextcloud_db_pass_nextcloud }}"
+      MYSQL_DATABASE: nextcloud
+      MYSQL_USER: nextcloud
     healthcheck:
       test:
         [
@@ -204,7 +204,7 @@ services:
     volumes:
       - "{{ general_path_appdata }}/nginx/tuinfeest-beta:/usr/share/nginx/html:ro"
     environment:
-      - "TZ={{ general_timezone }}"
+      TZ: "{{ general_timezone }}"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.nginx-tuinfeest-beta.entrypoints=websecure"
@@ -222,8 +222,8 @@ services:
       - ./isa/fetchmailrc:/config/.fetchmailrc
       - isa-output:/output
     environment:
-      - "TZ={{ general_timezone }}"
-      - "CRON_SCHEDULE=*/15 * * * *"
+      TZ: "{{ general_timezone }}"
+      CRON_SCHEDULE: "*/15 * * * *"
 
   isa-rclone:
     <<: *defaults
@@ -235,7 +235,7 @@ services:
       - ./isa/rclone:/config/rclone
       - isa-output:/data
     environment:
-      - "TZ={{ general_timezone }}"
+      TZ: "{{ general_timezone }}"
 
   # ===========================================================================
   # =   DEAD LINK CHECKER                                                     =
@@ -248,7 +248,7 @@ services:
     volumes:
       - "./delic/config.yml:/config.yml:ro,z"
     environment:
-      - "TZ={{ general_timezone }}"
+      TZ: "{{ general_timezone }}"
 
   # ===========================================================================
   # =   EMAIL USERNAME GENERATOR                                              =
@@ -261,7 +261,7 @@ services:
     networks:
       - traefik
     environment:
-      - "TZ={{ general_timezone }}"
+      TZ: "{{ general_timezone }}"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.email-username-generator.entrypoints=websecure"
@@ -279,7 +279,7 @@ services:
     networks:
       - traefik
     environment:
-      - "TZ={{ general_timezone }}"
+      TZ: "{{ general_timezone }}"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.assets.entrypoints=websecure"
@@ -301,9 +301,9 @@ services:
       - bjoetiek
       - traefik
     environment:
-      - "TZ={{ general_timezone }}"
-      - "BJOETIEK_Y_BACKEND_URL=http://bjoetiek-backend:8080/api"
-      - "NO_COLOR=true"
+      TZ: "{{ general_timezone }}"
+      BJOETIEK_Y_BACKEND_URL: http://bjoetiek-backend:8080/api
+      NO_COLOR: true"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.bjoetiek-frontend.entrypoints=websecure"
@@ -326,24 +326,24 @@ services:
     volumes:
       - "{{ general_path_appdata }}/bjoetiek/backend/images:/images"
     environment:
-      - "TZ={{ general_timezone }}"
-      - "AUTH_OIDC_ISSUER_URL={{ app_bjoetiek_auth_oidc_issuer_url }}"
-      - "AUTH_OIDC_CLIENT_ID={{ app_bjoetiek_auth_oidc_client_id }}"
-      - "AUTH_OIDC_CLIENT_SECRET={{ app_bjoetiek_auth_oidc_client_secret }}"
-      - "AUTH_SESSION_AUTH_KEY={{ app_bjoetiek_auth_session_auth_key }}"
-      - "AUTH_SESSION_ENC_KEY={{ app_bjoetiek_auth_session_enc_key }}"
-      - "DATABASE_DEFAULT_HOST=bjoetiek-db"
-      - "DATABASE_DEFAULT_USER=bjoetiek"
-      - "DATABASE_DEFAULT_PASSWORD={{ app_bjoetiek_db_pass }}"
-      - "DATABASE_DEFAULT_DATABASE=bjoetiek"
-      - "FEATURES_CONTENT_ENABLED=false"
-      - "FEATURES_EVENTS_ENABLED=false"
-      - "FEATURES_PRODUCTS_PUBLIC_URL_TEMPLATE=https://{{ general_domain_bjoetiek }}/{% raw %}producten/{{ .ID.String }}/{{ .Name }}{% endraw %}"
-      - "IMAGE_PROXY_BASE_URL=https://backend.{{ general_domain_bjoetiek }}/images/"
-      - "IMAGE_PROXY_KEY={{ app_bjoetiek_image_proxy_key }}"
-      - "IMAGE_PROXY_SALT={{ app_bjoetiek_image_proxy_salt }}"
-      - "IMAGE_PROXY_ALLOWED_CONFIGS=100:100:FIT,150:150:FIT,400:400:FIT,550:550:FIT"
-      - "STORAGE_IMAGES_PATH=/images"
+      TZ: "{{ general_timezone }}"
+      AUTH_OIDC_ISSUER_URL: "{{ app_bjoetiek_auth_oidc_issuer_url }}"
+      AUTH_OIDC_CLIENT_ID: "{{ app_bjoetiek_auth_oidc_client_id }}"
+      AUTH_OIDC_CLIENT_SECRET: "{{ app_bjoetiek_auth_oidc_client_secret }}"
+      AUTH_SESSION_AUTH_KEY: "{{ app_bjoetiek_auth_session_auth_key }}"
+      AUTH_SESSION_ENC_KEY: "{{ app_bjoetiek_auth_session_enc_key }}"
+      DATABASE_DEFAULT_HOST: bjoetiek-db
+      DATABASE_DEFAULT_USER: bjoetiek
+      DATABASE_DEFAULT_PASSWORD: "{{ app_bjoetiek_db_pass }}"
+      DATABASE_DEFAULT_DATABASE: bjoetiek
+      FEATURES_CONTENT_ENABLED: "false"
+      FEATURES_EVENTS_ENABLED: "false"
+      FEATURES_PRODUCTS_PUBLIC_URL_TEMPLATE: "https://{{ general_domain_bjoetiek }}/{% raw %}producten/{{ .ID.String }}/{{ .Name }}{% endraw %}"
+      IMAGE_PROXY_BASE_URL: "https://backend.{{ general_domain_bjoetiek }}/images/"
+      IMAGE_PROXY_KEY: "{{ app_bjoetiek_image_proxy_key }}"
+      IMAGE_PROXY_SALT: "{{ app_bjoetiek_image_proxy_salt }}"
+      IMAGE_PROXY_ALLOWED_CONFIGS: 100:100:FIT,150:150:FIT,400:400:FIT,550:550:FIT
+      STORAGE_IMAGES_PATH: /images
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.bjoetiek-backend.entrypoints=websecure"
@@ -365,19 +365,20 @@ services:
       - "{{ general_path_appdata }}/bjoetiek/postgres/data:/var/lib/postgresql/data"
       - bjoetiek-db-dump:/backup
     environment:
-      - "TZ={{ general_timezone }}"
-      - "POSTGRES_USER=bjoetiek"
-      - "POSTGRES_PASSWORD={{ app_bjoetiek_db_pass }}"
+      TZ: "{{ general_timezone }}"
+      POSTGRES_USER: bjoetiek
+      POSTGRES_PASSWORD: "{{ app_bjoetiek_db_pass }}"
 
   bjoetiek-imgproxy:
     <<: *defaults
     image: docker.io/darthsim/imgproxy:v3
     container_name: bjoetiek-imgproxy
     environment:
-      - "IMGPROXY_KEY={{ app_bjoetiek_image_proxy_key }}"
-      - "IMGPROXY_SALT={{ app_bjoetiek_image_proxy_salt }}"
-      - "IMGPROXY_LOCAL_FILESYSTEM_ROOT=/images"
-      - "IMGPROXY_MAX_SRC_RESOLUTION=64"
+      TZ: "{{ general_timezone }}"
+      IMGPROXY_KEY: "{{ app_bjoetiek_image_proxy_key }}"
+      IMGPROXY_SALT: "{{ app_bjoetiek_image_proxy_salt }}"
+      IMGPROXY_LOCAL_FILESYSTEM_ROOT: /images
+      IMGPROXY_MAX_SRC_RESOLUTION: "64"
     networks:
       - traefik
     volumes:
@@ -403,9 +404,9 @@ services:
       - bjoetiek-test
       - traefik
     environment:
-      - "TZ={{ general_timezone }}"
-      - "BJOETIEK_Y_BACKEND_URL=http://bjoetiek-test-backend:8080/api"
-      - "NO_COLOR=true"
+      TZ: "{{ general_timezone }}"
+      BJOETIEK_Y_BACKEND_URL: http://bjoetiek-test-backend:8080/api
+      NO_COLOR: "true"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.bjoetiek-test-frontend.entrypoints=websecure"
@@ -424,24 +425,24 @@ services:
     volumes:
       - "{{ general_path_appdata }}/bjoetiek/backend-test/images:/images"
     environment:
-      - "TZ={{ general_timezone }}"
-      - "AUTH_OIDC_ISSUER_URL={{ app_bjoetiek_test_auth_oidc_issuer_url }}"
-      - "AUTH_OIDC_CLIENT_ID={{ app_bjoetiek_test_auth_oidc_client_id }}"
-      - "AUTH_OIDC_CLIENT_SECRET={{ app_bjoetiek_test_auth_oidc_client_secret }}"
-      - "AUTH_SESSION_AUTH_KEY={{ app_bjoetiek_test_auth_session_auth_key }}"
-      - "AUTH_SESSION_ENC_KEY={{ app_bjoetiek_test_auth_session_enc_key }}"
-      - "DATABASE_DEFAULT_HOST=bjoetiek-test-db"
-      - "DATABASE_DEFAULT_USER=bjoetiek-test"
-      - "DATABASE_DEFAULT_PASSWORD=bjoetiek-test"
-      - "DATABASE_DEFAULT_DATABASE=bjoetiek-test"
-      - "FEATURES_CONTENT_ENABLED=false"
-      - "FEATURES_EVENTS_ENABLED=false"
-      - "FEATURES_PRODUCTS_PUBLIC_URL_TEMPLATE=https://test.{{ general_domain_bjoetiek }}/{% raw %}producten/{{ .ID.String }}/{{ .Name }}{% endraw %}"
-      - "IMAGE_PROXY_BASE_URL=https://test-backend.{{ general_domain_bjoetiek }}/images/"
-      - "IMAGE_PROXY_KEY={{ app_bjoetiek_test_image_proxy_key }}"
-      - "IMAGE_PROXY_SALT={{ app_bjoetiek_test_image_proxy_salt }}"
-      - "IMAGE_PROXY_ALLOWED_CONFIGS=100:100:FIT,150:150:FIT,400:400:FIT,550:550:FIT"
-      - "STORAGE_IMAGES_PATH=/images"
+      TZ: "{{ general_timezone }}"
+      AUTH_OIDC_ISSUER_URL: "{{ app_bjoetiek_test_auth_oidc_issuer_url }}"
+      AUTH_OIDC_CLIENT_ID: "{{ app_bjoetiek_test_auth_oidc_client_id }}"
+      AUTH_OIDC_CLIENT_SECRET: "{{ app_bjoetiek_test_auth_oidc_client_secret }}"
+      AUTH_SESSION_AUTH_KEY: "{{ app_bjoetiek_test_auth_session_auth_key }}"
+      AUTH_SESSION_ENC_KEY: "{{ app_bjoetiek_test_auth_session_enc_key }}"
+      DATABASE_DEFAULT_HOST: bjoetiek-test-db
+      DATABASE_DEFAULT_USER: bjoetiek-test
+      DATABASE_DEFAULT_PASSWORD: bjoetiek-test
+      DATABASE_DEFAULT_DATABASE: bjoetiek-test
+      FEATURES_CONTENT_ENABLED: "false"
+      FEATURES_EVENTS_ENABLED: "false"
+      FEATURES_PRODUCTS_PUBLIC_URL_TEMPLATE: "https://test.{{ general_domain_bjoetiek }}/{% raw %}producten/{{ .ID.String }}/{{ .Name }}{% endraw %}"
+      IMAGE_PROXY_BASE_URL: "https://test-backend.{{ general_domain_bjoetiek }}/images/"
+      IMAGE_PROXY_KEY: "{{ app_bjoetiek_test_image_proxy_key }}"
+      IMAGE_PROXY_SALT: "{{ app_bjoetiek_test_image_proxy_salt }}"
+      IMAGE_PROXY_ALLOWED_CONFIGS: 100:100:FIT,150:150:FIT,400:400:FIT,550:550:FIT
+      STORAGE_IMAGES_PATH: /images
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.bjoetiek-test-backend.entrypoints=websecure"
@@ -462,19 +463,20 @@ services:
     volumes:
       - "bjoetiek-test-db-data:/var/lib/postgresql/data"
     environment:
-      - "TZ={{ general_timezone }}"
-      - "POSTGRES_USER=bjoetiek-test"
-      - "POSTGRES_PASSWORD=bjoetiek-test"
+      TZ: "{{ general_timezone }}"
+      POSTGRES_USER: bjoetiek-test
+      POSTGRES_PASSWORD: bjoetiek-test
 
   bjoetiek-test-imgproxy:
     <<: *defaults
     image: docker.io/darthsim/imgproxy:latest
     container_name: bjoetiek-test-imgproxy
     environment:
-      - "IMGPROXY_KEY={{ app_bjoetiek_test_image_proxy_key }}"
-      - "IMGPROXY_SALT={{ app_bjoetiek_test_image_proxy_salt }}"
-      - "IMGPROXY_LOCAL_FILESYSTEM_ROOT=/images"
-      - "IMGPROXY_MAX_SRC_RESOLUTION=64"
+      TZ: "{{ general_timezone }}"
+      IMGPROXY_KEY: "{{ app_bjoetiek_test_image_proxy_key }}"
+      IMGPROXY_SALT: "{{ app_bjoetiek_test_image_proxy_salt }}"
+      IMGPROXY_LOCAL_FILESYSTEM_ROOT: /images
+      IMGPROXY_MAX_SRC_RESOLUTION: "64"
     networks:
       - traefik
     volumes:
@@ -503,7 +505,7 @@ services:
     volumes:
       - "{{ general_path_appdata }}/goatcounter/db:/db"
     environment:
-      - "TZ={{ general_timezone }}"
+      TZ: "{{ general_timezone }}"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.goatcounter.entrypoints=websecure"
@@ -529,7 +531,7 @@ services:
     networks:
       - traefik
     environment:
-      - "TZ={{ general_timezone }}"
+      TZ: "{{ general_timezone }}"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.uptime-kuma.entrypoints=websecure"
@@ -551,18 +553,18 @@ services:
       - keycloak
       - traefik
     environment:
-      - "TZ={{ general_timezone }}"
-      - "KC_DB_URL_HOST=keycloak-db"
-      - "KC_DB_URL_DATABASE=keycloak"
-      - "KC_DB_USERNAME=keycloak"
-      - "KC_DB_PASSWORD={{ app_keycloak_db_pass }}"
-      - "KC_DB_SCHEMA=public"
-      - "KC_HOSTNAME=auth.{{ general_domain_default }}"
-      - "KC_HOSTNAME_STRICT=false" # Hostnames validated by Traefik
-      - "KC_PROXY=edge"
+      TZ: "{{ general_timezone }}"
+      KC_DB_URL_HOST: keycloak-db
+      KC_DB_URL_DATABASE: keycloak
+      KC_DB_USERNAME: keycloak
+      KC_DB_PASSWORD: "{{ app_keycloak_db_pass }}"
+      KC_DB_SCHEMA: public
+      KC_HOSTNAME: "auth.{{ general_domain_default }}"
+      KC_HOSTNAME_STRICT: "false" # Hostnames validated by Traefik
+      KC_PROXY: edge
       # Only for initial setup
-      # - KEYCLOAK_ADMIN=admin
-      # - KEYCLOAK_ADMIN_PASSWORD=change_me
+      # KEYCLOAK_ADMIN: admin
+      # KEYCLOAK_ADMIN_PASSWORD: change_me
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.keycloak.entrypoints=websecure"
@@ -589,10 +591,10 @@ services:
       - "{{ general_path_appdata }}/keycloak/postgres/data:/var/lib/postgresql/data"
       - keycloak-db-dump:/backup
     environment:
-      - "TZ={{ general_timezone }}"
-      - "POSTGRES_USER=keycloak"
-      - "POSTGRES_PASSWORD={{ app_keycloak_db_pass }}"
-      - "POSTGRES_DB=keycloak"
+      TZ: "{{ general_timezone }}"
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: "{{ app_keycloak_db_pass }}"
+      POSTGRES_DB: keycloak
 
   # =========================
   # =      PLACEHOLDERS     =
@@ -608,7 +610,7 @@ services:
       - "./nginx/maintenance/public:/usr/share/nginx/html:ro"
       - "./nginx/maintenance/nginx.conf:/etc/nginx/conf.d/default.conf:ro"
     environment:
-      - "TZ={{ general_timezone }}"
+      TZ: "{{ general_timezone }}"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.maintenance.entrypoints=websecure"
@@ -627,7 +629,7 @@ services:
       - "./nginx/wip/public:/usr/share/nginx/html:ro"
       - "./nginx/wip/nginx.conf:/etc/nginx/conf.d/default.conf:ro"
     environment:
-      - "TZ={{ general_timezone }}"
+      TZ: "{{ general_timezone }}"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.wip.entrypoints=websecure"
@@ -706,9 +708,9 @@ services:
       - "{{ general_path_appdata }}/nextcloud/nextcloud/config/config:/nextcloud/config:ro"
       - nc-calcardbackup:/backup
     environment:
-      - "TZ={{ general_timezone }}"
+      TZ: "{{ general_timezone }}"
       # Disable cron
-      - CRON_TIME="#"
+      CRON_TIME: "#"
 
   borgmatic:
     <<: *defaults
@@ -738,11 +740,11 @@ services:
     devices:
       - "/dev/fuse:/dev/fuse" # Required for borg mount
     environment:
-      - "TZ={{ general_timezone }}"
-      - "BACKUP_CRON=0 3 * * *"
-      - "BORG_PASSPHRASE={{ app_borgmatic_borg_passphrase }}"
-      - "BORG_HOSTNAME_IS_UNIQUE=yes" # Automatically removes stale locks
-      - "BORG_HOST_ID={{ ansible_hostname }}"
+      TZ: "{{ general_timezone }}"
+      BACKUP_CRON: "0 3 * * *"
+      BORG_PASSPHRASE: "{{ app_borgmatic_borg_passphrase }}"
+      BORG_HOSTNAME_IS_UNIQUE: "yes" # Automatically removes stale locks
+      BORG_HOST_ID: "{{ ansible_hostname }}"
     deploy:
       resources:
         limits:
