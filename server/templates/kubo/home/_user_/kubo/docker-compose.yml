@@ -140,6 +140,10 @@ services:
       --cookie-secret={{ app_oauth2_proxy_cookie_secret }}
     networks:
       - traefik
+    environment:
+      TZ: "{{ general_timezone }}"
+      # Temporary fix for https://github.com/oauth2-proxy/oauth2-proxy/issues/2222
+      OAUTH2_PROXY_SCOPE: openid email profile
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.oauth2-proxy.entrypoints=websecure"
@@ -169,7 +173,7 @@ services:
       - oauth2-proxy-helper-config:/config
       - oauth2-proxy-helper-data:/data
     environment:
-      - "TZ={{ general_timezone }}"
+      TZ: "{{ general_timezone }}"
 
   # =========================
   # =    HOME AUTOMATION    =
