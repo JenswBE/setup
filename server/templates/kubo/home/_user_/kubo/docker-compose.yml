@@ -196,6 +196,7 @@ services:
       - "traefik.http.routers.ha.entrypoints=websecure"
       - "traefik.http.routers.ha.rule=Host(`ha.{{ general_domain_local }}`)"
       - "traefik.http.routers.ha.tls.certresolver=le-dns"
+      - "traefik.http.routers.ha.middlewares=local-only@file"
       - "traefik.http.services.ha-{{ ansible_hostname }}.loadbalancer.server.port=8123"
 
   ha-zigbee2mqtt:
@@ -357,9 +358,9 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.tmm.entrypoints=websecure"
-      - "traefik.http.routers.tmm.rule=Host(`tmm.{{ general_domain_default }}`)"
-      - "traefik.http.routers.tmm.tls.certresolver=le-tls"
-      - "traefik.http.routers.tmm.middlewares=oauth2-proxy-handle-error@file, oauth2-proxy-forward-auth-media@file"
+      - "traefik.http.routers.tmm.rule=Host(`tmm.{{ general_domain_local }}`)"
+      - "traefik.http.routers.tmm.tls.certresolver=le-dns"
+      - "traefik.http.routers.tmm.middlewares=local-only@file"
       - "traefik.http.services.tmm-{{ ansible_hostname }}.loadbalancer.server.port=5800"
     deploy:
       resources:
