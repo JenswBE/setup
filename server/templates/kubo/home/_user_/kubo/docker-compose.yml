@@ -268,7 +268,7 @@ services:
 
   miniflux-db:
     <<: *defaults
-    image: docker.io/library/postgres:13-alpine
+    image: docker.io/library/postgres:16-alpine
     container_name: miniflux-db
     networks:
       - miniflux
@@ -578,7 +578,7 @@ services:
 
   glitchtip-db:
     <<: *defaults
-    image: docker.io/library/postgres:13-alpine
+    image: docker.io/library/postgres:16-alpine
     container_name: glitchtip-db
     networks:
       - glitchtip

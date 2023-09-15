@@ -357,7 +357,7 @@ services:
 
   bjoetiek-db:
     <<: *defaults
-    image: docker.io/library/postgres:13-alpine
+    image: docker.io/library/postgres:16-alpine
     container_name: bjoetiek-db
     networks:
       - bjoetiek
@@ -456,7 +456,7 @@ services:
 
   bjoetiek-test-db:
     <<: *defaults
-    image: docker.io/library/postgres:13-alpine
+    image: docker.io/library/postgres:16-alpine
     container_name: bjoetiek-test-db
     networks:
       - bjoetiek-test
@@ -583,7 +583,7 @@ services:
 
   keycloak-db:
     <<: *defaults
-    image: docker.io/library/postgres:12-alpine
+    image: docker.io/library/postgres:16-alpine
     container_name: keycloak-db
     networks:
       - keycloak
