@@ -295,7 +295,7 @@ services:
   # ===========================================================================
   bjoetiek-frontend:
     <<: *defaults
-    image: docker.io/jenswbe/bjoetiek-y-frontend:v3.1.1
+    image: docker.io/jenswbe/bjoetiek-y-frontend:stable
     container_name: bjoetiek-frontend
     networks:
       - bjoetiek
