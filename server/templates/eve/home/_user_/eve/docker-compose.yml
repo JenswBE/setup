@@ -652,6 +652,8 @@ services:
         crowdsecurity/http-cve
         crowdsecurity/linux
         crowdsecurity/traefik
+      PARSERS: >-
+        crowdsecurity/nextcloud-whitelist
       GID: "{{ ansible_real_group_id }}"
       BOUNCER_KEY_firewall: "{{ app_crowdsec_bouncer_firewall_key }}"
     volumes:
