@@ -98,8 +98,6 @@ services:
       - traefik
     environment:
       TZ: "{{ general_timezone }}"
-      # Temporary fix for https://github.com/oauth2-proxy/oauth2-proxy/issues/2222
-      OAUTH2_PROXY_SCOPE: openid email profile
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.oauth2-proxy.entrypoints=websecure"
@@ -735,7 +733,8 @@ services:
       - "{{ general_path_appdata }}/vaultwarden/data:/mnt/source/vaultwarden/data:ro"
       # Config and cache
       - "./borgmatic/borgmatic.d/config.yaml:/etc/borgmatic.d/config.yaml"
-      - "./borgmatic/ssh:/root/.ssh"
+      - "./borgmatic/ssh/BorgHost:/root/.ssh/BorgHost"
+      - "./borgmatic/ssh/known_hosts:/root/.ssh/known_hosts"
       - "{{ general_path_appdata }}/borgmatic/borgmatic/config:/root/.config/borg"
       - "{{ general_path_appdata }}/borgmatic/borgmatic/cache:/root/.cache/borg"
       - "{{ general_path_appdata }}/borgmatic/borgmatic/restore:/mnt/restore"

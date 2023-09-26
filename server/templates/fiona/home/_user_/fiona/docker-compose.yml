@@ -211,7 +211,8 @@ services:
       - "unifi-mongodb-dump:/mnt/source/unifi/mongodb:ro"
       # Config and cache
       - "./borgmatic/borgmatic.d/config.yaml:/etc/borgmatic.d/config.yaml"
-      - "./borgmatic/ssh:/root/.ssh"
+      - "./borgmatic/ssh/BorgHost:/root/.ssh/BorgHost"
+      - "./borgmatic/ssh/known_hosts:/root/.ssh/known_hosts"
       - "{{ general_path_appdata }}/borgmatic/borgmatic/config:/root/.config/borg"
       - "{{ general_path_appdata }}/borgmatic/borgmatic/cache:/root/.cache/borg"
       - "{{ general_path_appdata }}/borgmatic/borgmatic/restore:/mnt/restore"

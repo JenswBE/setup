@@ -1,14 +1,14 @@
 permit_join: false
 
 homeassistant:
-  discovery_topic: "homeassistant"
-  status_topic: "homeassistant/status"
+  discovery_topic: homeassistant
+  status_topic: homeassistant/status
   legacy_entity_attributes: false
   legacy_triggers: false
 
 mqtt:
   base_topic: zigbee2mqtt
-  server: "mqtt://ha-mosquitto"
+  server: mqtt://ha-mosquitto
   user: zigbee2mqtt
   password: "{{ app_zigbee2mqtt_mqtt_password }}"
 
