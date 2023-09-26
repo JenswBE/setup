@@ -74,7 +74,8 @@ app_wireguard:
     private_key: "" # Run "wg genkey" on server
     routing_table: "" # "auto" or a routing table number
     peers:
-      - endpoint: "" # Address of the server. E.g. wireguard.example.com:51820
+      - host: "" # Hostname to be added to /etc/hosts
+        endpoint: "" # Address of the server. E.g. wireguard.example.com:51820
         public_key: "" # Run "wg pubkey" on client
         psk: "" # Run "wg genpsk" on server
         allowed_ips: [""] # E.g. 10.0.0.2/32

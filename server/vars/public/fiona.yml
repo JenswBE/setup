@@ -28,6 +28,14 @@ firewall_additional_ports:
     port: 8080
     protos: [tcp]
     from_networks: [local_ipv4, local_ipv6]
+  - comment: Prometheus - Node Exporter
+    port: 9100
+    protos: [tcp]
+    from_networks: [local_ipv4, local_ipv6]
+  - comment: Prometheus - cAdvisor
+    port: 9101
+    protos: [tcp]
+    from_networks: [local_ipv4, local_ipv6]
   - comment: UniFi - AP discovery
     port: 10001
     protos: [udp]

@@ -15,6 +15,14 @@ firewall_additional_ports:
     port: 443
     protos: [tcp]
     from_networks: [any]
+  - comment: Prometheus - Node Exporter
+    port: 9100
+    protos: [tcp]
+    from_networks: [wireguard_ipv4]
+  - comment: Prometheus - cAdvisor
+    port: 9101
+    protos: [tcp]
+    from_networks: [wireguard_ipv4]
   - comment: Wireguard
     port: 51820
     protos: [udp]

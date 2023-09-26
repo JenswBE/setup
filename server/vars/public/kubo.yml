@@ -40,6 +40,10 @@ firewall_additional_ports:
     port: 8883
     protos: [tcp]
     from_networks: [any]
+  - comment: Prometheus Node Exporter
+    port: 9100
+    protos: [tcp]
+    from_networks: [docker_ipv4]
   - comment: Graylog - GELF
     port: 12201
     protos: [tcp, udp]

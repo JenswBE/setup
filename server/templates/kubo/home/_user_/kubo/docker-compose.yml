@@ -849,6 +849,59 @@ services:
       SMTP_PASSWORD: "{{ mailjet_password }}"
       SMTP_FROM: "librenms@{{ general_domain_default }}"
 
+  prometheus:
+    <<: *defaults
+    image: quay.io/prometheus/prometheus:latest
+    container_name: prometheus
+    user: "{{ ansible_real_user_id }}:{{ ansible_real_group_id }}"
+    networks:
+      - traefik
+      - prometheus
+    environment:
+      TZ: "{{ general_timezone }}"
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - "{{ general_path_appdata }}/prometheus/data:/prometheus"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.prometheus.entrypoints=websecure"
+      - "traefik.http.routers.prometheus.rule=Host(`prometheus.{{ general_domain_local }}`)"
+      - "traefik.http.routers.prometheus.tls.certresolver=le-dns"
+      - "traefik.http.routers.prometheus.middlewares=local-only@file"
+      - "traefik.http.services.prometheus-{{ ansible_hostname }}.loadbalancer.server.port=9090"
+    deploy:
+      resources:
+        limits:
+          cpus: "4"
+          memory: 4G
+
+  node-exporter:
+    <<: *defaults
+    image: quay.io/prometheus/node-exporter:latest
+    container_name: node-exporter
+    command: --path.rootfs=/host
+    network_mode: host
+    pid: host
+    environment:
+      TZ: "{{ general_timezone }}"
+    volumes:
+      - /:/host:ro,rslave
+
+  cadvisor:
+    <<: *defaults
+    image: gcr.io/cadvisor/cadvisor:latest
+    container_name: cadvisor
+    command: -port=9101
+    networks:
+      - prometheus
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+    environment:
+      TZ: "{{ general_timezone }}"
+
   # =========================
   # =        CROWDSEC       =
   # =========================
@@ -953,6 +1006,9 @@ networks:
 
   nextcloud:
     name: nextcloud
+
+  prometheus:
+    name: prometheus
 
   traefik:
     name: traefik

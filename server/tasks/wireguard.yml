@@ -27,3 +27,12 @@
       ansible.builtin.systemd:
         name: "wg-quick@wg{{ wg_interface_index }}"
         state: restarted
+
+    - name: Set Wireguard hosts in /etc/hosts
+      ansible.builtin.lineinfile:
+        path: /etc/hosts
+        regexp: '\d+\.\d+\.\d+\.\d+\s+{{ wg_peer.host }}'
+        line: "{{ wg_peer.allowed_ips[0] | regex_replace('/\\d+$', '') }}\t{{ wg_peer.host }}.wireguard"
+      loop: '{{ wg_config.peers | selectattr("host", "defined") }}'
+      loop_control:
+        loop_var: wg_peer
