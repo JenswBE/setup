@@ -1,18 +1,46 @@
-# Configure a default setup of Home Assistant (frontend, api, etc)
-default_config:
-
-# HTTP server
+automation: !include automations.yaml
+# assist_pipeline:
+# backup:
+# bluetooth:
+cloud:
+config:
+# conversation:
+counter:
+# dhcp:
+energy:
+frontend:
+group: !include groups.yaml
+hardware:
+history:
+homeassistant_alerts:
 http:
   use_x_forwarded_for: true
   trusted_proxies: ["172.16.0.0/12"] # Docker
-
-# Text to speech
-tts:
-  - platform: picotts
-    language: "en-US"
-
-# Sub configs
-group: !include groups.yaml
-automation: !include automations.yaml
-script: !include scripts.yaml
+image_upload:
+input_boolean:
+input_button:
+input_datetime:
+input_number:
+input_select:
+input_text:
+logbook:
+logger:
+map:
+media_source:
+mobile_app:
+# my:
+network:
+person:
 scene: !include scenes.yaml
+schedule:
+script: !include scripts.yaml
+# ssdp:
+stream:
+sun:
+system_health:
+tag:
+timer:
+usb:
+webhook:
+# zeroconf:
+zone:
