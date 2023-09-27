@@ -13,6 +13,7 @@
 
     - name: UFW - Allow SSH
       community.general.ufw:
+        comment: SSH
         rule: allow
         port: "{{ firewall_ssh_port | string }}"
         proto: tcp

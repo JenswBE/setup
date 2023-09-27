@@ -14,6 +14,19 @@ scrape_configs:
         - host.docker.internal:9100
         - fiona.{{ general_domain_local }}:9100
         - eve.wireguard:9100
+    relabel_configs:
+      - source_labels: [__address__]
+        regex: host.docker.internal.*
+        target_label: instance
+        replacement: kubo
+      - source_labels: [__address__]
+        regex: fiona.*
+        target_label: instance
+        replacement: fiona
+      - source_labels: [__address__]
+        regex: eve.*
+        target_label: instance
+        replacement: eve
 
   - job_name: cadvisor
     static_configs:
@@ -21,3 +34,16 @@ scrape_configs:
         - cadvisor:9101
         - fiona.{{ general_domain_local }}:9101
         - eve.wireguard:9101
+    relabel_configs:
+      - source_labels: [__address__]
+        regex: cadvisor.*
+        target_label: instance
+        replacement: kubo
+      - source_labels: [__address__]
+        regex: fiona.*
+        target_label: instance
+        replacement: fiona
+      - source_labels: [__address__]
+        regex: eve.*
+        target_label: instance
+        replacement: eve

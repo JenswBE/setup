@@ -23,6 +23,11 @@ app_github_backup_pat: ""
 app_glitchtip_db_pass: ""
 app_glitchtip_secret_key: ""
 
+# Grafana
+app_grafana_oauth2_base_url: ""
+app_grafana_oauth2_client_id: ""
+app_grafana_oauth2_client_secret: ""
+
 # Graylog
 app_graylog_admin_password: ""
 app_graylog_secret: ""
