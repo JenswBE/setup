@@ -2,7 +2,7 @@ http:
   routers:
     api:
       entryPoints: ["websecure"]
-      rule: "Host(`traefik-{{ ansible_hostname }}.{{ general_domain_default }}`)"
+      rule: "Host(`traefik.{{ ansible_hostname }}.{{ general_domain_default }}`)"
       service: api@internal
       tls:
         certresolver: le-tls
@@ -12,7 +12,7 @@ http:
 
     ping:
       entryPoints: ["websecure"]
-      rule: "Host(`ping-{{ ansible_hostname }}.{{ general_domain_default }}`)"
+      rule: "Host(`ping.{{ ansible_hostname }}.{{ general_domain_default }}`)"
       service: ping@internal
       tls:
         certresolver: le-tls

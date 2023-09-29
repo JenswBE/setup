@@ -38,13 +38,6 @@ app_crowdsec_bouncer_firewall_key: "" # Alphanumeric string
 # https://github.com/JenswBE/dead-link-checker
 app_delic_ping_id: ""
 
-# Docker REST Puller Restarter (DRPR)
-# https://github.com/JenswBE/docker-rest-puller-restarter
-app_drpr_clients:
-  - name: ""
-    api_key: ""
-    container_names: ""
-
 # Graylog
 app_graylog_server: "" # Target for rsyslog and Docker logs
 

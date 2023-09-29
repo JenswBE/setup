@@ -17,6 +17,14 @@ network_docker_ipv4: "172.16.0.0/12"
 network_local_ipv4: "" # E.g. 10.0.0.0/24
 network_local_ipv6: "" # E.g. 1111:2b:3c:4d::/56
 
+# cAdvisor
+app_cadvisor_basic_auth_username: ""
+app_cadvisor_basic_auth_password: ""
+
+# Node Exporter
+app_node_exporter_basic_auth_username: ""
+app_node_exporter_basic_auth_password: ""
+
 # Network UPS Tools (NUT)
 # See https://networkupstools.org/docs/man/upsd.users.html
 app_nut_server_ip: "" # Internal DNS server is not connected to UPS

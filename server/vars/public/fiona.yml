@@ -31,11 +31,7 @@ firewall_additional_ports:
   - comment: Prometheus - Node Exporter
     port: 9100
     protos: [tcp]
-    from_networks: [local_ipv4, local_ipv6]
-  - comment: Prometheus - cAdvisor
-    port: 9101
-    protos: [tcp]
-    from_networks: [local_ipv4, local_ipv6]
+    from_networks: [docker_ipv4]
   - comment: UniFi - AP discovery
     port: 10001
     protos: [udp]

@@ -8,42 +8,78 @@ scrape_configs:
     static_configs:
       - targets: ["opendtu.jensw.eu"]
 
-  - job_name: node_exporter
+  - job_name: node_exporter_kubo
     static_configs:
       - targets:
         - host.docker.internal:9100
-        - fiona.{{ general_domain_local }}:9100
-        - eve.wireguard:9100
     relabel_configs:
       - source_labels: [__address__]
-        regex: host.docker.internal.*
+        regex: .*
         target_label: instance
         replacement: kubo
+
+  - job_name: node_exporter_fiona
+    scheme: https
+    static_configs:
+      - targets:
+        - node-exporter.fiona.{{ general_domain_local }}
+    basic_auth:
+      username: "{{ app_node_exporter_basic_auth_username }}"
+      password: "{{ app_node_exporter_basic_auth_password }}"
+    relabel_configs:
       - source_labels: [__address__]
-        regex: fiona.*
+        regex: .*
         target_label: instance
         replacement: fiona
+
+  - job_name: node_exporter_eve
+    scheme: https
+    static_configs:
+      - targets:
+        - node-exporter.eve.{{ general_domain_default }}
+    basic_auth:
+      username: "{{ app_node_exporter_basic_auth_username }}"
+      password: "{{ app_node_exporter_basic_auth_password }}"
+    relabel_configs:
       - source_labels: [__address__]
-        regex: eve.*
+        regex: .*
         target_label: instance
         replacement: eve
 
-  - job_name: cadvisor
+  - job_name: cadvisor_kubo
     static_configs:
       - targets:
         - cadvisor:9101
-        - fiona.{{ general_domain_local }}:9101
-        - eve.wireguard:9101
     relabel_configs:
       - source_labels: [__address__]
-        regex: cadvisor.*
+        regex: .*
         target_label: instance
         replacement: kubo
+
+  - job_name: cadvisor_fiona
+    scheme: https
+    static_configs:
+      - targets:
+        - cadvisor.fiona.{{ general_domain_local }}
+    basic_auth:
+      username: "{{ app_cadvisor_basic_auth_username }}"
+      password: "{{ app_cadvisor_basic_auth_password }}"
+    relabel_configs:
       - source_labels: [__address__]
-        regex: fiona.*
+        regex: .*
         target_label: instance
         replacement: fiona
+
+  - job_name: cadvisor_eve
+    scheme: https
+    static_configs:
+      - targets:
+        - cadvisor.eve.{{ general_domain_default }}
+    basic_auth:
+      username: "{{ app_cadvisor_basic_auth_username }}"
+      password: "{{ app_cadvisor_basic_auth_password }}"
+    relabel_configs:
       - source_labels: [__address__]
-        regex: eve.*
+        regex: .*
         target_label: instance
         replacement: eve

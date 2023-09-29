@@ -149,10 +149,9 @@ services:
       - >-
         traefik.http.routers.oauth2-proxy.rule=Host(
           `dtu.{{ general_domain_default }}`,
-          `smart-{{ ansible_hostname }}.{{ general_domain_default }}`,
           `tmm.{{ general_domain_default }}`,
           `torrent.{{ general_domain_default }}`,
-          `traefik-{{ ansible_hostname }}.{{ general_domain_default }}`,
+          `traefik.{{ ansible_hostname }}.{{ general_domain_default }}`,
         ) && PathPrefix(`/oauth2/`)
       - "traefik.http.services.oauth2-proxy-{{ ansible_hostname }}.loadbalancer.server.port=4180"
 
@@ -388,7 +387,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.syncthing.entrypoints=websecure"
-      - "traefik.http.routers.syncthing.rule=Host(`syncthing-{{ ansible_hostname }}.{{ general_domain_default }}`)"
+      - "traefik.http.routers.syncthing.rule=Host(`syncthing.{{ ansible_hostname }}.{{ general_domain_default }}`)"
       - "traefik.http.routers.syncthing.tls.certresolver=le-tls"
       - "traefik.http.services.syncthing-{{ ansible_hostname }}.loadbalancer.server.port=8384"
 
@@ -601,35 +600,6 @@ services:
   # =========================
   # =       MONITORING      =
   # =========================
-  # scrutiny:
-  #   <<: *defaults
-  #   image: docker.io/ghcr.io/analogj/scrutiny:master-omnibus
-  #   container_name: scrutiny
-  #   cap_add:
-  #     - SYS_RAWIO # Required for querying SMART data
-  #     - SYS_ADMIN # Required for querying NVMe drives
-  #   volumes:
-  #     - "./scrutiny:/opt/scrutiny/config"
-  #     - "scrutiny-sqlite:/opt/scrutiny/sqlite"
-  #     - "scrutiny-influxdb:/opt/scrutiny/influxdb"
-  #     - "/run/udev:/run/udev:ro"
-  #   devices:
-  #     - "/dev/nvme0:/dev/nvme0"
-  #     - "/dev/sda:/dev/sda"
-  #     - "/dev/sdb:/dev/sdb"
-  #     - "/dev/sdc:/dev/sdc"
-  #     - "/dev/sdd:/dev/sdd"
-  #   networks:
-  #     - traefik
-  #   environment:
-  #     TZ: "{{ general_timezone }}"
-  #   labels:
-  #     - "traefik.enable=true"
-  #     - "traefik.http.routers.scrutiny.entrypoints=websecure"
-  #     - "traefik.http.routers.scrutiny.rule=Host(`smart-{{ ansible_hostname }}.{{ general_domain_default }}`)"
-  #     - "traefik.http.routers.scrutiny.tls.certresolver=le-tls"
-  #     - "traefik.http.routers.scrutiny.middlewares=oauth2-proxy-handle-error@file, oauth2-proxy-forward-auth-infra@file"
-
   graylog:
     <<: *defaults
     image: docker.io/graylog/graylog:5.1

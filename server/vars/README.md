@@ -15,7 +15,7 @@ ln -snf "${SECRETS_DIR:?}/server" secret
 ## Generate Treafik basic auth credentials
 
 ```bash
-htpasswd -nBC 10 <USERNAME>
+podman run -it --rm docker.io/library/httpd:2-alpine htpasswd -nBC 10 <USERNAME>
 ```
 
 ## Generate rclone password

@@ -1,0 +1,6 @@
+http:
+  middlewares:
+    cadvisor-auth:
+      basicAuth:
+        users:
+          - "{{ app_cadvisor_basic_auth_username }}:{{ app_cadvisor_basic_auth_password | password_hash('blowfish', rounds=10, ident='2y') }}"

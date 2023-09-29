@@ -105,7 +105,7 @@ services:
       - >-
         traefik.http.routers.oauth2-proxy.rule=Host(
           `assets.{{ general_domain_default }}`,
-          `traefik-{{ ansible_hostname }}.{{ general_domain_default }}`,
+          `traefik.{{ ansible_hostname }}.{{ general_domain_default }}`,
           `uptime.{{ general_domain_default }}`,
         ) && PathPrefix(`/oauth2/`)
       - "traefik.http.services.oauth2-proxy-{{ ansible_hostname }}.loadbalancer.server.port=4180"
@@ -701,7 +701,7 @@ services:
     image: quay.io/prometheus/node-exporter:latest
     container_name: node-exporter
     command: --path.rootfs=/host
-    network_mode: host # Port 9100
+    network_mode: host # Port 9100, reverse proxy config in traefik/bridge/node-exporter.yml
     pid: host
     environment:
       TZ: "{{ general_timezone }}"
@@ -712,8 +712,8 @@ services:
     <<: *defaults
     image: gcr.io/cadvisor/cadvisor-arm64:v0.47.2
     container_name: cadvisor
-    command: -port=9101
-    network_mode: host
+    networks:
+      - traefik
     volumes:
       - /:/rootfs:ro
       - /var/run:/var/run:rw
@@ -721,6 +721,13 @@ services:
       - /var/lib/docker/:/var/lib/docker:ro
     environment:
       TZ: "{{ general_timezone }}"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.cadvisor.entrypoints=websecure"
+      - "traefik.http.routers.cadvisor.rule=Host(`cadvisor.{{ ansible_hostname }}.{{ general_domain_default }}`)"
+      - "traefik.http.routers.cadvisor.tls.certresolver=le-tls"
+      - "traefik.http.routers.cadvisor.middlewares=cadvisor-auth@file"
+      - "traefik.http.services.cadvisor-{{ ansible_hostname }}.loadbalancer.server.port=8080"
 
   # =========================
   # =         BACKUP        =
