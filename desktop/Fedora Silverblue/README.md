@@ -88,9 +88,9 @@ cp ~/.local/share/applications/flameshot-daemon.desktop ~/.config/autostart/
 
 # Create distroboxes
 UBUNTU_VERSION=22.04
-FEDORA_VERSION=37
-distrobox-create -Y -i public.ecr.aws/ubuntu/ubuntu:${UBUNTU_VERSION:?} -n ubuntu-toolbox-main
-distrobox-create -Y -i registry.fedoraproject.org/fedora-toolbox:${FEDORA_VERSION:?} --name fedora-toolbox-main
+FEDORA_VERSION=38
+distrobox-create -Y -i public.ecr.aws/ubuntu/ubuntu:${UBUNTU_VERSION:?} -n ubuntu-toolbox-${UBUNTU_VERSION:?}
+distrobox-create -Y -i registry.fedoraproject.org/fedora-toolbox:${FEDORA_VERSION:?} --name fedora-toolbox-${FEDORA_VERSION:?}
 
 # Setup GNOME
 gnome-extensions enable appindicatorsupport@rgcjonas.gmail.com
@@ -141,7 +141,7 @@ name='Terminal - Ubuntu'
 list=['b1dcc9dd-5262-4d8d-a863-c897e6d979b9', '118048ea-b428-4d03-8a20-8795d1f518f6', '300c5c5e-2d73-45c2-9dde-6cf0a32512a5']
 
 [org/gnome/terminal/legacy/profiles:/:118048ea-b428-4d03-8a20-8795d1f518f6]
-custom-command='/usr/bin/distrobox-enter fedora-toolbox-main'
+custom-command='/usr/bin/distrobox-enter fedora-toolbox-${FEDORA_VERSION:?}'
 preserve-working-directory='always'
 title='Fedora'
 title-mode='after'
@@ -150,7 +150,7 @@ visible-name='Fedora'
 
 [org/gnome/terminal/legacy/profiles:/:300c5c5e-2d73-45c2-9dde-6cf0a32512a5]
 background-color='rgb(23,20,33)'
-custom-command='/usr/bin/distrobox-enter ubuntu-toolbox-main'
+custom-command='/usr/bin/distrobox-enter ubuntu-toolbox-${UBUNTU_VERSION:?}'
 foreground-color='rgb(255,155,52)'
 preserve-working-directory='always'
 title='Ubuntu'
