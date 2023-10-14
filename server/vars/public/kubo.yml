@@ -28,6 +28,10 @@ firewall_additional_ports:
     port: 7500
     protos: [tcp]
     from_networks: [local_ipv4, local_ipv6]
+  - comment: Graylog - Beats
+    port: 5044
+    protos: [tcp]
+    from_networks: [docker_ipv4, local_ipv4, local_ipv6, wireguard_ipv4]
   - comment: Jellyfin
     port: 8096
     protos: [tcp]
