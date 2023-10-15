@@ -1,15 +1,6 @@
-#################################################################
-#                            DEFAULTS                           #
-#################################################################
-x-defaults: &defaults
-  restart: always
-  extra_hosts:
-    - "host.docker.internal:host-gateway"
-  deploy:
-    resources:
-      limits:
-        cpus: "2"
-        memory: 512M
+{{ lookup('ansible.builtin.file', 'files/docker-compose.default.yml',) }}
+
+---
 
 #################################################################
 #                            SERVICES                           #

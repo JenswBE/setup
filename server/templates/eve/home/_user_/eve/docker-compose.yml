@@ -1,15 +1,6 @@
-#################################################################
-#                            DEFAULTS                           #
-#################################################################
-x-defaults: &defaults
-  restart: always
-  extra_hosts:
-    - "host.docker.internal:host-gateway"
-  deploy:
-    resources:
-      limits:
-        cpus: "2"
-        memory: 512M
+{{ lookup('ansible.builtin.file', 'files/docker-compose.default.yml',) }}
+
+---
 
 #################################################################
 #                            SERVICES                           #
@@ -105,6 +96,7 @@ services:
       - >-
         traefik.http.routers.oauth2-proxy.rule=Host(
           `assets.{{ general_domain_default }}`,
+          `start.{{ general_domain_default }}`,
           `traefik.{{ ansible_hostname }}.{{ general_domain_default }}`,
           `uptime.{{ general_domain_default }}`,
         ) && PathPrefix(`/oauth2/`)
@@ -692,6 +684,28 @@ services:
       - "traefik.http.routers.vaultwarden.entrypoints=websecure"
       - "traefik.http.routers.vaultwarden.rule=Host(`vault.{{ general_domain_default }}`)"
       - "traefik.http.routers.vaultwarden.tls.certresolver=le-tls"
+
+  # =========================
+  # =         HOMER         =
+  # =========================
+  homer:
+    <<: *defaults
+    image: b4bz/homer:latest
+    container_name: homer
+    user: "{{ ansible_real_user_id }}"
+    networks:
+      - traefik
+    volumes:
+      - "./homer/config.yml:/www/assets/config.yml:ro"
+      - "./homer/logos:/www/assets/logos:ro"
+    environment:
+      - "TZ={{ general_timezone }}"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.homer.entrypoints=websecure"
+      - "traefik.http.routers.homer.rule=Host(`start.{{ general_domain_default }}`)"
+      - "traefik.http.routers.homer.tls.certresolver=le-tls"
+      - "traefik.http.routers.homer.middlewares=oauth2-proxy-handle-error@file, oauth2-proxy-forward-auth-infra@file"
 
   # =========================
   # =       MONITORING      =

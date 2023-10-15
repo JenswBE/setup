@@ -1,0 +1,200 @@
+---
+# Homepage configuration
+# See https://fontawesome.com/icons for icons options
+
+title: JenswBE
+subtitle: false
+documentTitle: JenswBE Dashboard
+logo: assets/logo.png
+
+header: false # Set to false to hide the header
+footer: false # Set false if you want to hide it.
+
+columns: auto # "auto" or number (must be a factor of 12: 1, 2, 3, 4, 6, 12)
+connectivityCheck: true # whether you want to display a message when the apps are not accessible anymore (VPN disconnected for example)
+
+# Optional theming
+theme: default # 'default' or one of the themes available in 'src/assets/themes'.
+
+# Optional navbar
+links: [] # Allows for navbar (dark mode, layout, and search) without any links
+
+# message:
+#   content: >
+#     <img src="assets/logos/duckduckgo.png" width="50" style="margin-right:20px;">
+#     <iframe src="https://duckduckgo.com/search.html?prefill=Search DuckDuckGo&focus=yes&kz=1&kac=1&kn=1&kp=-2&kam=osm&kaj=m"
+#     style="overflow:hidden;margin:0;padding:0;width:calc(100% - 100px);height:60px;" frameborder="0"></iframe>
+# DuckDuckGo options
+# See https://duckduckgo.com/params
+# - kz: Open Instant Answers
+# - kac: Auto-suggest
+# - kn: New Window
+# - kp: Safe Search
+# - kam: Directions Source (maps)
+# - kaj: Units of Measure
+
+# Services
+x-tag-eve: &tag_eve
+  tag: Eve
+  tagstyle: is-success
+  target: _blank
+
+x-tag-fiona: &tag_fiona
+  tag: Fiona
+  tagstyle: is-warning
+  target: _blank
+
+x-tag-kubo: &tag_kubo
+  tag: Kubo
+  tagstyle: is-info
+  target: _blank
+
+services:
+  - name: Files and Media
+    icon: fas fa-sync
+    items:
+      - name: Jellyfin
+        logo: https://raw.githubusercontent.com/jellyfin/jellyfin-ux/master/branding/SVG/icon-transparent.svg
+        url: "https://jellyfin.{{ general_domain_default }}"
+        <<: *tag_kubo
+
+      - name: Nextcloud
+        logo: assets/logos/nextcloud.png
+        url: "https://nextcloud.{{ general_domain_default }}"
+        <<: *tag_eve
+
+      - name: Nextcloud Media
+        logo: assets/logos/nextcloud.png
+        url: "https://nextcloud-media.{{ general_domain_default }}"
+        <<: *tag_kubo
+
+      - name: Transmission
+        logo: https://raw.githubusercontent.com/transmission/transmission/main/web/assets/img/logo.png
+        url: "https://torrent.{{ general_domain_default }}"
+        <<: *tag_kubo
+
+      - name: Syncthing Kubo
+        logo: https://raw.githubusercontent.com/syncthing/syncthing/main/assets/logo-only.svg
+        url: "https://syncthing.kubo.{{ general_domain_default }}"
+        <<: *tag_kubo
+
+  - name: Tools
+    icon: fas fa-wrench
+    items:
+      - name: Assets
+        logo: https://icons.getbootstrap.com/assets/icons/hdd-fill.svg
+        url: "https://assets.{{ general_domain_default }}"
+        <<: *tag_eve
+
+      - name: External email generator
+        logo: https://icons.getbootstrap.com/assets/icons/at.svg
+        url: "https://ext.{{ general_domain_default }}"
+        <<: *tag_eve
+
+      - name: Grafana
+        logo: https://raw.githubusercontent.com/grafana/grafana/main/public/img/grafana_icon.svg
+        url: "https://grafana.{{ general_domain_default }}"
+        <<: *tag_kubo
+
+      - name: MiniFlux
+        logo: https://raw.githubusercontent.com/miniflux/logo/master/icon.svg
+        url: "https://feed.{{ general_domain_default }}"
+        <<: *tag_kubo
+
+      - name: Paperless
+        logo: https://raw.githubusercontent.com/paperless-ngx/paperless-ngx/dev/resources/logo/web/svg/square.svg
+        url: "https://docs.{{ general_domain_default }}"
+        <<: *tag_eve
+
+      - name: Vaultwarden
+        logo: https://raw.githubusercontent.com/dani-garcia/vaultwarden/main/resources/vaultwarden-icon.svg
+        url: "https://vault.{{ general_domain_default }}"
+        <<: *tag_eve
+
+  - name: Local
+    icon: fas fa-home
+    items:
+      - name: Home Assistant
+        logo: assets/logos/home-assistant.png
+        url: "https://ha.{{ general_domain_local }}"
+        <<: *tag_kubo
+
+      - name: TinyMediaManager
+        logo: https://gitlab.com/tinyMediaManager/tinyMediaManager/-/raw/devel/AppBundler/svg/logo1.svg
+        url: "https://tmm.{{ general_domain_local }}"
+        <<: *tag_kubo
+
+      - name: Traefik Fiona
+        logo: https://raw.githubusercontent.com/traefik/traefik/master/webui/src/assets/traefik.avatar.svg
+        url: "https://traefik.fiona.{{ general_domain_local }}"
+        <<: *tag_fiona
+
+      - name: UniFi Controller
+        logo: assets/logos/unifi.png
+        url: "https://unifi.{{ general_domain_local }}"
+        <<: *tag_fiona
+
+  - name: Technical
+    icon: fas fa-chart-bar
+    items:
+      - name: GlitchTip
+        logo: assets/logos/glitchtip.png
+        url: "https://glitchtip.{{ general_domain_default }}"
+        <<: *tag_kubo
+
+      - name: Graylog
+        logo: https://raw.githubusercontent.com/get-icon/geticon/master/icons/graylog.svg
+        url: "https://logs.{{ general_domain_default }}"
+        <<: *tag_kubo
+
+      - name: Keycloak
+        logo: https://raw.githubusercontent.com/keycloak/keycloak-misc/main/logo/keycloak_icon_256px.svg
+        url: "https://auth.{{ general_domain_default }}"
+        <<: *tag_eve
+
+      - name: LibreNMS
+        logo: https://raw.githubusercontent.com/librenms/librenms/master/html/images/librenms_logo_only_light.svg
+        url: "https://librenms.{{ general_domain_default }}"
+        <<: *tag_kubo
+
+      - name: Traefik Eve
+        logo: https://raw.githubusercontent.com/traefik/traefik/master/webui/src/assets/traefik.avatar.svg
+        url: "https://traefik.eve.{{ general_domain_default }}"
+        <<: *tag_eve
+
+      - name: Traefik Kubo
+        logo: https://raw.githubusercontent.com/traefik/traefik/master/webui/src/assets/traefik.avatar.svg
+        url: "https://traefik.kubo.{{ general_domain_default }}"
+        <<: *tag_kubo
+
+      - name: Uptime Kuma
+        logo: https://raw.githubusercontent.com/louislam/uptime-kuma/master/public/icon.svg
+        url: "https://uptime.{{ general_domain_default }}"
+        <<: *tag_eve
+
+  - name: Analytics
+    icon: fas fa-chart-bar
+    items:
+      - name: Bjoetiek Y
+        subtitle: GoatCounter
+        logo: https://raw.githubusercontent.com/arp242/goatcounter/master/public/logo.svg
+        url: "https://stats.{{ general_domain_bjoetiek }}"
+        <<: *tag_eve
+
+      - name: Klokracing
+        subtitle: GoatCounter
+        logo: https://raw.githubusercontent.com/arp242/goatcounter/master/public/logo.svg
+        url: "https://stats.{{ general_domain_klokracing }}"
+        <<: *tag_eve
+
+      - name: Spellebel
+        subtitle: GoatCounter
+        logo: https://raw.githubusercontent.com/arp242/goatcounter/master/public/logo.svg
+        url: "https://stats-spellebel.{{ general_domain_default }}"
+        <<: *tag_eve
+
+      - name: Tuinfeest Beerse
+        subtitle: GoatCounter
+        logo: https://raw.githubusercontent.com/arp242/goatcounter/master/public/logo.svg
+        url: "https://stats.{{ general_domain_tuinfeest }}"
+        <<: *tag_eve

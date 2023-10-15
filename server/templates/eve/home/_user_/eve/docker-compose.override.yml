@@ -2,18 +2,9 @@
 # as they are marked as invalid by the JSON schema check
 # for Docker Compose.
 
-#################################################################
-#                            DEFAULTS                           #
-#################################################################
-x-defaults: &defaults
-  restart: always
-  extra_hosts:
-    - "host.docker.internal:host-gateway"
-  deploy:
-    resources:
-      limits:
-        cpus: "2"
-        memory: 512M
+{{ lookup('ansible.builtin.file', 'files/docker-compose.default.yml',) }}
+
+---
 
 #################################################################
 #                            SERVICES                           #

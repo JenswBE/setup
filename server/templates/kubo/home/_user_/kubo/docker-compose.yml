@@ -1,16 +1,10 @@
-#################################################################
-#                    DEFAULTS AND COMMON ENVS                   #
-#################################################################
-x-defaults: &defaults
-  restart: always
-  extra_hosts:
-    - "host.docker.internal:host-gateway"
-  deploy:
-    resources:
-      limits:
-        cpus: "2"
-        memory: 512M
+{{ lookup('ansible.builtin.file', 'files/docker-compose.default.yml',) }}
 
+---
+
+#################################################################
+#                          COMMON ENVS                          #
+#################################################################
 x-glitchtip-env: &glitchtip-env
   TZ: "{{ general_timezone }}"
   PORT: "8080"
