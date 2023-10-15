@@ -64,6 +64,9 @@ app_nextcloud_db_pass_nextcloud: ""
 app_nextcloud_apps_disable: "firstrunwizard"
 app_nextcloud_apps_install: "contacts,calendar,tasks,notes,groupfolders,quota_warning,previewgenerator,apporder"
 
+# Paperless
+app_paperless_secret_key: "" # Long random string
+
 # SNMP Daemon
 app_snmpd_location: "" # Location reported by SNMP where the device is located
 

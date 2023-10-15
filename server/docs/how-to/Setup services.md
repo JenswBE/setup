@@ -63,6 +63,10 @@ do
 done
 ```
 
+### Paperless
+
+Run `sudo docker compose run --rm paperless createsuperuser`
+
 ### Plex
 
 Go to https://app.plex.tv to setup following libraries:

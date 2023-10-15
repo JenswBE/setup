@@ -6,7 +6,7 @@ http:
         contentTypeNosniff: true
         customBrowserXSSValue: "0"
         frameDeny: false # Gives troubles with Keycloak and seems impossible to override for single service
-        referrerPolicy: no-referrer
+        # referrerPolicy: no-referrer # Seems Paperless doesn't like "no-referrer". It uses "same-origin".
         stsIncludeSubdomains: true
         stsSeconds: 31536000
 

@@ -1,0 +1,6 @@
+[Unit]
+Description=Dump Paperless DB for backup
+OnFailure=unit-fail-mail@%n.service
+
+[Service]
+ExecStart={{ docker_path }} exec paperless-db /bin/sh -c "pg_dump --verbose --format=c --blobs --dbname=paperless --username=paperless --no-password --file=/backup/paperless.pg_dump"
