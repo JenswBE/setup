@@ -755,6 +755,11 @@ services:
       - "traefik.http.routers.paperless.entrypoints=websecure"
       - "traefik.http.routers.paperless.rule=Host(`docs.{{ general_domain_default }}`)"
       - "traefik.http.routers.paperless.tls.certresolver=le-tls"
+    deploy:
+      resources:
+        limits:
+          cpus: "4"
+          memory: 4G
   
   paperless-db:
     <<: *defaults
@@ -801,6 +806,11 @@ services:
       - "--chromium-allow-list=file:///tmp/.*"
     environment:
       TZ: "{{ general_timezone }}"
+    deploy:
+      resources:
+        limits:
+          cpus: "4"
+          memory: 4G
 
   paperless-tika:
     <<: *defaults
@@ -810,6 +820,11 @@ services:
       - paperless
     environment:
       TZ: "{{ general_timezone }}"
+    deploy:
+      resources:
+        limits:
+          cpus: "4"
+          memory: 4G
 
   # =========================
   # =       MONITORING      =
