@@ -899,6 +899,7 @@ services:
       - "nc-calcardbackup:/mnt/source/nextcloud/calcardbackup:ro"
       - "{{ general_path_appdata }}/nextcloud/nextcloud/data:/mnt/source/nextcloud/data:ro"
       - "{{ general_path_appdata }}/nextcloud/nextcloud/config:/mnt/source/nextcloud/config:ro"
+      - "{{ general_path_appdata }}/paperless/docs:/mnt/source/paperless/docs:ro"
       - "paperless-db-dump:/mnt/source/paperless/dbdump:ro"
       - "paperless-export:/mnt/source/paperless/export:ro"
       - "{{ general_path_appdata }}/uptime-kuma/data:/mnt/source/uptime-kuma/data:ro"

@@ -9,6 +9,8 @@ Services which are backed up:
   - `keycloak-db` (Postgres): DB data
   - `nc-db` (MariaDB): DB data for Nextcloud
   - `nextcloud` (Nextcloud): User files, config, calendars and addressbooks
+  - `paperless` (Paperless-ngx): Files
+  - `paperless-db` (Postgres): DB data
   - `uptime-kuma` (Uptime Kuma): SQLite DB
   - `vaultwarden` (Vaultwarden): SQLite DB and data
 - Fiona
@@ -58,7 +60,7 @@ sudo docker exec borgmatic cp /mnt/borg/mnt/source/goatcounter/db/goatcounter.ba
 
 # Validate if backup contains recent site hits.
 # The accuracy of this check depens on the activity on your websites.
-sudo docker run --rm -v ${APPDATA_DIR:?}/borgmatic/borgmatic/restore:/backup alpine sh -c 'apk add sqlite; sqlite3 --table /backup/goatcounter.sqlite3 "SELECT s.link_domain, max(h.hour) FROM hit_counts h JOIN sites s ON h.site_id = s.site_id GROUP BY s.link_domain;"'
+sudo docker run --pull always --rm -v ${APPDATA_DIR:?}/borgmatic/borgmatic/restore:/backup alpine sh -c 'apk add sqlite; sqlite3 --table /backup/goatcounter.sqlite3 "SELECT s.link_domain, max(h.hour) FROM hit_counts h JOIN sites s ON h.site_id = s.site_id GROUP BY s.link_domain;"'
 ```
 
 ### GoCommerce
@@ -119,6 +121,19 @@ sudo docker exec borgmatic sh -c "find /mnt/borg/mnt/source/nextcloud/data -type
 sudo docker exec borgmatic ls -Alth /mnt/borg/mnt/source/nextcloud/calcardbackup/calcardbackup_overwrite | head -n 50
 ```
 
+### Paperless
+
+```bash
+# List size and change date of 3 newest files before today
+# Since Borgmatic uses BusyBox which doesn't support "newermt", we calculate the minutes since midnight locally.
+# This ensures a correct comparison. Based on https://stackoverflow.com/a/30374251
+MINS_SINCE_MIDNIGHT=$(( $(date "+10#%H * 60 + 10#%M") ))
+sudo docker exec paperless sh -c "find /usr/src/paperless/media -type f -mmin +${MINS_SINCE_MIDNIGHT:?} -exec stat -c '%Y %n' {} \; | sort -nr | head -n 3 | cut -d' ' -f2- | tr \\\n \\\0 | xargs -0 ls -lah"
+
+# Compare against files in backup
+sudo docker exec borgmatic sh -c "find /mnt/borg/mnt/source/paperless/docs -type f -mmin +${MINS_SINCE_MIDNIGHT:?} -exec stat -c '%Y %n' {} \; | sort -nr | head -n 3 | cut -d' ' -f2- | tr \\\n \\\0 | xargs -0 ls -lah"
+```
+
 ### Plex
 
 ```bash
@@ -139,7 +154,7 @@ sudo docker exec borgmatic sh -c "find /mnt/borg/mnt/source/plex/photos -type f 
 sudo docker exec borgmatic find /mnt/borg -name "*.pg_dump" -exec cp {} /mnt/restore \;
 
 # Check if backup files is correctly created
-sudo docker run --rm -v ${APPDATA_DIR:?}/borgmatic/borgmatic/restore:/backup postgres:alpine bash -c 'for f in /backup/*.pg_dump; do echo $f; pg_restore --list $f | head -n 12; echo; done;'
+sudo docker run --pull always --rm -v ${APPDATA_DIR:?}/borgmatic/borgmatic/restore:/backup postgres:alpine bash -c 'for f in /backup/*.pg_dump; do echo $f; pg_restore --list $f | head -n 12; echo; done;'
 ```
 
 ### Unifi controller
@@ -154,7 +169,7 @@ sudo docker exec borgmatic cp /mnt/borg/mnt/source/uptime-kuma/data/kuma.backup.
 
 # Validate if backup contains recent heartbeats.
 # The accuracy of this check depens on frequency of the heartbeats.
-sudo docker run --rm -v ${APPDATA_DIR:?}/borgmatic/borgmatic/restore:/backup alpine sh -c 'apk add sqlite; sqlite3 --table /backup/kuma.sqlite3 "SELECT * FROM heartbeat ORDER BY time DESC LIMIT 3;"'
+sudo docker run --pull always --rm -v ${APPDATA_DIR:?}/borgmatic/borgmatic/restore:/backup alpine sh -c 'apk add sqlite; sqlite3 --table /backup/kuma.sqlite3 "SELECT * FROM heartbeat ORDER BY time DESC LIMIT 3;"'
 ```
 
 ### Vaultwarden
@@ -165,5 +180,5 @@ sudo docker exec borgmatic cp /mnt/borg/mnt/source/vaultwarden/data/db.backup.sq
 
 # Validate if backup contains recent devices.
 # The accuracy of this check depens on how recently a device used Vaultwarden.
-sudo docker run --rm -v ${APPDATA_DIR:?}/borgmatic/borgmatic/restore:/backup alpine sh -c 'apk add sqlite; sqlite3 --table /backup/vaultwarden.sqlite3 "SELECT updated_at, name FROM devices ORDER BY updated_at DESC LIMIT 3;"'
+sudo docker run --pull always --rm -v ${APPDATA_DIR:?}/borgmatic/borgmatic/restore:/backup alpine sh -c 'apk add sqlite; sqlite3 --table /backup/vaultwarden.sqlite3 "SELECT updated_at, name FROM devices ORDER BY updated_at DESC LIMIT 3;"'
 ```
