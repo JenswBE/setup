@@ -747,9 +747,10 @@ services:
       PAPERLESS_SECRET_KEY: "{{ app_paperless_secret_key }}"
       PAPERLESS_FILENAME_FORMAT: "{created_year}.{created_month}.{created_day} - {correspondent} - {title}"
       PAPERLESS_URL: "https://docs.{{ general_domain_default }}"
-      PAPERLESS_TIKA_ENABLED: 1
-      PAPERLESS_TIKA_GOTENBERG_ENDPOINT: http://gotenberg:3000
-      PAPERLESS_TIKA_ENDPOINT: http://tika:9998
+      PAPERLESS_TASK_WORKERS: "{{ ansible_processor_nproc // 2 }}"
+      PAPERLESS_TIKA_ENABLED: "1"
+      PAPERLESS_TIKA_GOTENBERG_ENDPOINT: http://paperless-gotenberg:3000
+      PAPERLESS_TIKA_ENDPOINT: http://paperless-tika:9998
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.paperless.entrypoints=websecure"
