@@ -761,7 +761,7 @@ services:
         limits:
           cpus: "4"
           memory: 4G
-  
+
   paperless-db:
     <<: *defaults
     container_name: paperless-db
@@ -778,7 +778,7 @@ services:
       POSTGRES_USER: paperless
       POSTGRES_DB: paperless
       POSTGRES_PASSWORD: paperless
-  
+
   paperless-redis:
     <<: *defaults
     container_name: paperless-redis

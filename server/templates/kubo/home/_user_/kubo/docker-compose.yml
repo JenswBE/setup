@@ -143,7 +143,7 @@ services:
       - >-
         traefik.http.routers.oauth2-proxy.rule=Host(
           `dtu.{{ general_domain_default }}`,
-          `tmm.{{ general_domain_default }}`,
+          `pdf.{{ general_domain_default }}`,
           `torrent.{{ general_domain_default }}`,
           `traefik.{{ ansible_hostname }}.{{ general_domain_default }}`,
         ) && PathPrefix(`/oauth2/`)
@@ -594,6 +594,25 @@ services:
       - glitchtip
     environment:
       TZ: "{{ general_timezone }}"
+
+  # =========================
+  # =       PDF tools       =
+  # =========================
+  stirling-pdf:
+    <<: *defaults
+    image: docker.io/frooodle/s-pdf:latest
+    container_name: stirling-pdf
+    networks:
+      - traefik
+    environment:
+      TZ: "{{ general_timezone }}"
+      DOCKER_ENABLE_SECURITY: "false"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.stirling-pdf.entrypoints=websecure"
+      - "traefik.http.routers.stirling-pdf.rule=Host(`pdf.{{ general_domain_default }}`)"
+      - "traefik.http.routers.stirling-pdf.tls.certresolver=le-tls"
+      - "traefik.http.routers.stirling-pdf.middlewares=oauth2-proxy-handle-error@file, oauth2-proxy-forward-auth-infra@file"
 
   # =========================
   # =       MONITORING      =
