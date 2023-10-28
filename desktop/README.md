@@ -96,6 +96,7 @@ dconf load / <<EOF
 clock-show-weekday=true
 color-scheme='prefer-dark'
 gtk-theme='Adwaita-dark'
+show-battery-percentage=true
 
 [org/gnome/desktop/privacy]
 old-files-age=7
