@@ -25,6 +25,10 @@ sudo ln -fs "$(pwd)/lineinfile/lineinfile.py" /usr/local/bin/lineinfile
 # Don't hash SSH hosts (allows completion in Bash)
 sudo lineinfile /etc/ssh/ssh_config 'HashKnownHosts ' '    HashKnownHosts no'
 
+# Ensure GRUB contains non-Linux OS'es
+sudo lineinfile /etc/default/grub 'GRUB_DISABLE_OS_PROBER=' 'GRUB_DISABLE_OS_PROBER=false'
+sudo update-grub
+
 # Install base packages
 xargs ${CMD_PACKAGE_INSTALL:?} <<EOF
 distrobox
