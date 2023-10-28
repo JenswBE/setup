@@ -1,0 +1,20 @@
+name: Test
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  lineinfile:
+    name: Test lineinfile
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3"
+
+      - name: Run unit tests
+        working-directory: desktop/lineinfile
+        run: python3 -m unittest

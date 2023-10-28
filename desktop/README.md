@@ -17,24 +17,26 @@ Installation instructions for Hercules (Workstation) and Charmeleon (Laptop)
 
 ```bash
 # Settings
-PACKAGE_INSTALL_CMD="sudo apt install"
+CMD_PACKAGE_INSTALL="sudo apt install -y"
 
-# Configure bash
-tee -a ~/.bashrc <<EOF
-export HISTSIZE=5000
-export HISTFILESIZE=-1
-EOF
+# Setup tools
+sudo ln -fs "$(pwd)/lineinfile/lineinfile.py" /usr/local/bin/lineinfile
 
 # Don't hash SSH hosts (allows completion in Bash)
-sudo sed -i 's/HashKnownHosts yes/HashKnownHosts no/' /etc/ssh/ssh_config
+sudo lineinfile /etc/ssh/ssh_config 'HashKnownHosts ' '    HashKnownHosts no'
 
 # Install base packages
-xargs $PACKAGE_INSTALL_CMD <<EOF
+xargs ${CMD_PACKAGE_INSTALL:?} <<EOF
 distrobox
+eject
 podman
 podman-compose
 virt-manager
 EOF
+
+# Configure bash
+lineinfile ~/.bashrc 'export HISTSIZE=' 'export HISTSIZE=5000'
+lineinfile ~/.bashrc 'export HISTFILESIZE=' 'export HISTFILESIZE=-1'
 
 # Based on https://flathub.org/setup
 flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
@@ -78,7 +80,7 @@ Persistent=true
 WantedBy=timers.target
 EOF
 sudo systemctl daemon-reload
-sudo systemctl enable --now /etc/systemd/system/flatpak-automatic.timer
+sudo systemctl enable --now flatpak-automatic.timer
 ```
 
 ### GNOME
@@ -167,7 +169,7 @@ distrobox-create -Y -i quay.io/toolbx-images/debian-toolbox:12 --name debian-dev
 distrobox-enter debian-development
 
 # Setup development dirs
-mkdir -p ~/Dev/Personal ~/Dev/Interwego
+mkdir -p ~/Dev/{Personal,Interwego}
 
 # Configure git
 git config --global user.name "<NAME>"
@@ -178,18 +180,20 @@ tee ~/Dev/Interwego/.gitconfig_include <<EOF
 email = EMAIL
 name = NAME
 EOF
-sudo
+
 # Setup VS Code
 # Based on https://code.visualstudio.com/docs/setup/linux.
-# Prerequisite: .deb downloaded
-sudo dpkg -i ./code_*.deb
+wget -O code.deb CODE_PACKAGE_URL
+sudo apt install ./code.deb
+rm code.deb
 distrobox-export --app code
 ln -fs "$(pwd)/vscode/settings.jsonc" ~/.config/Code/User/settings.json
 ln -fs "$(pwd)/vscode/keybindings.jsonc" ~/.config/Code/User/keybindings.json
-code --install-extension --force eamodio.gitlens
-code --install-extension --force esbenp.prettier-vscode
-code --install-extension --force golang.go
-code --install-extension --force jinliming2.vscode-go-template
+CMD_CODE_EXT_INSTALL="code --force --install-extension"
+${CMD_CODE_EXT_INSTALL:?} eamodio.gitlens
+${CMD_CODE_EXT_INSTALL:?} esbenp.prettier-vscode
+${CMD_CODE_EXT_INSTALL:?} golang.go
+${CMD_CODE_EXT_INSTALL:?} jinliming2.vscode-go-template
 
 # Setup Go template support for Prettier
 # Based on https://github.com/NiklasPor/prettier-plugin-go-template/issues/58#issuecomment-1085060511
