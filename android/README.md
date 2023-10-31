@@ -31,6 +31,7 @@ See https://iode.tech/en/iodeos-installation/
 ## General setup
 
 ### Quick menu
+
 1. Wifi
 1. Bluetooth
 1. Auto-rotate
@@ -86,7 +87,8 @@ See https://iode.tech/en/iodeos-installation/
 
 - [Argenta](https://play.google.com/store/apps/details?id=be.argenta.bankieren)
 - [Belfius Mobile](https://play.google.com/store/apps/details?id=be.belfius.directmobile.android)
-- [Bitwarden](https://play.google.com/store/apps/details?id=com.x8bit.bitwarden)
+- [Bitwarden](https://play.google.com/store/apps/details?id=com.x8bit.bitwarden). Block autofill of:
+  - androidapp://com.beemdevelopment.aegis
 - [itsme](https://play.google.com/store/apps/details?id=be.bmid.itsme)
 - [KopieID](https://play.google.com/store/apps/details?id=com.milvum.kopieid)
 - [Magic Earth](https://play.google.com/store/apps/details?id=com.generalmagic.magicearth)
