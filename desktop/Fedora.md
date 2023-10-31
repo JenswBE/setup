@@ -45,6 +45,12 @@ Name=Flameshot Daemon
 EOF
 mkdir -p ~/.config/autostart/
 cp ~/.local/share/applications/flameshot-daemon.desktop ~/.config/autostart/
+# Workaround for https://github.com/flameshot-org/flameshot/issues/3365
+tee ~/Documents/AppImages/Flameshot.sh <<EOF
+#!/usr/bin/bash
+${HOME:?}/Documents/AppImages/Flameshot.AppImage gui
+EOF
+chmod 755 ~/Documents/AppImages/Flameshot.sh
 
 # Disable PipeWire HSP/HFP profile
 # Since I use the build-in mic of my computer, I want to always use A2DP instead of HSP/HFP.

@@ -102,7 +102,7 @@ custom-keybindings=['/org/gnome/settings-daemon/plugins/media-keys/custom-keybin
 
 [org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0]
 binding='Print'
-command='${HOME:?}/Documents/AppImages/Flameshot.AppImage gui'
+command='${HOME:?}/Documents/AppImages/Flameshot.sh'
 name='Flameshot'
 
 [org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1]
