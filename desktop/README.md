@@ -166,6 +166,19 @@ tee ~/Dev/Interwego/.gitconfig_include <<EOF
 email = EMAIL
 name = NAME
 EOF
+tee ~/.ssh/config <<EOF
+Host github-personal
+  HostName github.com
+  User git
+  IdentityFile ~/.ssh/personal
+  IdentitiesOnly yes
+
+Host github-interwego
+  HostName github.com
+  User git
+  IdentityFile ~/.ssh/interwego
+  IdentitiesOnly yes
+EOF
 
 # Setup VS Code
 # Based on https://code.visualstudio.com/docs/setup/linux.
