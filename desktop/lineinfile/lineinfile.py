@@ -13,7 +13,7 @@ from collections import namedtuple
 
 
 def get_regex(find: str) -> re.Pattern:
-    return re.compile(f"(\s*)(#|//)?(\s*){find}.*")
+    return re.compile(r"(\s*)(#|//)?(\s*)"+find+r".*")
 
 
 Match = namedtuple('Match', ['index', 'value'])
@@ -25,7 +25,7 @@ def line_in_file(filename: str, find_regex: re.Pattern, replace: str):
         lines = f.readlines()
 
     # Search for matches
-    matches: list[Match] = list()
+    matches: list[Match] = []
     for i, line in enumerate(lines):
         match = find_regex.match(line)
         if match:

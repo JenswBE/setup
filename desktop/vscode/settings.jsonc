@@ -72,7 +72,6 @@
   "go.formatTool": "gofumpt",
   "go.toolsGopath": "~/go",
   "go.toolsManagement.autoUpdate": true,
-  "prettier.prettierPath": "/usr/local/lib/node_modules/prettier",
   "redhat.telemetry.enabled": false,
   "telemetry.telemetryLevel": "off",
   "terminal.integrated.allowChords": false,

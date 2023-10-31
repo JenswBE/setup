@@ -2,10 +2,6 @@
 
 Installation instructions for Hercules (Workstation) and Charmeleon (Laptop)
 
-## Install
-
-[Dual-boot with Full Disk Encryption](Dual-boot%20with%20FDE.md)
-
 ## Distro specific instructions
 
 - [Debian](Debian.md)
@@ -16,27 +12,8 @@ Installation instructions for Hercules (Workstation) and Charmeleon (Laptop)
 ### Setup host
 
 ```bash
-# Settings
-CMD_PACKAGE_INSTALL="sudo apt install -y"
-
 # Setup tools
 sudo ln -fs "$(pwd)/lineinfile/lineinfile.py" /usr/local/bin/lineinfile
-
-# Don't hash SSH hosts (allows completion in Bash)
-sudo lineinfile /etc/ssh/ssh_config 'HashKnownHosts ' '    HashKnownHosts no'
-
-# Ensure GRUB contains non-Linux OS'es
-sudo lineinfile /etc/default/grub 'GRUB_DISABLE_OS_PROBER=' 'GRUB_DISABLE_OS_PROBER=false'
-sudo update-grub
-
-# Install base packages
-xargs ${CMD_PACKAGE_INSTALL:?} <<EOF
-distrobox
-eject
-podman
-podman-compose
-virt-manager
-EOF
 
 # Configure bash
 lineinfile ~/.bashrc 'export HISTSIZE=' 'export HISTSIZE=5000'
@@ -46,13 +23,14 @@ lineinfile ~/.bashrc 'export HISTFILESIZE=' 'export HISTFILESIZE=-1'
 flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
 flatpak remote-add --user --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
 sudo xargs flatpak install flathub --assumeyes --noninteractive --or-update <<EOF
+org.gnome.SimpleScan
+org.libreoffice.LibreOffice
+org.videolan.VLC
+EOF
+xargs flatpak install --user flathub --assumeyes --noninteractive --or-update <<EOF
 com.bitwarden.desktop
 org.gimp.GIMP
 org.gnome.gitlab.YaLTeR.VideoTrimmer
-org.gnome.SimpleScan
-org.libreoffice.LibreOffice
-org.mozilla.firefox
-org.videolan.VLC
 EOF
 
 # Setup Flatpak auto-update
@@ -103,7 +81,7 @@ old-files-age=7
 remove-old-trash-files=true
 
 [org/gnome/desktop/search-providers]
-disabled=['org.gnome.Software.desktop', 'org.gnome.Terminal.desktop', 'org.gnome.Nautilus.desktop']
+disabled=['org.gnome.Software.desktop', 'org.gnome.Terminal.desktop', 'org.gnome.Nautilus.desktop', 'firefox.desktop']
 enabled=['org.gnome.Characters.desktop']
 
 [org/gnome/desktop/wm/preferences]
@@ -120,7 +98,7 @@ default-folder-viewer='list-view'
 night-light-enabled=true
 
 [org/gnome/settings-daemon/plugins/media-keys]
-custom-keybindings=['/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom2/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom3/']
+custom-keybindings=['/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom2/']
 
 [org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0]
 binding='Print'
@@ -136,6 +114,9 @@ name='Terminal - Host'
 binding='<Shift><Super>f'
 command='gnome-terminal --tab --profile Development'
 name='Terminal - Development'
+
+[org/gnome/shell/keybindings]
+show-screenshot-ui=@as []
 
 [org/gnome/terminal/legacy/profiles:]
 list=['b1dcc9dd-5262-4d8d-a863-c897e6d979b9', '118048ea-b428-4d03-8a20-8795d1f518f6']
@@ -200,6 +181,9 @@ ${CMD_CODE_EXT_INSTALL:?} esbenp.prettier-vscode
 ${CMD_CODE_EXT_INSTALL:?} golang.go
 ${CMD_CODE_EXT_INSTALL:?} jinliming2.vscode-go-template
 
+# Install latest LTS release of NodeJS
+# following instructions at: https://github.com/nodesource/distributions
+
 # Setup Go template support for Prettier
 # Based on https://github.com/NiklasPor/prettier-plugin-go-template/issues/58#issuecomment-1085060511
 sudo npm i -g prettier prettier-plugin-go-template
@@ -217,8 +201,10 @@ distrobox-enter debian-citrix
 # See https://www.citrix.com/downloads/workspace-app/linux/workspace-app-for-linux-latest.html
 wget -O citrix.deb DOWNLOAD_URL
 sudo apt install ./citrix.deb
-distrobox-export --app receiver
-distrobox-export --app ICA # Not sure this is required
+distrobox-export --app ICA
+
+# Right click on .ica file and select "Open With ...".
+# Use "Citrix Workspace Engine" and set as default.
 ```
 
 ### Drivers
