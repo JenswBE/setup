@@ -1,4 +1,4 @@
-# How-to: Delete path from backups
+# How-to: Borg - Delete path from backups
 
 ```bash
 # Remove path from backups

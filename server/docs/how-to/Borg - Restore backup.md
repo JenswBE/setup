@@ -1,4 +1,4 @@
-# How-to: Restore Borg backup
+# How-to: Borg - Restore backup
 
 ```bash
 # List archives

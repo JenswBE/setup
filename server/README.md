@@ -44,13 +44,13 @@ Without this option, the playbook will fail.
 sudo pip install -r requirements.txt
 
 # Install roles
-ansible-galaxy role install -r requirements.yml
+LC_ALL=C.UTF-8 ansible-galaxy role install -r requirements.yml
 
 # Run complete setup for a host
-ansible-playbook main.yml --limit <HOSTNAME>
+LC_ALL=C.UTF-8 ansible-playbook main.yml --limit <HOSTNAME>
 
 # To only run Docker steps
-ansible-playbook main.yml --tags docker --limit <HOSTNAME>
+LC_ALL=C.UTF-8 ansible-playbook main.yml --tags docker --limit <HOSTNAME>
 
 # Available tags:
 #   - setup
