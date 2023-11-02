@@ -29,6 +29,7 @@
 
     - name: CrowdSec - Restart NFTables bouncer if config was changed
       when: crowdsec_nftables_bouncer.changed
+      ignore_errors: true # Step fails if crowdsec is not running
       ansible.builtin.service:
         name: crowdsec-firewall-bouncer
         state: restarted

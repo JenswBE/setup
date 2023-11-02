@@ -1,7 +1,5 @@
-# General
-general_path_appdata: "/data"
-
 # Firewall
+# Ensure to update firewall on cloud provider!
 firewall_additional_ports:
   - comment: Traefik HTTP
     port: 80

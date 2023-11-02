@@ -36,7 +36,6 @@
     enabled: true
   loop:
     - bjoetiek-dump-db.timer
-    - data.mount
     - docker-update-containers.timer
     - goatcounter-dump-db.timer
     - isa-rclone.timer

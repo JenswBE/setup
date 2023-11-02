@@ -1,4 +1,5 @@
 # Firewall
+# Ensure to update firewall on cloud provider!
 firewall_additional_ports:
   - comment: Blocky
     port: 53
