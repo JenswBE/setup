@@ -29,11 +29,14 @@
 
     - name: Copy upssched-cmd
       ansible.builtin.template:
-        src: nut/client_server/upssched-cmd
+        src: nut/client_server/upssched-cmd/cmd.py
         dest: /usr/sbin/upssched-cmd
         owner: root
         group: nut
         mode: "755"
+
+    - name: Test upssched-cmd (should receive email)
+      ansible.builtin.command: /usr/sbin/upssched-cmd test
 
     - name: Force restart NUT services
       ansible.builtin.service:
