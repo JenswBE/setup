@@ -718,7 +718,7 @@ services:
       - traefik
       - paperless
     security_opt:
-      - no-new-privileges:true
+      - no-new-privileges=true
     depends_on:
       - paperless-redis
       - paperless-db
@@ -769,7 +769,7 @@ services:
     networks:
       - paperless
     security_opt:
-      - no-new-privileges:true
+      - no-new-privileges=true
     volumes:
       - "{{ general_path_appdata }}/paperless/db:/var/lib/postgresql/data"
       - paperless-db-dump:/backup
@@ -786,7 +786,7 @@ services:
     networks:
       - paperless
     security_opt:
-      - no-new-privileges:true
+      - no-new-privileges=true
     volumes:
       - paperless-redis-data:/data
     environment:
