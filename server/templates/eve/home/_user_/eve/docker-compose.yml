@@ -306,7 +306,7 @@ services:
 
   bjoetiek-backend:
     <<: *defaults
-    image: docker.io/jenswbe/go-commerce:v1.0.0
+    image: docker.io/jenswbe/go-commerce:v1.0.1
     container_name: bjoetiek-backend
     depends_on:
       - bjoetiek-db

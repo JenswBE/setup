@@ -49,6 +49,7 @@ x-tag-kubo: &tag_kubo
   tagstyle: is-info
   target: _blank
 
+# Interesting list for icons: https://github.com/loganmarchione/homelab-svg-assets/blob/main/ICONS.md
 services:
   - name: Files and Media
     icon: fas fa-sync
