@@ -34,7 +34,7 @@ org.gnome.gitlab.YaLTeR.VideoTrimmer
 EOF
 
 # Setup Flatpak auto-update
-sudo tee /etc/systemd/system/flatpak-automatic.service <<EOF
+sudo tee /etc/systemd/system/flatpak-automatic.service > /dev/null <<EOF
 [Unit]
 Description=flatpak Automatic Update
 Documentation=man:flatpak(1)
@@ -48,7 +48,7 @@ ExecStart=/usr/bin/flatpak update -y
 [Install]
 WantedBy=multi-user.target
 EOF
-sudo tee /etc/systemd/system/flatpak-automatic.timer <<EOF
+sudo tee /etc/systemd/system/flatpak-automatic.timer > /dev/null <<EOF
 [Unit]
 Description=flatpak Automatic Update Trigger
 Documentation=man:flatpak(1)
@@ -63,6 +63,28 @@ WantedBy=timers.target
 EOF
 sudo systemctl daemon-reload
 sudo systemctl enable --now flatpak-automatic.timer
+
+# Setup NFS share
+NFS_PATH=${HOME:?}/KuboMedia
+NFS_SYSTEMD_NAME=$(systemd-escape --path ${NFS_PATH:?})
+sudo tee /etc/systemd/system/${NFS_SYSTEMD_NAME:?}.mount > /dev/null <<EOF
+[Unit]
+Description=Mount Kubo Media
+After=nss-lookup.target
+
+[Mount]
+What=kubo.jensw.eu:/data/media
+Where=${NFS_PATH:?}
+Options=noexec,nosuid,nofail,noatime,user
+Type=nfs
+TimeoutSec=5
+ForceUnmount=true
+
+[Install]
+WantedBy=multi-user.target
+EOF
+sudo systemctl daemon-reload
+sudo systemctl enable --now ${NFS_SYSTEMD_NAME:?}.mount
 ```
 
 ### GNOME
@@ -161,12 +183,12 @@ mkdir -p ~/Dev/{Personal,Interwego}
 git config --global user.name "<NAME>"
 git config --global user.email "<EMAIL>"
 git config --global pull.ff only
-tee ~/Dev/Interwego/.gitconfig_include <<EOF
+tee ~/Dev/Interwego/.gitconfig_include > /dev/null <<EOF
 [user]
 email = EMAIL
 name = NAME
 EOF
-tee ~/.ssh/config <<EOF
+tee ~/.ssh/config > /dev/null <<EOF
 Host github-personal
   HostName github.com
   User git
