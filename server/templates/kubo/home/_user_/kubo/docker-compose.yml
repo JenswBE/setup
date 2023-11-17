@@ -344,8 +344,8 @@ services:
       - "{{ general_path_appdata }}/tmm/config:/config"
     environment:
       TZ: "{{ general_timezone }}"
-      GROUP_ID: "0"
-      USER_ID: "0"
+      USER_ID: "{{ ansible_real_user_id }}"
+      GROUP_ID: "{{ ansible_real_group_id }}"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.tmm.entrypoints=websecure"
