@@ -31,7 +31,7 @@ sudo rpm-ostree override remove firefox-langpacks firefox
 sudo flatpak install flathub org.mozilla.firefox
 
 # Overlay packages
-sudo rpm-ostree --idempotent install distrobox gnome-tweaks nextcloud-client nextcloud-client-nautilus
+sudo rpm-ostree --idempotent install distrobox gnome-tweaks nextcloud-client nextcloud-client-nautilus virt-manager
 systemctl reboot
 
 # Install Flameshot
