@@ -106,8 +106,8 @@ PublishPort=127.0.0.1:8384:8384
 PublishPort=22000:22000
 Environment=TZ=$(timedatectl show | grep -F Timezone | cut -d'=' -f2)
 UserNS=keep-id
-Environment=PUID=1000
-Environment=PGID=1000
+Environment=PUID=$(id -u)
+Environment=PGID=$(id -g)
 
 [Install]
 # Start by default on boot
