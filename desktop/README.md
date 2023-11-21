@@ -85,6 +85,36 @@ WantedBy=multi-user.target
 EOF
 sudo systemctl daemon-reload
 sudo systemctl enable --now ${NFS_SYSTEMD_NAME:?}.mount
+
+# Setup Syncthing
+mkdir -p ~/.config/syncthing
+mkdir -p ~/Music/Syncthing
+mkdir -p ~/.config/containers/systemd/
+tee ~/.config/containers/systemd/syncthing.container > /dev/null <<EOF
+[Unit]
+Description=Syncthing
+After=local-fs.target
+
+[Container]
+Image=docker.io/syncthing/syncthing:1
+HostName=$(hostname)
+Pull=always
+Timezone=local
+Volume=$(realpath ~/.config/syncthing):/var/syncthing:z
+Volume=$(realpath ~/Music/Syncthing):/data/music:z
+PublishPort=127.0.0.1:8384:8384
+PublishPort=22000:22000
+Environment=TZ=$(timedatectl show | grep -F Timezone | cut -d'=' -f2)
+UserNS=keep-id
+Environment=PUID=1000
+Environment=PGID=1000
+
+[Install]
+# Start by default on boot
+WantedBy=multi-user.target default.target
+EOF
+systemctl --user daemon-reload
+systemctl --user enable --now syncthing.service
 ```
 
 ### GNOME
