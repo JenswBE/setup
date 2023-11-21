@@ -371,6 +371,7 @@ services:
       - traefik
     ports:
       - "22000:22000"
+      - "22000:22000/udp"
     volumes:
       - "{{ general_path_appdata }}/syncthing/config:/var/syncthing"
       - "/data/bulk/media/Music:/data/music"
