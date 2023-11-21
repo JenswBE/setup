@@ -74,9 +74,22 @@ sudo ls -Alt ${APPDATA_DIR:?}/bjoetiek/backend/images | head -n 4
 sudo docker exec borgmatic ls -Alt /mnt/borg/mnt/source/bjoetiek/backend/images | head -n 4
 ```
 
+### Graylog
+
+```bash
+# Copy DB to restore point
+sudo docker exec borgmatic cp /mnt/borg/mnt/source/graylog/mongodb/graylog/traffic.bson /mnt/restore/graylog_traffic.bson
+
+# Validate if backup contains recent data.
+sudo docker run --rm -v ${APPDATA_DIR:?}/borgmatic/borgmatic/restore:/backup docker.io/library/mongo sh -c "bsondump /backup/graylog_traffic.bson | jq --slurp '.' | jq '.[].bucket.\"\$date\".\"\$numberLong\"' | sort -r | head -n1 | cut -c2-11 | sed '1s/^/@/' | date -f-"
+```
+
 ### Home Assistant
 
-TODO
+```bash
+# Listed entry should be recent
+sudo docker exec borgmatic cat /mnt/borg/mnt/source/home-automation/home-assistant/config/home-assistant.log | tail -n 1
+```
 
 ### MariaDB
 
@@ -84,10 +97,6 @@ TODO
 # Check backup date of all MariaDB dumps
 sudo docker exec borgmatic find /mnt/borg -name "*.sqldump" -exec echo {} \; -exec tail -n1 {} \; -exec echo Number of tables: \; -exec bash -c "grep -F 'CREATE TABLE' {} | wc -l" \;
 ```
-
-### MongoDB
-
-TODO
 
 ### Nextcloud
 
@@ -159,7 +168,15 @@ sudo docker run --pull always --rm -v ${APPDATA_DIR:?}/borgmatic/borgmatic/resto
 
 ### Unifi controller
 
-TODO
+```bash
+# Copy DB to restore point
+sudo docker exec borgmatic cp /mnt/borg/mnt/source/unifi/mongodb/unifi/unifi/event.bson /mnt/restore/unifi_event.bson
+sudo docker exec borgmatic cp /mnt/borg/mnt/source/unifi/mongodb/unifi_stat/unifi_stat/stat_5minutes.bson /mnt/restore/unifi_stat_5min.bson
+
+# Validate if backup contains recent data.
+sudo docker run --rm -v ${APPDATA_DIR:?}/borgmatic/borgmatic/restore:/backup docker.io/library/mongo sh -c "bsondump /backup/unifi_event.bson | jq --slurp '.' | jq '.[].datetime.\"\$date\".\"\$numberLong\"' | sort -r | head -n1 | cut -c2-11 | sed '1s/^/@/' | date -f-"
+sudo docker run --rm -v ${APPDATA_DIR:?}/borgmatic/borgmatic/restore:/backup docker.io/library/mongo sh -c "bsondump /backup/unifi_stat_5min.bson | jq --slurp '.' | jq '.[].datetime.\"\$date\".\"\$numberLong\"' | sort -r | head -n1 | cut -c2-11 | sed '1s/^/@/' | date -f-"
+```
 
 ### Uptime Kuma
 
