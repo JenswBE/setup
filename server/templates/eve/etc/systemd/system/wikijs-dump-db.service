@@ -1,0 +1,6 @@
+[Unit]
+Description=Dump Wiki.js DB for backup
+OnFailure=unit-fail-mail@%n.service
+
+[Service]
+ExecStart={{ docker_path }} exec wikijs-db /bin/sh -c "pg_dump --verbose --format=c --blobs --dbname=wikijs --username=wikijs --no-password --file=/backup/wikijs.pg_dump"

@@ -97,6 +97,7 @@ services:
         traefik.http.routers.oauth2-proxy.rule=Host(
           `assets.{{ general_domain_default }}`,
           `start.{{ general_domain_default }}`,
+          `syncthing.{{ ansible_hostname }}.{{ general_domain_default }}`,
           `traefik.{{ ansible_hostname }}.{{ general_domain_default }}`,
           `uptime.{{ general_domain_default }}`,
         ) && PathPrefix(`/oauth2/`)
@@ -181,6 +182,60 @@ services:
       interval: 30s
       timeout: 10s
       retries: 5
+
+  # ====================================
+  # =              WIKI.JS             =
+  # = https://github.com/requarks/wiki =
+  # ====================================
+  wikijs:
+    <<: *defaults
+    image: lscr.io/linuxserver/wikijs:latest
+    container_name: wikijs
+    networks:
+      - traefik
+      - wikijs
+    depends_on:
+      - wikijs-db
+    volumes:
+      - "{{ general_path_appdata }}/wikijs/wikijs/config:/config"
+      - "{{ general_path_appdata }}/wikijs/wikijs/data:/data"
+      - wikijs-backup:/backup
+    environment:
+      TZ: "{{ general_timezone }}"
+      PUID: "{{ ansible_real_user_id }}"
+      PGID: "{{ ansible_real_user_id }}"
+      DB_TYPE: postgres
+      DB_HOST: wikijs-db
+      DB_PORT: 5432
+      DB_USER: wikijs
+      DB_PASS: "{{ app_wikijs_db_pass }}"
+      DB_NAME: wikijs
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.wikijs.entrypoints=websecure"
+      - "traefik.http.routers.wikijs.rule=Host(`wiki.{{ general_domain_default }}`)"
+      - "traefik.http.routers.wikijs.tls.certresolver=le-tls"
+      - "traefik.http.services.wikijs-{{ ansible_hostname }}.loadbalancer.server.port=3000"
+    deploy:
+      resources:
+        limits:
+          cpus: "4"
+          memory: 2G
+
+  wikijs-db:
+    <<: *defaults
+    image: docker.io/library/postgres:16-alpine
+    container_name: wikijs-db
+    networks:
+      - wikijs
+    volumes:
+      - "{{ general_path_appdata }}/wikijs/postgres/data:/var/lib/postgresql/data"
+      - wikijs-db-dump:/backup
+    environment:
+      TZ: "{{ general_timezone }}"
+      POSTGRES_USER: wikijs
+      POSTGRES_PASSWORD: "{{ app_wikijs_db_pass }}"
+      POSTGRES_DB: wikijs
 
   # =========================
   # =         NGINX         =
@@ -830,6 +885,35 @@ services:
           memory: 6G
 
   # =========================
+  # =       SYNCTHING       =
+  # =========================
+  syncthing:
+    <<: *defaults
+    image: docker.io/syncthing/syncthing:1
+    container_name: syncthing
+    hostname: "{{ ansible_hostname }}"
+    networks:
+      - traefik
+    ports:
+      - "22000:22000"
+      - "22000:22000/udp"
+    volumes:
+      - "{{ general_path_appdata }}/syncthing/config:/var/syncthing"
+      - "{{ general_path_appdata }}/paperless/docs/documents/originals:/data/paperless"
+      - "wikijs-backup:/data/wikijs"
+    environment:
+      TZ: "{{ general_timezone }}"
+      PUID: "{{ ansible_real_user_id }}"
+      PGID: "{{ ansible_real_user_id }}"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.syncthing.entrypoints=websecure"
+      - "traefik.http.routers.syncthing.rule=Host(`syncthing.{{ ansible_hostname }}.{{ general_domain_default }}`)"
+      - "traefik.http.routers.syncthing.tls.certresolver=le-tls"
+      - "traefik.http.routers.syncthing.middlewares=oauth2-proxy-handle-error@file, oauth2-proxy-forward-auth-infra@file"
+      - "traefik.http.services.syncthing-{{ ansible_hostname }}.loadbalancer.server.port=8384"
+
+  # =========================
   # =       MONITORING      =
   # =========================
   node-exporter:
@@ -906,6 +990,8 @@ services:
       - "paperless-export:/mnt/source/paperless/export:ro"
       - "{{ general_path_appdata }}/uptime-kuma/data:/mnt/source/uptime-kuma/data:ro"
       - "{{ general_path_appdata }}/vaultwarden/data:/mnt/source/vaultwarden/data:ro"
+      - "wikijs-backup:/mnt/source/wikijs/backup:ro"
+      - "wikijs-db-dump:/mnt/source/wikijs/dbdump:ro"
       # Config and cache
       - "./borgmatic/borgmatic.d/config.yaml:/etc/borgmatic.d/config.yaml"
       - "./borgmatic/ssh/BorgHost:/root/.ssh/BorgHost"
@@ -947,6 +1033,8 @@ volumes:
   paperless-redis-data:
   traefik-access-logs:
   traefik-cert:
+  wikijs-backup:
+  wikijs-db-dump:
 
 # #################################################################
 # #                            NETWORKS                           #
@@ -972,3 +1060,6 @@ networks:
 
   traefik:
     name: traefik
+
+  wikijs:
+    name: wikijs

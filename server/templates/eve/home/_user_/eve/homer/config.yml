@@ -74,6 +74,11 @@ services:
         url: "https://torrent.{{ general_domain_default }}"
         <<: *tag_kubo
 
+      - name: Syncthing Eve
+        logo: https://raw.githubusercontent.com/syncthing/syncthing/main/assets/logo-only.svg
+        url: "https://syncthing.eve.{{ general_domain_default }}"
+        <<: *tag_eve
+
       - name: Syncthing Kubo
         logo: https://raw.githubusercontent.com/syncthing/syncthing/main/assets/logo-only.svg
         url: "https://syncthing.kubo.{{ general_domain_default }}"

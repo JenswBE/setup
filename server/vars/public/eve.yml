@@ -17,6 +17,10 @@ firewall_additional_ports:
     port: 9100
     protos: [tcp]
     from_networks: [docker_ipv4]
+  - comment: Syncthing TCP and QUIC
+    port: 22000
+    protos: [tcp, udp]
+    from_networks: [any]
   - comment: Wireguard
     port: 51820
     protos: [udp]

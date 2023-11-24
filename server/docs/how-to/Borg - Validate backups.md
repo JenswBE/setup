@@ -13,6 +13,8 @@ Services which are backed up:
   - `paperless-db` (Postgres): DB data
   - `uptime-kuma` (Uptime Kuma): SQLite DB
   - `vaultwarden` (Vaultwarden): SQLite DB and data
+  - `wikijs` (Wiki.js): Data (human readable backup format like Markdown)
+  - `wikijs-db` (Postgres): DB data
 - Fiona
   - `unifi-controller` (Unifi Controller): Network config
 - Kubo
@@ -199,3 +201,7 @@ sudo docker exec borgmatic cp /mnt/borg/mnt/source/vaultwarden/data/db.backup.sq
 # The accuracy of this check depens on how recently a device used Vaultwarden.
 sudo docker run --pull always --rm -v ${APPDATA_DIR:?}/borgmatic/borgmatic/restore:/backup alpine sh -c 'apk add sqlite; sqlite3 --table /backup/vaultwarden.sqlite3 "SELECT updated_at, name FROM devices ORDER BY updated_at DESC LIMIT 3;"'
 ```
+
+### Wiki.js
+
+TODO
