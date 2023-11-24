@@ -377,8 +377,8 @@ services:
       - "/data/bulk/media/Music:/data/music"
     environment:
       TZ: "{{ general_timezone }}"
-      PUID: "1000"
-      PGID: "1000"
+      PUID: "{{ ansible_real_user_id }}"
+      PGID: "{{ ansible_real_user_id }}"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.syncthing.entrypoints=websecure"
@@ -620,7 +620,7 @@ services:
   # =========================
   graylog:
     <<: *defaults
-    image: docker.io/graylog/graylog:5.1
+    image: docker.io/graylog/graylog:5.2
     container_name: graylog
     entrypoint: /usr/bin/tini -- wait-for-it graylog-elasticsearch:9200 --  /docker-entrypoint.sh
     volumes:
