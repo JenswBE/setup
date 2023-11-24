@@ -114,7 +114,10 @@ Environment=PGID=$(id -g)
 WantedBy=multi-user.target default.target
 EOF
 systemctl --user daemon-reload
-systemctl --user enable --now syncthing.service
+
+# Default to XOrg instead of Wayland
+# Wayland doesn't work nicely with screensharing
+sudo nano /etc/gdm/custom.conf # Add "DefaultSession=gnome-xorg.desktop" in section "daemon"
 ```
 
 ### GNOME
