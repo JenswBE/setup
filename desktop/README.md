@@ -88,12 +88,15 @@ sudo systemctl enable --now ${NFS_SYSTEMD_NAME:?}.mount
 
 # Setup Syncthing
 mkdir -p ~/.config/syncthing
+mkdir -p ~/Documents/Paperless
+mkdir -p ~/Documents/Wiki.js
 mkdir -p ~/Music/Syncthing
 mkdir -p ~/.config/containers/systemd/
 tee ~/.config/containers/systemd/syncthing.container > /dev/null <<EOF
 [Unit]
 Description=Syncthing
 After=local-fs.target
+After=network.target
 
 [Container]
 Image=docker.io/syncthing/syncthing:1
@@ -101,6 +104,8 @@ HostName=$(hostname)
 Pull=always
 Timezone=local
 Volume=$(realpath ~/.config/syncthing):/var/syncthing:z
+Volume=$(realpath ~/Documents/Paperless):/data/paperless:z
+Volume=$(realpath ~/Documents/Wiki.js):/data/wikijs:z
 Volume=$(realpath ~/Music/Syncthing):/data/music:z
 PublishPort=127.0.0.1:8384:8384
 PublishPort=22000:22000
