@@ -45,43 +45,45 @@ See https://iode.tech/en/iodeos-installation/
 
 ## Apps
 
-### F-Droid
+### Obtainium
 
-#### Repo's
+https://github.com/ImranR98/Obtainium
 
-- Collabora Office: https://www.collaboraoffice.com/downloads/fdroid/repo/
-- microG: https://github.com/microg/GmsCore/wiki/Downloads#microg-f-droid-repository
-- NewPipe https://newpipe.net/FAQ/tutorials/install-add-fdroid-repo/
+#### General
 
-#### Apps
-
-- [F-Droid](https://f-droid.org/)
-- [Aegis Authenticator](https://f-droid.org/en/packages/com.beemdevelopment.aegis/)
-- [AnySoftKeyboard](https://f-droid.org/packages/com.menny.android.anysoftkeyboard/) + [Dutch lang pack](https://f-droid.org/packages/com.anysoftkeyboard.languagepack.dutch_oss/)
-- [Aurora Store](https://f-droid.org/en/packages/com.aurora.store/)
-- Collabora Office
-- [DAVx5](https://f-droid.org/en/packages/at.bitfire.davdroid)
-- [Déjà Vu](https://f-droid.org/en/packages/org.fitchfamily.android.dejavu) (UnifiedNlp backend)
-- [Document Viewer](https://f-droid.org/en/packages/org.sufficientlysecure.viewer/) (PDF reader)
-- [Element](https://f-droid.org/en/packages/im.vector.app/)
-- [Etar](https://f-droid.org/packages/ws.xsoh.etar) (Calendar)
-- [Fennec (Firefox)](https://f-droid.org/en/packages/org.mozilla.fennec_fdroid/)
-- [Home Assistant](https://f-droid.org/en/packages/io.homeassistant.companion.android.minimal/)
-- [Jellyfin](https://f-droid.org/en/packages/org.jellyfin.mobile/)
-- microG Services Core (Enable GCM in settings!)
-- microG Service Framework Proxy
-- [MozillaNlpBackend](https://f-droid.org/en/packages/org.microg.nlp.backend.ichnaea) (UnifiedNlp backend)
-- [Mullvad VPN](https://f-droid.org/en/packages/net.mullvad.mullvadvpn/)
-- NewPipe
-- [Nextcloud](https://f-droid.org/en/packages/com.nextcloud.client/)
+- [Aegis Authenticator](https://github.com/beemdevelopment/Aegis)
+- [AnySoftKeyboard](https://github.com/AnySoftKeyboard/AnySoftKeyboard)
+- [AnySoftKeyboard - Dutch lang pack](https://f-droid.org/packages/com.anysoftkeyboard.languagepack.dutch_oss/)
+- [Aurora Store](https://gitlab.com/AuroraOSS/AuroraStore)
+- [Collabora Office (com.collabora.libreoffice)](https://www.collaboraoffice.com/downloads/fdroid/repo/)
+- [DAVx5](https://github.com/bitfireAT/davx5-ose)
+- [Element](https://github.com/vector-im/element-android)
+- [Fenix (Firefox)](https://github.com/mozilla-mobile/firefox-android)
+- [Home Assistant](https://github.com/home-assistant/android)
+- [Jellyfin](https://github.com/jellyfin/jellyfin-android) (version = [Libre](https://github.com/jellyfin-archive/jellyfin-android-original/issues/331#issuecomment-623391632))
+- [Mullvad VPN](https://mullvad.net/download/app/apk/latest)
+- [NewPipe](https://github.com/TeamNewPipe/NewPipe)
+- [Nextcloud](https://github.com/nextcloud/android)
 - [Nextcloud Deck](https://f-droid.org/en/packages/it.niedermann.nextcloud.deck/)
 - [Nextcloud Notes](https://f-droid.org/en/packages/it.niedermann.owncloud.notes/)
-- [NominatimNlpBackend](https://f-droid.org/en/packages/org.microg.nlp.backend.nominatim) (UnifiedNlp backend)
-- [Open Camera](https://f-droid.org/en/packages/net.sourceforge.opencamera/)
-- [OpenTasks](https://f-droid.org/en/packages/org.dmfs.tasks)
+- [Open Camera](https://sourceforge.net/projects/opencamera/files/)
 - [OsmAnd](https://f-droid.org/en/packages/net.osmand.plus)
-- [RedReader](https://f-droid.org/en/packages/org.quantumbadger.redreader)
-- [Syncthing](https://f-droid.org/en/packages/com.nutomic.syncthingandroid/)
+- [PhoneTrack](https://f-droid.org/packages/net.eneiluj.nextcloud.phonetrack)
+- [RedReader](https://github.com/QuantumBadger/RedReader)
+- [Simple Calendar](https://github.com/SimpleMobileTools/Simple-Calendar)
+- [Simple File Manager](https://github.com/SimpleMobileTools/Simple-File-Manager)
+- [Simple Gallery](https://github.com/SimpleMobileTools/Simple-Gallery)
+- [Simple SMS Messenger](https://github.com/SimpleMobileTools/Simple-SMS-Messenger)
+- [Syncthing](https://github.com/syncthing/syncthing-android)
+- [VLC](https://videolan.org)
+
+#### microG
+
+- [Déjà Vu (UnifiedNlp backend)](https://github.com/n76/DejaVu)
+- [microG Services Core (com.google.android.gms)](https://github.com/microg/GmsCore/releases)
+- [microG Service Framework Proxy (GSF)](https://github.com/microg/GsfProxy)
+- [MozillaNlpBackend (UnifiedNlp backend)](https://github.com/microg/IchnaeaNlpBackend)
+- [NominatimNlpBackend (UnifiedNlp backend)](https://github.com/microg/NominatimGeocoderBackend)
 
 ### Aurora Store
 
