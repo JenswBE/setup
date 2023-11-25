@@ -59,7 +59,7 @@ https://github.com/ImranR98/Obtainium
 - [DAVx5](https://github.com/bitfireAT/davx5-ose)
 - [Element](https://github.com/vector-im/element-android)
 - [Fenix (Firefox)](https://github.com/mozilla-mobile/firefox-android)
-- [Home Assistant](https://github.com/home-assistant/android)
+- [Home Assistant](https://github.com/home-assistant/android) (version = [Minimal](https://companion.home-assistant.io/docs/core/android-flavors/))
 - [Jellyfin](https://github.com/jellyfin/jellyfin-android) (version = [Libre](https://github.com/jellyfin-archive/jellyfin-android-original/issues/331#issuecomment-623391632))
 - [Mullvad VPN](https://mullvad.net/download/app/apk/latest)
 - [NewPipe](https://github.com/TeamNewPipe/NewPipe)
