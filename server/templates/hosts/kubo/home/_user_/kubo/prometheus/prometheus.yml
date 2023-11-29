@@ -11,18 +11,18 @@ scrape_configs:
   - job_name: node_exporter_kubo
     static_configs:
       - targets:
-        - host.docker.internal:9100
+          - host.docker.internal:9100
     relabel_configs:
       - source_labels: [__address__]
         regex: .*
         target_label: instance
         replacement: kubo
 
-  - job_name: node_exporter_fiona
+  - job_name: node_exporter_networking
     scheme: https
     static_configs:
       - targets:
-        - node-exporter.fiona.{{ general_domain_local }}
+          - node-exporter.networking.{{ general_domain_local }}
     basic_auth:
       username: "{{ app_node_exporter_basic_auth_username }}"
       password: "{{ app_node_exporter_basic_auth_password }}"
@@ -30,13 +30,13 @@ scrape_configs:
       - source_labels: [__address__]
         regex: .*
         target_label: instance
-        replacement: fiona
+        replacement: networking
 
   - job_name: node_exporter_eve
     scheme: https
     static_configs:
       - targets:
-        - node-exporter.eve.{{ general_domain_default }}
+          - node-exporter.eve.{{ general_domain_default }}
     basic_auth:
       username: "{{ app_node_exporter_basic_auth_username }}"
       password: "{{ app_node_exporter_basic_auth_password }}"
@@ -49,18 +49,18 @@ scrape_configs:
   - job_name: cadvisor_kubo
     static_configs:
       - targets:
-        - cadvisor:9101
+          - cadvisor:9101
     relabel_configs:
       - source_labels: [__address__]
         regex: .*
         target_label: instance
         replacement: kubo
 
-  - job_name: cadvisor_fiona
+  - job_name: cadvisor_networking
     scheme: https
     static_configs:
       - targets:
-        - cadvisor.fiona.{{ general_domain_local }}
+          - cadvisor.networking.{{ general_domain_local }}
     basic_auth:
       username: "{{ app_cadvisor_basic_auth_username }}"
       password: "{{ app_cadvisor_basic_auth_password }}"
@@ -68,13 +68,13 @@ scrape_configs:
       - source_labels: [__address__]
         regex: .*
         target_label: instance
-        replacement: fiona
+        replacement: networking
 
   - job_name: cadvisor_eve
     scheme: https
     static_configs:
       - targets:
-        - cadvisor.eve.{{ general_domain_default }}
+          - cadvisor.eve.{{ general_domain_default }}
     basic_auth:
       username: "{{ app_cadvisor_basic_auth_username }}"
       password: "{{ app_cadvisor_basic_auth_password }}"
