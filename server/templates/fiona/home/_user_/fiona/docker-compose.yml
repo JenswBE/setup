@@ -97,7 +97,7 @@ services:
       - /root/ca:/var/cache/pixelserv
     networks:
       macvlan:
-        ipv4_address: 192.168.50.71
+        ipv4_address: 192.168.50.61
 
   # ===========================
   # =    UNIFI NETWORK APP    =
@@ -271,11 +271,11 @@ networks:
     name: macvlan
     driver: macvlan
     driver_opts:
-      parent: ens18
+      parent: enp2s0
     ipam:
       config:
         - subnet: 192.168.50.0/24
-          ip_range: 192.168.50.70/30 # .70 - .73
+          ip_range: 192.168.50.60/30 # .60 - .63
           gateway: 192.168.50.1
 
 #################################################################

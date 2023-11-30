@@ -39,14 +39,14 @@ x-tag-eve: &tag_eve
   tagstyle: is-success
   target: _blank
 
+x-tag-fiona: &tag_fiona
+  tag: Fiona
+  tagstyle: is-warning
+  target: _blank
+
 x-tag-kubo: &tag_kubo
   tag: Kubo
   tagstyle: is-info
-  target: _blank
-
-x-tag-net: &tag_networking
-  tag: Networking
-  tagstyle: is-warning
   target: _blank
 
 # Interesting list for icons: https://github.com/loganmarchione/homelab-svg-assets/blob/main/ICONS.md
@@ -135,15 +135,15 @@ services:
         url: "https://tmm.{{ general_domain_local }}"
         <<: *tag_kubo
 
-      - name: Traefik Networking
+      - name: Traefik Fiona
         logo: https://raw.githubusercontent.com/traefik/traefik/master/webui/src/assets/traefik.avatar.svg
-        url: "https://traefik.net.{{ general_domain_local }}"
-        <<: *tag_networking
+        url: "https://traefik.fiona.{{ general_domain_local }}"
+        <<: *tag_fiona
 
       - name: UniFi Controller
         logo: assets/logos/unifi.png
         url: "https://unifi.{{ general_domain_local }}"
-        <<: *tag_networking
+        <<: *tag_fiona
 
   - name: Technical
     icon: fas fa-chart-bar

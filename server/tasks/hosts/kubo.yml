@@ -41,7 +41,7 @@
 - name: Copy systemd system unit templates
   ansible.builtin.include_tasks: tasks/helpers/copy_templates_folder.yml
   vars:
-    templates_folder: "hosts/{{ ansible_hostname }}/etc/systemd/system"
+    templates_folder: "{{ ansible_hostname }}/etc/systemd/system"
     destination_folder: "/etc/systemd/system"
     destination_owner: root
     destination_group: root
@@ -80,10 +80,10 @@
     - nextcloud-update-apps.timer
   tags: ["systemd"]
 
-- name: "Copy home/_user_/{{ ansible_hostname }} templates"
+- name: Copy home/_user_/kubo templates
   ansible.builtin.include_tasks: tasks/helpers/copy_templates_folder.yml
   vars:
-    templates_folder: "hosts/{{ ansible_hostname }}/home/_user_/{{ ansible_hostname }}"
+    templates_folder: "{{ ansible_hostname }}/home/_user_/kubo"
     destination_folder: "{{ ansible_user_dir }}/{{ ansible_hostname }}"
     destination_owner: "{{ ansible_real_user_id }}"
     destination_group: "{{ ansible_real_group_id }}"
