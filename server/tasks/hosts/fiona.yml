@@ -6,25 +6,6 @@
   ansible.builtin.include_tasks: tasks/disable_systemd_resolved_stub.yml
   tags: ["setup", "dns"]
 
-- name: Copy systemd network templates
-  ansible.builtin.include_tasks: tasks/helpers/copy_templates_folder.yml
-  vars:
-    templates_folder: "{{ ansible_hostname }}/etc/systemd/network"
-    destination_folder: "/etc/systemd/network"
-    destination_owner: root
-    destination_group: root
-    destination_mode_files: "644"
-    destination_mode_dirs: "755"
-    destination_delete_extra: true
-  tags: ["networkd"]
-
-- name: Restart systemd-networkd
-  become: true
-  ansible.builtin.systemd:
-    name: systemd-networkd
-    state: restarted
-  tags: ["networkd"]
-
 - name: Include NBDE Tang tasks
   ansible.builtin.include_tasks: tasks/nbde_tang.yml
   tags: ["setup", "tang"]
@@ -40,7 +21,7 @@
 - name: Copy systemd unit templates
   ansible.builtin.include_tasks: tasks/helpers/copy_templates_folder.yml
   vars:
-    templates_folder: "{{ ansible_hostname }}/etc/systemd/system"
+    templates_folder: "hosts/{{ ansible_hostname }}/etc/systemd/system"
     destination_folder: "/etc/systemd/system"
     destination_owner: root
     destination_group: root
@@ -66,10 +47,10 @@
     - unifi-dump-mongodb.timer
   tags: ["systemd"]
 
-- name: Copy home/_user_/fiona templates
+- name: "Copy home/_user_/{{ ansible_hostname }} templates"
   ansible.builtin.include_tasks: tasks/helpers/copy_templates_folder.yml
   vars:
-    templates_folder: "{{ ansible_hostname }}/home/_user_/fiona"
+    templates_folder: "hosts/{{ ansible_hostname }}/home/_user_/{{ ansible_hostname }}"
     destination_folder: "{{ ansible_user_dir }}/{{ ansible_hostname }}"
     destination_owner: "{{ ansible_real_user_id }}"
     destination_group: "{{ ansible_real_group_id }}"

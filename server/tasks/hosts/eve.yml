@@ -13,7 +13,7 @@
 - name: Copy systemd system unit templates
   ansible.builtin.include_tasks: tasks/helpers/copy_templates_folder.yml
   vars:
-    templates_folder: "{{ ansible_hostname }}/etc/systemd/system"
+    templates_folder: "hosts/{{ ansible_hostname }}/etc/systemd/system"
     destination_folder: "/etc/systemd/system"
     destination_owner: root
     destination_group: root
@@ -59,10 +59,10 @@
     cmd: "{{ docker_path }} login -u USERNAME -p {{ docker_ghcr_personal_access_token }} ghcr.io"
   tags: ["docker"]
 
-- name: Copy home/_user_/eve templates
+- name: "Copy home/_user_/{{ ansible_hostname }} templates"
   ansible.builtin.include_tasks: tasks/helpers/copy_templates_folder.yml
   vars:
-    templates_folder: "{{ ansible_hostname }}/home/_user_/eve"
+    templates_folder: "hosts/{{ ansible_hostname }}/home/_user_/{{ ansible_hostname }}"
     destination_folder: "{{ ansible_user_dir }}/{{ ansible_hostname }}"
     destination_owner: "{{ ansible_real_user_id }}"
     destination_group: "{{ ansible_real_group_id }}"
