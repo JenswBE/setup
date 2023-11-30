@@ -796,8 +796,14 @@ services:
       PAPERLESS_TIME_ZONE: "{{ general_timezone }}"
       PAPERLESS_OCR_LANGUAGE: nld+eng
       PAPERLESS_OCR_LANGUAGES: eng nld
-      # See https://docs.paperless-ngx.com/troubleshooting/#consumption-fails-with-ghostscript-pdfa-rendering-failed
-      PAPERLESS_OCR_USER_ARGS: '{"continue_on_soft_render_error": true}'
+      # See:
+      #   - continue_on_soft_render_error: https://docs.paperless-ngx.com/troubleshooting/#consumption-fails-with-ghostscript-pdfa-rendering-failed
+      #   - invalidate_digital_signatures: https://github.com/paperless-ngx/paperless-ngx/discussions/4047
+      PAPERLESS_OCR_USER_ARGS: >-
+        {
+          "continue_on_soft_render_error": true,
+          "invalidate_digital_signatures": true
+        }
       PAPERLESS_ENABLE_UPDATE_CHECK: "false"
       PAPERLESS_REDIS: redis://paperless-redis:6379
       PAPERLESS_DBHOST: paperless-db
