@@ -15,6 +15,10 @@ Installation instructions for Hercules (Workstation) and Charmeleon (Laptop)
 # Setup tools
 sudo ln -fs "$(pwd)/lineinfile/lineinfile.py" /usr/local/bin/lineinfile
 
+# Setup scripts
+mkdir -p ~/.local/bin/
+ln -fs "$(realpath ../scripts/bash/git-grep-all.sh)" ~/.local/bin/git-grep-all
+
 # Configure bash
 lineinfile ~/.bashrc 'export HISTSIZE=' 'export HISTSIZE=5000'
 lineinfile ~/.bashrc 'export HISTFILESIZE=' 'export HISTFILESIZE=-1'
