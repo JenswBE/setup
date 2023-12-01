@@ -2,20 +2,53 @@
   become: true
   tags: ["setup", "logging"]
   block:
-    - name: Copy rsyslog config
-      register: rsyslog_config
-      ansible.builtin.template:
-        src: rsyslog-99-graylog.conf
-        dest: /etc/rsyslog.d/rsyslog-99-graylog.conf
-        owner: root
-        group: root
-        mode: "644"
+    - name: Setup rsyslog
+      when: ansible_distribution == "Ubuntu"
+      block:
+        - name: Ubuntu - Copy rsyslog config
+          register: rsyslog_config
+          ansible.builtin.template:
+            src: rsyslog-99-graylog.conf
+            dest: /etc/rsyslog.d/rsyslog-99-graylog.conf
+            owner: root
+            group: root
+            mode: "644"
 
-    - name: Restart rsyslog if config was changed
-      when: rsyslog_config.changed
-      ansible.builtin.service:
-        name: rsyslog
-        state: restarted
+        - name: Ubuntu - Restart rsyslog if config was changed
+          when: rsyslog_config.changed
+          ansible.builtin.service:
+            name: rsyslog
+            state: restarted
+
+    - name: Setup journalbeat
+      when: ansible_distribution == "Debian"
+      block:
+        - name: Debian - Install journalbeat
+          register: journalbeat_install
+          ansible.builtin.apt:
+            deb: "https://artifacts.elastic.co/downloads/beats/journalbeat/journalbeat-7.15.2-{{ arch }}.deb"
+
+        - name: Debian - Copy journalbeat config
+          register: journalbeat_config
+          ansible.builtin.template:
+            src: journalbeat.yml
+            dest: /etc/journalbeat/journalbeat.yml
+            owner: root
+            group: root
+            mode: "600"
+
+        - name: Debian - Enable and start journalbeat if installed
+          when: journalbeat_install.changed
+          ansible.builtin.service:
+            name: journalbeat
+            state: started
+            enabled: true
+
+        - name: Debian - Restart journalbeat if config was changed
+          when: journalbeat_config.changed
+          ansible.builtin.service:
+            name: journalbeat
+            state: restarted
 
     - name: Copy docker config
       register: docker_config

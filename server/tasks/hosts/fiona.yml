@@ -2,10 +2,6 @@
   ansible.builtin.include_tasks: tasks/logging.yml
   tags: ["setup", "logging"]
 
-- name: Include systemd-resolved stub tasks
-  ansible.builtin.include_tasks: tasks/disable_systemd_resolved_stub.yml
-  tags: ["setup", "dns"]
-
 - name: Include NBDE Tang tasks
   ansible.builtin.include_tasks: tasks/nbde_tang.yml
   tags: ["setup", "tang"]

@@ -14,17 +14,20 @@
     - name: Manual configuration of Clevis
       ansible.builtin.pause:
         prompt: |
+          # Settings
+          LUKS_DEVICE=/dev/mapper/sda3_crypt
+
           # Use single Tang server
-          sudo clevis luks bind -d /dev/${LUKS_DEVICE:?} tang '{"url": "http://kubo.jensw.eu:7500"}'
+          sudo clevis luks bind -d ${LUKS_DEVICE:?} tang '{"url": "http://kubo.jensw.eu:7500"}'
 
           # Use multiple Tang servers
-          sudo clevis luks bind -d /dev/${LUKS_DEVICE:?} sss '{"t":1,"pins":{"tang":[{"url":"http://kubo.jensw.eu:7500"},{"url":"http://fiona.jensw.eu:7500"}]}}'
+          sudo clevis luks bind -d ${LUKS_DEVICE:?} sss '{"t":1,"pins":{"tang":[{"url":"http://kubo.jensw.eu:7500"},{"url":"http://fiona.jensw.eu:7500"}]}}'
 
-          # Client - Ubuntu
+          # Manual install - Client - Debian/Ubuntu
           sudo apt install clevis clevis-luks clevis-initramfs
           sudo update-initramfs -u -k 'all'
 
-          # Client - Fedora
+          # Manual install - Client - Fedora
           sudo dnf install clevis clevis-luks clevis-dracut
           sudo grubby --update-kernel=ALL --args="rd.neednet=1"
           sudo dracut -fv --regenerate-all

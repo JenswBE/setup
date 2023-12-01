@@ -34,3 +34,9 @@
         name: tangd.socket
         enabled: true
         state: started
+
+    - name: Restart Tang socket on config change
+      when: override_tang_port.changed
+      ansible.builtin.service:
+        name: tangd.socket
+        state: restarted

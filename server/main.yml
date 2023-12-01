@@ -5,7 +5,7 @@
     - vars/secret/basics.yml
 
   vars:
-    golang_arch_map:
+    arch_map:
       {
         "i386": "i386",
         "x86_64": "amd64",
@@ -24,7 +24,7 @@
 
     - name: Set arch in Golang format
       ansible.builtin.set_fact:
-        golang_arch: "{{ golang_arch_map[ansible_architecture] }}"
+        arch: "{{ arch_map[ansible_architecture] }}"
       tags: ["always"]
 
     - name: Load public host specific vars
