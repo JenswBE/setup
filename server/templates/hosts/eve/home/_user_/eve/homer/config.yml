@@ -122,6 +122,11 @@ services:
         url: "https://vault.{{ general_domain_default }}"
         <<: *tag_eve
 
+      - name: Wiki.js
+        logo: https://raw.githubusercontent.com/loganmarchione/homelab-svg-assets/main/assets/wikijs.svg
+        url: "https://wiki.{{ general_domain_default }}"
+        <<: *tag_eve
+
   - name: Local
     icon: fas fa-home
     items:
@@ -163,11 +168,6 @@ services:
         url: "https://auth.{{ general_domain_default }}"
         <<: *tag_eve
 
-      - name: LibreNMS
-        logo: https://raw.githubusercontent.com/librenms/librenms/master/html/images/librenms_logo_only_light.svg
-        url: "https://librenms.{{ general_domain_default }}"
-        <<: *tag_kubo
-
       - name: Traefik Eve
         logo: https://raw.githubusercontent.com/traefik/traefik/master/webui/src/assets/traefik.avatar.svg
         url: "https://traefik.eve.{{ general_domain_default }}"
@@ -182,6 +182,11 @@ services:
         logo: https://raw.githubusercontent.com/louislam/uptime-kuma/master/public/icon.svg
         url: "https://uptime.{{ general_domain_default }}"
         <<: *tag_eve
+
+      - name: Zabbix
+        logo: https://raw.githubusercontent.com/loganmarchione/homelab-svg-assets/main/assets/zabbix.svg
+        url: "https://zabbix.{{ general_domain_local }}"
+        <<: *tag_kubo
 
   - name: Analytics
     icon: fas fa-chart-bar

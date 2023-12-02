@@ -33,10 +33,6 @@ app_graylog_admin_password: ""
 app_graylog_secret: ""
 app_graylog_server: "" # Target for rsyslog and Docker logs
 
-# LibreNMS
-app_librenms_db_pass_root: ""
-app_librenms_db_pass_librenms: ""
-
 # MiniFlux
 app_miniflux_admin_user: ""
 app_miniflux_admin_pass: ""
