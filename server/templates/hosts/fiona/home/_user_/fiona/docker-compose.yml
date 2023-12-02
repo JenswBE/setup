@@ -187,42 +187,6 @@ services:
       - /var/log/auth.log:/var/log/auth.log:ro
       - traefik-access-logs:/var/log/traefik:ro
 
-  # =========================
-  # =       MONITORING      =
-  # =========================
-  node-exporter:
-    <<: *defaults
-    image: quay.io/prometheus/node-exporter:latest
-    container_name: node-exporter
-    command: --path.rootfs=/host
-    network_mode: host # Port 9100, reverse proxy config in traefik/bridge/node-exporter.yml
-    pid: host
-    environment:
-      TZ: "{{ general_timezone }}"
-    volumes:
-      - /:/host:ro,rslave
-
-  cadvisor:
-    <<: *defaults
-    image: gcr.io/cadvisor/cadvisor:v0.47.2
-    container_name: cadvisor
-    networks:
-      - traefik
-    volumes:
-      - /:/rootfs:ro
-      - /var/run:/var/run:rw
-      - /sys:/sys:ro
-      - /var/lib/docker/:/var/lib/docker:ro
-    environment:
-      TZ: "{{ general_timezone }}"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.cadvisor.entrypoints=websecure"
-      - "traefik.http.routers.cadvisor.rule=Host(`cadvisor.{{ ansible_hostname }}.{{ general_domain_local }}`)"
-      - "traefik.http.routers.cadvisor.tls.certresolver=le-dns"
-      - "traefik.http.routers.cadvisor.middlewares=cadvisor-auth@file"
-      - "traefik.http.services.cadvisor-{{ ansible_hostname }}.loadbalancer.server.port=8080"
-
   # ==========================
   # =         BACKUP         =
   # ==========================

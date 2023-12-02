@@ -18,9 +18,6 @@ app_crowdsec_bouncer_firewall_key: "" # Alphanumeric string
 # Graylog
 app_graylog_server: "" # Target for rsyslog and Docker logs
 
-# SNMP Daemon
-app_snmpd_location: "" # Location reported by SNMP where the device is located
-
 # Traefik
 #   - https://doc.traefik.io/traefik/https/acme/#providers
 #   - https://dash.cloudflare.com/profile/api-tokens
@@ -29,3 +26,6 @@ app_traefik_cloudflare_token: ""
 # Unifi Network Application
 app_unifi_mongodb_user: ""
 app_unifi_mongodb_password: ""
+
+# Zabbix
+app_zabbix_agent_server: "" # Incoming connections will be accepted only from the hosts listed here.

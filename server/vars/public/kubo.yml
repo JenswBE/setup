@@ -9,10 +9,6 @@ firewall_additional_ports:
     port: 111
     protos: [tcp, udp]
     from_networks: [local_ipv4, local_ipv6]
-  - comment: SNMP Daemon
-    port: 161
-    protos: [udp]
-    from_networks: [docker_ipv4]
   - comment: Traefik HTTPS
     port: 443
     protos: [tcp]
@@ -47,6 +43,10 @@ firewall_additional_ports:
     from_networks: [any]
   - comment: Prometheus Node Exporter
     port: 9100
+    protos: [tcp]
+    from_networks: [docker_ipv4]
+  - comment: Zabbix agent
+    port: 10050
     protos: [tcp]
     from_networks: [docker_ipv4]
   - comment: Graylog - GELF

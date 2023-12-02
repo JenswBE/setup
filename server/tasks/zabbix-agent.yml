@@ -1,0 +1,37 @@
+- name: Install and configure Zabbix agent
+  become: true
+  tags: ["setup", "zabbix"]
+  block:
+    - name: Zabbix agent - Ensure Zabbix repo is installed
+      ansible.builtin.apt:
+        deb: "https://repo.zabbix.com/zabbix/{{ zabbix_version }}/debian/pool/main/z/zabbix-release/zabbix-release_latest+debian{{ ansible_distribution_major_version }}_all.deb"
+
+    - name: Zabbix agent - Ensure agent is installed
+      ansible.builtin.package:
+        name: zabbix-agent2
+        state: present
+
+    - name: Zabbix agent - Update config
+      register: zabbix_agent_config
+      ansible.builtin.lineinfile:
+        path: /etc/zabbix/zabbix_agent2.conf
+        regexp: "^Server="
+        line: "Server={{ app_zabbix_agent_server }}"
+
+    - name: Zabbix agent - Add to docker group to allow monitoring containers
+      ansible.builtin.user:
+        name: zabbix
+        groups: docker
+        append: yes
+
+    - name: Zabbix agent - Restart if config was changed
+      when: zabbix_agent_config.changed
+      ansible.builtin.service:
+        name: zabbix-agent2
+        state: restarted
+
+    - name: Zabbix agent - Enable on boot
+      ansible.builtin.service:
+        name: zabbix-agent2
+        state: started
+        enabled: true

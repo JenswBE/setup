@@ -56,9 +56,6 @@ app_mosquitto_password_file_contents: |
 app_nextcloud_db_pass_root: ""
 app_nextcloud_db_pass_nextcloud: ""
 
-# SNMP Daemon
-app_snmpd_location: "" # Location reported by SNMP where the device is located
-
 # Traefik
 #   - https://doc.traefik.io/traefik/https/acme/#providers
 #   - https://dash.cloudflare.com/profile/api-tokens
@@ -84,6 +81,10 @@ app_wireguard:
         public_key: "" # Run "wg pubkey" on client
         psk: "" # Run "wg genpsk" on server
         allowed_ips: [""] # E.g. 10.0.0.2/32
+
+# Zabbix
+app_zabbix_db_pass: ""
+app_zabbix_agent_server: "" # Incoming connections will be accepted only from the hosts listed here.
 
 # Zigbee2MQTT
 app_zigbee2mqtt_mqtt_password: ""

@@ -9,10 +9,6 @@ firewall_additional_ports:
     port: 80
     protos: [tcp]
     from_networks: [local_ipv4, local_ipv6]
-  - comment: SNMP Daemon
-    port: 161
-    protos: [udp]
-    from_networks: [local_ipv4]
   - comment: Traefik HTTPS
     port: 443
     protos: [tcp]
@@ -37,6 +33,10 @@ firewall_additional_ports:
     port: 10001
     protos: [udp]
     from_networks: [local_ipv4, local_ipv6]
+  - comment: Zabbix agent
+    port: 10050
+    protos: [tcp]
+    from_networks: [local_ipv4]
 
 # Security
 security_autoupdate_reboot_time: "03:00"

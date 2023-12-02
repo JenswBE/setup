@@ -61,9 +61,9 @@
       ansible.builtin.include_tasks: tasks/mail_on_failed_unit.yml
       tags: ["setup", "mail_on_failed_unit"]
 
-    - name: Include SNMPd tasks
-      ansible.builtin.include_tasks: tasks/snmpd.yml
-      tags: ["setup", "snmpd"]
+    - name: Include Zabbix agent tasks
+      ansible.builtin.include_tasks: tasks/zabbix-agent.yml
+      tags: ["setup", "zabbix"]
 
     - name: Include host specific tasks
       ansible.builtin.include_tasks: "tasks/hosts/{{ ansible_hostname }}.yml"

@@ -22,6 +22,7 @@ packages_base:
   - console-data
   - htop
   - iotop
+  - pv
   - rsync
   - vim
 
@@ -30,3 +31,6 @@ security_autoupdate_reboot_time: "05:00"
 security_autoupdate_reboot: true
 security_fail2ban_enabled: false # Handled by CrowdSec
 security_ssh_password_authentication: "yes"
+
+# Zabbix
+zabbix_version: "6.4"

@@ -22,11 +22,11 @@ Services which are backed up:
   - `glitchtip-db` (Postgres): DB data
   - `graylog-mongodb` (MongoDB): DB data
   - `ha` (Home Assistant): Config files
-  - `librenms-db` (MariaDB): DB data
   - `miniflux-db` (Postgres): DB data
   - `nc-db` (MariaDB): DB data for Nextcloud
   - `nextcloud` (Nextcloud): User files and config
   - `plex` (Plex): Photo's and music
+  - `zabbix-db` (Postgres): DB data
 
 ## Validations
 

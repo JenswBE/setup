@@ -705,6 +705,111 @@ services:
       - "{{ general_path_appdata }}/graylog/mongodb/data:/data/db"
       - graylog-mongodb-dump:/backup
 
+  zabbix-web:
+    <<: *defaults
+    image: "docker.io/zabbix/zabbix-web-nginx-pgsql:alpine-{{ zabbix_version }}-latest"
+    container_name: zabbix-web
+    ports:
+      - "127.0.0.1:8888:8080"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+    depends_on:
+      - zabbix-server
+      - zabbix-db
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    networks:
+      - zabbix
+    stop_grace_period: 10s
+    sysctls:
+      - net.core.somaxconn=65535
+    environment:
+      TZ: "{{ general_timezone }}"
+      DB_SERVER_HOST: zabbix-db
+      POSTGRES_DB: zabbix
+      POSTGRES_USER: zabbix
+      POSTGRES_PASSWORD: "{{ app_zabbix_db_pass }}"
+      ZBX_SERVER_HOST: zabbix-server
+      ZBX_SERVER_NAME: Kubo
+    labels:
+      com.zabbix.description: "Zabbix frontend on Nginx web-server with PostgreSQL database support"
+      com.zabbix.company: "Zabbix LLC"
+      com.zabbix.component: "zabbix-frontend"
+      com.zabbix.webserver: "nginx"
+      com.zabbix.dbtype: "pgsql"
+      com.zabbix.os: "alpine"
+    deploy:
+      resources:
+        limits:
+          cpus: "2"
+          memory: 2G
+        reservations:
+          cpus: "0.5"
+          memory: 256M
+
+  zabbix-server:
+    <<: *defaults
+    image: "docker.io/zabbix/zabbix-server-pgsql:alpine-{{ zabbix_version }}-latest"
+    container_name: zabbix-server
+    environment:
+      TZ: "{{ general_timezone }}"
+      DB_SERVER_HOST: zabbix-db
+      POSTGRES_DB: zabbix
+      POSTGRES_USER: zabbix
+      POSTGRES_PASSWORD: "{{ app_zabbix_db_pass }}"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+    ulimits:
+      nproc: 65535
+      nofile:
+        soft: 20000
+        hard: 40000
+    depends_on:
+      - zabbix-db
+    networks:
+      - zabbix
+    stop_grace_period: 30s
+    sysctls:
+      - net.ipv4.ip_local_port_range=1024 64999
+      - net.ipv4.conf.all.accept_redirects=0
+      - net.ipv4.conf.all.secure_redirects=0
+      - net.ipv4.conf.all.send_redirects=0
+    labels:
+      com.zabbix.description: "Zabbix server with PostgreSQL database support"
+      com.zabbix.company: "Zabbix LLC"
+      com.zabbix.component: "zabbix-server"
+      com.zabbix.dbtype: "pgsql"
+      com.zabbix.os: "alpine"
+    deploy:
+      resources:
+        limits:
+          cpus: "2"
+          memory: 2G
+        reservations:
+          cpus: "0.5"
+          memory: 512M
+
+  zabbix-db:
+    <<: *defaults
+    image: docker.io/library/postgres:15-alpine
+    container_name: zabbix-db
+    stop_grace_period: 1m
+    networks:
+      - zabbix
+    volumes:
+      - "{{ general_path_appdata }}/zabbix/db:/var/lib/postgresql/data"
+      - "zabbix-db-dump:/backup"
+    environment:
+      TZ: "{{ general_timezone }}"
+      POSTGRES_USER: "zabbix"
+      POSTGRES_PASSWORD: "{{ app_zabbix_db_pass }}"
+
   librenms:
     <<: *defaults
     image: docker.io/librenms/librenms:latest
@@ -864,33 +969,6 @@ services:
           cpus: "4"
           memory: 4G
 
-  node-exporter:
-    <<: *defaults
-    image: quay.io/prometheus/node-exporter:latest
-    container_name: node-exporter
-    command: --path.rootfs=/host
-    network_mode: host
-    pid: host
-    environment:
-      TZ: "{{ general_timezone }}"
-    volumes:
-      - /:/host:ro,rslave
-
-  cadvisor:
-    <<: *defaults
-    image: gcr.io/cadvisor/cadvisor:latest
-    container_name: cadvisor
-    command: -port=9101
-    networks:
-      - prometheus
-    volumes:
-      - /:/rootfs:ro
-      - /var/run:/var/run:rw
-      - /sys:/sys:ro
-      - /var/lib/docker/:/var/lib/docker:ro
-    environment:
-      TZ: "{{ general_timezone }}"
-
   grafana:
     <<: *defaults
     image: docker.io/grafana/grafana-oss
@@ -989,6 +1067,7 @@ services:
       - "nc-db-dump:/mnt/source/nextcloud/dbdump:ro"
       - "{{ general_path_appdata }}/nextcloud/nextcloud/data:/mnt/source/nextcloud/data:ro"
       - "{{ general_path_appdata }}/nextcloud/nextcloud/config:/mnt/source/nextcloud/config:ro"
+      - "zabbix-db-dump:/mnt/source/zabbix/dbdump:ro"
       - "/data/important/Photos:/mnt/source/plex/photos:ro"
       - "/data/bulk/media/Music:/mnt/source/plex/music:ro"
       # Config and cache
@@ -1040,6 +1119,9 @@ networks:
   traefik:
     name: traefik
 
+  zabbix:
+    name: zabbix
+
 #################################################################
 #                            VOLUMES                            #
 #################################################################
@@ -1059,3 +1141,4 @@ volumes:
   scrutiny-sqlite:
   traefik-access-logs:
   traefik-cert:
+  zabbix-db-dump:

@@ -5,10 +5,6 @@ firewall_additional_ports:
     port: 80
     protos: [tcp]
     from_networks: [any]
-  - comment: SNMP Daemon
-    port: 161
-    protos: [udp]
-    from_networks: [wireguard_ipv4]
   - comment: Traefik HTTPS
     port: 443
     protos: [tcp]
@@ -17,6 +13,10 @@ firewall_additional_ports:
     port: 9100
     protos: [tcp]
     from_networks: [docker_ipv4]
+  - comment: Zabbix agent
+    port: 10050
+    protos: [tcp]
+    from_networks: [wireguard_ipv4]
   - comment: Syncthing TCP and QUIC
     port: 22000
     protos: [tcp, udp]
