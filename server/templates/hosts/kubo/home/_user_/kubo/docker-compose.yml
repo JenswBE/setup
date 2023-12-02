@@ -685,8 +685,6 @@ services:
     <<: *defaults
     image: "docker.io/zabbix/zabbix-web-nginx-pgsql:alpine-{{ zabbix_version }}-latest"
     container_name: zabbix-web
-    ports:
-      - "127.0.0.1:8888:8080"
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
@@ -700,6 +698,7 @@ services:
       retries: 3
       start_period: 30s
     networks:
+      - traefik
       - zabbix
     stop_grace_period: 10s
     sysctls:
@@ -713,12 +712,17 @@ services:
       ZBX_SERVER_HOST: zabbix-server
       ZBX_SERVER_NAME: Kubo
     labels:
-      com.zabbix.description: "Zabbix frontend on Nginx web-server with PostgreSQL database support"
-      com.zabbix.company: "Zabbix LLC"
-      com.zabbix.component: "zabbix-frontend"
-      com.zabbix.webserver: "nginx"
-      com.zabbix.dbtype: "pgsql"
-      com.zabbix.os: "alpine"
+      - "com.zabbix.description=Zabbix frontend on Nginx web-server with PostgreSQL database support"
+      - "com.zabbix.company=Zabbix LLC"
+      - "com.zabbix.component=zabbix-frontend"
+      - "com.zabbix.webserver=nginx"
+      - "com.zabbix.dbtype=pgsql"
+      - "com.zabbix.os=alpine"
+      - "traefik.enable=true"
+      - "traefik.http.routers.zabbix.entrypoints=websecure"
+      - "traefik.http.routers.zabbix.rule=Host(`zabbix.{{ general_domain_local }}`)"
+      - "traefik.http.routers.zabbix.tls.certresolver=le-dns"
+      - "traefik.http.routers.zabbix.middlewares=local-only@file"
     deploy:
       resources:
         limits:
@@ -757,11 +761,11 @@ services:
       - net.ipv4.conf.all.secure_redirects=0
       - net.ipv4.conf.all.send_redirects=0
     labels:
-      com.zabbix.description: "Zabbix server with PostgreSQL database support"
-      com.zabbix.company: "Zabbix LLC"
-      com.zabbix.component: "zabbix-server"
-      com.zabbix.dbtype: "pgsql"
-      com.zabbix.os: "alpine"
+      - "com.zabbix.description=Zabbix server with PostgreSQL database support"
+      - "com.zabbix.company=Zabbix LLC"
+      - "com.zabbix.component=zabbix-server"
+      - "com.zabbix.dbtype=pgsql"
+      - "com.zabbix.os=alpine"
     deploy:
       resources:
         limits:
