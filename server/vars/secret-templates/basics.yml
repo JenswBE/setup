@@ -31,7 +31,7 @@ app_nut_server_ip: "" # Internal DNS server is not connected to UPS
 app_nut_users:
   <USERNAME>:
     password: ""
-    upsmon: "master" # Or "slave". Change to "primary"/"secondary" once NUT v2.8.0 has landed in Ubuntu.
+    upsmon: "primary"
 
 # OAuth2 Proxy
 # Same config should be shared between all OAuth2 Proxy instances.

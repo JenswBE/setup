@@ -6,25 +6,9 @@
 
 ## Basic setup
 
-Download the latest LTS version of [Ubuntu Server](https://ubuntu.com/download/server) and install. Next, run following steps:
+Download the latest version of [Debian](https://www.debian.org/distrib/netinst) and install. Next, run following steps:
 
 ```bash
-# Set hostname
-sudo hostnamectl set-hostname <HOSTNAME>
-
-# Create new user
-adduser <USERNAME>
-
-# Add user to `sudo` group
-adduser <USERNAME> sudo
-
-# Login with new user
-logout
-ssh <USERNAME>@<FQDN>
-
-# Disable root
-sudo passwd -ld root
-
 # Update system
 sudo apt update
 sudo apt dist-upgrade -y
