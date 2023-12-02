@@ -53,6 +53,17 @@
         chdir: /var/lib/libvirt/images
         cmd: unxz transmission.qcow2.xz
 
+    - name: Ensure Transmission directories exist
+      ansible.builtin.file:
+        path: "/opt/appdata/transmission/{{ item }}"
+        state: directory
+        owner: "{{ ansible_real_user_id }}"
+        group: "{{ ansible_real_group_id }}"
+        mode: "644"
+      loop:
+        - config
+        - downloads
+
     - name: Define VM
       community.libvirt.virt:
         command: define

@@ -12,15 +12,18 @@
         name: "{{ item }}"
       loop: "{{ packages_base }}"
 
-    - name: Create opt directories - Root access only
+    - name: Create opt directories
       ansible.builtin.file:
-        path: "/opt/{{ item }}"
+        path: "/opt/{{ item.key }}"
         state: directory
         owner: "root"
         group: "root"
-        mode: "711"
-      loop:
-        - appdata
+        mode: "{{ item.value }}"
+      loop: "{{ dirs | dict2items }}"
+      vars:
+        dirs:
+          appdata: "711"
+          bin: "755"
 
     - name: Limit log size to 100MB
       register: journald_limit

@@ -22,14 +22,6 @@
   ansible.builtin.include_tasks: tasks/nut_client_only.yml
   tags: ["setup", "nut"]
 
-- name: Include libvirt tasks
-  ansible.builtin.include_tasks: tasks/libvirt/setup.yml
-  tags: ["setup", "libvirt"]
-
-- name: Include Transmission tasks
-  ansible.builtin.include_tasks: tasks/libvirt/transmission.yml
-  tags: ["setup", "libvirt", "transmission"]
-
 - name: Include Wireguard tasks
   ansible.builtin.include_tasks: tasks/wireguard.yml
   vars:
@@ -56,17 +48,19 @@
     daemon_reload: true
   tags: ["systemd", "mail_on_failed_unit"]
 
-- name: Enable systemd timers and mounts
+- name: Enable systemd mounts and timers
   become: true
   ansible.builtin.systemd:
     name: "{{ item }}"
     state: started
     enabled: true
   loop:
-    - btrfs-scrub-bulk.timer
-    - btrfs-scrub-important.timer
+    # Mounts
     - data-bulk.mount
     - data-important.mount
+    # Timers
+    - btrfs-scrub-bulk.timer
+    - btrfs-scrub-important.timer
     - docker-update-containers.timer
     - github-backup.timer
     - glitchtip-dump-db.timer
@@ -91,3 +85,11 @@
     destination_mode_dirs: "700"
     destination_delete_extra: true
   tags: ["docker"]
+
+- name: Include libvirt tasks
+  ansible.builtin.include_tasks: tasks/libvirt/setup.yml
+  tags: ["setup", "libvirt"]
+
+- name: Include Transmission tasks
+  ansible.builtin.include_tasks: tasks/libvirt/transmission.yml
+  tags: ["setup", "libvirt", "transmission"]

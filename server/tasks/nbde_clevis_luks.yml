@@ -3,6 +3,7 @@
   block:
     - name: Install Clevis
       become: true
+      register: install_clevis
       ansible.builtin.package:
         state: present
         name: "{{ item }}"
@@ -15,17 +16,25 @@
       ansible.builtin.pause:
         prompt: |
           # Settings
-          LUKS_DEVICE=/dev/mapper/sda3_crypt
+          LUKS_DEVICE=/dev/sda3
+
+          #####################
+          #      WARNING      #
+          #####################
+          # Seems DNS isn't available in Debian in the init when clevis tries to unlock the drive.
+          # Therefore, hostnames won't work. Use a static IP instead for the tang server!
+          # For more info, see:
+          #  - https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1005963
+          #  - https://github.com/latchset/clevis/issues/413
 
           # Use single Tang server
-          sudo clevis luks bind -d ${LUKS_DEVICE:?} tang '{"url": "http://kubo.jensw.eu:7500"}'
+          sudo clevis luks bind -d ${LUKS_DEVICE:?} tang '{"url": "http://192.168.50.50:7500"}'
 
           # Use multiple Tang servers
-          sudo clevis luks bind -d ${LUKS_DEVICE:?} sss '{"t":1,"pins":{"tang":[{"url":"http://kubo.jensw.eu:7500"},{"url":"http://fiona.jensw.eu:7500"}]}}'
+          sudo clevis luks bind -d ${LUKS_DEVICE:?} sss '{"t":1,"pins":{"tang":[{"url":"http://192.168.50.50:7500"},{"url":"http://192.168.50.60:7500"}]}}'
 
           # Manual install - Client - Debian/Ubuntu
           sudo apt install clevis clevis-luks clevis-initramfs
-          sudo update-initramfs -u -k 'all'
 
           # Manual install - Client - Fedora
           sudo dnf install clevis clevis-luks clevis-dracut
