@@ -9,10 +9,6 @@ firewall_additional_ports:
     port: 443
     protos: [tcp]
     from_networks: [any]
-  - comment: Prometheus - Node Exporter
-    port: 9100
-    protos: [tcp]
-    from_networks: [docker_ipv4]
   - comment: Zabbix agent
     port: 10050
     protos: [tcp]
