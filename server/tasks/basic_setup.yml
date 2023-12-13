@@ -56,3 +56,8 @@
     - name: Update initramfs if config was changed
       when: initramfs_config.changed
       ansible.builtin.command: update-initramfs -u
+
+    - name: Ensure low swappiness value
+      ansible.posix.sysctl:
+        name: vm.swappiness
+        value: "10"
