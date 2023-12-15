@@ -111,6 +111,41 @@ storage:
           AllowedIPs = 0.0.0.0/0,::0/0
           Endpoint = {{ app_transmission_wireguard_endpoint_ip }}:51820
 
+    # Transmission
+    - path: /etc/containers/systemd/transmission.container
+      mode: 0644
+      contents:
+        inline: |
+          [Unit]
+          Description=Transmission
+          Wants=network-online.target
+          After=network-online.target
+          Requires=var-mnt-transmission_config.mount
+          After=var-mnt-transmission_config.mount
+          Requires=var-mnt-downloads_incomplete.mount
+          After=var-mnt-downloads_incomplete.mount
+          Requires=var-mnt-downloads_complete.mount
+          After=var-mnt-downloads_complete.mount
+
+          [Container]
+          Image=docker.io/linuxserver/transmission:latest
+          Pull=always
+          Timezone=local
+          Volume=/var/mnt/transmission_config:/config
+          Volume=/var/mnt/downloads_incomplete:/downloads/incomplete
+          Volume=/var/mnt/downloads_complete:/downloads/complete
+          PublishPort=8080:9091
+          PublishPort={{ app_transmission_peer_port }}:{{ app_transmission_peer_port }}
+          Environment=TZ={{ general_timezone }}
+          Environment=PUID={{ ansible_real_user_id }}
+          Environment=PGID={{ ansible_real_group_id }}
+          Environment=PEERPORT={{ app_transmission_peer_port }}
+          SecurityLabelDisable=true
+          Label="io.containers.autoupdate=registry"
+
+          [Install]
+          WantedBy=multi-user.target
+
   links:
     - path: /etc/localtime
       target: "../usr/share/zoneinfo/{{ general_timezone }}"
@@ -161,40 +196,3 @@ systemd:
 
     - name: wg-quick@wg0.service
       enabled: true
-
-    - name: transmission.service
-      enabled: true
-      contents: |
-        [Unit]
-        Description=Transmission
-        Wants=network-online.target
-        After=network-online.target
-        Requires=var-mnt-transmission_config.mount
-        After=var-mnt-transmission_config.mount
-        Requires=var-mnt-downloads_incomplete.mount
-        After=var-mnt-downloads_incomplete.mount
-        Requires=var-mnt-downloads_complete.mount
-        After=var-mnt-downloads_complete.mount
-
-        [Service]
-        TimeoutStartSec=0
-        ExecStartPre=-/bin/podman kill transmission
-        ExecStartPre=-/bin/podman rm transmission
-        ExecStartPre=/bin/podman pull docker.io/linuxserver/transmission:latest
-        ExecStart=/bin/podman run \
-                --name transmission \
-                --env 'TZ={{ general_timezone }}' \
-                --env 'PUID=1000' \
-                --env 'PGID=1000' \
-                --env 'PEERPORT={{ app_transmission_peer_port }}' \
-                --publish 8080:9091 \
-                --publish {{ app_transmission_peer_port }}:{{ app_transmission_peer_port }} \
-                --volume '/var/mnt/transmission_config:/config' \
-                --volume '/var/mnt/downloads_incomplete:/downloads/incomplete' \
-                --volume '/var/mnt/downloads_complete:/downloads/complete' \
-                --security-opt label=disable \
-                --label io.containers.autoupdate=registry \
-                docker.io/linuxserver/transmission:latest
-
-        [Install]
-        WantedBy=multi-user.target

@@ -94,12 +94,8 @@ Go to https://app.plex.tv to setup following libraries:
 
 ### Transmission
 
-1. Set correct permission with `sudo chown 233:233 /media/data/services/transmission/`
-2. Go through online settings
+Update settings to (section `Torrents`):
 
-- Category Torrents
-  - Set "Download to" to `/downloads`
-  - Set "Directory for incomplete files" to `/running`
-  - Set "Stop seeding at ratio" to 3
-- Category Queue
-  - Set "Download Queue Size" to 10
+- Set `Download to` to `/downloads/complete`
+- Enable `Use temporary folder` and set path to `/downloads/incomplete`
+- Set `Download queue size` to `10`
