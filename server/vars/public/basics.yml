@@ -19,6 +19,7 @@ firewall_ssh_port: 22
 
 # Packages
 packages_base:
+  - btrfs-progs
   - console-data
   - htop
   - iotop
