@@ -94,8 +94,15 @@ Go to https://app.plex.tv to setup following libraries:
 
 ### Transmission
 
-Update settings to (section `Torrents`):
+**Ensure Transmission is stopped!**
 
-- Set `Download to` to `/downloads/complete`
-- Enable `Use temporary folder` and set path to `/downloads/incomplete`
-- Set `Download queue size` to `10`
+Update below keys in `config.json` to match below values.
+
+```json
+{
+  "download-dir": "/downloads/complete",
+  "download-queue-size": 10,
+  "incomplete-dir": "/downloads/incomplete",
+  "incomplete-dir-enabled": true
+}
+```
