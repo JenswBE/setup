@@ -1,9 +1,13 @@
+# Below IP's are resolved by Ansible, since there is
+# a timing issue butween DNS and the NFS server.
+# Leading to errror "exportfs: Failed to resolve" if resolved by NFS.
+
 # Hercules
 
-/data/media 192.168.20.50(rw,no_subtree_check,insecure)
-/data/photos 192.168.20.50(rw,no_subtree_check,insecure)
+/data/media {{ query('community.dns.lookup', 'hercules.' + general_domain_local, nxdomain_handling="fail")[0] }}(rw,no_subtree_check,insecure)
+/data/photos {{ query('community.dns.lookup', 'hercules.' + general_domain_local, nxdomain_handling="fail")[0] }}(rw,no_subtree_check,insecure)
 
 # Rango
 
-/data/media 192.168.20.52(rw,no_subtree_check,insecure)
-/data/photos 192.168.20.52(rw,no_subtree_check,insecure)
+/data/media {{ query('community.dns.lookup', 'rango.' + general_domain_local, nxdomain_handling="fail")[0] }}(rw,no_subtree_check,insecure)
+/data/photos {{ query('community.dns.lookup', 'rango.' + general_domain_local, nxdomain_handling="fail")[0] }}(rw,no_subtree_check,insecure)
