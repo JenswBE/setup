@@ -1,0 +1,10 @@
+[Unit]
+Description=Reset MiniFlux feed errors
+
+[Timer]
+OnCalendar=Mon 01:00
+Persistent=true
+RandomizedDelaySec=600
+
+[Install]
+WantedBy=timers.target

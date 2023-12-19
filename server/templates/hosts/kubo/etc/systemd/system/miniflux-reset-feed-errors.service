@@ -1,0 +1,6 @@
+[Unit]
+Description=Reset MiniFlux feed errors
+OnFailure=unit-fail-mail@%n.service
+
+[Service]
+ExecStart={{ docker_path }} exec miniflux miniflux --debug --reset-feed-errors

@@ -66,6 +66,7 @@
     - glitchtip-dump-db.timer
     - graylog-dump-mongodb.timer
     - miniflux-dump-db.timer
+    - miniflux-reset-feed-errors.timer
     - nextcloud-cron.timer
     - nextcloud-dump-db.timer
     - nextcloud-maps-scan-photos.timer
