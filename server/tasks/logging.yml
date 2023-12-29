@@ -2,31 +2,31 @@
   become: true
   tags: ["setup", "logging"]
   block:
-    - name: Install journalbeat
-      register: journalbeat_install
+    - name: Install filebeat
+      register: filebeat_install
       ansible.builtin.apt:
-        deb: "https://artifacts.elastic.co/downloads/beats/journalbeat/journalbeat-7.15.2-{{ arch }}.deb"
+        deb: "https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-8.11.3-{{ arch }}.deb"
 
-    - name: Copy journalbeat config
-      register: journalbeat_config
+    - name: Copy filebeat config
+      register: filebeat_config
       ansible.builtin.template:
-        src: journalbeat.yml
-        dest: /etc/journalbeat/journalbeat.yml
+        src: filebeat.yml
+        dest: /etc/filebeat/filebeat.yml
         owner: root
         group: root
         mode: "600"
 
-    - name: Enable and start journalbeat if installed
-      when: journalbeat_install.changed
+    - name: Enable and start filebeat if installed
+      when: filebeat_install.changed
       ansible.builtin.service:
-        name: journalbeat
+        name: filebeat
         state: started
         enabled: true
 
-    - name: Restart journalbeat if config was changed
-      when: journalbeat_config.changed
+    - name: Restart filebeat if config was changed
+      when: filebeat_config.changed
       ansible.builtin.service:
-        name: journalbeat
+        name: filebeat
         state: restarted
 
     - name: Copy docker config

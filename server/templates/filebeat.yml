@@ -1,0 +1,16 @@
+# Based on https://go2docs.graylog.org/5-2/getting_in_log_data/ingest_journald.html
+# and https://www.elastic.co/guide/en/beats/filebeat/current/filebeat-input-journald.html
+
+fields_under_root: true
+fields:
+  collector_node_id: "{{ ansible_hostname }}"
+  gl2_source_collector: "{{ ansible_hostname | hash('md5') }}"
+
+filebeat.inputs:
+  - type: journald
+    id: everything
+
+output.logstash:
+  enabled: true
+  hosts: ["{{ app_graylog_server }}:5044"]
+  slow_start: true
