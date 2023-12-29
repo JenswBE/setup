@@ -3,7 +3,7 @@ docker_ghcr_personal_access_token: ""
 
 # Mailjet
 mailjet_host: "in-v3.mailjet.com"
-mailjet_port_ssl: "465"
+mailjet_port_ssl: "465" # Blocked by Hetzner!
 mailjet_port_starttls: "587"
 mailjet_username: ""
 mailjet_password: ""

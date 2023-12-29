@@ -86,5 +86,8 @@ app_wireguard:
         psk: "" # Run "wg genpsk" on server
         allowed_ips: [""] # E.g. 10.0.0.2/32
 
+# W-Technieken - Ghost
+app_wtech_ghost_db_pass: ""
+
 # Zabbix
 app_zabbix_agent_server: "" # Incoming connections will be accepted only from the hosts listed here.

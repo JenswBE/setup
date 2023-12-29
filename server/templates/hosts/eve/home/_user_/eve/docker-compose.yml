@@ -534,6 +534,69 @@ services:
       - "traefik.http.routers.bjoetiek-test-imgproxy.middlewares=strip-images-prefix@file"
 
   # =========================
+  # =      W-TECHNIEKEN     =
+  # =========================
+  wtech-ghost:
+    <<: *defaults
+    image: docker.io/library/ghost:5-alpine
+    container_name: wtech-ghost
+    depends_on:
+      - wtech-ghost-db
+    environment:
+      # see https://ghost.org/docs/config/#configuration-options
+      TZ: "{{ general_timezone }}"
+      database__client: mysql
+      database__connection__host: wtech-ghost-db
+      database__connection__user: root
+      database__connection__password: "{{ app_wtech_ghost_db_pass }}"
+      database__connection__database: ghost
+      mail__transport: SMTP
+      mail__options__service: Mailjet
+      mail__options__host: "{{ mailjet_host }}"
+      mail__options__port: "{{ mailjet_port_starttls }}"
+      mail__options__requireTLS: "true"
+      mail__options__auth__user: "{{ mailjet_username }}"
+      mail__options__auth__pass: "{{ mailjet_password }}"
+      url: "https://{{ general_domain_wtech }}"
+    networks:
+      - traefik
+      - wtech-ghost
+    volumes:
+      - "{{ general_path_appdata }}/wtech/ghost/content:/var/lib/ghost/content:z"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.wtech-ghost.entrypoints=websecure"
+      - "traefik.http.routers.wtech-ghost.rule=Host(`{{ general_domain_wtech }}`)"
+      - "traefik.http.routers.wtech-ghost.tls.certresolver=le-tls"
+      - "traefik.http.routers.wtech-ghost-www-redirect.entrypoints=websecure"
+      - "traefik.http.routers.wtech-ghost-www-redirect.rule=Host(`www.{{ general_domain_wtech }}`)"
+      - "traefik.http.routers.wtech-ghost-www-redirect.tls.certresolver=le-tls"
+      - "traefik.http.routers.wtech-ghost-www-redirect.middlewares=redirect-www-to-root@file"
+      - "traefik.http.services.wtech-ghost-{{ ansible_hostname }}.loadbalancer.server.port=2368"
+
+  wtech-ghost-db:
+    <<: *defaults
+    image: docker.io/library/mysql:8.2
+    container_name: wtech-ghost-db
+    environment:
+      TZ: "{{ general_timezone }}"
+      MYSQL_ROOT_PASSWORD: "{{ app_wtech_ghost_db_pass }}"
+    networks:
+      - wtech-ghost
+    volumes:
+      - "{{ general_path_appdata }}/wtech/ghost/db:/var/lib/mysql:z"
+      - wtech-ghost-db-dump:/backup
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "mysqladmin -u $$MYSQL_USER --password=$$MYSQL_PASSWORD ping || exit 1",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # =========================
   # =      GOAT COUNTER     =
   # =========================
   goatcounter:
@@ -726,8 +789,8 @@ services:
       PASSWORD_HINTS_ALLOWED: "false"
       SIGNUPS_ALLOWED: "false"
       SMTP_HOST: "{{ mailjet_host }}"
-      SMTP_PORT: "{{ mailjet_port_ssl }}"
-      SMTP_SECURITY: force_tls
+      SMTP_PORT: "{{ mailjet_port_starttls }}"
+      SMTP_SECURITY: starttls
       SMTP_USERNAME: "{{ mailjet_username }}"
       SMTP_PASSWORD: "{{ mailjet_password }}"
       SMTP_FROM: "vaultwarden@{{ general_domain_default }}"
@@ -962,6 +1025,8 @@ services:
       - "{{ general_path_appdata }}/vaultwarden/data:/mnt/source/vaultwarden/data:ro"
       - "wikijs-backup:/mnt/source/wikijs/backup:ro"
       - "wikijs-db-dump:/mnt/source/wikijs/dbdump:ro"
+      - "{{ general_path_appdata }}/wtech/ghost/content:/mnt/source/wtech/ghost/content:ro"
+      - "wtech-ghost-db-dump:/mnt/source/wtech/ghost/dbdump:ro"
       # Config and cache
       - "./borgmatic/borgmatic.d/config.yaml:/etc/borgmatic.d/config.yaml"
       - "./borgmatic/ssh/BorgHost:/root/.ssh/BorgHost"
@@ -1005,6 +1070,7 @@ volumes:
   traefik-cert:
   wikijs-backup:
   wikijs-db-dump:
+  wtech-ghost-db-dump:
 
 # #################################################################
 # #                            NETWORKS                           #
@@ -1033,3 +1099,6 @@ networks:
 
   wikijs:
     name: wikijs
+
+  wtech-ghost:
+    name: wtech-ghost
