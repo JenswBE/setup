@@ -17,8 +17,8 @@
     destination_folder: "/etc/systemd/system"
     destination_owner: root
     destination_group: root
-    destination_mode_files: "600"
-    destination_mode_dirs: "700"
+    destination_mode_files: "644"
+    destination_mode_dirs: "755"
     destination_delete_extra: false
   tags: ["systemd", "mail_on_failed_unit"]
 
