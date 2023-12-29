@@ -1,7 +1,1 @@
-[Unit]
-Description=Unit Fail Mailer Service
-After=network.target
-
-[Service]
-Type=simple
-ExecStart=/usr/bin/bash -c 'source /opt/smtp-cli/smtp-cli.conf; systemctl status -l %I | /opt/smtp-cli/smtp-cli --subject "Service %I failed" --from-name "${FROM_NAME:?}" --from-address "${FROM_EMAIL:?}" --to-name "${TO_NAME:?}" --to-address "${TO_EMAIL:?}" --host "in-v3.mailjet.com" --username "${USERNAME:?}" --password "${PASSWORD:?}"'
+{{ lookup('ansible.builtin.template', 'unit-fail-mail@.service') }}
