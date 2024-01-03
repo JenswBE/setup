@@ -15,6 +15,8 @@ Services which are backed up:
   - `vaultwarden` (Vaultwarden): SQLite DB and data
   - `wikijs` (Wiki.js): Data (human readable backup format like Markdown)
   - `wikijs-db` (Postgres): DB data
+  - `wtech-ghost` (Ghost): Uploaded content
+  - `wtech-ghost-db` (MySQL): DB data
 - Fiona
   - `unifi-controller` (Unifi Controller): Network config
 - Kubo
@@ -40,6 +42,10 @@ sudo docker exec borgmatic sh -c 'rm -rf /mnt/restore/*'
 # Set env vars
 APPDATA_DIR=/opt/appdata
 ```
+
+### Ghost
+
+**TODO**
 
 ### GitHub Backup
 
@@ -99,6 +105,10 @@ sudo docker exec borgmatic cat /mnt/borg/mnt/source/home-automation/home-assista
 # Check backup date of all MariaDB dumps
 sudo docker exec borgmatic find /mnt/borg -name "*.sqldump" -exec echo {} \; -exec tail -n1 {} \; -exec echo Number of tables: \; -exec bash -c "grep -F 'CREATE TABLE' {} | wc -l" \;
 ```
+
+### MySQL
+
+**TODO**
 
 ### Nextcloud
 

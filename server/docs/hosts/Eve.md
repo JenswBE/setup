@@ -26,6 +26,7 @@ VPS
 - Dump Uptime Kuma DB (`templates/hosts/eve/etc/systemd/system/uptime-kuma-dump-db.timer`)
 - Dump Vaultwarden DB (`templates/hosts/eve/etc/systemd/system/vaultwarden-dump-db.timer`)
 - Dump Wiki.js DB (`templates/hosts/eve/etc/systemd/system/wikijs-dump-db.timer`)
+- Dump WTech Ghost DB (`templates/hosts/eve/etc/systemd/system/wtech-ghost-dump-db.timer`)
 
 ### 03:00 Perform backup
 
