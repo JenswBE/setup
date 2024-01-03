@@ -1,0 +1,9 @@
+[Unit]
+Description=Update Docker containers every night
+
+[Timer]
+OnCalendar=*-*-* {{ var_time }}:00
+Persistent=false
+
+[Install]
+WantedBy=timers.target

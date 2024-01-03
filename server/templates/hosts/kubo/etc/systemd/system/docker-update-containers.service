@@ -1,12 +1,1 @@
-[Unit]
-Description=Update all Docker containers
-OnFailure=unit-fail-mail@%n.service
-
-[Service]
-TimeoutSec=15min
-WorkingDirectory={{ ansible_user_dir }}/{{ ansible_hostname }}
-ExecStartPre={{ docker_path }} compose pull
-ExecStartPre={{ docker_path }} compose build --pull
-ExecStart={{ docker_path }} compose up -d
-ExecStartPost={{ docker_path }} image prune -f
-ExecStartPost={{ docker_path }} builder prune -f
+{{ lookup('ansible.builtin.template', 'docker-update-containers.service') }}

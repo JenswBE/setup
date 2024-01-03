@@ -1,6 +1,6 @@
 - name: Basic setup
   become: true
-  tags: ["setup"]
+  tags: ["setup", "basics"]
   block:
     - name: Set timezone
       community.general.timezone:

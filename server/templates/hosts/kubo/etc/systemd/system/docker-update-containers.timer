@@ -1,9 +1,1 @@
-[Unit]
-Description=Update Docker containers every night
-
-[Timer]
-OnCalendar=*-*-* 04:00:00
-Persistent=false
-
-[Install]
-WantedBy=timers.target
+{{ lookup('ansible.builtin.template', 'docker-update-containers.timer', template_vars={"var_time": "04:00"}) }}

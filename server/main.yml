@@ -47,7 +47,7 @@
   tasks:
     - name: Include basic setup tasks
       ansible.builtin.include_tasks: tasks/basic_setup.yml
-      tags: ["setup"]
+      tags: ["setup", "basics"]
 
     - name: Include firewall tasks
       ansible.builtin.include_tasks: tasks/firewall.yml

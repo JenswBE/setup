@@ -22,6 +22,9 @@ firewall_ssh_port: 22
 packages_base:
   - btrfs-progs
   - console-data
+  # Unfortunately not covered by role geerlingguy.docker
+  # See https://github.com/geerlingguy/ansible-role-docker/issues/405
+  - docker-buildx-plugin
   - htop
   - iotop
   - pv
