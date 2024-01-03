@@ -1,6 +1,6 @@
 collections:
   - name: community.dns
-    version: 2.6.4
+    version: 2.7.0
 
 roles:
   - name: geerlingguy.docker
