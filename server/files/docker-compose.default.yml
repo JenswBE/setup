@@ -3,10 +3,12 @@
 #################################################################
 x-defaults: &defaults
   restart: always
-  extra_hosts:
-    - "host.docker.internal:host-gateway"
   deploy:
     resources:
       limits:
         cpus: "2"
         memory: 512M
+
+x-extra-docker-host: &extra-docker-host
+  extra_hosts:
+    - "host.docker.internal:host-gateway"

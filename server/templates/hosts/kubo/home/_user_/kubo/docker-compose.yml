@@ -474,7 +474,7 @@ services:
     <<: *defaults
     image: docker.io/linuxserver/transmission:latest
     container_name: transmission
-    network_mode: 'service:transmission-vpn'
+    network_mode: service:transmission-vpn
     volumes:
       - "{{ general_path_appdata }}/transmission/config:/config"
       - "{{ general_path_appdata }}/transmission/downloads:/downloads/incomplete"
@@ -502,9 +502,11 @@ services:
       VPN_TYPE: wireguard
       WIREGUARD_PRIVATE_KEY: "{{ app_transmission_wireguard_private_key }}"
       WIREGUARD_ADDRESSES: "{{ app_transmission_wireguard_addresses }}"
-      SERVER_CITIES: "Brussels"
+      SERVER_CITIES: Brussels
+      DOT_PROVIDERS: quad9
     labels:
       - "traefik.enable=true"
+      - "traefik.http.services.transmission-vpn-{{ ansible_hostname }}.loadbalancer.server.port=9091"
       # For users
       - "traefik.http.routers.torrent.entrypoints=websecure"
       - "traefik.http.routers.torrent.rule=Host(`torrent.{{ general_domain_default }}`)"
@@ -515,7 +517,6 @@ services:
       - "traefik.http.routers.torrent-system.rule=Host(`torrent-system.{{ general_domain_default }}`)"
       - "traefik.http.routers.torrent-system.tls.certresolver=le-tls"
       - "traefik.http.routers.torrent-system.middlewares=transmission-system-auth@file"
-      - "traefik.http.services.transmission-vpn-{{ ansible_hostname }}.loadbalancer.server.port=9091"
 
   # =========================
   # =         NGINX         =
@@ -783,7 +784,7 @@ services:
           memory: 256M
 
   zabbix-server:
-    <<: *defaults
+    <<: [*defaults, *extra-docker-host]
     image: "docker.io/zabbix/zabbix-server-pgsql:alpine-{{ zabbix_version }}-latest"
     container_name: zabbix-server
     environment:
