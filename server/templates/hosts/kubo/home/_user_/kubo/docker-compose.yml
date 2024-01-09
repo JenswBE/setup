@@ -468,6 +468,56 @@ services:
       retries: 5
 
   # =========================
+  # =        TORRENT        =
+  # =========================
+  transmission:
+    <<: *defaults
+    image: docker.io/linuxserver/transmission:latest
+    container_name: transmission
+    network_mode: 'service:transmission-vpn'
+    volumes:
+      - "{{ general_path_appdata }}/transmission/config:/config"
+      - "{{ general_path_appdata }}/transmission/downloads:/downloads/incomplete"
+      - "/data/bulk/media/Nazien:/downloads/complete"
+    environment:
+      TZ: "{{ general_timezone }}"
+      PUID: "{{ ansible_real_user_id }}"
+      PGID: "{{ ansible_real_group_id }}"
+
+  transmission-vpn:
+    <<: *defaults
+    image: ghcr.io/qdm12/gluetun:latest
+    container_name: transmission-vpn
+    cap_add:
+      - NET_ADMIN
+    networks:
+      - traefik
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    volumes:
+      - "{{ general_path_appdata }}/gluetun/config:/gluetun"
+    environment:
+      TZ: "{{ general_timezone }}"
+      VPN_SERVICE_PROVIDER: mullvad
+      VPN_TYPE: wireguard
+      WIREGUARD_PRIVATE_KEY: "{{ app_transmission_wireguard_private_key }}"
+      WIREGUARD_ADDRESSES: "{{ app_transmission_wireguard_addresses }}"
+      SERVER_CITIES: "Brussels"
+    labels:
+      - "traefik.enable=true"
+      # For users
+      - "traefik.http.routers.torrent.entrypoints=websecure"
+      - "traefik.http.routers.torrent.rule=Host(`torrent.{{ general_domain_default }}`)"
+      - "traefik.http.routers.torrent.tls.certresolver=le-tls"
+      - "traefik.http.routers.torrent.middlewares=oauth2-proxy-handle-error@file, oauth2-proxy-forward-auth-media@file"
+      # For healthchecks and other integrations
+      - "traefik.http.routers.torrent-system.entrypoints=websecure"
+      - "traefik.http.routers.torrent-system.rule=Host(`torrent-system.{{ general_domain_default }}`)"
+      - "traefik.http.routers.torrent-system.tls.certresolver=le-tls"
+      - "traefik.http.routers.torrent-system.middlewares=transmission-system-auth@file"
+      - "traefik.http.services.transmission-vpn-{{ ansible_hostname }}.loadbalancer.server.port=9091"
+
+  # =========================
   # =         NGINX         =
   # =========================
   nginx-hetvleermuizenkind:

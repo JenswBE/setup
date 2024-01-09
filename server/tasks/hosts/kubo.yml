@@ -85,11 +85,3 @@
     destination_mode_dirs: "700"
     destination_delete_extra: true
   tags: ["docker"]
-
-- name: Include libvirt tasks
-  ansible.builtin.include_tasks: tasks/libvirt/setup.yml
-  tags: ["setup", "libvirt"]
-
-- name: Include Transmission tasks
-  ansible.builtin.include_tasks: tasks/libvirt/transmission.yml
-  tags: ["setup", "libvirt", "transmission"]
