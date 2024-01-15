@@ -75,11 +75,19 @@ services:
     <<: *defaults
     image: ghcr.io/0xerr0r/blocky:latest
     container_name: blocky
+    networks:
+      - traefik
     ports:
       - "53:53/tcp" # DNS TCP
       - "53:53/udp" # DNS UDP
     volumes:
       - ./blocky/config.yml:/app/config.yml:ro
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.blocky.entrypoints=websecure"
+      - "traefik.http.routers.blocky.rule=Method(`GET`) && Host(`blocky.fiona.{{ general_domain_local }}`) && Path(`/metrics`)"
+      - "traefik.http.routers.blocky.tls.certresolver=le-dns"
+      - "traefik.http.services.blocky-{{ ansible_hostname }}.loadbalancer.server.port=8080"
 
   blocky-pixelserv-tls: # Serves transparent pixels for Blocky
     <<: *defaults

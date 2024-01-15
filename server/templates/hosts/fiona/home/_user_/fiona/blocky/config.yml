@@ -16,3 +16,7 @@ blocking:
   clientGroupsBlock:
     default:
       - base
+
+httpPort: 8080
+prometheus:
+  enable: true

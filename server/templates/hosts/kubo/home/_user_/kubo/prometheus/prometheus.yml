@@ -3,7 +3,11 @@ scrape_configs:
     static_configs:
       - targets: ["localhost:9090"]
 
+  - job_name: "blocky"
+    static_configs:
+      - targets: ["blocky.fiona.{{ general_domain_local }}"]
+
   - job_name: opendtu
     metrics_path: /api/prometheus/metrics
     static_configs:
-      - targets: ["opendtu.jensw.eu"]
+      - targets: ["opendtu.{{ general_domain_local }}"]
