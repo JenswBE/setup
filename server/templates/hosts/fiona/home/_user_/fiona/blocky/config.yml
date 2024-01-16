@@ -20,3 +20,6 @@ blocking:
 httpPort: 8080
 prometheus:
   enable: true
+queryLog:
+  type: none
+  # type: console # Enable for debugging
