@@ -23,5 +23,35 @@
     "key": "ctrl+shift+alt+up",
     "command": "-editor.action.copyLinesUpAction",
     "when": "editorTextFocus && !editorReadonly"
+  },
+  {
+    "key": "shift+enter",
+    "command": "colonize.newline",
+    "when": "editorTextFocus && editorLangId == 'rust'"
+  },
+  {
+    "key": "alt+enter",
+    "command": "-colonize.newline",
+    "when": "editorTextFocus"
+  },
+  {
+    "key": "alt+enter",
+    "command": "colonize.endline",
+    "when": "editorTextFocus && editorLangId == 'rust'"
+  },
+  {
+    "key": "shift+enter",
+    "command": "-colonize.endline",
+    "when": "editorTextFocus"
+  },
+  {
+    "key": "ctrl+alt+enter",
+    "command": "colonize.hold",
+    "when": "editorTextFocus && editorLangId == 'rust'"
+  },
+  {
+    "key": "ctrl+alt+enter",
+    "command": "-colonize.hold",
+    "when": "editorTextFocus"
   }
 ]

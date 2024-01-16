@@ -258,6 +258,7 @@ ${CMD_CODE_EXT_INSTALL:?} esbenp.prettier-vscode
 ${CMD_CODE_EXT_INSTALL:?} golang.go
 ${CMD_CODE_EXT_INSTALL:?} jinliming2.vscode-go-template
 ${CMD_CODE_EXT_INSTALL:?} redhat.vscode-yaml
+${CMD_CODE_EXT_INSTALL:?} vmsynkov.colonize
 
 # Install latest LTS release of NodeJS
 # following instructions at: https://github.com/nodesource/distributions
