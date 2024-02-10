@@ -7,7 +7,7 @@ blocking:
   blockType: 192.168.50.61
   blackLists:
     base:
-      - https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/gambling-porn/hosts
+      - https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/gambling/hosts
   whiteLists:
     base:
       - |
