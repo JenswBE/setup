@@ -96,7 +96,7 @@ sudo docker run --rm -v ${APPDATA_DIR:?}/borgmatic/borgmatic/restore:/backup doc
 
 ```bash
 # Listed entry should be recent
-sudo docker exec borgmatic cat /mnt/borg/mnt/source/home-automation/home-assistant/config/home-assistant.log | tail -n 1
+sudo docker exec borgmatic ls -ltc /mnt/borg/mnt/source/home-automation/home-assistant/config/
 ```
 
 ### MariaDB
