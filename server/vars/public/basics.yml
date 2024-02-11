@@ -38,4 +38,10 @@ security_fail2ban_enabled: false # Handled by CrowdSec
 security_ssh_password_authentication: "yes"
 
 # Zabbix
-zabbix_version: "6.4"
+zabbix:
+  amd64:
+    version: "6.4"
+    debian_suffix: ""
+  arm64:
+    version: "6.0"
+    debian_suffix: "-arm64"
