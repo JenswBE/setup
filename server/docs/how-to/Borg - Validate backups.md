@@ -95,7 +95,7 @@ sudo docker run --rm -v ${APPDATA_DIR:?}/borgmatic/borgmatic/restore:/backup doc
 ### Home Assistant
 
 ```bash
-# Listed entry should be recent
+# Listed entries should be recent
 sudo docker exec borgmatic ls -ltc /mnt/borg/mnt/source/home-automation/home-assistant/config/
 ```
 
@@ -168,7 +168,7 @@ sudo docker exec plex sh -c "find /data/Photos -type f -mmin +${MINS_SINCE_MIDNI
 sudo docker exec borgmatic sh -c "find /mnt/borg/mnt/source/plex/photos -type f -mmin +${MINS_SINCE_MIDNIGHT:?} -exec stat -c '%Y %n' {} \; | sort -nr | head -n 3 | cut -d' ' -f2- | tr \\\n \\\0 | xargs -0 ls -lah"
 ```
 
-### Postges
+### Postgres
 
 ```bash
 # Copy all Postgres dumps to the restore point
@@ -203,6 +203,8 @@ sudo docker run --pull always --rm -v ${APPDATA_DIR:?}/borgmatic/borgmatic/resto
 
 ### Vaultwarden
 
+Based on https://github.com/dani-garcia/vaultwarden/wiki/Backing-up-your-vault
+
 ```bash
 # Copy DB to restore point
 sudo docker exec borgmatic cp /mnt/borg/mnt/source/vaultwarden/data/db.backup.sqlite3 /mnt/restore/vaultwarden.sqlite3
@@ -210,6 +212,9 @@ sudo docker exec borgmatic cp /mnt/borg/mnt/source/vaultwarden/data/db.backup.sq
 # Validate if backup contains recent devices.
 # The accuracy of this check depens on how recently a device used Vaultwarden.
 sudo docker run --pull always --rm -v ${APPDATA_DIR:?}/borgmatic/borgmatic/restore:/backup alpine sh -c 'apk add sqlite; sqlite3 --table /backup/vaultwarden.sqlite3 "SELECT updated_at, name FROM devices ORDER BY updated_at DESC LIMIT 3;"'
+
+# Listed entries should be recent
+sudo docker exec borgmatic ls -ltc /mnt/borg/mnt/source/vaultwarden/data/
 ```
 
 ### Wiki.js
