@@ -35,9 +35,6 @@
         group: nut
         mode: "755"
 
-    - name: Test upssched-cmd (should receive email)
-      ansible.builtin.command: /usr/sbin/upssched-cmd test
-
     - name: Force restart NUT services
       ansible.builtin.service:
         name: "{{ item }}"
@@ -48,7 +45,11 @@
         - nut-monitor
 
     - name: Restart NUT driver - Stop
+      ignore_errors: true # Will fail if driver wasn't started
       ansible.builtin.command: /usr/sbin/upsdrvctl stop
 
     - name: Restart NUT driver - Start
       ansible.builtin.command: /usr/sbin/upsdrvctl start
+
+    - name: Test upssched-cmd (should receive email)
+      ansible.builtin.command: /usr/sbin/upssched-cmd test
