@@ -11,7 +11,7 @@ http:
         stsSeconds: 31536000
 
     local-only:
-      ipWhiteList:
+      IPAllowList:
         sourceRange:
           - "{{ network_local_ipv4 }}"
           - "{{ network_local_ipv6 }}"
