@@ -734,7 +734,7 @@ services:
 
   zabbix-web:
     <<: *defaults
-    image: "docker.io/zabbix/zabbix-web-nginx-pgsql:alpine-{{ zabbix_version }}-latest"
+    image: "docker.io/zabbix/zabbix-web-nginx-pgsql:alpine-{{ zabbix.server.version }}-latest"
     container_name: zabbix-web
     volumes:
       - /etc/localtime:/etc/localtime:ro
@@ -785,7 +785,7 @@ services:
 
   zabbix-server:
     <<: [*defaults, *extra-docker-host]
-    image: "docker.io/zabbix/zabbix-server-pgsql:alpine-{{ zabbix_version }}-latest"
+    image: "docker.io/zabbix/zabbix-server-pgsql:alpine-{{ zabbix.server.version }}-latest"
     container_name: zabbix-server
     environment:
       TZ: "{{ general_timezone }}"

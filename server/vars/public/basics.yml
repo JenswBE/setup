@@ -39,9 +39,12 @@ security_ssh_password_authentication: "yes"
 
 # Zabbix
 zabbix:
-  amd64:
+  server:
     version: "6.4"
-    debian_suffix: ""
-  arm64:
-    version: "6.0"
-    debian_suffix: "-arm64"
+  client:
+    amd64:
+      version: "6.4"
+      debian_suffix: ""
+    arm64:
+      version: "6.0"
+      debian_suffix: "-arm64"
