@@ -2,6 +2,15 @@
   hosts: all
 
   tasks:
+    - name: Disable Intel HDA power save (stops popping)
+      become: true
+      ansible.builtin.copy:
+        src: snd-hda-intel-disable-powersave.conf
+        dest: /etc/modprobe.d/snd-hda-intel-disable-powersave.conf
+        owner: root
+        group: root
+        mode: "644"
+
     - name: Add /var/media mount
       become: true
       register: add_var_media_mount
