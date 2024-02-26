@@ -4,26 +4,6 @@ import unittest
 import cmd
 
 
-class TestIsFalsePositive(unittest.TestCase):
-
-    def test_false_positives(self):
-        for case in [
-            cmd.Info(85, set(['OL', 'LB', 'RB'])),
-            cmd.Info(100, set(['OL', 'LB', 'RB'])),
-            cmd.Info(100, set(['LB', 'OL', 'RB'])),
-            cmd.Info(100, set(['LB', 'OL', 'RB', 'OTHER'])),
-        ]:
-            self.assertTrue(cmd.is_false_positive(case))
-
-    def test_not_false_positives(self):
-        for case in [
-            cmd.Info(0, set(['OL', 'LB', 'RB'])),
-            cmd.Info(-5, set(['OL', 'LB', 'RB'])),
-            cmd.Info(100, set(['LB', 'RB'])),
-        ]:
-            self.assertFalse(cmd.is_false_positive(case))
-
-
 class TestParseEnvFile(unittest.TestCase):
 
     def test_parse_env_file(self):

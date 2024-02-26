@@ -46,15 +46,6 @@ def collect_info() -> Info:
     )
 
 
-def is_false_positive(info: Info):
-    """Considered false-positive if battery level is still over 85% and has status online,
-    low battery and replace battery at the same time"""
-    # OL = ONLINE = Wall power
-    # LB = Low battery
-    # RB = Replace battery
-    return info.battery_level >= 85 and info.status.issuperset(set(['OL', 'LB', 'RB']))
-
-
 def parse_env_file(file: io.TextIOWrapper) -> dict[str, str]:
     config = {}
     for line in file:
@@ -124,18 +115,8 @@ def build_email(event: str, info: Info) -> Email:
 
 
 def main():
-    # Collect info
-    info = collect_info()
-
-    # Get event
-    event = sys.argv[1]
-    if event in ['lowbatt', 'replbatt'] and is_false_positive(info):
-        print(
-            f"Ignoring event {event} as it is a false-positive: {repr(info)}")
-        sys.exit(0)
-
     # Send email
-    email = build_email(event, info)
+    email = build_email(sys.argv[1], collect_info())
     subprocess.run(
         [
             '/opt/smtp-cli/smtp-cli',
