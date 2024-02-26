@@ -219,4 +219,7 @@ sudo docker exec borgmatic ls -ltc /mnt/borg/mnt/source/vaultwarden/data/
 
 ### Wiki.js
 
-TODO
+```bash
+# Check if recent files are in export
+sudo docker exec borgmatic bash -c 'ls -Alth /mnt/borg/mnt/source/wikijs/backup/*'
+```
