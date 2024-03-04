@@ -669,7 +669,8 @@ services:
       KC_DB_SCHEMA: public
       KC_HOSTNAME: "auth.{{ general_domain_default }}"
       KC_HOSTNAME_STRICT: "false" # Hostnames validated by Traefik
-      KC_PROXY: edge
+      KC_PROXY_HEADERS: xforwarded
+      KC_HTTP_ENABLED: "true"
       # Only for initial setup
       # KEYCLOAK_ADMIN: admin
       # KEYCLOAK_ADMIN_PASSWORD: change_me
