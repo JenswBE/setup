@@ -15,8 +15,8 @@ Services which are backed up:
   - `vaultwarden` (Vaultwarden): SQLite DB and data
   - `wikijs` (Wiki.js): Data (human readable backup format like Markdown)
   - `wikijs-db` (Postgres): DB data
-  - `wtech-ghost` (Ghost): Uploaded content
-  - `wtech-ghost-db` (MySQL): DB data
+  - `wtech-directus` (Directus): Uploaded content
+  - `wtech-directus-db` (Postgres): DB data
 - Fiona
   - `unifi-controller` (Unifi Controller): Network config
 - Kubo
@@ -43,9 +43,15 @@ sudo docker exec borgmatic sh -c 'rm -rf /mnt/restore/*'
 APPDATA_DIR=/opt/appdata
 ```
 
-### Ghost
+### Directus
 
-**TODO**
+```bash
+# List 3 newest files in live service.
+sudo docker exec wtech-directus ls -Alt /directus/uploads | head -n 4
+
+# Compare against 3 newest files in backup
+sudo docker exec borgmatic ls -Alt /mnt/borg/mnt/source/wtech/directus/uploads | head -n 4
+```
 
 ### GitHub Backup
 
@@ -105,10 +111,6 @@ sudo docker exec borgmatic ls -ltc /mnt/borg/mnt/source/home-automation/home-ass
 # Check backup date of all MariaDB dumps
 sudo docker exec borgmatic find /mnt/borg -name "*.sqldump" -exec echo {} \; -exec tail -n1 {} \; -exec echo Number of tables: \; -exec bash -c "grep -F 'CREATE TABLE' {} | wc -l" \;
 ```
-
-### MySQL
-
-**TODO**
 
 ### Nextcloud
 

@@ -1,5 +1,5 @@
 [Unit]
-Description=Dump WTech Ghost DB every night for backup
+Description=Dump WTech Directus DB every night for backup
 
 [Timer]
 OnCalendar=*-*-* 02:00:00

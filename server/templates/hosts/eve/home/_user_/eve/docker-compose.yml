@@ -536,65 +536,62 @@ services:
   # =========================
   # =      W-TECHNIEKEN     =
   # =========================
-  wtech-ghost:
+  # sudo docker exec -u root wtech-directus chown -R node:node /directus/uploads
+  # sudo docker restart wtech-directus
+  wtech-directus:
     <<: *defaults
-    image: docker.io/library/ghost:5-alpine
-    container_name: wtech-ghost
+    image: docker.io/directus/directus:10.10
+    container_name: wtech-directus
     depends_on:
-      - wtech-ghost-db
+      - wtech-directus-db
     environment:
-      # see https://ghost.org/docs/config/#configuration-options
+      # See https://docs.directus.io/self-hosted/config-options#general
       TZ: "{{ general_timezone }}"
-      database__client: mysql
-      database__connection__host: wtech-ghost-db
-      database__connection__user: root
-      database__connection__password: "{{ app_wtech_ghost_db_pass }}"
-      database__connection__database: ghost
-      mail__transport: SMTP
-      mail__options__service: Mailjet
-      mail__options__host: "{{ mailjet_host }}"
-      mail__options__port: "{{ mailjet_port_starttls }}"
-      mail__options__requireTLS: "true"
-      mail__options__auth__user: "{{ mailjet_username }}"
-      mail__options__auth__pass: "{{ mailjet_password }}"
-      url: "https://{{ general_domain_wtech }}"
+      KEY: "{{ app_wtech_directus_key }}"
+      SECRET: "{{ app_wtech_directus_secret }}"
+      DB_CLIENT: pg
+      DB_HOST: wtech-directus-db
+      DB_PORT: "5432"
+      DB_DATABASE: directus
+      DB_USER: directus
+      DB_PASSWORD: directus
+      ADMIN_EMAIL: "{{ app_wtech_directus_admin_email }}"
+      ADMIN_PASSWORD: "{{ app_wtech_directus_admin_password }}"
+      PUBLIC_URL: "https://beheer.{{ general_domain_wtech }}"
+      EMAIL_FROM: "beheer@{{ general_domain_wtech }}"
+      EMAIL_TRANSPORT: smtp
+      EMAIL_SMTP_HOST: "{{ mailjet_host }}"
+      EMAIL_SMTP_PORT: "{{ mailjet_port_starttls }}"
+      EMAIL_SMTP_USER: "{{ mailjet_username }}"
+      EMAIL_SMTP_PASSWORD: "{{ mailjet_password }}"
     networks:
       - traefik
-      - wtech-ghost
+      - wtech-directus
     volumes:
-      - "{{ general_path_appdata }}/wtech/ghost/content:/var/lib/ghost/content:z"
+      - "{{ general_path_appdata }}/wtech/directus/uploads:/directus/uploads:z"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.wtech-ghost.entrypoints=websecure"
-      - "traefik.http.routers.wtech-ghost.rule=Host(`{{ general_domain_wtech }}`)"
-      - "traefik.http.routers.wtech-ghost.tls.certresolver=le-tls"
-      - "traefik.http.routers.wtech-ghost-www-redirect.entrypoints=websecure"
-      - "traefik.http.routers.wtech-ghost-www-redirect.rule=Host(`www.{{ general_domain_wtech }}`)"
-      - "traefik.http.routers.wtech-ghost-www-redirect.tls.certresolver=le-tls"
-      - "traefik.http.routers.wtech-ghost-www-redirect.middlewares=redirect-www-to-root@file"
-      - "traefik.http.services.wtech-ghost-{{ ansible_hostname }}.loadbalancer.server.port=2368"
+      - "traefik.http.routers.wtech-directus.entrypoints=websecure"
+      - "traefik.http.routers.wtech-directus.rule=Host(`beheer.{{ general_domain_wtech }}`)"
+      - "traefik.http.routers.wtech-directus.tls.certresolver=le-tls"
+      - "traefik.http.services.wtech-directus-{{ ansible_hostname }}.loadbalancer.server.port=8055"
 
-  wtech-ghost-db:
+  wtech-directus-db:
     <<: *defaults
-    image: docker.io/library/mysql:8.2
-    container_name: wtech-ghost-db
+    image: docker.io/library/postgres:16
+    container_name: wtech-directus-db
+    networks:
+      - wtech-directus
+    security_opt:
+      - no-new-privileges=true
+    volumes:
+      - "{{ general_path_appdata }}/wtech/directus/db:/var/lib/postgresql/data"
+      - wtech-directus-db-dump:/backup
     environment:
       TZ: "{{ general_timezone }}"
-      MYSQL_ROOT_PASSWORD: "{{ app_wtech_ghost_db_pass }}"
-    networks:
-      - wtech-ghost
-    volumes:
-      - "{{ general_path_appdata }}/wtech/ghost/db:/var/lib/mysql:z"
-      - wtech-ghost-db-dump:/backup
-    healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          "mysqladmin -u $$MYSQL_USER --password=$$MYSQL_PASSWORD ping || exit 1",
-        ]
-      interval: 30s
-      timeout: 10s
-      retries: 5
+      POSTGRES_USER: directus
+      POSTGRES_DB: directus
+      POSTGRES_PASSWORD: directus
 
   # =========================
   # =      GOAT COUNTER     =
@@ -1026,8 +1023,8 @@ services:
       - "{{ general_path_appdata }}/vaultwarden/data:/mnt/source/vaultwarden/data:ro"
       - "wikijs-backup:/mnt/source/wikijs/backup:ro"
       - "wikijs-db-dump:/mnt/source/wikijs/dbdump:ro"
-      - "{{ general_path_appdata }}/wtech/ghost/content:/mnt/source/wtech/ghost/content:ro"
-      - "wtech-ghost-db-dump:/mnt/source/wtech/ghost/dbdump:ro"
+      - "{{ general_path_appdata }}/wtech/directus/uploads:/mnt/source/wtech/directus/uploads:z"
+      - "wtech-directus-db-dump:/mnt/source/wtech/directus/dbdump:ro"
       # Config and cache
       - "./borgmatic/borgmatic.d/config.yaml:/etc/borgmatic.d/config.yaml"
       - "./borgmatic/ssh/BorgHost:/root/.ssh/BorgHost"
@@ -1071,7 +1068,7 @@ volumes:
   traefik-cert:
   wikijs-backup:
   wikijs-db-dump:
-  wtech-ghost-db-dump:
+  wtech-directus-db-dump:
 
 # #################################################################
 # #                            NETWORKS                           #
@@ -1101,5 +1098,5 @@ networks:
   wikijs:
     name: wikijs
 
-  wtech-ghost:
-    name: wtech-ghost
+  wtech-directus:
+    name: wtech-directus

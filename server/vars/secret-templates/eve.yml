@@ -86,8 +86,11 @@ app_wireguard:
         psk: "" # Run "wg genpsk" on server
         allowed_ips: [""] # E.g. 10.0.0.2/32
 
-# W-Technieken - Ghost
-app_wtech_ghost_db_pass: ""
+# W-Technieken - Directus
+app_wtech_directus_admin_email: ""
+app_wtech_directus_admin_password: ""
+app_wtech_directus_key: "" # cat /proc/sys/kernel/random/uuid
+app_wtech_directus_secret: "" # openssl rand -hex 32
 
 # Zabbix
 app_zabbix_agent_server: "" # Incoming connections will be accepted only from the hosts listed here.

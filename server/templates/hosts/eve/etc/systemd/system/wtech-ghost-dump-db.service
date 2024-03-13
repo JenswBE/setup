@@ -1,6 +1,0 @@
-[Unit]
-Description=Dump WTech Ghost DB for backup
-OnFailure=unit-fail-mail@%n.service
-
-[Service]
-ExecStart={{ docker_path }} exec wtech-ghost-db bash -c "mysqldump --default-character-set=utf8mb4 --single-transaction -u root -p$${MYSQL_ROOT_PASSWORD} ghost > /backup/wtech-ghost.sqldump"

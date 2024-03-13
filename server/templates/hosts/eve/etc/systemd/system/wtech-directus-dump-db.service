@@ -1,0 +1,6 @@
+[Unit]
+Description=Dump Directus DB for backup
+OnFailure=unit-fail-mail@%n.service
+
+[Service]
+ExecStart={{ docker_path }} exec wtech-directus-db /bin/sh -c "pg_dump --verbose --format=c --blobs --dbname=directus --username=directus --no-password --file=/backup/directus.pg_dump"

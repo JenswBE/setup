@@ -50,7 +50,7 @@
     - uptime-kuma-dump-db.timer
     - vaultwarden-dump-db.timer
     - wikijs-dump-db.timer
-    - wtech-ghost-dump-db.timer
+    - wtech-directus-dump-db.timer
   tags: ["systemd"]
 
 - name: Docker login to GHCR
