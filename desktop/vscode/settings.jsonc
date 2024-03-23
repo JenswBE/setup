@@ -4,6 +4,15 @@
   "editor.fontFamily": "Cascadia Code",
   "editor.fontLigatures": true,
   "editor.formatOnSave": true,
+  "emeraldwalk.runonsave": {
+    "commands": [
+      {
+        "match": "\\.go$",
+        "isAsync": false,
+        "cmd": "if ! command -v tagalign &> /dev/null; then go install github.com/4meepo/tagalign/cmd/tagalign@latest; fi; tagalign  --fix --sort --strict ${fileDirname}"
+      }
+    ]
+  },
   "explorer.confirmDelete": false,
   "explorer.confirmDragAndDrop": false,
   "extensions.ignoreRecommendations": true,
@@ -73,6 +82,7 @@
   "go.toolsGopath": "~/go",
   "go.toolsManagement.autoUpdate": true,
   "redhat.telemetry.enabled": false,
+  "rust-analyzer.inlayHints.typeHints.enable": false,
   "telemetry.telemetryLevel": "off",
   "terminal.integrated.allowChords": false,
   "terminal.integrated.persistentSessionReviveProcess": "never",
@@ -105,14 +115,5 @@
   },
   "[yaml]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "emeraldwalk.runonsave": {
-    "commands": [
-      {
-        "match": "\\.go$",
-        "isAsync": false,
-        "cmd": "if ! command -v tagalign &> /dev/null; then go install github.com/4meepo/tagalign/cmd/tagalign@latest; fi; tagalign  --fix --sort --strict ${fileDirname}"
-      }
-    ]
   }
 }
