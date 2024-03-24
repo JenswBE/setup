@@ -197,6 +197,12 @@ services:
         url: "https://stats.{{ general_domain_bjoetiek }}"
         <<: *tag_eve
 
+      - name: Interwego
+        subtitle: GoatCounter
+        logo: https://raw.githubusercontent.com/arp242/goatcounter/master/public/logo.svg
+        url: "https://stats.{{ general_domain_interwego }}"
+        <<: *tag_eve
+
       - name: Klokracing
         subtitle: GoatCounter
         logo: https://raw.githubusercontent.com/arp242/goatcounter/master/public/logo.svg
@@ -213,4 +219,10 @@ services:
         subtitle: GoatCounter
         logo: https://raw.githubusercontent.com/arp242/goatcounter/master/public/logo.svg
         url: "https://stats.{{ general_domain_tuinfeest }}"
+        <<: *tag_eve
+
+      - name: WTech
+        subtitle: GoatCounter
+        logo: https://raw.githubusercontent.com/arp242/goatcounter/master/public/logo.svg
+        url: "https://stats.{{ general_domain_wtech }}"
         <<: *tag_eve

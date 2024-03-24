@@ -620,8 +620,10 @@ services:
           `stats.{{ general_domain_default }}`,
           `stats-spellebel.{{ general_domain_default }}`,
           `stats.{{ general_domain_bjoetiek }}`,
+          `stats.{{ general_domain_interwego }}`,
           `stats.{{ general_domain_klokracing }}`,
           `stats.{{ general_domain_tuinfeest }}`,
+          `stats.{{ general_domain_wtech }}`,
         )
 
   # =========================
