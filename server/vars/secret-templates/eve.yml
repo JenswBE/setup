@@ -70,6 +70,13 @@ app_paperless_secret_key: "" # Long random string
 # Spellebel
 app_spellebel_sentry_dsn: ""
 
+# Tuinfeest - Directus
+app_tuinfeest_directus_admin_email: ""
+app_tuinfeest_directus_admin_password: ""
+app_tuinfeest_directus_github_token: ""
+app_tuinfeest_directus_key: "" # cat /proc/sys/kernel/random/uuid
+app_tuinfeest_directus_secret: "" # openssl rand -hex 32
+
 # Wiki.js
 app_wikijs_db_pass: ""
 
@@ -89,6 +96,7 @@ app_wireguard:
 # W-Technieken - Directus
 app_wtech_directus_admin_email: ""
 app_wtech_directus_admin_password: ""
+app_wtech_directus_github_token: ""
 app_wtech_directus_key: "" # cat /proc/sys/kernel/random/uuid
 app_wtech_directus_secret: "" # openssl rand -hex 32
 

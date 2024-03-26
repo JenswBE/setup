@@ -11,6 +11,8 @@ Services which are backed up:
   - `nextcloud` (Nextcloud): User files, config, calendars and addressbooks
   - `paperless` (Paperless-ngx): Files
   - `paperless-db` (Postgres): DB data
+  - `tuinfeest-directus` (Directus): Uploaded content
+  - `tuinfeest-directus-db` (Postgres): DB data
   - `uptime-kuma` (Uptime Kuma): SQLite DB
   - `vaultwarden` (Vaultwarden): SQLite DB and data
   - `wikijs` (Wiki.js): Data (human readable backup format like Markdown)
@@ -44,6 +46,18 @@ APPDATA_DIR=/opt/appdata
 ```
 
 ### Directus
+
+#### Tuinfeest
+
+```bash
+# List 3 newest files in live service.
+sudo docker exec tuinfeest-directus ls -Alt /directus/uploads | head -n 4
+
+# Compare against 3 newest files in backup
+sudo docker exec borgmatic ls -Alt /mnt/borg/mnt/source/tuinfeest/directus/uploads | head -n 4
+```
+
+#### WTech
 
 ```bash
 # List 3 newest files in live service.
