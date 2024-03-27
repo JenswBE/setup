@@ -1,6 +1,4 @@
-{{ lookup('ansible.builtin.file', 'files/docker-compose.default.yml',) }}
-
----
+#VAR:lookup('ansible.builtin.file', 'files/docker-compose.default.yml',):VAR#
 
 #################################################################
 #                            SERVICES                           #
@@ -42,15 +40,15 @@ services:
       - "--providers.docker.network=traefik"
       - "--providers.docker.exposedbydefault=false"
       - "--entrypoints.websecure.address=:443"
-      - "--entrypoints.websecure.proxyProtocol.trustedIPs={{ network_any_private }}"
+      - "--entrypoints.websecure.proxyProtocol.trustedIPs=#VAR:network_any_private:VAR#"
       - "--entrypoints.websecure.http.middlewares=secure-https@file"
       - "--entrypoints.web.address=:80"
-      - "--entrypoints.web.proxyProtocol.trustedIPs={{ network_any_private }}"
+      - "--entrypoints.web.proxyProtocol.trustedIPs=#VAR:network_any_private:VAR#"
       - "--entrypoints.web.http.redirections.entryPoint.to=websecure"
       - "--entrypoints.web.http.redirections.entryPoint.scheme=https"
       - "--certificatesresolvers.le-dns.acme.dnschallenge=true"
       - "--certificatesresolvers.le-dns.acme.dnschallenge.provider=cloudflare"
-      - "--certificatesresolvers.le-dns.acme.email={{ general_mail_admin }}@{{ general_domain_default }}"
+      - "--certificatesresolvers.le-dns.acme.email=#VAR:general_mail_admin:VAR#@#VAR:general_domain_default:VAR#"
       - "--certificatesresolvers.le-dns.acme.storage=/letsencrypt/acme-dns.json"
       - "--api=true"
       - "--ping.manualrouting=true"
@@ -65,8 +63,8 @@ services:
       - traefik-cert:/letsencrypt
       - traefik-access-logs:/access-logs
     environment:
-      TZ: "{{ general_timezone }}"
-      CF_DNS_API_TOKEN: "{{ app_traefik_cloudflare_token }}"
+      TZ: "#VAR:general_timezone:VAR#"
+      CF_DNS_API_TOKEN: "#VAR:app_traefik_cloudflare_token:VAR#"
 
   # ==========================
   # =         BLOCKY         =
@@ -85,9 +83,9 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.blocky.entrypoints=websecure"
-      - "traefik.http.routers.blocky.rule=Method(`GET`) && Host(`blocky.fiona.{{ general_domain_local }}`) && Path(`/metrics`)"
+      - "traefik.http.routers.blocky.rule=Method(`GET`) && Host(`blocky.fiona.#VAR:general_domain_local:VAR#`) && Path(`/metrics`)"
       - "traefik.http.routers.blocky.tls.certresolver=le-dns"
-      - "traefik.http.services.blocky-{{ ansible_hostname }}.loadbalancer.server.port=8080"
+      - "traefik.http.services.blocky-#VAR:ansible_hostname:VAR#.loadbalancer.server.port=8080"
 
   blocky-pixelserv-tls: # Serves transparent pixels for Blocky
     <<: *defaults
@@ -115,18 +113,18 @@ services:
     image: lscr.io/linuxserver/unifi-network-application:latest
     container_name: unifi-network-app
     environment:
-      TZ: "{{ general_timezone }}"
+      TZ: "#VAR:general_timezone:VAR#"
       PUID: "1000"
       PGID: "1000"
       MEM_LIMIT: "1024"
       MEM_STARTUP: "1024"
       MONGO_HOST: unifi-mongodb
       MONGO_PORT: "27017"
-      MONGO_USER: "{{ app_unifi_mongodb_user }}"
-      MONGO_PASS: "{{ app_unifi_mongodb_password }}"
+      MONGO_USER: "#VAR:app_unifi_mongodb_user:VAR#"
+      MONGO_PASS: "#VAR:app_unifi_mongodb_password:VAR#"
       MONGO_DBNAME: unifi
     volumes:
-      - "{{ general_path_appdata }}/unifi/network-app/config:/config"
+      - "#VAR:general_path_appdata:VAR#/unifi/network-app/config:/config"
     ports:
       - "10001:10001/udp" # Required for AP discovery
       - "8080:8080" # Required for device communication
@@ -138,11 +136,11 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.unifi.entrypoints=websecure"
-      - "traefik.http.routers.unifi.rule=Host(`unifi.{{ general_domain_local }}`)"
+      - "traefik.http.routers.unifi.rule=Host(`unifi.#VAR:general_domain_local:VAR#`)"
       - "traefik.http.routers.unifi.tls.certresolver=le-dns"
-      - "traefik.http.services.unifi-{{ ansible_hostname }}.loadbalancer.server.port=8443"
-      - "traefik.http.services.unifi-{{ ansible_hostname }}.loadbalancer.server.scheme=https"
-      - "traefik.http.services.unifi-{{ ansible_hostname }}.loadbalancer.serverstransport=insecure@file"
+      - "traefik.http.services.unifi-#VAR:ansible_hostname:VAR#.loadbalancer.server.port=8443"
+      - "traefik.http.services.unifi-#VAR:ansible_hostname:VAR#.loadbalancer.server.scheme=https"
+      - "traefik.http.services.unifi-#VAR:ansible_hostname:VAR#.loadbalancer.serverstransport=insecure@file"
     deploy:
       resources:
         limits:
@@ -155,11 +153,11 @@ services:
     image: docker.io/library/mongo:4.4
     container_name: unifi-mongodb
     environment:
-      TZ: "{{ general_timezone }}"
+      TZ: "#VAR:general_timezone:VAR#"
     networks:
       - unifi
     volumes:
-      - "{{ general_path_appdata }}/unifi/mongodb/data:/data/db"
+      - "#VAR:general_path_appdata:VAR#/unifi/mongodb/data:/data/db"
       - unifi-mongodb-dump:/backup
     deploy:
       resources:
@@ -177,15 +175,15 @@ services:
     ports:
       - 127.0.0.1:9000:8080
     environment:
-      TZ: "{{ general_timezone }}"
+      TZ: "#VAR:general_timezone:VAR#"
       COLLECTIONS: >-
         crowdsecurity/http-cve
         crowdsecurity/linux
         crowdsecurity/traefik
       PARSERS: >-
         crowdsecurity/nextcloud-whitelist
-      GID: "{{ ansible_real_group_id }}"
-      BOUNCER_KEY_firewall: "{{ app_crowdsec_bouncer_firewall_key }}"
+      GID: "#VAR:ansible_real_group_id:VAR#"
+      BOUNCER_KEY_firewall: "#VAR:app_crowdsec_bouncer_firewall_key:VAR#"
     volumes:
       # Config
       - ./crowdsec/acquis.yaml:/etc/crowdsec/acquis.yaml
@@ -212,17 +210,17 @@ services:
       - "./borgmatic/borgmatic.d/config.yaml:/etc/borgmatic.d/config.yaml"
       - "./borgmatic/ssh/BorgHost:/root/.ssh/BorgHost"
       - "./borgmatic/ssh/known_hosts:/root/.ssh/known_hosts"
-      - "{{ general_path_appdata }}/borgmatic/borgmatic/config:/root/.config/borg"
-      - "{{ general_path_appdata }}/borgmatic/borgmatic/cache:/root/.cache/borg"
-      - "{{ general_path_appdata }}/borgmatic/borgmatic/restore:/mnt/restore"
+      - "#VAR:general_path_appdata:VAR#/borgmatic/borgmatic/config:/root/.config/borg"
+      - "#VAR:general_path_appdata:VAR#/borgmatic/borgmatic/cache:/root/.cache/borg"
+      - "#VAR:general_path_appdata:VAR#/borgmatic/borgmatic/restore:/mnt/restore"
     devices:
       - "/dev/fuse:/dev/fuse" # Required for borg mount
     environment:
-      TZ: "{{ general_timezone }}"
+      TZ: "#VAR:general_timezone:VAR#"
       BACKUP_CRON: "0 3 * * *"
-      BORG_PASSPHRASE: "{{ app_borgmatic_borg_passphrase }}"
+      BORG_PASSPHRASE: "#VAR:app_borgmatic_borg_passphrase:VAR#"
       BORG_HOSTNAME_IS_UNIQUE: "yes" # Automatically removes stale locks
-      BORG_HOST_ID: "{{ ansible_hostname }}"
+      BORG_HOST_ID: "#VAR:ansible_hostname:VAR#"
     deploy:
       resources:
         limits:
