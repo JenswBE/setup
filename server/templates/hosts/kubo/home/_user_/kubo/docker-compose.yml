@@ -1,8 +1,16 @@
-#VAR:lookup('ansible.builtin.file', 'files/docker-compose.default.yml',):VAR#
+#################################################################
+#                            DEFAULTS                           #
+#################################################################
 
-#################################################################
-#                          COMMON ENVS                          #
-#################################################################
+x-defaults: &defaults
+  x-dummy: ""
+  # Putting the anchor in this file ensures it's a valid YAML file for Renovate Bot
+  #VAR:lookup('ansible.builtin.file', 'files/docker-compose-defaults.yml',) | indent(width=2):VAR#
+
+x-extra-docker-host: &extra-docker-host
+  extra_hosts:
+    - "host.docker.internal:host-gateway"
+
 x-glitchtip-env: &glitchtip-env
   TZ: "#VAR:general_timezone:VAR#"
   PORT: "8080"
@@ -12,6 +20,8 @@ x-glitchtip-env: &glitchtip-env
   EMAIL_URL: "smtp://#VAR:mailjet_username:VAR#:#VAR:mailjet_password:VAR#@#VAR:mailjet_host:VAR#:#VAR:mailjet_port_starttls:VAR#"
   DEFAULT_FROM_EMAIL: "glitchtip@#VAR:general_domain_default:VAR#"
   GLITCHTIP_DOMAIN: "https://glitchtip.#VAR:general_domain_default:VAR#"
+
+x-fix-prettier-formatting:
 
 #################################################################
 #                            SERVICES                           #

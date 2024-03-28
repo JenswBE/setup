@@ -1,0 +1,6 @@
+restart: always
+deploy:
+  resources:
+    limits:
+      cpus: "2"
+      memory: 512M

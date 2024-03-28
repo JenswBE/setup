@@ -1,4 +1,13 @@
-#VAR:lookup('ansible.builtin.file', 'files/docker-compose.default.yml',):VAR#
+#################################################################
+#                            DEFAULTS                           #
+#################################################################
+
+x-defaults: &defaults
+  x-dummy: ""
+  # Putting the anchor in this file ensures it's a valid YAML file for Renovate Bot
+  #VAR:lookup('ansible.builtin.file', 'files/docker-compose-defaults.yml',) | indent(width=2):VAR#
+
+x-fix-prettier-formatting:
 
 #################################################################
 #                            SERVICES                           #
@@ -907,7 +916,8 @@ services:
       - paperless-gotenberg
       - paperless-tika
     healthcheck:
-      test: ["CMD", "curl", "-fs", "-S", "--max-time", "2", "http://localhost:8000"]
+      test:
+        ["CMD", "curl", "-fs", "-S", "--max-time", "2", "http://localhost:8000"]
       interval: 30s
       timeout: 10s
       retries: 5
