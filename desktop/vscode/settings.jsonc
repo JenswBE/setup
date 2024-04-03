@@ -17,7 +17,8 @@
   "explorer.confirmDragAndDrop": false,
   "extensions.ignoreRecommendations": true,
   "files.associations": {
-    "*.gohtml": "html"
+    "*.gohtml": "html",
+    "*.txt.jinja2": "jinja"
   },
   "files.insertFinalNewline": true,
   "git.autofetch": true,
