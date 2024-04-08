@@ -39,8 +39,16 @@ sites:
     notify:
       - email_technical_en
 
+  - url: https://spellebel.be
+    notify:
+      - email_technical_en
+
   - url: https://tuinfeestbeerse.be
     notify:
       - email_technical_en
     ignored_links:
       - ^https://www.instagram.com/tuinfeest_beerse # Returns 429 - Too Many Requests.
+
+  - url: https://w-technieken.be
+    notify:
+      - email_technical_en
