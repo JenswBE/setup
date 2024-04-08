@@ -4,6 +4,7 @@
 
 - Aegis Authenticator (andOTP is unmaintained)
 - AnySoftKeyboard
+- Clock (alarms)
 - NewPipe
 - Open Camera
 - RedReader
@@ -28,20 +29,35 @@
 
 See https://iode.tech/en/iodeos-installation/
 
+## Calyx
+
+See https://calyxos.org/install/devices/FP5/linux/
+
 ## General setup
+
+### Reduce animation times
+
+In `Developers options`, change following values to `Anitmation scale .5x`:
+
+- Window animation scale
+- Transition animation scale
+- Animator duration scale
 
 ### Quick menu
 
-1. Wifi
+1. Internet
 1. Bluetooth
-1. Auto-rotate
 1. Do Not Disturb
-1. Caffeine
-1. Reading mode
+1. Flashlight
+1. Auto-rotate
 1. Battery Saver
 1. Extra dim
 1. Airplane mode
+1. NFC
+1. Hotspot
+1. Nearby Share
 1. Dark theme
+1. Night light
 
 ## Apps
 
@@ -58,10 +74,11 @@ https://github.com/ImranR98/Obtainium
 - [Collabora Office (com.collabora.libreoffice)](https://www.collaboraoffice.com/downloads/fdroid/repo/)
 - [DAVx5](https://github.com/bitfireAT/davx5-ose)
 - [Element](https://github.com/vector-im/element-android)
-- [Fenix (Firefox)](https://github.com/mozilla-mobile/firefox-android)
+- [Fenix (Firefox, same APK as Google Play)](https://ftp.mozilla.org/pub/fenix/releases/)
 - [Home Assistant](https://github.com/home-assistant/android) (version = [Minimal](https://companion.home-assistant.io/docs/core/android-flavors/))
 - [Jellyfin](https://github.com/jellyfin/jellyfin-android) (version = [Libre](https://github.com/jellyfin-archive/jellyfin-android-original/issues/331#issuecomment-623391632))
 - [Librera Reader](https://github.com/foobnix/LibreraReader)
+- [LocalSend](https://github.com/localsend/localsend)
 - [Mullvad VPN](https://github.com/mullvad/mullvadvpn-app)
 - [NewPipe](https://github.com/TeamNewPipe/NewPipe)
 - [Nextcloud](https://github.com/nextcloud/android)
@@ -96,7 +113,7 @@ https://github.com/ImranR98/Obtainium
 - [KopieID](https://play.google.com/store/apps/details?id=com.milvum.kopieid)
 - [Magic Earth](https://play.google.com/store/apps/details?id=com.generalmagic.magicearth)
 - [NMBS](https://play.google.com/store/apps/details?id=be.sncbnmbs.b2cmobapp)
-- [Plex](https://play.google.com/store/apps/details?id=com.plexapp.android)
+- [Proton Mail](https://play.google.com/store/apps/details?id=ch.protonmail.android)
 - [WhatsApp](https://play.google.com/store/apps/details?id=com.whatsapp)
 - [Zoho Email](https://play.google.com/store/apps/details?id=com.zoho.mail)
 
