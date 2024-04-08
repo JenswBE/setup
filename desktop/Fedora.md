@@ -34,6 +34,20 @@ sudo flatpak install flathub org.mozilla.firefox
 sudo rpm-ostree --idempotent install distrobox gnome-tweaks nextcloud-client nextcloud-client-nautilus virt-manager libvirt
 systemctl reboot
 
+# Install Android tools
+# Based on https://discussion.fedoraproject.org/t/how-to-use-adb-android-debugging-bridge-on-silverblue/2475
+wget https://dl.google.com/android/repository/platform-tools-latest-linux.zip
+unzip platform-tools-latest-linux.zip
+sudo cp -v platform-tools/adb platform-tools/fastboot platform-tools/mke2fs* /usr/local/bin
+rm -rf platform-tools*
+sudo wget -O /etc/udev/rules.d/51-android.rules 'https://raw.githubusercontent.com/M0Rf30/android-udev-rules/main/51-android.rules'
+sudo chmod a+r /etc/udev/rules.d/51-android.rules
+sudo groupadd adbusers
+sudo usermod -a -G adbusers $(whoami)
+sudo systemctl restart systemd-udevd.service
+adb kill-server
+adb devices
+
 # Install Flameshot
 mkdir -p   ~/Documents/AppImages
 wget -O ~/Documents/AppImages/Flameshot.AppImage https://github.com/flameshot-org/flameshot/releases/download/v12.1.0/Flameshot-12.1.0.x86_64.AppImage
