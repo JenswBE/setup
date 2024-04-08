@@ -1077,7 +1077,7 @@ services:
 
   borgmatic:
     <<: *defaults
-    image: docker.io/b3vis/borgmatic:latest
+    image: ghcr.io/borgmatic-collective/borgmatic:1.8
     container_name: borgmatic
     privileged: true # Required for borg mount
     cap_add:
