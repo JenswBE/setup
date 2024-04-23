@@ -1,6 +1,6 @@
 {
-  "name": "Keychron Q1V1 ANSI",
-  "vendorProductId": 875823360,
+  "name": "Keychron Q1V1 ANSI Knob",
+  "vendorProductId": 875823361,
   "macros": ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""],
   "layers": [
     [
@@ -33,7 +33,7 @@
       "KC_MINS",
       "KC_EQL",
       "KC_BSPC",
-      "KC_PSCR",
+      "KC_DEL",
       "KC_TAB",
       "KC_Q",
       "KC_W",
@@ -78,7 +78,7 @@
       "KC_SLSH",
       "KC_DOWN",
       "KC_RSFT",
-      "KC_DEL",
+      "KC_PSCR",
       "KC_LCTL",
       "KC_LGUI",
       "KC_LALT",
@@ -110,7 +110,7 @@
       "KC_TRNS",
       "KC_TRNS",
       "KC_TRNS",
-      "KC_F20",
+      "RGB_TOG",
       "KC_TRNS",
       "KC_TRNS",
       "KC_TRNS",
@@ -140,7 +140,7 @@
       "KC_TRNS",
       "KC_TRNS",
       "KC_TRNS",
-      "KC_PGUP",
+      "KC_TRNS",
       "KC_TRNS",
       "RGB_RMOD",
       "RGB_VAD",
@@ -155,7 +155,7 @@
       "KC_TRNS",
       "KC_TRNS",
       "KC_TRNS",
-      "KC_PGDN",
+      "KC_TRNS",
       "KC_TRNS",
       "KC_NO",
       "KC_TRNS",
@@ -163,7 +163,7 @@
       "KC_TRNS",
       "KC_TRNS",
       "KC_TRNS",
-      "KC_TRNS",
+      "MAGIC_TOGGLE_NKRO",
       "KC_TRNS",
       "KC_TRNS",
       "KC_TRNS",
@@ -372,5 +372,12 @@
       "KC_TRNS"
     ]
   ],
-  "encoders": []
+  "encoders": [
+    [
+      ["KC_VOLD", "KC_VOLU"],
+      ["RGB_VAD", "RGB_VAI"],
+      ["KC_TRNS", "KC_TRNS"],
+      ["KC_TRNS", "KC_TRNS"]
+    ]
+  ]
 }
