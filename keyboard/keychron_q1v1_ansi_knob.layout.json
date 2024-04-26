@@ -1,7 +1,24 @@
 {
   "name": "Keychron Q1V1 ANSI Knob",
   "vendorProductId": 875823361,
-  "macros": ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""],
+  "macros": [
+    "{+KC_ESC}{100}{-KC_ESC}{1500}{+KC_W}{100}{-KC_W}{500}{+KC_ENT}{100}{-KC_ENT}{1000}{+KC_S}{100}{-KC_S}{500}{+KC_ENT}{100}{-KC_ENT}{1000}{+KC_SPC}{100}{-KC_SPC}{1500}{+KC_ESC}{100}{-KC_ESC}{1000}{+KC_ESC}{100}{-KC_ESC}",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    ""
+  ],
   "layers": [
     [
       "KC_ESC",
@@ -109,7 +126,7 @@
       "KC_TRNS",
       "KC_TRNS",
       "KC_TRNS",
-      "KC_TRNS",
+      "MACRO(0)",
       "RGB_TOG",
       "KC_TRNS",
       "KC_TRNS",
