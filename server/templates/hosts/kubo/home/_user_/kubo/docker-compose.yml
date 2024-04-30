@@ -125,11 +125,11 @@ services:
       - "traefik.http.routers.oauth2-proxy.entrypoints=websecure"
       - "traefik.http.routers.oauth2-proxy.tls.certresolver=le-tls"
       - >-
-        traefik.http.routers.oauth2-proxy.rule=Host(
-          `dtu.#VAR:general_domain_default:VAR#`,
-          `pdf.#VAR:general_domain_default:VAR#`,
-          `torrent.#VAR:general_domain_default:VAR#`,
-          `traefik.#VAR:ansible_hostname:VAR#.#VAR:general_domain_default:VAR#`,
+        traefik.http.routers.oauth2-proxy.rule=(
+        Host(`dtu.#VAR:general_domain_default:VAR#`) ||
+        Host(`pdf.#VAR:general_domain_default:VAR#`) ||
+        Host(`torrent.#VAR:general_domain_default:VAR#`) ||
+        Host(`traefik.#VAR:ansible_hostname:VAR#.#VAR:general_domain_default:VAR#`)
         ) && PathPrefix(`/oauth2/`)
       - "traefik.http.services.oauth2-proxy-#VAR:ansible_hostname:VAR#.loadbalancer.server.port=4180"
 

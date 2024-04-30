@@ -101,12 +101,12 @@ services:
       - "traefik.http.routers.oauth2-proxy.entrypoints=websecure"
       - "traefik.http.routers.oauth2-proxy.tls.certresolver=le-tls"
       - >-
-        traefik.http.routers.oauth2-proxy.rule=Host(
-          `assets.#VAR:general_domain_default:VAR#`,
-          `start.#VAR:general_domain_default:VAR#`,
-          `syncthing.#VAR:ansible_hostname:VAR#.#VAR:general_domain_default:VAR#`,
-          `traefik.#VAR:ansible_hostname:VAR#.#VAR:general_domain_default:VAR#`,
-          `uptime.#VAR:general_domain_default:VAR#`,
+        traefik.http.routers.oauth2-proxy.rule=(
+        Host(`assets.#VAR:general_domain_default:VAR#`) ||
+        Host(`start.#VAR:general_domain_default:VAR#`) ||
+        Host(`syncthing.#VAR:ansible_hostname:VAR#.#VAR:general_domain_default:VAR#`) ||
+        Host(`traefik.#VAR:ansible_hostname:VAR#.#VAR:general_domain_default:VAR#`) ||
+        Host(`uptime.#VAR:general_domain_default:VAR#`)
         ) && PathPrefix(`/oauth2/`)
       - "traefik.http.services.oauth2-proxy-#VAR:ansible_hostname:VAR#.loadbalancer.server.port=4180"
 
@@ -152,7 +152,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.nextcloud.entrypoints=websecure"
-      - "traefik.http.routers.nextcloud.rule=Host(`nextcloud.#VAR:general_domain_default:VAR#`, `bestanden.#VAR:general_domain_tuinfeest:VAR#`)"
+      - "traefik.http.routers.nextcloud.rule=Host(`nextcloud.#VAR:general_domain_default:VAR#`) || Host(`bestanden.#VAR:general_domain_tuinfeest:VAR#`)"
       - "traefik.http.routers.nextcloud.tls.certresolver=le-tls"
       - "traefik.http.routers.nextcloud.middlewares=nextcloud-redirect-dav@file, nextcloud-redirect-webfinger@file"
     deploy:
@@ -400,9 +400,9 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.bjoetiek-backend.entrypoints=websecure"
       - >-
-        traefik.http.routers.bjoetiek-backend.rule=Host(
-          `backend.#VAR:general_domain_bjoetiek:VAR#`,
-          `beheer.#VAR:general_domain_bjoetiek:VAR#`,
+        traefik.http.routers.bjoetiek-backend.rule=(
+        Host(`backend.#VAR:general_domain_bjoetiek:VAR#`) ||
+        Host(`beheer.#VAR:general_domain_bjoetiek:VAR#`)
         ) && !PathPrefix(`/images`)
       - "traefik.http.routers.bjoetiek-backend.tls.certresolver=le-tls"
       - "traefik.http.routers.bjoetiek-backend.middlewares=bjoetiek-cors@file"
@@ -499,9 +499,9 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.bjoetiek-test-backend.entrypoints=websecure"
       - >-
-        traefik.http.routers.bjoetiek-test-backend.rule=Host(
-          `test-backend.#VAR:general_domain_bjoetiek:VAR#`,
-          `test-beheer.#VAR:general_domain_bjoetiek:VAR#`,
+        traefik.http.routers.bjoetiek-test-backend.rule=(
+        Host(`test-backend.#VAR:general_domain_bjoetiek:VAR#`) ||
+        Host(`test-beheer.#VAR:general_domain_bjoetiek:VAR#`)
         ) && !PathPrefix(`/images`)
       - "traefik.http.routers.bjoetiek-test-backend.tls.certresolver=le-tls"
       - "traefik.http.routers.bjoetiek-test-backend.middlewares=bjoetiek-cors@file"
@@ -689,14 +689,14 @@ services:
       - "traefik.http.routers.goatcounter.entrypoints=websecure"
       - "traefik.http.routers.goatcounter.tls.certresolver=le-tls"
       - >-
-        traefik.http.routers.goatcounter.rule=Host(
-          `stats.#VAR:general_domain_default:VAR#`,
-          `stats-spellebel.#VAR:general_domain_default:VAR#`,
-          `stats.#VAR:general_domain_bjoetiek:VAR#`,
-          `stats.#VAR:general_domain_interwego:VAR#`,
-          `stats.#VAR:general_domain_klokracing:VAR#`,
-          `stats.#VAR:general_domain_tuinfeest:VAR#`,
-          `stats.#VAR:general_domain_wtech:VAR#`,
+        traefik.http.routers.goatcounter.rule=(
+        Host(`stats.#VAR:general_domain_default:VAR#`) ||
+        Host(`stats-spellebel.#VAR:general_domain_default:VAR#`) ||
+        Host(`stats.#VAR:general_domain_bjoetiek:VAR#`) ||
+        Host(`stats.#VAR:general_domain_interwego:VAR#`) ||
+        Host(`stats.#VAR:general_domain_klokracing:VAR#`) ||
+        Host(`stats.#VAR:general_domain_tuinfeest:VAR#`) ||
+        Host(`stats.#VAR:general_domain_wtech:VAR#`)
         )
 
   # =========================
@@ -751,9 +751,9 @@ services:
       - "traefik.http.routers.keycloak.entrypoints=websecure"
       - "traefik.http.routers.keycloak.tls.certresolver=le-tls"
       - >-
-        traefik.http.routers.keycloak.rule=Host(
-          `auth.#VAR:general_domain_default:VAR#`,
-          `auth.#VAR:general_domain_bjoetiek:VAR#`,
+        traefik.http.routers.keycloak.rule=(
+        Host(`auth.#VAR:general_domain_default:VAR#`) ||
+        Host(`auth.#VAR:general_domain_bjoetiek:VAR#`)
         )
       - "traefik.http.services.keycloak-#VAR:ansible_hostname:VAR#.loadbalancer.server.port=8080"
     deploy:
