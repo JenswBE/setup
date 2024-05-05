@@ -34,7 +34,7 @@ Services which are backed up:
 
 ## Validations
 
-To validate the backups, first follow [instructions to mount the archive](Restore%20Borg%20backup.md).
+To validate the backups, first follow [instructions to mount the archive](Borg%20-%20Restore%20backup.md).
 Next, make following preparations:
 
 ```bash
@@ -182,6 +182,10 @@ sudo docker exec plex sh -c "find /data/Photos -type f -mmin +${MINS_SINCE_MIDNI
 
 # Compare against files in backup
 sudo docker exec borgmatic sh -c "find /mnt/borg/mnt/source/plex/photos -type f -mmin +${MINS_SINCE_MIDNIGHT:?} -exec stat -c '%Y %n' {} \; | sort -nr | head -n 3 | cut -d' ' -f2- | tr \\\n \\\0 | xargs -0 ls -lah"
+
+# Repeat the same for music
+sudo docker exec plex sh -c "find /data/media/Music -type f -mmin +${MINS_SINCE_MIDNIGHT:?} -exec stat -c '%Y %n' {} \; | sort -nr | head -n 3 | cut -d' ' -f2- | tr \\\n \\\0 | xargs -0 ls -lah"
+sudo docker exec borgmatic sh -c "find /mnt/borg/mnt/source/plex/music -type f -mmin +${MINS_SINCE_MIDNIGHT:?} -exec stat -c '%Y %n' {} \; | sort -nr | head -n 3 | cut -d' ' -f2- | tr \\\n \\\0 | xargs -0 ls -lah"
 ```
 
 ### Postgres
