@@ -155,7 +155,7 @@ services:
   # =========================
   ha:
     <<: *defaults
-    image: docker.io/homeassistant/home-assistant:stable
+    image: ghcr.io/home-assistant/home-assistant:stable
     container_name: ha
     networks:
       - traefik
@@ -176,7 +176,7 @@ services:
 
   ha-zigbee2mqtt:
     <<: *defaults
-    image: docker.io/koenkk/zigbee2mqtt:latest
+    image: ghcr.io/koenkk/zigbee2mqtt:latest
     container_name: ha-zigbee2mqtt
     networks:
       - home-automation

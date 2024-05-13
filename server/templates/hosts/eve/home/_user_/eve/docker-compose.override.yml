@@ -21,7 +21,7 @@ services:
 #BLOCK:for year in range(2019,2023+1):BLOCK#
   "nginx-tuinfeest-archive-#VAR:year:VAR#":
     <<: *defaults
-    image: docker.io/nginxinc/nginx-unprivileged:alpine
+    image: ghcr.io/nginxinc/nginx-unprivileged:alpine
     container_name: "nginx-tf-archive-#VAR:year:VAR#"
     user: "#VAR:ansible_real_user_id:VAR#"
     networks:

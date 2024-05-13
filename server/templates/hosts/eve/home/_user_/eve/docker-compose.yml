@@ -249,7 +249,7 @@ services:
   # =========================
   nginx-tuinfeest-beta:
     <<: *defaults
-    image: docker.io/nginxinc/nginx-unprivileged:alpine
+    image: ghcr.io/nginxinc/nginx-unprivileged:alpine
     container_name: nginx-tuinfeest-beta
     networks:
       - traefik
