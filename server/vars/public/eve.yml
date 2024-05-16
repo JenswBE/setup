@@ -1,11 +1,11 @@
 # Firewall
 # Ensure to update firewall on cloud provider!
 firewall_additional_ports:
-  - comment: Traefik HTTP
+  - comment: Nginx HTTP
     port: 80
     protos: [tcp]
     from_networks: [any]
-  - comment: Traefik HTTPS
+  - comment: Nginx HTTPS
     port: 443
     protos: [tcp]
     from_networks: [any]

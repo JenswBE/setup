@@ -16,25 +16,19 @@ services:
   # =========================
   # =         PROXY         =
   # =========================
-  # Having 2 Traefik instances (1 on host network and 1 on bridge network)
+  # Having 2 reverse proxies (1 on host network and 1 on bridge network)
   # allows to have the real client IP's available inside the bridged
   # Treafik instance (using PROXY protocol). In case you would only have
-  # a single instance on the host network, you would loose all the convenience
-  # of the Docker provider support (not having to expose each service on a host
+  # a single reverse proxy on the host network, you would loose all the convenience
+  # of the Traefik Docker provider support (not having to expose each service on a host
   # port and auto-configuration of the services/loadbalancers).
-  traefik-host:
+  nginx:
     <<: *defaults
-    image: docker.io/library/traefik:latest
-    container_name: traefik-host
+    image: docker.io/library/nginx:alpine
+    container_name: nginx
     network_mode: host
-    command:
-      # - "--log.level=DEBUG"
-      - "--providers.file.directory=/conf"
-      - "--providers.file.watch=true"
-      - "--entrypoints.tcp80.address=:80"
-      - "--entrypoints.tcp443.address=:443"
     volumes:
-      - ./traefik/host:/conf:ro
+      - ./nginx/default.conf:/etc/nginx/nginx.conf:ro
 
   traefik:
     <<: *defaults
@@ -67,7 +61,7 @@ services:
     networks:
       - traefik
     volumes:
-      - ./traefik/bridge:/conf:ro
+      - ./traefik:/conf:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - traefik-cert:/letsencrypt
       - traefik-access-logs:/access-logs
