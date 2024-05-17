@@ -225,6 +225,7 @@ mkdir -p ~/Dev/{Personal,Interwego}
 git config --global user.name "<NAME>"
 git config --global user.email "<EMAIL>"
 git config --global pull.ff only
+git config --global init.defaultBranch main
 tee ~/Dev/Interwego/.gitconfig_include > /dev/null <<EOF
 [user]
 email = EMAIL

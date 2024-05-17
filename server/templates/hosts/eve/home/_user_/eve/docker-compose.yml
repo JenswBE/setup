@@ -535,6 +535,69 @@ services:
       - "traefik.http.routers.bjoetiek-test-imgproxy.middlewares=strip-images-prefix@file"
 
   # =========================
+  # =    KRISTOF COENEN     =
+  # =========================
+  # sudo docker exec -u root kristofcoenen-directus chown -R node:node /directus/uploads
+  # sudo docker restart kristofcoenen-directus
+  kristofcoenen-directus:
+    <<: *defaults
+    build:
+      context: directus
+    container_name: kristofcoenen-directus
+    depends_on:
+      - kristofcoenen-directus-db
+    environment:
+      # See https://docs.directus.io/self-hosted/config-options#general
+      TZ: "#VAR:general_timezone:VAR#"
+      KEY: "#VAR:app_kristofcoenen_directus_key:VAR#"
+      SECRET: "#VAR:app_kristofcoenen_directus_secret:VAR#"
+      DB_CLIENT: pg
+      DB_HOST: kristofcoenen-directus-db
+      DB_PORT: "5432"
+      DB_DATABASE: directus
+      DB_USER: directus
+      DB_PASSWORD: directus
+      ADMIN_EMAIL: "#VAR:app_kristofcoenen_directus_admin_email:VAR#"
+      ADMIN_PASSWORD: "#VAR:app_kristofcoenen_directus_admin_password:VAR#"
+      PUBLIC_URL: "https://beheer.#VAR:general_domain_kristofcoenen:VAR#"
+      EMAIL_FROM: "beheer@#VAR:general_domain_kristofcoenen:VAR#"
+      EMAIL_TRANSPORT: smtp
+      EMAIL_SMTP_HOST: "#VAR:mailjet_host:VAR#"
+      EMAIL_SMTP_PORT: "#VAR:mailjet_port_starttls:VAR#"
+      EMAIL_SMTP_USER: "#VAR:mailjet_username:VAR#"
+      EMAIL_SMTP_PASSWORD: "#VAR:mailjet_password:VAR#"
+      FLOWS_ENV_ALLOW_LIST: "FLOWS_ENV_GITHUB_TOKEN"
+      FLOWS_ENV_GITHUB_TOKEN: "#VAR:app_kristofcoenen_directus_github_token:VAR#"
+    networks:
+      - traefik
+      - kristofcoenen-directus
+    volumes:
+      - "#VAR:general_path_appdata:VAR#/kristofcoenen/directus/uploads:/directus/uploads:z"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.kristofcoenen-directus.entrypoints=websecure"
+      - "traefik.http.routers.kristofcoenen-directus.rule=Host(`beheer.#VAR:general_domain_kristofcoenen:VAR#`)"
+      - "traefik.http.routers.kristofcoenen-directus.tls.certresolver=le-tls"
+      - "traefik.http.services.kristofcoenen-directus-#VAR:ansible_hostname:VAR#.loadbalancer.server.port=8055"
+
+  kristofcoenen-directus-db:
+    <<: *defaults
+    image: docker.io/library/postgres:16
+    container_name: kristofcoenen-directus-db
+    networks:
+      - kristofcoenen-directus
+    security_opt:
+      - no-new-privileges=true
+    volumes:
+      - "#VAR:general_path_appdata:VAR#/kristofcoenen/directus/db:/var/lib/postgresql/data"
+      - kristofcoenen-directus-db-dump:/backup
+    environment:
+      TZ: "#VAR:general_timezone:VAR#"
+      POSTGRES_USER: directus
+      POSTGRES_DB: directus
+      POSTGRES_PASSWORD: directus
+
+  # =========================
   # =       TUINFEEST       =
   # =========================
   # sudo docker exec -u root tuinfeest-directus chown -R node:node /directus/uploads
@@ -1082,6 +1145,8 @@ services:
       - "#VAR:general_path_appdata:VAR#/bjoetiek/backend:/mnt/source/bjoetiek/backend:ro"
       - "#VAR:general_path_appdata:VAR#/goatcounter/db:/mnt/source/goatcounter/db:ro"
       - "keycloak-db-dump:/mnt/source/keycloak/dbdump:ro"
+      - "#VAR:general_path_appdata:VAR#/kristofcoenen/directus/uploads:/mnt/source/kristofcoenen/directus/uploads:z"
+      - "kristofcoenen-directus-db-dump:/mnt/source/kristofcoenen/directus/dbdump:ro"
       - "nc-db-dump:/mnt/source/nextcloud/dbdump:ro"
       - "nc-calcardbackup:/mnt/source/nextcloud/calcardbackup:ro"
       - "#VAR:general_path_appdata:VAR#/nextcloud/nextcloud/data:/mnt/source/nextcloud/data:ro"
@@ -1128,8 +1193,9 @@ volumes:
   crowdsec-db:
   isa-output:
   keycloak-db-dump:
-  nc-db-dump:
+  kristofcoenen-directus-db-dump:
   nc-calcardbackup:
+  nc-db-dump:
   oauth2-proxy-helper-config:
   oauth2-proxy-helper-data:
   paperless-consume:
@@ -1158,6 +1224,9 @@ networks:
 
   keycloak:
     name: keycloak
+
+  kristofcoenen-directus:
+    name: kristofcoenen-directus
 
   nextcloud:
     name: nextcloud

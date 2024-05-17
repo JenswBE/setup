@@ -7,6 +7,8 @@ Services which are backed up:
   - `bjoetiek-db` (Postgres): DB data
   - `goatcounter` (GoatCounter): SQLite DB
   - `keycloak-db` (Postgres): DB data
+  - `kristofcoenen-directus` (Directus): Uploaded content
+  - `kristofcoenen-directus-db` (Postgres): DB data
   - `nc-db` (MariaDB): DB data for Nextcloud
   - `nextcloud` (Nextcloud): User files, config, calendars and addressbooks
   - `paperless` (Paperless-ngx): Files
@@ -46,6 +48,16 @@ APPDATA_DIR=/opt/appdata
 ```
 
 ### Directus
+
+#### Kristof Coenen
+
+```bash
+# List 3 newest files in live service.
+sudo docker exec kristofcoenen-directus ls -Alt /directus/uploads | head -n 4
+
+# Compare against 3 newest files in backup
+sudo docker exec borgmatic ls -Alt /mnt/borg/mnt/source/kristofcoenen/directus/uploads | head -n 4
+```
 
 #### Tuinfeest
 
