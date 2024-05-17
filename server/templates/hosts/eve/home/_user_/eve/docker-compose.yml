@@ -752,6 +752,7 @@ services:
         Host(`stats.#VAR:general_domain_bjoetiek:VAR#`) ||
         Host(`stats.#VAR:general_domain_interwego:VAR#`) ||
         Host(`stats.#VAR:general_domain_klokracing:VAR#`) ||
+        Host(`stats.#VAR:general_domain_kristofcoenen:VAR#`) ||
         Host(`stats.#VAR:general_domain_tuinfeest:VAR#`) ||
         Host(`stats.#VAR:general_domain_wtech:VAR#`)
         )
