@@ -35,6 +35,23 @@
       ansible.builtin.include_vars: "secret/{{ ansible_hostname }}.yml"
       tags: ["always"]
 
+    - name: Lookup IP's
+      ansible.builtin.set_fact:
+        # Based on https://github.com/ansible/ansible/issues/20470
+        ip: |
+          {% set ip_map = {} %}
+          {% for host in hostnames %}
+          {% set _ = ip_map.update({host: query('community.dns.lookup', host + '.' + general_domain_local, search=false, nxdomain_handling="fail")[0]}) %}
+          {% endfor %}
+          {{ ip_map }}
+      vars:
+        hostnames:
+          - fiona
+          - hercules
+          - kubo
+          - rango
+      tags: ["always"]
+
   roles:
     - role: geerlingguy.security
       become: true

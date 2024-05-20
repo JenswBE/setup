@@ -4,10 +4,10 @@
 
 # Hercules
 
-/data/media {{ query('community.dns.lookup', 'hercules.' + general_domain_local, nxdomain_handling="fail")[0] }}(rw,no_subtree_check,insecure)
-/data/photos {{ query('community.dns.lookup', 'hercules.' + general_domain_local, nxdomain_handling="fail")[0] }}(rw,no_subtree_check,insecure)
+/data/media {{ ip['hercules'] }}(rw,no_subtree_check,insecure)
+/data/photos {{ ip['hercules'] }}(rw,no_subtree_check,insecure)
 
 # Rango
 
-/data/media {{ query('community.dns.lookup', 'rango.' + general_domain_local, nxdomain_handling="fail")[0] }}(rw,no_subtree_check,insecure)
-/data/photos {{ query('community.dns.lookup', 'rango.' + general_domain_local, nxdomain_handling="fail")[0] }}(rw,no_subtree_check,insecure)
+/data/media {{ ip['rango'] }}(rw,no_subtree_check,insecure)
+/data/photos {{ ip['rango'] }}(rw,no_subtree_check,insecure)

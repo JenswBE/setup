@@ -28,10 +28,10 @@
           #  - https://github.com/latchset/clevis/issues/413
 
           # Use single Tang server
-          sudo clevis luks bind -d ${LUKS_DEVICE:?} tang '{"url": "http://192.168.50.50:7500"}'
+          sudo clevis luks bind -d ${LUKS_DEVICE:?} tang '{"url": "http://{{ ip['kubo'] }}:7500"}'
 
           # Use multiple Tang servers
-          sudo clevis luks bind -d ${LUKS_DEVICE:?} sss '{"t":1,"pins":{"tang":[{"url":"http://192.168.50.50:7500"},{"url":"http://192.168.50.60:7500"}]}}'
+          sudo clevis luks bind -d ${LUKS_DEVICE:?} sss '{"t":1,"pins":{"tang":[{"url":"http://{{ ip['kubo'] }}:7500"},{"url":"http://{{ ip['fiona'] }}:7500"}]}}'
 
           # Manual install - Client - Debian/Ubuntu
           sudo apt install clevis clevis-luks clevis-initramfs
