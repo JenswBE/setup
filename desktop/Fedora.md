@@ -28,7 +28,7 @@ sudo systemctl enable --now rpm-ostree-countme.timer
 
 # Use Firefox from Flathub (more codecs)
 sudo rpm-ostree override remove firefox-langpacks firefox
-sudo flatpak install flathub org.mozilla.firefox
+sudo flatpak install --assumeyes --noninteractive flathub org.mozilla.firefox
 
 # Overlay packages
 sudo rpm-ostree --idempotent install distrobox gnome-tweaks nextcloud-client nextcloud-client-nautilus virt-manager libvirt

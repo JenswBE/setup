@@ -2,6 +2,24 @@
 
 Installation instructions for Hercules (Workstation) and Charmeleon (Laptop)
 
+## Dual boot installation
+
+When installing both Windows and Linux on a clean disk:
+
+1. Create following partitions
+   1. EFI partition: 512MB
+   2. Blank space: Preferred size of Windows install
+   3. Dummy partition: Ensures Windows doesn't go beyond preferred size
+2. Install Windows
+3. Start Fedora Silverblue install
+4. Switch to terminal and launch `gdisk`
+5. Remove dummy partition
+6. Create `ext4` partition for `/boot`
+7. Switch back to installer and reload disks
+8. Set mount points for `/boot` and `/boot/efi`
+9. Create partition with preffered size and mount point `/`
+10. Mark root partition as `Encrypted`
+
 ## Distro specific instructions
 
 - [Debian](Debian.md)
@@ -24,6 +42,7 @@ lineinfile ~/.bashrc 'export HISTSIZE=' 'export HISTSIZE=5000'
 lineinfile ~/.bashrc 'export HISTFILESIZE=' 'export HISTFILESIZE=-1'
 
 # Based on https://flathub.org/setup
+if [ -n "$(flatpak remotes | grep -F flathub | grep -F filter)" ]; then flatpak remote-delete flathub; fi
 flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
 flatpak remote-add --user --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
 sudo xargs flatpak install flathub --assumeyes --noninteractive --or-update <<EOF
@@ -33,6 +52,7 @@ org.videolan.VLC
 EOF
 xargs flatpak install --user flathub --assumeyes --noninteractive --or-update <<EOF
 com.bitwarden.desktop
+com.brave.Browser
 org.gimp.GIMP
 org.gnome.gitlab.YaLTeR.VideoTrimmer
 EOF
@@ -129,6 +149,14 @@ systemctl --user daemon-reload
 sudo nano /etc/gdm/custom.conf # Add "DefaultSession=gnome-xorg.desktop" in section "daemon"
 ```
 
+### Nextcloud
+
+To add a second account in Nextcloud:
+
+1. Search and start application `Nextcloud Desktop`
+2. Click on dropdown left top with username
+3. Click `Add account`
+
 ### GNOME
 
 ```bash
@@ -181,6 +209,9 @@ name='Terminal - Development'
 
 [org/gnome/shell/keybindings]
 show-screenshot-ui=@as []
+
+[org/gnome/settings-daemon/plugins/power]
+sleep-inactive-ac-timeout=0
 
 [org/gnome/terminal/legacy/profiles:]
 list=['b1dcc9dd-5262-4d8d-a863-c897e6d979b9', '118048ea-b428-4d03-8a20-8795d1f518f6']
