@@ -31,8 +31,18 @@ sudo rpm-ostree override remove firefox-langpacks firefox
 sudo flatpak install --assumeyes --noninteractive flathub org.mozilla.firefox
 
 # Overlay packages
-sudo rpm-ostree --idempotent install distrobox gnome-tweaks nextcloud-client nextcloud-client-nautilus virt-manager libvirt
+sudo xargs rpm-ostree --idempotent install <<EOF
+distrobox
+gnome-tweaks
+htop
+nextcloud-client
+nextcloud-client-nautilus
+podman-compose
+virt-manager
+libvirt
+EOF
 systemctl reboot
+sudo systemctl enable --now libvirtd
 
 # Install Android tools
 # Based on https://discussion.fedoraproject.org/t/how-to-use-adb-android-debugging-bridge-on-silverblue/2475
