@@ -54,6 +54,7 @@ xargs flatpak install --user flathub --assumeyes --noninteractive --or-update <<
 com.bitwarden.desktop
 com.brave.Browser
 org.gimp.GIMP
+org.inkscape.Inkscape
 org.gnome.gitlab.YaLTeR.VideoTrimmer
 EOF
 
