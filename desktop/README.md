@@ -54,8 +54,9 @@ xargs flatpak install --user flathub --assumeyes --noninteractive --or-update <<
 com.bitwarden.desktop
 com.brave.Browser
 org.gimp.GIMP
-org.inkscape.Inkscape
 org.gnome.gitlab.YaLTeR.VideoTrimmer
+org.inkscape.Inkscape
+org.localsend.localsend_app
 EOF
 
 # Setup Flatpak auto-update
