@@ -548,6 +548,7 @@ services:
       - kristofcoenen-directus-db
     environment:
       # See https://docs.directus.io/self-hosted/config-options#general
+      # LOG_LEVEL: "trace"
       TZ: "#VAR:general_timezone:VAR#"
       KEY: "#VAR:app_kristofcoenen_directus_key:VAR#"
       SECRET: "#VAR:app_kristofcoenen_directus_secret:VAR#"
@@ -611,6 +612,7 @@ services:
       - tuinfeest-directus-db
     environment:
       # See https://docs.directus.io/self-hosted/config-options#general
+      # LOG_LEVEL: "trace"
       TZ: "#VAR:general_timezone:VAR#"
       KEY: "#VAR:app_tuinfeest_directus_key:VAR#"
       SECRET: "#VAR:app_tuinfeest_directus_secret:VAR#"
@@ -674,6 +676,7 @@ services:
       - wtech-directus-db
     environment:
       # See https://docs.directus.io/self-hosted/config-options#general
+      # LOG_LEVEL: "trace"
       TZ: "#VAR:general_timezone:VAR#"
       KEY: "#VAR:app_wtech_directus_key:VAR#"
       SECRET: "#VAR:app_wtech_directus_secret:VAR#"
