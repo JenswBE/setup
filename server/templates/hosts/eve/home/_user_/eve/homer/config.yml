@@ -214,6 +214,12 @@ services:
         url: "https://stats.{{ general_domain_klokracing }}"
         <<: *tag_eve
 
+      - name: Kristof Coenen
+        subtitle: GoatCounter
+        logo: https://raw.githubusercontent.com/arp242/goatcounter/master/public/logo.svg
+        url: "https://stats.{{ general_domain_kristofcoenen }}"
+        <<: *tag_eve
+
       - name: Spellebel
         subtitle: GoatCounter
         logo: https://raw.githubusercontent.com/arp242/goatcounter/master/public/logo.svg
