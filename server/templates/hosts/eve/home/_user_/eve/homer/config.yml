@@ -135,6 +135,11 @@ services:
         url: "https://ha.{{ general_domain_local }}"
         <<: *tag_kubo
 
+      - name: PeaNUT
+        logo: https://raw.githubusercontent.com/Brandawg93/PeaNUT/main/src/app/icon.svg
+        url: "https://ups.{{ general_domain_local }}"
+        <<: *tag_fiona
+
       - name: TinyMediaManager
         logo: https://gitlab.com/tinyMediaManager/tinyMediaManager/-/raw/devel/AppBundler/svg/logo1.svg
         url: "https://tmm.{{ general_domain_local }}"

@@ -16,7 +16,7 @@ firewall_additional_ports:
   - comment: Network UPS Tools (NUT) server
     port: 3493
     protos: [tcp]
-    from_networks: [local_ipv4, local_ipv6]
+    from_networks: [docker_ipv4, local_ipv4, local_ipv6]
   - comment: Tang (https://github.com/latchset/tang)
     port: 7500
     protos: [tcp]

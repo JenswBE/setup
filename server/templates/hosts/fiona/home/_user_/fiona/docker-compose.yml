@@ -7,6 +7,10 @@ x-defaults: &defaults
   # Putting the anchor in this file ensures it's a valid YAML file for Renovate Bot
   #VAR:lookup('ansible.builtin.file', 'files/docker-compose-defaults.yml',) | indent(width=2):VAR#
 
+x-extra-docker-host: &extra-docker-host
+  extra_hosts:
+    - "host.docker.internal:host-gateway"
+
 x-fix-prettier-formatting:
 
 #################################################################
@@ -167,6 +171,25 @@ services:
         limits:
           cpus: "2"
           memory: 2G
+
+  # =========================
+  # =         PEANUT        =
+  # =========================
+  peanut:
+    <<: [*defaults, *extra-docker-host]
+    image: docker.io/brandawg93/peanut:latest
+    container_name: peanut
+    networks:
+      - traefik
+    environment:
+      TZ: "#VAR:general_timezone:VAR#"
+      NUT_HOST: host.docker.internal
+      WEB_HOST: "0.0.0.0"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.peanut.entrypoints=websecure"
+      - "traefik.http.routers.peanut.rule=Host(`ups.#VAR:general_domain_local:VAR#`)"
+      - "traefik.http.routers.peanut.tls.certresolver=le-dns"
 
   # =========================
   # =        CROWDSEC       =
