@@ -1,6 +1,6 @@
 # Based on https://www.keycloak.org/server/containers
 
-ARG KC_IMAGE=quay.io/keycloak/keycloak:24.0
+ARG KC_IMAGE=quay.io/keycloak/keycloak:25.0
 
 FROM ${KC_IMAGE} as builder
 ENV KC_DB=postgres
