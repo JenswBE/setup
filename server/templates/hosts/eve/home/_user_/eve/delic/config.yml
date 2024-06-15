@@ -39,6 +39,10 @@ sites:
     notify:
       - email_technical_en
 
+  - url: https://kristofcoenen.be
+    notify:
+      - email_technical_en
+
   - url: https://spellebel.be
     notify:
       - email_technical_en
