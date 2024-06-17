@@ -65,6 +65,11 @@ app_kristofcoenen_directus_github_token: ""
 app_kristofcoenen_directus_key: "" # cat /proc/sys/kernel/random/uuid
 app_kristofcoenen_directus_secret: "" # openssl rand -hex 32
 
+# Monica
+app_monica_app_key: "" # echo -n 'base64:'; openssl rand -base64 32
+app_monica_db_pass_root: ""
+app_monica_db_pass_monica: ""
+
 # Nextcloud
 app_nextcloud_db_pass_root: ""
 app_nextcloud_db_pass_nextcloud: ""

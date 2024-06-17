@@ -184,6 +184,61 @@ services:
       timeout: 10s
       retries: 5
 
+  # =========================
+  # =       MONICA CRM      =
+  # =========================
+  monica:
+    <<: *defaults
+    image: docker.io/library/monica:4
+    container_name: monica
+    networks:
+      - traefik
+      - monica
+    depends_on:
+      - monica-db
+    volumes:
+      - "#VAR:general_path_appdata:VAR#/monica/monica/data:/var/www/html/storage"
+    environment:
+      TZ: "#VAR:general_timezone:VAR#"
+      APP_DISABLE_SIGNUP: "true"
+      APP_ENV: production
+      APP_KEY: "#VAR:app_monica_app_key:VAR#"
+      APP_URL: "https://crm.#VAR:general_domain_default:VAR#"
+      DB_CONNECTION: mysql
+      DB_HOST: monica-db
+      DB_USERNAME: monica
+      DB_PASSWORD: "#VAR:app_monica_db_pass_monica:VAR#"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.monica.entrypoints=websecure"
+      - "traefik.http.routers.monica.rule=Host(`crm.#VAR:general_domain_default:VAR#`) && !PathPrefix(`/register`)"
+      - "traefik.http.routers.monica.tls.certresolver=le-tls"
+
+  monica-db:
+    <<: *defaults
+    image: docker.io/library/mariadb:11
+    container_name: monica-db
+    networks:
+      - monica
+    volumes:
+      - "#VAR:general_path_appdata:VAR#/monica/mariadb/data:/var/lib/mysql"
+      - monica-db-dump:/backup
+    environment:
+      TZ: "#VAR:general_timezone:VAR#"
+      MYSQL_ROOT_PASSWORD: "#VAR:app_monica_db_pass_root:VAR#"
+      MYSQL_DATABASE: monica
+      MYSQL_USER: monica
+      MYSQL_PASSWORD: "#VAR:app_monica_db_pass_monica:VAR#"
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "mysqladmin -u $$MYSQL_USER --password=$$MYSQL_PASSWORD ping || exit 1",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
   # ====================================
   # =              WIKI.JS             =
   # = https://github.com/requarks/wiki =
@@ -1151,6 +1206,8 @@ services:
       - "keycloak-db-dump:/mnt/source/keycloak/dbdump:ro"
       - "#VAR:general_path_appdata:VAR#/kristofcoenen/directus/uploads:/mnt/source/kristofcoenen/directus/uploads:z"
       - "kristofcoenen-directus-db-dump:/mnt/source/kristofcoenen/directus/dbdump:ro"
+      - "#VAR:general_path_appdata:VAR#/monica/monica/data:/mnt/source/monica/monica/data:z"
+      - "monica-db-dump:/mnt/source/monica/dbdump:ro"
       - "nc-db-dump:/mnt/source/nextcloud/dbdump:ro"
       - "nc-calcardbackup:/mnt/source/nextcloud/calcardbackup:ro"
       - "#VAR:general_path_appdata:VAR#/nextcloud/nextcloud/data:/mnt/source/nextcloud/data:ro"
@@ -1198,6 +1255,7 @@ volumes:
   isa-output:
   keycloak-db-dump:
   kristofcoenen-directus-db-dump:
+  monica-db-dump:
   nc-calcardbackup:
   nc-db-dump:
   oauth2-proxy-helper-config:
@@ -1231,6 +1289,9 @@ networks:
 
   kristofcoenen-directus:
     name: kristofcoenen-directus
+
+  monica:
+    name: monica
 
   nextcloud:
     name: nextcloud
