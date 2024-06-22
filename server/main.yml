@@ -14,6 +14,12 @@
         "armv7l": "armv7",
       }
 
+    hostnames:
+      - fiona
+      - hercules
+      - kubo
+      - rango
+
   pre_tasks:
     - name: Use of limit arg is mandatory # noqa: run-once[task]
       ansible.builtin.fail:
@@ -36,20 +42,22 @@
       tags: ["always"]
 
     - name: Lookup IP's
+      when: '"home" in group_names'
+      register: lookup_ips
+      ansible.builtin.command: dig +short {{ item }}.{{ general_domain_local }}
+      failed_when: lookup_ips.stdout == ""
+      changed_when: false
+      loop: "{{ hostnames }}"
+      tags: ["always"]
+
+    - name: Build IP map
       ansible.builtin.set_fact:
-        # Based on https://github.com/ansible/ansible/issues/20470
-        ip: |
-          {% set ip_map = {} %}
-          {% for host in hostnames %}
-          {% set _ = ip_map.update({host: query('community.dns.lookup', host + '.' + general_domain_local, search=false, nxdomain_handling="fail")[0]}) %}
-          {% endfor %}
-          {{ ip_map }}
-      vars:
-        hostnames:
-          - fiona
-          - hercules
-          - kubo
-          - rango
+        ip: "{{ lookup_ips.results | map(attribute='item') | zip(lookup_ips.results | map(attribute='stdout')) | community.general.dict }}"
+      tags: ["always"]
+
+    - name: Print IP lookup result
+      ansible.builtin.debug:
+        var: ip
       tags: ["always"]
 
   roles:
