@@ -684,8 +684,8 @@ services:
       EMAIL_TRANSPORT: smtp
       EMAIL_SMTP_HOST: "#VAR:mailjet_host:VAR#"
       EMAIL_SMTP_PORT: "#VAR:mailjet_port_starttls:VAR#"
-      EMAIL_SMTP_USER: "#VAR:mailjet_username:VAR#"
-      EMAIL_SMTP_PASSWORD: "#VAR:mailjet_password:VAR#"
+      EMAIL_SMTP_USER: "#VAR:mailjet_tuinfeest_username:VAR#"
+      EMAIL_SMTP_PASSWORD: "#VAR:mailjet_tuinfeest_password:VAR#"
       FLOWS_ENV_ALLOW_LIST: "FLOWS_ENV_GITHUB_TOKEN"
       FLOWS_ENV_GITHUB_TOKEN: "#VAR:app_tuinfeest_directus_github_token:VAR#"
     networks:
