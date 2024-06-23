@@ -4,5 +4,4 @@
 [{{ user }}]
   password = {{ app_nut_users[user].password }}
   upsmon {{ app_nut_users[user].upsmon }}
-
 {% endfor %}

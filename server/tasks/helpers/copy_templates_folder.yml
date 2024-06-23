@@ -34,6 +34,8 @@
       {{ '#VAR:' if item.path is match('docker-compose(\..*)?\.ya?ml') else '{{' }}
     variable_end_string: |-
       {{ ':VAR#' if item.path is match('docker-compose(\..*)?\.ya?ml') else '}}' }}
+    lstrip_blocks: true
+    trim_blocks: false
   with_community.general.filetree: templates/{{ templates_folder }}
   when: item.state == 'file' and item.path is not search(".+\.(png|jpg)$")
   changed_when: false

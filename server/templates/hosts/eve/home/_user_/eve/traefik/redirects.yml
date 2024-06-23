@@ -1,6 +1,6 @@
 http:
   middlewares:
-    {% for redirect in redirects -%}
+    {%- for redirect in redirects %}
     "redirect-{{ redirect.from }}":
       redirectRegex:
         regex: .*
@@ -8,7 +8,7 @@ http:
     {% endfor %}
 
   routers:
-    {% for redirect in redirects -%}
+    {%- for redirect in redirects %}
     "redirect-{{ redirect.from }}":
       entryPoints: ["websecure"]
       rule: "Host(`{{ redirect.from }}`)"
@@ -18,4 +18,3 @@ http:
       tls:
         certresolver: le-tls
     {% endfor %}
-
