@@ -51,11 +51,13 @@
       tags: ["always"]
 
     - name: Build IP map
+      when: '"home" in group_names'
       ansible.builtin.set_fact:
         ip: "{{ lookup_ips.results | map(attribute='item') | zip(lookup_ips.results | map(attribute='stdout')) | community.general.dict }}"
       tags: ["always"]
 
     - name: Print IP lookup result
+      when: '"home" in group_names'
       ansible.builtin.debug:
         var: ip
       tags: ["always"]
