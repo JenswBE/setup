@@ -20,6 +20,8 @@ VPS
 - Dump Bjoetiek DB (`templates/hosts/eve/etc/systemd/system/bjoetiek-dump-db.timer`)
 - Dump Goatcounter DB (`templates/hosts/eve/etc/systemd/system/goatcounter-dump-db.timer`)
 - Dump Keycloak DB (`templates/hosts/eve/etc/systemd/system/keycloak-dump-db.timer`)
+- Dump Kristof Coenen Directus DB (`templates/hosts/eve/etc/systemd/system/kristofcoenen-directus-dump-db.timer`)
+- Dump Monica DB (`templates/hosts/eve/etc/systemd/system/monica-dump-db.timer`)
 - Dump Nextcloud DB (`templates/hosts/eve/etc/systemd/system/nextcloud-dump-db.timer`)
 - Dump Nextcloud calendars and contacts (`templates/hosts/eve/etc/systemd/system/nextcloud-calcardbackup.timer`)
 - Dump Paperless-ngx DB (`templates/hosts/eve/etc/systemd/system/paperless-dump-db.timer`)

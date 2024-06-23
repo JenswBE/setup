@@ -12,7 +12,7 @@
 ## Steps
 
 1. Recover paper backup of OTP keys
-2. Install [andOTP](https://github.com/andOTP/andOTP) or similar
+2. Install [Aegis](https://github.com/beemdevelopment/Aegis) or similar
 3. Add OTP key of server with password vault
 4. Download password vault
 5. Recover data using Borg passphrase
