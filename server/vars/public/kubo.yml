@@ -37,6 +37,10 @@ firewall_additional_ports:
     port: 8883
     protos: [tcp]
     from_networks: [any]
+  - comment: NetPerf - File generator
+    port: 9116
+    protos: [tcp]
+    from_networks: [wireguard_ipv4]
   - comment: Zabbix agent
     port: 10050
     protos: [tcp]

@@ -7,7 +7,11 @@ x-defaults: &defaults
   # Putting the anchor in this file ensures it's a valid YAML file for Renovate Bot
   #VAR:lookup('ansible.builtin.file', 'files/docker-compose-defaults.yml',) | indent(width=2):VAR#
 
-x-fix-prettier-formatting:
+x-extra-hosts-wireguard: &extra-hosts-wireguard
+  extra_hosts:
+    #BLOCK:- for wg_peer in (app_wireguard[0].peers | selectattr("host", "defined")) :BLOCK#
+    - "#VAR:wg_peer.host:VAR#.wireguard:#VAR:wg_peer.allowed_ips[0] | regex_replace('/\\d+$', ''):VAR#"
+    #BLOCK: endfor :BLOCK#
 
 #################################################################
 #                            SERVICES                           #
@@ -1123,6 +1127,30 @@ services:
         limits:
           cpus: "#VAR:ansible_processor_nproc:VAR#"
           memory: 6G
+
+  # =========================
+  # =  NETWORK PERFORMANCE  =
+  # =========================
+  netperf-blackbox-exporter:
+    <<: [*defaults, *extra-hosts-wireguard]
+    image: quay.io/prometheus/blackbox-exporter:latest
+    container_name: netperf-blackbox-exporter
+    command: --config.file=/config.yml
+    environment:
+      TZ: "#VAR:general_timezone:VAR#"
+    volumes:
+      - ./netperf/prometheus-blackbox-exporter.yml:/config.yml
+    ports:
+      - "#VAR:app_wireguard[0].ip_addresses[0]:VAR#:9115:9115"
+
+  netperf-file-generator:
+    <<: *defaults
+    build: ./netperf/file-generator
+    container_name: netperf-file-generator
+    environment:
+      TZ: "#VAR:general_timezone:VAR#"
+    ports:
+      - "#VAR:app_wireguard[0].ip_addresses[0]:VAR#:9116:8080"
 
   # =========================
   # =       SYNCTHING       =

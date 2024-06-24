@@ -1,0 +1,14 @@
+modules:
+  http_2xx:
+    prober: http
+    http:
+      preferred_ip_protocol: "ip4"
+
+  http_for_dns:
+    prober: http
+    http:
+      preferred_ip_protocol: "ip4"
+      valid_status_codes:
+        - 200
+        - 204
+        - 400

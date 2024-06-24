@@ -7,7 +7,7 @@ x-defaults: &defaults
   # Putting the anchor in this file ensures it's a valid YAML file for Renovate Bot
   #VAR:lookup('ansible.builtin.file', 'files/docker-compose-defaults.yml',) | indent(width=2):VAR#
 
-x-extra-docker-host: &extra-docker-host
+x-extra-hosts-docker-host: &extra-hosts-docker-host
   extra_hosts:
     - "host.docker.internal:host-gateway"
 
@@ -784,7 +784,7 @@ services:
           memory: 256M
 
   zabbix-server:
-    <<: [*defaults, *extra-docker-host]
+    <<: [*defaults, *extra-hosts-docker-host]
     image: "docker.io/zabbix/zabbix-server-pgsql:alpine-#VAR:zabbix.server.version:VAR#-latest"
     container_name: zabbix-server
     environment:
@@ -866,6 +866,27 @@ services:
         limits:
           cpus: "4"
           memory: 4G
+
+  netperf-blackbox-exporter:
+    <<: *defaults
+    image: quay.io/prometheus/blackbox-exporter:latest
+    container_name: netperf-blackbox-exporter
+    command: --config.file=/config.yml
+    environment:
+      TZ: "#VAR:general_timezone:VAR#"
+    volumes:
+      - ./netperf/prometheus-blackbox-exporter.yml:/config.yml
+    networks:
+      - prometheus
+
+  netperf-file-generator:
+    <<: *defaults
+    build: ./netperf/file-generator
+    container_name: netperf-file-generator
+    environment:
+      TZ: "#VAR:general_timezone:VAR#"
+    ports:
+      - "#VAR:app_wireguard[0].ip_addresses[0]:VAR#:9116:8080"
 
   grafana:
     <<: *defaults

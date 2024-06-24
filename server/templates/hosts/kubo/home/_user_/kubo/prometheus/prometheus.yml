@@ -3,7 +3,7 @@ scrape_configs:
     static_configs:
       - targets: ["localhost:9090"]
 
-  - job_name: "blocky"
+  - job_name: blocky
     static_configs:
       - targets: ["blocky.fiona.{{ general_domain_local }}"]
 
@@ -11,3 +11,67 @@ scrape_configs:
     metrics_path: /api/prometheus/metrics
     static_configs:
       - targets: ["opendtu.{{ general_domain_local }}"]
+
+  - job_name: netperf-home-download
+    scrape_interval: 5m
+    metrics_path: /probe
+    params:
+      module: [http_2xx]
+    static_configs:
+      - targets:
+          - http://eve.wireguard:9116
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: netperf-blackbox-exporter:9115
+
+  - job_name: netperf-home-upload
+    scrape_interval: 5m
+    metrics_path: /probe
+    params:
+      module: [http_2xx]
+    static_configs:
+      - targets:
+          - http://kubo.wireguard:9116
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: eve.wireguard:9115
+
+  - job_name: netperf-dns-eve-from-kubo
+    scrape_interval: 1m
+    metrics_path: /probe
+    params:
+      module: [http_for_dns]
+    static_configs:
+      - targets:
+          - http://eve.{{ general_domain_default }}
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: netperf-blackbox-exporter:9115
+
+  - job_name: netperf-dns-kubo-from-eve
+    scrape_interval: 1m
+    metrics_path: /probe
+    params:
+      module: [http_for_dns]
+    static_configs:
+      - targets:
+          - http://kubo.{{ general_domain_default }}
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: eve.wireguard:9115
