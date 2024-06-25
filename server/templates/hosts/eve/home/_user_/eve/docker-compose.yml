@@ -1202,7 +1202,7 @@ services:
 
   borgmatic:
     <<: *defaults
-    image: ghcr.io/borgmatic-collective/borgmatic:1.8.9
+    image: ghcr.io/borgmatic-collective/borgmatic:1.8.12
     container_name: borgmatic
     privileged: true # Required for borg mount
     cap_add:
