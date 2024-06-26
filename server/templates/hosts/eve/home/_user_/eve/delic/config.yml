@@ -51,6 +51,7 @@ sites:
     notify:
       - email_technical_en
     ignored_links:
+      - ^https://tefrent-official.be/ # Returns 500 for DeLiC, but works fine in browser.
       - ^https://www.instagram.com/tuinfeest_beerse # Returns 429 - Too Many Requests.
 
   - url: https://w-technieken.be
