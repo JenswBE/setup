@@ -17,10 +17,10 @@ linters:
     - godot
     - golint # Deprecated
     - gomnd
+    - gosmopolitan
     - ifshort # Deprecated
     - interfacebloat
     - interfacer # Deprecated
-    - ireturn # Doesn't work correctly with generics
     - lll
     - maligned # Deprecated
     - mnd
@@ -28,15 +28,12 @@ linters:
     - nlreturn
     - nonamedreturns
     - nosnakecase # Deprecated
-    - rowserrcheck # Not supported with generics. See https://github.com/golangci/golangci-lint/issues/2649.
     - scopelint # Deprecated
-    - sqlclosecheck # Not supported with generics. See https://github.com/golangci/golangci-lint/issues/2649.
     - structcheck # Deprecated
     - tagliatelle
     - testpackage
     - varcheck # Deprecated
     - varnamelen
-    - wastedassign # Not supported with generics. See https://github.com/golangci/golangci-lint/issues/2649.
     - wsl
 
 linters-settings:
