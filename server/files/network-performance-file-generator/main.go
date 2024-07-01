@@ -2,9 +2,11 @@ package main
 
 import (
 	"bytes"
+	"flag"
 	"fmt"
 	"log/slog"
 	"net/http"
+	"os"
 	"strconv"
 )
 
@@ -13,6 +15,19 @@ const SizeMBParam = "size_mb"
 const DefaultSizeMB = 10
 
 func main() {
+	// Flags
+	healthCheck := flag.Bool("healthcheck", false, "Perform a healthcheck on localhost")
+	flag.Parse()
+
+	// Perform health check
+	if *healthCheck {
+		if isHealthy() {
+			os.Exit(0) // Success
+		} else {
+			os.Exit(1) // Error
+		}
+	}
+
 	// Init
 	payload1MB := bytes.Repeat([]byte("X"), 1024*1024)
 
@@ -60,4 +75,15 @@ func parseSizeParam(input string, defaultValue int) (int, error) {
 	}
 
 	return value, nil
+}
+
+func isHealthy() bool {
+	checkURL := fmt.Sprintf("http://localhost:%s?%s=2", Port, SizeMBParam)
+	resp, err := http.Get(checkURL)
+	if err != nil {
+		slog.Warn("Http call returned error", "error", err)
+		return false
+	}
+
+	if resp.ContentLength
 }
