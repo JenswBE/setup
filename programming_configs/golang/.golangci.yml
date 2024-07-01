@@ -5,34 +5,25 @@ linters:
   enable-all: true
   disable:
     - cyclop
-    - deadcode # Deprecated
     - depguard
     - dupl
-    - exhaustivestruct # Deprecated
     - exhaustruct
     - funlen
     - gci
     - gochecknoglobals
     - gocognit
     - godot
-    - golint # Deprecated
     - gomnd
     - gosmopolitan
-    - ifshort # Deprecated
     - interfacebloat
-    - interfacer # Deprecated
+    - ireturn # TODO: Investigate and decide if this linter needs to be enforced.
     - lll
-    - maligned # Deprecated
     - mnd
     - nilnil
     - nlreturn
     - nonamedreturns
-    - nosnakecase # Deprecated
-    - scopelint # Deprecated
-    - structcheck # Deprecated
     - tagliatelle
     - testpackage
-    - varcheck # Deprecated
     - varnamelen
     - wsl
 
