@@ -4,16 +4,22 @@ on:
   push:
   pull_request:
 
+env:
+  GO_VERSION: "1.22" # Keep version aligned with server/files/network-performance-file-generator/Dockerfile
+  PYTHON_VERSION: "3.11" # Debian 12
+
 jobs:
-  lineinfile:
-    name: Test lineinfile
+  python-tests:
+    name: Test Python code
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repo
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v5
+      - name: Setup Python
+        uses: actions/setup-python@v5
         with:
-          python-version: "3.10" # Ubuntu 22.04
+          python-version: ${{ env.PYTHON_VERSION }}
 
       - name: Run unit tests for desktop/lineinfile
         working-directory: desktop/lineinfile
@@ -22,3 +28,32 @@ jobs:
       - name: Run unit tests for server/templates/nut/client_server/upssched-cmd
         working-directory: server/templates/nut/client_server/upssched-cmd
         run: python3 -m unittest
+
+  golang-tests:
+    name: Test Golang code
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          check-latest: true
+          go-version: ${{ env.GO_VERSION }}
+
+      - name: Pull common linter configs
+        run: wget -O .golangci.yml https://raw.githubusercontent.com/JenswBE/setup/main/programming_configs/golang/.golangci.yml
+
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v6
+        with:
+          working-directory: server/files/network-performance-file-generator
+          version: latest
+          args: >-
+            --timeout=5m
+            --disable err113,noctx
+
+      - name: Run unit tests
+        working-directory: server/files/network-performance-file-generator
+        run: go test main.go main_test.go

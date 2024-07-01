@@ -942,6 +942,8 @@ services:
       TZ: "#VAR:general_timezone:VAR#"
     ports:
       - "#VAR:app_wireguard[0].ip_addresses[0]:VAR#:9116:8080"
+    healthcheck:
+      test: ["CMD", "/network-performance-file-generator", "--healthcheck"]
 
   grafana:
     <<: *defaults
