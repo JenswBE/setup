@@ -11,6 +11,17 @@ x-extra-docker-host: &extra-docker-host
   extra_hosts:
     - "host.docker.internal:host-gateway"
 
+x-healthcheck-mongo4: &healthcheck-mongo4
+  healthcheck:
+    test:
+      [
+        "CMD-SHELL",
+        "mongo --quiet localhost --eval 'quit(db.runCommand({ ping: 1 }).ok ? 0 : 1)'",
+      ]
+    interval: 30s
+    timeout: 10s
+    retries: 5
+
 x-fix-prettier-formatting:
 
 #################################################################
@@ -139,7 +150,8 @@ services:
       - traefik
       - unifi
     depends_on:
-      - unifi-mongodb
+      unifi-mongodb:
+        condition: service_healthy
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.unifi.entrypoints=websecure"
@@ -155,9 +167,10 @@ services:
           memory: 2G
 
   unifi-mongodb:
-    <<: *defaults
+    <<: [*defaults, *healthcheck-mongo4]
+    # "Version 8.1 and newer supports up to MongoDB 7.0."
+    # See release notes at https://www.ui.com/download/releases/network-server
     build: ./unifi/mongodb
-    image: docker.io/library/mongo:4.4
     container_name: unifi-mongodb
     environment:
       TZ: "#VAR:general_timezone:VAR#"

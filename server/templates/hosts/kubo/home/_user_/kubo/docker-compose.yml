@@ -21,6 +21,39 @@ x-glitchtip-env: &glitchtip-env
   DEFAULT_FROM_EMAIL: "glitchtip@#VAR:general_domain_default:VAR#"
   GLITCHTIP_DOMAIN: "https://glitchtip.#VAR:general_domain_default:VAR#"
 
+x-healthcheck-elasticsearch: &healthcheck-elasticsearch
+  healthcheck:
+    test:
+      [
+        "CMD-SHELL",
+        "curl --silent --fail localhost:9200/_cluster/health || exit 1",
+      ]
+    interval: 30s
+    timeout: 10s
+    retries: 5
+
+x-healthcheck-mongo: &healthcheck-mongo
+  healthcheck:
+    test:
+      [
+        "CMD-SHELL",
+        "mongosh --quiet localhost --eval 'quit(db.runCommand({ ping: 1 }).ok ? 0 : 1)'",
+      ]
+    interval: 30s
+    timeout: 10s
+    retries: 5
+
+x-healthcheck-postgres: &healthcheck-postgres
+  healthcheck:
+    test:
+      [
+        "CMD-SHELL",
+        "sh -c 'pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}'",
+      ]
+    interval: 30s
+    timeout: 10s
+    retries: 5
+
 x-fix-prettier-formatting:
 
 #################################################################
@@ -173,7 +206,8 @@ services:
     networks:
       - home-automation
     depends_on:
-      - ha-mosquitto
+      ha-mosquitto:
+        condition: service_started
     volumes:
       - "#VAR:general_path_appdata:VAR#/home-automation/zigbee2mqtt:/app/data"
       - "./home-automation/zigbee2mqtt/configuration.yaml:/app/data/configuration.yaml"
@@ -213,7 +247,8 @@ services:
       - traefik
       - miniflux
     depends_on:
-      - miniflux-db
+      miniflux-db:
+        condition: service_healthy
     environment:
       TZ: "#VAR:general_timezone:VAR#"
       DATABASE_URL: "postgres://miniflux:#VAR:app_miniflux_db_pass:VAR#@miniflux-db/miniflux?sslmode=disable"
@@ -234,7 +269,8 @@ services:
       - "traefik.http.services.miniflux-#VAR:ansible_hostname:VAR#.loadbalancer.server.port=8080"
 
   miniflux-db:
-    <<: *defaults
+    <<: [*defaults, *healthcheck-postgres]
+    # See https://github.com/miniflux/v2/blob/main/contrib/docker-compose/basic.yml
     image: docker.io/library/postgres:13-alpine
     container_name: miniflux-db
     networks:
@@ -244,6 +280,7 @@ services:
       - "miniflux-db-dump:/backup"
     environment:
       TZ: "#VAR:general_timezone:VAR#"
+      POSTGRES_DB: "miniflux"
       POSTGRES_USER: "miniflux"
       POSTGRES_PASSWORD: "#VAR:app_miniflux_db_pass:VAR#"
 
@@ -417,7 +454,8 @@ services:
       - traefik
       - nextcloud
     depends_on:
-      - nc-db
+      nc-db:
+        condition: service_healthy
     volumes:
       - "#VAR:general_path_appdata:VAR#/nextcloud/nextcloud/config:/var/www/html"
       - "#VAR:general_path_appdata:VAR#/nextcloud/nextcloud/data:/var/www/html/data"
@@ -442,7 +480,7 @@ services:
   nc-db:
     <<: *defaults
     # Nextcloud currently only supports up to 10.6.
-    # See https://docs.nextcloud.com/server/27/admin_manual/installation/system_requirements.html
+    # See https://docs.nextcloud.com/server/29/admin_manual/installation/system_requirements.html
     image: docker.io/library/mariadb:10.6
     command: --transaction-isolation=READ-COMMITTED --log-bin=ROW --innodb-read-only-compressed=OFF
     container_name: nc-db
@@ -453,19 +491,17 @@ services:
       - nc-db-dump:/backup
     environment:
       TZ: "#VAR:general_timezone:VAR#"
-      MYSQL_ROOT_PASSWORD: "#VAR:app_nextcloud_db_pass_root:VAR#"
-      MYSQL_PASSWORD: "#VAR:app_nextcloud_db_pass_nextcloud:VAR#"
-      MYSQL_DATABASE: "nextcloud"
-      MYSQL_USER: "nextcloud"
-    healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          "mysqladmin -u $$MYSQL_USER --password=$$MYSQL_PASSWORD ping || exit 1",
-        ]
-      interval: 30s
-      timeout: 10s
-      retries: 5
+      MARIADB_ROOT_PASSWORD: "#VAR:app_nextcloud_db_pass_root:VAR#"
+      MARIADB_PASSWORD: "#VAR:app_nextcloud_db_pass_nextcloud:VAR#"
+      MARIADB_DATABASE: "nextcloud"
+      MARIADB_USER: "nextcloud"
+      MARIADB_AUTO_UPGRADE: "1"
+    healthcheck: # Based on https://mariadb.com/kb/en/using-healthcheck-sh/
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      start_period: 10s
+      interval: 10s
+      timeout: 5s
+      retries: 3
 
   # =========================
   # =        TORRENT        =
@@ -547,8 +583,10 @@ services:
     container_name: glitchtip
     hostname: "glitchtip.#VAR:general_domain_default:VAR#" # Prevents unvalidated sender in Mailjet
     depends_on:
-      - glitchtip-db
-      - glitchtip-redis
+      glitchtip-db:
+        condition: service_healthy
+      glitchtip-redis:
+        condition: service_started
     volumes:
       - "#VAR:general_path_appdata:VAR#/glitchtip/uploads:/code/uploads"
     networks:
@@ -570,8 +608,10 @@ services:
     command: ./bin/run-celery-with-beat.sh
     hostname: "glitchtip.#VAR:general_domain_default:VAR#" # Prevents unvalidated sender in Mailjet
     depends_on:
-      - glitchtip-db
-      - glitchtip-redis
+      glitchtip-db:
+        condition: service_healthy
+      glitchtip-redis:
+        condition: service_started
     networks:
       - glitchtip
     volumes:
@@ -591,8 +631,10 @@ services:
     hostname: "glitchtip.#VAR:general_domain_default:VAR#" # Prevents unvalidated sender in Mailjet
     restart: "no" # Only run on "docker compose up"
     depends_on:
-      - glitchtip-db
-      - glitchtip-redis
+      glitchtip-db:
+        condition: service_healthy
+      glitchtip-redis:
+        condition: service_started
     command: "./manage.py migrate"
     networks:
       - glitchtip
@@ -600,7 +642,9 @@ services:
       <<: *glitchtip-env
 
   glitchtip-db:
-    <<: *defaults
+    <<: [*defaults, *healthcheck-postgres]
+    # GlitchTip requires Postgres 12+
+    # https://glitchtip.com/documentation/install
     image: docker.io/library/postgres:13-alpine
     container_name: glitchtip-db
     networks:
@@ -610,9 +654,9 @@ services:
       - "glitchtip-db-dump:/backup"
     environment:
       TZ: "#VAR:general_timezone:VAR#"
+      POSTGRES_DB: "glitchtip"
       POSTGRES_USER: "glitchtip"
       POSTGRES_PASSWORD: "#VAR:app_glitchtip_db_pass:VAR#"
-      POSTGRES_DB: "glitchtip"
 
   glitchtip-redis:
     <<: *defaults
@@ -681,8 +725,10 @@ services:
       GRAYLOG_TRANSPORT_EMAIL_FROM_EMAIL: graylog@jensw.be
       GRAYLOG_TRANSPORT_EMAIL_WEB_INTERFACE_URL: "https://logs.#VAR:general_domain_default:VAR#"
     depends_on:
-      - graylog-mongodb
-      - graylog-elasticsearch
+      graylog-mongodb:
+        condition: service_healthy
+      graylog-elasticsearch:
+        condition: service_healthy
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.graylog.entrypoints=websecure"
@@ -696,7 +742,9 @@ services:
           memory: 4G
 
   graylog-elasticsearch:
-    <<: *defaults
+    <<: [*defaults, *healthcheck-elasticsearch]
+    # "We caution you not to install or upgrade to Elasticsearch 7.11 and later! It is not supported."
+    # See https://go2docs.graylog.org/current/setting_up_graylog/elasticsearch.htm
     image: docker.elastic.co/elasticsearch/elasticsearch-oss:7.10.2
     container_name: graylog-elasticsearch
     environment:
@@ -721,7 +769,9 @@ services:
           memory: 4G
 
   graylog-mongodb:
-    <<: *defaults
+    <<: [*defaults, *healthcheck-mongo]
+    # MongoDB 6.0 is used at
+    # https://go2docs.graylog.org/current/downloading_and_installing_graylog/docker_installation.htm
     image: docker.io/library/mongo:6.0
     container_name: graylog-mongodb
     environment:
@@ -740,8 +790,10 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
     depends_on:
-      - zabbix-server
-      - zabbix-db
+      zabbix-server:
+        condition: service_started
+      zabbix-db:
+        condition: service_healthy
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/ping"]
       interval: 10s
@@ -802,7 +854,8 @@ services:
         soft: 20000
         hard: 40000
     depends_on:
-      - zabbix-db
+      zabbix-db:
+        condition: service_healthy
     networks:
       - zabbix
     stop_grace_period: 30s
@@ -827,7 +880,8 @@ services:
           memory: 512M
 
   zabbix-db:
-    <<: *defaults
+    <<: [*defaults, *healthcheck-postgres]
+    # https://www.zabbix.com/documentation/current/en/manual/installation/requirements
     image: docker.io/library/postgres:15-alpine
     container_name: zabbix-db
     stop_grace_period: 1m
@@ -838,6 +892,7 @@ services:
       - "zabbix-db-dump:/backup"
     environment:
       TZ: "#VAR:general_timezone:VAR#"
+      POSTGRES_DB: "zabbix"
       POSTGRES_USER: "zabbix"
       POSTGRES_PASSWORD: "#VAR:app_zabbix_db_pass:VAR#"
 

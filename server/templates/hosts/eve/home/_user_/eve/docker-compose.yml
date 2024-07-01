@@ -13,6 +13,17 @@ x-extra-hosts-wireguard: &extra-hosts-wireguard
     - "#VAR:wg_peer.host:VAR#.wireguard:#VAR:wg_peer.allowed_ips[0] | regex_replace('/\\d+$', ''):VAR#"
     #BLOCK: endfor :BLOCK#
 
+x-healthcheck-postgres: &healthcheck-postgres
+  healthcheck:
+    test:
+      [
+        "CMD-SHELL",
+        "sh -c 'pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}'",
+      ]
+    interval: 30s
+    timeout: 10s
+    retries: 5
+
 #################################################################
 #                            SERVICES                           #
 #################################################################
@@ -137,7 +148,8 @@ services:
       - nextcloud
       - traefik
     depends_on:
-      - nc-db
+      nc-db:
+        condition: service_healthy
     volumes:
       - "#VAR:general_path_appdata:VAR#/nextcloud/nextcloud/config:/var/www/html"
       - "#VAR:general_path_appdata:VAR#/nextcloud/nextcloud/data:/var/www/html/data"
@@ -162,7 +174,7 @@ services:
   nc-db:
     <<: *defaults
     # Nextcloud currently only supports up to 10.6.
-    # See https://docs.nextcloud.com/server/27/admin_manual/installation/system_requirements.html
+    # See https://docs.nextcloud.com/server/29/admin_manual/installation/system_requirements.html
     image: docker.io/library/mariadb:10.6
     container_name: nc-db
     command: --transaction-isolation=READ-COMMITTED --log-bin=ROW --innodb-read-only-compressed=OFF
@@ -174,19 +186,17 @@ services:
       - nc-db-dump:/backup
     environment:
       TZ: "#VAR:general_timezone:VAR#"
-      MYSQL_ROOT_PASSWORD: "#VAR:app_nextcloud_db_pass_root:VAR#"
-      MYSQL_PASSWORD: "#VAR:app_nextcloud_db_pass_nextcloud:VAR#"
-      MYSQL_DATABASE: nextcloud
-      MYSQL_USER: nextcloud
-    healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          "mysqladmin -u $$MYSQL_USER --password=$$MYSQL_PASSWORD ping || exit 1",
-        ]
-      interval: 30s
-      timeout: 10s
-      retries: 5
+      MARIADB_ROOT_PASSWORD: "#VAR:app_nextcloud_db_pass_root:VAR#"
+      MARIADB_PASSWORD: "#VAR:app_nextcloud_db_pass_nextcloud:VAR#"
+      MARIADB_DATABASE: nextcloud
+      MARIADB_USER: nextcloud
+      MARIADB_AUTO_UPGRADE: "1"
+    healthcheck: # Based on https://mariadb.com/kb/en/using-healthcheck-sh/
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      start_period: 10s
+      interval: 10s
+      timeout: 5s
+      retries: 3
 
   # =========================
   # =       MONICA CRM      =
@@ -199,7 +209,8 @@ services:
       - traefik
       - monica
     depends_on:
-      - monica-db
+      monica-db:
+        condition: service_healthy
     volumes:
       - "#VAR:general_path_appdata:VAR#/monica/monica/data:/var/www/html/storage"
     environment:
@@ -220,6 +231,7 @@ services:
 
   monica-db:
     <<: *defaults
+    # https://github.com/monicahq/monica/blob/main/docker-compose.yml
     image: docker.io/library/mariadb:11
     container_name: monica-db
     networks:
@@ -229,19 +241,17 @@ services:
       - monica-db-dump:/backup
     environment:
       TZ: "#VAR:general_timezone:VAR#"
-      MYSQL_ROOT_PASSWORD: "#VAR:app_monica_db_pass_root:VAR#"
-      MYSQL_DATABASE: monica
-      MYSQL_USER: monica
-      MYSQL_PASSWORD: "#VAR:app_monica_db_pass_monica:VAR#"
-    healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          "mysqladmin -u $$MYSQL_USER --password=$$MYSQL_PASSWORD ping || exit 1",
-        ]
-      interval: 30s
-      timeout: 10s
-      retries: 5
+      MARIADB_ROOT_PASSWORD: "#VAR:app_monica_db_pass_root:VAR#"
+      MARIADB_DATABASE: monica
+      MARIADB_USER: monica
+      MARIADB_PASSWORD: "#VAR:app_monica_db_pass_monica:VAR#"
+      MARIADB_AUTO_UPGRADE: "1"
+    healthcheck: # Based on https://mariadb.com/kb/en/using-healthcheck-sh/
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      start_period: 10s
+      interval: 10s
+      timeout: 5s
+      retries: 3
 
   # ====================================
   # =              WIKI.JS             =
@@ -255,7 +265,8 @@ services:
       - traefik
       - wikijs
     depends_on:
-      - wikijs-db
+      wikijs-db:
+        condition: service_healthy
     volumes:
       - "#VAR:general_path_appdata:VAR#/wikijs/wikijs/config:/config"
       - "#VAR:general_path_appdata:VAR#/wikijs/wikijs/data:/data"
@@ -283,7 +294,9 @@ services:
           memory: 2G
 
   wikijs-db:
-    <<: *defaults
+    <<: [*defaults, *healthcheck-postgres]
+    # Wiki.js supports PostgreSQL 9.5 or later and recommends latest version
+    # https://docs.requarks.io/install/requirements
     image: docker.io/library/postgres:16-alpine
     container_name: wikijs-db
     networks:
@@ -293,9 +306,9 @@ services:
       - wikijs-db-dump:/backup
     environment:
       TZ: "#VAR:general_timezone:VAR#"
+      POSTGRES_DB: wikijs
       POSTGRES_USER: wikijs
       POSTGRES_PASSWORD: "#VAR:app_wikijs_db_pass:VAR#"
-      POSTGRES_DB: wikijs
 
   # =========================
   # = IMAP SAVE ATTACHMENTS =
@@ -405,7 +418,8 @@ services:
     image: docker.io/jenswbe/go-commerce:v1.1.0
     container_name: bjoetiek-backend
     depends_on:
-      - bjoetiek-db
+      bjoetiek-db:
+        condition: service_healthy
     networks:
       - bjoetiek
       - traefik
@@ -442,7 +456,7 @@ services:
       - "traefik.http.routers.bjoetiek-backend.middlewares=bjoetiek-cors@file"
 
   bjoetiek-db:
-    <<: *defaults
+    <<: [*defaults, *healthcheck-postgres]
     image: docker.io/library/postgres:13-alpine
     container_name: bjoetiek-db
     networks:
@@ -452,6 +466,7 @@ services:
       - bjoetiek-db-dump:/backup
     environment:
       TZ: "#VAR:general_timezone:VAR#"
+      POSTGRES_DB: bjoetiek
       POSTGRES_USER: bjoetiek
       POSTGRES_PASSWORD: "#VAR:app_bjoetiek_db_pass:VAR#"
 
@@ -504,7 +519,8 @@ services:
     image: docker.io/jenswbe/go-commerce:latest
     container_name: bjoetiek-test-backend
     depends_on:
-      - bjoetiek-test-db
+      bjoetiek-test-db:
+        condition: service_healthy
     networks:
       - bjoetiek-test
       - traefik
@@ -541,7 +557,7 @@ services:
       - "traefik.http.routers.bjoetiek-test-backend.middlewares=bjoetiek-cors@file"
 
   bjoetiek-test-db:
-    <<: *defaults
+    <<: [*defaults, *healthcheck-postgres]
     image: docker.io/library/postgres:13-alpine
     container_name: bjoetiek-test-db
     networks:
@@ -550,6 +566,7 @@ services:
       - "bjoetiek-test-db-data:/var/lib/postgresql/data"
     environment:
       TZ: "#VAR:general_timezone:VAR#"
+      POSTGRES_DB: bjoetiek-test
       POSTGRES_USER: bjoetiek-test
       POSTGRES_PASSWORD: bjoetiek-test
 
@@ -585,7 +602,8 @@ services:
       context: directus
     container_name: kristofcoenen-directus
     depends_on:
-      - kristofcoenen-directus-db
+      kristofcoenen-directus-db:
+        condition: service_healthy
     environment:
       # See https://docs.directus.io/self-hosted/config-options#general
       # LOG_LEVEL: "trace"
@@ -622,7 +640,10 @@ services:
       - "traefik.http.services.kristofcoenen-directus-#VAR:ansible_hostname:VAR#.loadbalancer.server.port=8055"
 
   kristofcoenen-directus-db:
-    <<: *defaults
+    <<: [*defaults, *healthcheck-postgres]
+    # Directus supports the LTS versions of PostgreSQL
+    #   - https://docs.directus.io/self-hosted/docker-guide.html#supported-databases
+    #   - https://endoflife.date/postgresql (from official docs)
     image: docker.io/library/postgres:16
     container_name: kristofcoenen-directus-db
     networks:
@@ -634,8 +655,8 @@ services:
       - kristofcoenen-directus-db-dump:/backup
     environment:
       TZ: "#VAR:general_timezone:VAR#"
-      POSTGRES_USER: directus
       POSTGRES_DB: directus
+      POSTGRES_USER: directus
       POSTGRES_PASSWORD: directus
 
   # =========================
@@ -649,7 +670,8 @@ services:
       context: directus
     container_name: tuinfeest-directus
     depends_on:
-      - tuinfeest-directus-db
+      tuinfeest-directus-db:
+        condition: service_healthy
     environment:
       # See https://docs.directus.io/self-hosted/config-options#general
       # LOG_LEVEL: "trace"
@@ -686,7 +708,10 @@ services:
       - "traefik.http.services.tuinfeest-directus-#VAR:ansible_hostname:VAR#.loadbalancer.server.port=8055"
 
   tuinfeest-directus-db:
-    <<: *defaults
+    <<: [*defaults, *healthcheck-postgres]
+    # Directus supports the LTS versions of PostgreSQL
+    #   - https://docs.directus.io/self-hosted/docker-guide.html#supported-databases
+    #   - https://endoflife.date/postgresql (from official docs)
     image: docker.io/library/postgres:16
     container_name: tuinfeest-directus-db
     networks:
@@ -698,8 +723,8 @@ services:
       - tuinfeest-directus-db-dump:/backup
     environment:
       TZ: "#VAR:general_timezone:VAR#"
-      POSTGRES_USER: directus
       POSTGRES_DB: directus
+      POSTGRES_USER: directus
       POSTGRES_PASSWORD: directus
 
   # =========================
@@ -713,7 +738,8 @@ services:
       context: directus
     container_name: wtech-directus
     depends_on:
-      - wtech-directus-db
+      wtech-directus-db:
+        condition: service_healthy
     environment:
       # See https://docs.directus.io/self-hosted/config-options#general
       # LOG_LEVEL: "trace"
@@ -750,7 +776,10 @@ services:
       - "traefik.http.services.wtech-directus-#VAR:ansible_hostname:VAR#.loadbalancer.server.port=8055"
 
   wtech-directus-db:
-    <<: *defaults
+    <<: [*defaults, *healthcheck-postgres]
+    # Directus supports the LTS versions of PostgreSQL
+    #   - https://docs.directus.io/self-hosted/docker-guide.html#supported-databases
+    #   - https://endoflife.date/postgresql (from official docs)
     image: docker.io/library/postgres:16
     container_name: wtech-directus-db
     networks:
@@ -762,8 +791,8 @@ services:
       - wtech-directus-db-dump:/backup
     environment:
       TZ: "#VAR:general_timezone:VAR#"
-      POSTGRES_USER: directus
       POSTGRES_DB: directus
+      POSTGRES_USER: directus
       POSTGRES_PASSWORD: directus
 
   # =========================
@@ -829,7 +858,8 @@ services:
     build: ./keycloak
     container_name: keycloak
     depends_on:
-      - keycloak-db
+      keycloak-db:
+        condition: service_healthy
     networks:
       - keycloak
       - traefik
@@ -864,7 +894,8 @@ services:
           memory: 4G
 
   keycloak-db:
-    <<: *defaults
+    <<: [*defaults, *healthcheck-postgres]
+    # https://www.keycloak.org/server/db
     image: docker.io/library/postgres:12-alpine
     container_name: keycloak-db
     networks:
@@ -874,9 +905,9 @@ services:
       - keycloak-db-dump:/backup
     environment:
       TZ: "#VAR:general_timezone:VAR#"
+      POSTGRES_DB: keycloak
       POSTGRES_USER: keycloak
       POSTGRES_PASSWORD: "#VAR:app_keycloak_db_pass:VAR#"
-      POSTGRES_DB: keycloak
 
   # =========================
   # =      PLACEHOLDERS     =
@@ -1012,10 +1043,14 @@ services:
     security_opt:
       - no-new-privileges=true
     depends_on:
-      - paperless-redis
-      - paperless-db
-      - paperless-gotenberg
-      - paperless-tika
+      paperless-redis:
+        condition: service_started
+      paperless-db:
+        condition: service_healthy
+      paperless-gotenberg:
+        condition: service_started
+      paperless-tika:
+        condition: service_started
     healthcheck:
       test:
         ["CMD", "curl", "-fs", "-S", "--max-time", "2", "http://localhost:8000"]
@@ -1064,8 +1099,10 @@ services:
           memory: 6G
 
   paperless-db:
-    <<: *defaults
+    <<: [*defaults, *healthcheck-postgres]
     container_name: paperless-db
+    # See https://github.com/paperless-ngx/paperless-ngx/blob/main/docker/compose/docker-compose.postgres-tika.yml
+    # for recommended version.
     image: docker.io/library/postgres:16
     networks:
       - paperless
@@ -1076,13 +1113,15 @@ services:
       - paperless-db-dump:/backup
     environment:
       TZ: "#VAR:general_timezone:VAR#"
-      POSTGRES_USER: paperless
       POSTGRES_DB: paperless
+      POSTGRES_USER: paperless
       POSTGRES_PASSWORD: paperless
 
   paperless-redis:
     <<: *defaults
     container_name: paperless-redis
+    # See https://github.com/paperless-ngx/paperless-ngx/blob/main/docker/compose/docker-compose.postgres-tika.yml
+    # for recommended version.
     image: docker.io/library/redis:7
     networks:
       - paperless
@@ -1097,6 +1136,8 @@ services:
   paperless-gotenberg:
     <<: *defaults
     container_name: paperless-gotenberg
+    # See https://github.com/paperless-ngx/paperless-ngx/blob/main/docker/compose/docker-compose.postgres-tika.yml
+    # for recommended version.
     image: docker.io/gotenberg/gotenberg:7.10
     networks:
       - paperless
@@ -1191,7 +1232,8 @@ services:
     networks:
       - backup-nc-db
     depends_on:
-      - nc-db
+      nc-db:
+        condition: service_healthy
     volumes:
       - "#VAR:general_path_appdata:VAR#/nextcloud/nextcloud/config/config:/nextcloud/config:ro"
       - nc-calcardbackup:/backup
