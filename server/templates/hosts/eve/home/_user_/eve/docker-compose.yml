@@ -1138,7 +1138,7 @@ services:
     container_name: paperless-gotenberg
     # See https://github.com/paperless-ngx/paperless-ngx/blob/main/docker/compose/docker-compose.postgres-tika.yml
     # for recommended version.
-    image: docker.io/gotenberg/gotenberg:7.10
+    image: docker.io/gotenberg/gotenberg:8.8
     networks:
       - paperless
     command:
