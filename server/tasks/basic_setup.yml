@@ -6,11 +6,23 @@
       community.general.timezone:
         name: "{{ general_timezone }}"
 
-    - name: Install base packages
+    - name: RedHat - Enable EPEL repo
+      when: ansible_os_family == 'RedHat'
+      ansible.builtin.package:
+        state: present
+        name: epel-release
+
+    - name: Install general base packages
       ansible.builtin.package:
         state: present
         name: "{{ item }}"
-      loop: "{{ packages_base }}"
+      loop: "{{ packages_base_general }}"
+
+    - name: "{{ ansible_os_family }} - Install family specific base packages"
+      ansible.builtin.package:
+        state: present
+        name: "{{ item }}"
+      loop: "{{ lookup('vars', 'packages_base_' ~ ansible_os_family_lowercase) }}"
 
     - name: Create opt directories
       ansible.builtin.file:
@@ -46,15 +58,16 @@
         name: systemd-journald
         state: restarted
 
-    - name: Ensure LUKS prompt uses correct keymap # Based on https://askubuntu.com/a/1071945
+    - name: Debian - Ensure LUKS prompt uses correct keymap # Based on https://askubuntu.com/a/1071945
+      when: ansible_os_family == 'Debian'
       register: initramfs_config
       ansible.builtin.lineinfile:
         path: /etc/initramfs-tools/initramfs.conf
         regexp: "^#?KEYMAP="
         line: "KEYMAP=Y"
 
-    - name: Update initramfs if config was changed
-      when: initramfs_config.changed
+    - name: Debian - Update initramfs if config was changed
+      when: ansible_os_family == 'Debian' and initramfs_config.changed
       ansible.builtin.command: update-initramfs -u
 
     - name: Ensure low swappiness value

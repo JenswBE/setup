@@ -27,9 +27,6 @@ Without this option, the playbook will fail.
 # Install Python requirements
 sudo pip install -r requirements.txt
 
-# Install collections
-LC_ALL=C.UTF-8 ansible-galaxy collection install --force -r requirements.yml
-
 # Install roles
 LC_ALL=C.UTF-8 ansible-galaxy role install --force -r requirements.yml
 

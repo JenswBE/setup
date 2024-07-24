@@ -1225,6 +1225,30 @@ services:
       - "traefik.http.services.syncthing-#VAR:ansible_hostname:VAR#.loadbalancer.server.port=8384"
 
   # =========================
+  # =  CONTAINER REGISTRY   =
+  # =========================
+  registry:
+    <<: *defaults
+    image: docker.io/library/registry:2
+    container_name: registry
+    networks:
+      - traefik
+    volumes:
+      - ./registry/config.yml:/config.yml
+      - "#VAR:general_path_appdata:VAR#/registry/data:/var/lib/registry"
+    environment:
+      TZ: "#VAR:general_timezone:VAR#"
+      REGISTRY_AUTH: htpasswd
+      REGISTRY_AUTH_HTPASSWD_PATH: /auth/htpasswd
+      REGISTRY_AUTH_HTPASSWD_REALM: Registry Realm
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.registry.entrypoints=websecure"
+      - "traefik.http.routers.registry.rule=Host(`containers.#VAR:ansible_hostname:VAR#.#VAR:general_domain_default:VAR#`)"
+      - "traefik.http.routers.registry.tls.certresolver=le-tls"
+      - "traefik.http.services.registry-#VAR:ansible_hostname:VAR#.loadbalancer.server.port=5001"
+
+  # =========================
   # =         BACKUP        =
   # =========================
   nc-calcardbackup:

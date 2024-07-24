@@ -25,9 +25,7 @@ docker_users: []
 firewall_ssh_port: 22
 
 # Packages
-packages_base:
-  - btrfs-progs
-  - console-data
+packages_base_general:
   # Unfortunately not covered by role geerlingguy.docker
   # See https://github.com/geerlingguy/ansible-role-docker/issues/405
   - docker-buildx-plugin
@@ -36,6 +34,12 @@ packages_base:
   - pv
   - rsync
   - vim
+
+packages_base_debian:
+  - btrfs-progs
+  - console-data # Contains keymaps and fonts
+
+packages_base_redhat: []
 
 # Security
 security_autoupdate_reboot_time: "05:00"
