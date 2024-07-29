@@ -12,7 +12,7 @@ VPS
 
 ### 01:00 Daily application jobs
 
-- Dead link checker (DeLiC): Check sites for dead links (`templates/hosts/eve/home/_user_/eve/delic/config.yml`)
+- Add missing indexes in DB for Nextcloud (`templates/hosts/eve/etc/systemd/system/nextcloud-db-add-missing-indices.timer`)
 - Rescan photos for Nextcloud Maps (`templates/hosts/eve/etc/systemd/system/nextcloud-maps-scan-photos.timer`)
 
 ### 02:00 Prepare backup
@@ -43,3 +43,7 @@ VPS
 ### System tasks
 
 - 05:00 Update and restart (unattended updates)
+
+### Other tasks
+
+- 13:00 Dead link checker (DeLiC): Check sites for dead links (`templates/hosts/eve/home/_user_/eve/delic/config.yml`)

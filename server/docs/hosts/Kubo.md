@@ -11,6 +11,7 @@ Home NAS
 
 ### 01:00 Daily application jobs
 
+- Add missing indexes in DB for Nextcloud (`templates/hosts/eve/etc/systemd/system/nextcloud-db-add-missing-indices.timer`)
 - Rescan photos for Nextcloud Maps (`templates/hosts/kubo/etc/systemd/system/nextcloud-maps-scan-photos.timer`)
 - Reset MiniFlux feed errors (`templates/hosts/kubo/etc/systemd/system/miniflux-reset-feed-errors.timer`)
 

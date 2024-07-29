@@ -44,6 +44,7 @@
     - monica-dump-db.timer
     - nextcloud-calcardbackup.timer
     - nextcloud-cron.timer
+    - nextcloud-db-add-missing-indices.timer
     - nextcloud-dump-db.timer
     - nextcloud-maps-scan-photos.timer
     - nextcloud-preview-generator.timer
