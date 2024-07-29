@@ -3,4 +3,4 @@ http:
     transmission-system-auth:
       basicAuth:
         users:
-          - "{{ app_transmission_system_users }}"
+          - "{{ app_transmission_system_username }}:{{ app_transmission_system_password | password_hash('blowfish', rounds=10, ident='2y') }}"

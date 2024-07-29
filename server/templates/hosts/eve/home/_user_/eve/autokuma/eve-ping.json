@@ -1,0 +1,5 @@
+{
+  "type": "http",
+  "name": "Eve: Ping",
+  "url": "https://ping.eve.{{ general_domain_default }}"
+}

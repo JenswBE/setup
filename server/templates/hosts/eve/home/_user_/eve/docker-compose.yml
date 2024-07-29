@@ -840,6 +840,7 @@ services:
       - "#VAR:general_path_appdata:VAR#/uptime-kuma/data:/app/data"
     networks:
       - traefik
+      - uptime-kuma
     environment:
       TZ: "#VAR:general_timezone:VAR#"
     labels:
@@ -849,6 +850,26 @@ services:
       - "traefik.http.routers.uptime-kuma.tls.certresolver=le-tls"
       - "traefik.http.routers.uptime-kuma.middlewares=oauth2-proxy-handle-error@file, oauth2-proxy-forward-auth-infra@file"
       - "traefik.http.services.uptime-kuma-#VAR:ansible_hostname:VAR#.loadbalancer.server.port=3001"
+
+  autokuma:
+    <<: *defaults
+    image: ghcr.io/bigboot/autokuma:latest
+    container_name: autokuma
+    depends_on:
+      uptime-kuma:
+        condition: service_started
+    networks:
+      - uptime-kuma
+    volumes:
+      - "./autokuma:/static_monitors:ro,z"
+    environment:
+      TZ: "#VAR:general_timezone:VAR#"
+      AUTOKUMA__KUMA__URL: http://uptime-kuma:3001
+      AUTOKUMA__DOCKER__ENABLED: "false"
+      AUTOKUMA__STATIC_MONITORS: /static_monitors
+      AUTOKUMA__DEFAULT_SETTINGS: |-
+        http.max_retries: 1
+        *.notification_id_list: { "1": true }
 
   # =========================
   # =          AUTH         =
@@ -1381,6 +1402,10 @@ networks:
 
   tuinfeest-directus:
     name: tuinfeest-directus
+
+  uptime-kuma:
+    name: uptime-kuma
+    internal: true
 
   wikijs:
     name: wikijs

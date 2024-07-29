@@ -1,0 +1,5 @@
+{
+  "type": "http",
+  "name": "Eve: Nextcloud",
+  "url": "https://nextcloud.{{ general_domain_default }}"
+}

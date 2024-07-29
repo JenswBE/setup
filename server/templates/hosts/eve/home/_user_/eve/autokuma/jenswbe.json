@@ -1,0 +1,5 @@
+{
+  "type": "http",
+  "name": "GitHub: Jensw.be",
+  "url": "https://{{ general_domain_default }}"
+}

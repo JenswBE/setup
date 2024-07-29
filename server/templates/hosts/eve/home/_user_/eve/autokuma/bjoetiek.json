@@ -1,0 +1,5 @@
+{
+  "type": "http",
+  "name": "Eve: Bjoetiek",
+  "url": "https://{{ general_domain_bjoetiek }}"
+}

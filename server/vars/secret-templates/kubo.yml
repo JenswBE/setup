@@ -58,7 +58,7 @@ app_nextcloud_db_pass_nextcloud: ""
 app_traefik_cloudflare_token: ""
 
 # Transmission
-app_transmission_system_users: "" # See How-to: Generate Treafik basic auth credentials
+# See also "basics.yml"
 app_transmission_wireguard_private_key: ""
 app_transmission_wireguard_addresses: "" # E.g. 10.1.2.3/32
 

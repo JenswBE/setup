@@ -32,3 +32,8 @@ app_oauth2_proxy_cookie_secret: "" # Random string used to encrypt token
 app_oauth2_proxy_issuer_url: ""
 app_oauth2_proxy_client_id: ""
 app_oauth2_proxy_client_secret: ""
+
+# Transmission
+# See also "kubo.yml"
+app_transmission_system_username: ""
+app_transmission_system_password: ""

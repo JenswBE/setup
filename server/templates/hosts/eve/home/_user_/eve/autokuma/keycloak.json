@@ -1,0 +1,5 @@
+{
+  "type": "http",
+  "name": "Eve: Keycloak (Auth)",
+  "url": "https://auth.{{ general_domain_default }}"
+}
