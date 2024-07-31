@@ -2,6 +2,6 @@
   "type": "http",
   "name": "Redirect: GwenDV",
   "url": "https://{{ general_domain_gwendv }}",
-  "accepted_statuscodes": ["302"],
-  "max_redirects": 0
+  "acceptedStatuscodes": ["302"],
+  "maxRedirects": 0
 }
