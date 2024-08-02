@@ -1,7 +1,3 @@
-- name: Include logging tasks
-  ansible.builtin.include_tasks: tasks/logging.yml
-  tags: ["setup", "logging"]
-
 - name: Include PowerTop tasks
   ansible.builtin.include_tasks: tasks/powertop.yml
   tags: ["setup", "powertop"]

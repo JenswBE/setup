@@ -2,9 +2,15 @@
   become: true
   tags: ["setup", "wireguard"]
   block:
-    - name: Install Wireguard
+    - name: Debian - Install Wireguard
+      when: ansible_distribution == 'Debian'
       ansible.builtin.package:
         name: wireguard
+        state: present
+
+    - name: Install Wireguard Tools
+      ansible.builtin.package:
+        name: wireguard-tools
         state: present
 
     - name: Setup Wireguard config

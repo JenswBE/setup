@@ -23,7 +23,7 @@
       register: parse_ports
       become: false
       ansible.builtin.command:
-        cmd: /usr/bin/python3 helpers/parse_firewall_ports.py '{{ firewall_additional_ports | to_json }}'
+        cmd: /usr/bin/python3 helpers/parse_firewall_ports.py '{{ ufw_additional_ports | to_json }}'
 
     - name: UFW - Allow additional ports
       community.general.ufw:

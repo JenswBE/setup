@@ -1,7 +1,3 @@
-- name: Include logging tasks
-  ansible.builtin.include_tasks: tasks/logging.yml
-  tags: ["setup", "logging"]
-
 - name: Include Wireguard tasks
   ansible.builtin.include_tasks: tasks/wireguard.yml
   vars:

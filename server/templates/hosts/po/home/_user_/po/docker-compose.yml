@@ -1,0 +1,180 @@
+#################################################################
+#                            DEFAULTS                           #
+#################################################################
+
+x-defaults: &defaults
+  x-dummy: ""
+  # Putting the anchor in this file ensures it's a valid YAML file for Renovate Bot
+  #VAR:lookup('ansible.builtin.file', 'files/docker-compose-defaults.yml',) | indent(width=2):VAR#
+
+#################################################################
+#                            SERVICES                           #
+#################################################################
+services:
+  # =========================
+  # =         PROXY         =
+  # =========================
+  # Having 2 reverse proxies (1 on host network and 1 on bridge network)
+  # allows to have the real client IP's available inside the bridged
+  # Treafik instance (using PROXY protocol). In case you would only have
+  # a single reverse proxy on the host network, you would loose all the convenience
+  # of the Traefik Docker provider support (not having to expose each service on a host
+  # port and auto-configuration of the services/loadbalancers).
+  nginx:
+    <<: *defaults
+    image: docker.io/library/nginx:alpine
+    container_name: nginx
+    network_mode: host
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/nginx.conf:ro,z
+
+  traefik:
+    <<: *defaults
+    image: docker.io/library/traefik:latest
+    container_name: traefik
+    command:
+      # - "--log.level=DEBUG"
+      - "--accesslog.filepath=/access-logs/access.log" # Used by CrowdSec
+      - "--providers.file.directory=/conf"
+      - "--providers.file.watch=true"
+      - "--providers.docker=true"
+      - "--providers.docker.network=traefik"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.websecure.address=:443"
+      - "--entrypoints.websecure.proxyProtocol.trustedIPs=#VAR:network_any_private:VAR#"
+      - "--entrypoints.websecure.http.middlewares=secure-https@file"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.web.proxyProtocol.trustedIPs=#VAR:network_any_private:VAR#"
+      - "--entrypoints.web.http.redirections.entryPoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entryPoint.scheme=https"
+      - "--certificatesresolvers.le-tls.acme.tlsChallenge=true"
+      - "--certificatesresolvers.le-tls.acme.email=#VAR:general_mail_admin:VAR#@#VAR:general_domain_default:VAR#"
+      - "--certificatesresolvers.le-tls.acme.storage=/letsencrypt/acme.json"
+      - "--certificatesresolvers.le-tls-staging.acme.tlsChallenge=true"
+      - "--certificatesresolvers.le-tls-staging.acme.email=#VAR:general_mail_admin:VAR#@#VAR:general_domain_default:VAR#"
+      - "--certificatesresolvers.le-tls-staging.acme.storage=/letsencrypt/acme-staging.json"
+      - "--certificatesResolvers.le-tls-staging.acme.caServer=https://acme-staging-v02.api.letsencrypt.org/directory"
+      - "--api=true"
+      - "--ping.manualrouting=true"
+    ports:
+      - 127.0.0.1:2080:80
+      - 127.0.0.1:2443:443
+    networks:
+      - traefik
+    volumes:
+      - ./traefik:/conf:ro,z
+      - /var/run/docker.sock:/var/run/docker.sock:ro,z
+      - traefik-cert:/letsencrypt/
+      - traefik-access-logs:/access-logs
+    environment:
+      TZ: "#VAR:general_timezone:VAR#"
+
+  oauth2-proxy:
+    <<: *defaults
+    image: quay.io/oauth2-proxy/oauth2-proxy:latest
+    container_name: oauth2-proxy
+    command: >
+      --http-address=0.0.0.0:4180
+      --reverse-proxy
+      --provider=keycloak-oidc
+      --oidc-issuer-url=#VAR:app_oauth2_proxy_issuer_url:VAR#
+      --client-id=#VAR:app_oauth2_proxy_client_id:VAR#
+      --client-secret=#VAR:app_oauth2_proxy_client_secret:VAR#
+      --code-challenge-method=S256
+      --email-domain=*
+      --cookie-domain=#VAR:general_domain_default:VAR#
+      --cookie-secret=#VAR:app_oauth2_proxy_cookie_secret:VAR#
+    networks:
+      - traefik
+    environment:
+      TZ: "#VAR:general_timezone:VAR#"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.oauth2-proxy.entrypoints=websecure"
+      - "traefik.http.routers.oauth2-proxy.tls.certresolver=le-tls"
+      - >-
+        traefik.http.routers.oauth2-proxy.rule=(
+        Host(`traefik.#VAR:ansible_hostname:VAR#.#VAR:general_domain_default:VAR#`)
+        ) && PathPrefix(`/oauth2/`)
+      - "traefik.http.services.oauth2-proxy-#VAR:ansible_hostname:VAR#.loadbalancer.server.port=4180"
+
+  # Since the login page handling of OAuth2 Proxy is based on HTTP
+  # status code 401, it might conflict with an upstream reply.
+  # Therefore, this helper translates an error response of OAuth2 Proxy
+  # to status code 601. This prevents any conflicts.
+  oauth2-proxy-helper:
+    <<: *defaults
+    image: docker.io/library/caddy:2
+    container_name: oauth2-proxy-helper
+    networks:
+      - traefik
+    volumes:
+      - ./oauth2-proxy/helper/Caddyfile:/etc/caddy/Caddyfile:ro,z
+      - oauth2-proxy-helper-config:/config
+      - oauth2-proxy-helper-data:/data
+    environment:
+      TZ: "#VAR:general_timezone:VAR#"
+
+  # =========================
+  # =      STATIC HOSTS     =
+  # =========================
+  sws-interwego:
+    <<: *defaults
+    image: joseluisq/static-web-server:2
+    container_name: sws-interwego
+    volumes:
+      - website-interwego:/public
+
+  # =========================
+  # =      FILE UPLOADS     =
+  # =========================
+  rsyncd:
+    <<: *defaults
+    image: quay.io/panubo/sshd
+    container_name: rsyncd
+
+  # =========================
+  # =        CROWDSEC       =
+  # =========================
+  crowdsec:
+    <<: *defaults
+    image: ghcr.io/crowdsecurity/crowdsec:v1.6.2
+    container_name: crowdsec
+    ports:
+      - 127.0.0.1:9000:8080
+    environment:
+      TZ: "#VAR:general_timezone:VAR#"
+      COLLECTIONS: >-
+        crowdsecurity/http-cve
+        crowdsecurity/linux
+        crowdsecurity/traefik
+      GID: "#VAR:ansible_real_group_id:VAR#"
+      BOUNCER_KEY_firewall: "#VAR:app_crowdsec_bouncer_firewall_key:VAR#"
+    volumes:
+      # Config
+      - ./crowdsec/acquis.yaml:/etc/crowdsec/acquis.yaml:ro,z
+      - ./crowdsec/postoverflows:/etc/crowdsec/postoverflows:ro,z
+      - crowdsec-db:/var/lib/crowdsec/data/
+      - crowdsec-config:/etc/crowdsec/
+      # Logs
+      - /var/log/auth.log:/var/log/auth.log:ro,z
+      - traefik-access-logs:/var/log/traefik:ro
+
+# #################################################################
+# #                            VOLUMES                            #
+# #################################################################
+volumes:
+  crowdsec-config:
+  crowdsec-db:
+  oauth2-proxy-helper-config:
+  oauth2-proxy-helper-data:
+  traefik-access-logs:
+  traefik-cert:
+  website-interwego:
+
+# #################################################################
+# #                            NETWORKS                           #
+# #################################################################
+networks:
+  traefik:
+    name: traefik

@@ -1,6 +1,6 @@
 # Firewall
 # Ensure to update firewall on cloud provider!
-firewall_additional_ports:
+ufw_additional_ports:
   - comment: Blocky
     port: 53
     protos: [tcp, udp]

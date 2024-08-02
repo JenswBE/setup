@@ -1,0 +1,13 @@
+http:
+  middlewares:
+    oauth2-proxy-handle-error:
+      errors:
+        status:
+          - "601"
+        service: oauth2-proxy-{{ ansible_hostname }}@docker
+        query: /oauth2/sign_in
+
+    oauth2-proxy-forward-auth-infra:
+      forwardAuth:
+        address: http://oauth2-proxy-helper/oauth2/auth?allowed_groups=infra
+        trustForwardHeader: true

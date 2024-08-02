@@ -7,33 +7,55 @@
         name: firewalld
         state: present
 
+    - name: FirewallD - Ensure is enabled
+      become: true
+      ansible.builtin.systemd:
+        name: firewalld
+        state: started
+        enabled: true
+
     - name: FirewallD - Clear current firewall rules
-      community.general.ufw:
-        state: reset
+      ansible.builtin.shell: /bin/rm -rf /etc/firewalld/zones/*
 
-    - name: FirewallD - Allow SSH
-      community.general.ufw:
-        comment: SSH
-        rule: allow
-        port: "{{ firewall_ssh_port | string }}"
-        proto: tcp
+    - name: FirewallD - Disable Cockpit
+      ansible.posix.firewalld:
+        service: cockpit
+        permanent: true
+        state: disabled
 
-    - name: FirewallD - Parse firewall ports
-      connection: local
-      register: parse_ports
-      become: false
-      ansible.builtin.command:
-        cmd: /usr/bin/python3 helpers/parse_firewall_ports.py '{{ firewall_additional_ports | to_json }}'
+    - name: FirewallD - Create custom zones
+      ansible.posix.firewalld:
+        zone: "{{ item.name }}"
+        state: present
+        permanent: true
+      loop: "{{ firewalld.zones }}"
+
+    - name: FirewallD - Apply sources to custom zones
+      ansible.posix.firewalld:
+        zone: "{{ item[0].name }}"
+        source: "{{ lookup('vars', 'network_' + item[1]) }}"
+        state: enabled
+        permanent: true
+      loop: "{{ firewalld.zones | subelements('source_networks') }}"
+
+    - name: FirewallD - Allow additional services
+      ansible.posix.firewalld:
+        zone: "{{ item[0].zone }}"
+        service: "{{ item[1] }}"
+        state: enabled
+        permanent: true
+      loop: "{{ firewalld.allowed_services | subelements('services') }}"
 
     - name: FirewallD - Allow additional ports
-      community.general.ufw:
-        comment: "{{ item.comment }}"
-        rule: allow
-        port: "{{ item.port | string }}"
-        proto: "{{ item.proto }}"
-        from_ip: "{{ lookup('vars', 'network_' + item.from_network) }}"
-      loop: "{{ parse_ports.stdout | from_json }}"
-
-    - name: FirewallD - Enable firewall
-      community.general.ufw:
+      ansible.posix.firewalld:
+        zone: "{{ item[0].zone }}"
+        port: "{{ item[1] }}"
         state: enabled
+        permanent: true
+      loop: "{{ firewalld.allowed_ports | subelements('ports') }}"
+
+    - name: FirewallD - Reload
+      become: true
+      ansible.builtin.systemd:
+        name: firewalld
+        state: reloaded

@@ -6,11 +6,20 @@
       community.general.timezone:
         name: "{{ general_timezone }}"
 
-    - name: RedHat - Enable EPEL repo
-      when: ansible_os_family == 'RedHat'
+    - name: AlmaLinux - Enable EPEL repo
+      when: ansible_distribution == 'AlmaLinux'
       ansible.builtin.package:
         state: present
         name: epel-release
+
+    - name: AlmaLinux - Exclude Zabbix from EPEL repo
+      when: ansible_distribution == 'AlmaLinux'
+      community.general.ini_file:
+        path: /etc/yum.repos.d/epel.repo
+        section: epel
+        option: excludepkgs
+        value: "zabbix*"
+        mode: "0644"
 
     - name: Install general base packages
       ansible.builtin.package:
@@ -59,7 +68,7 @@
         state: restarted
 
     - name: Debian - Ensure LUKS prompt uses correct keymap # Based on https://askubuntu.com/a/1071945
-      when: ansible_os_family == 'Debian'
+      when: ansible_distribution == 'Debian'
       register: initramfs_config
       ansible.builtin.lineinfile:
         path: /etc/initramfs-tools/initramfs.conf
@@ -67,7 +76,7 @@
         line: "KEYMAP=Y"
 
     - name: Debian - Update initramfs if config was changed
-      when: ansible_os_family == 'Debian' and initramfs_config.changed
+      when: ansible_distribution == 'Debian' and initramfs_config.changed
       ansible.builtin.command: update-initramfs -u
 
     - name: Ensure low swappiness value

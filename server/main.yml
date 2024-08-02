@@ -5,6 +5,10 @@
     - vars/secret/basics.yml
 
   vars:
+    supported_distros:
+      - AlmaLinux
+      - Debian
+
     arch_map:
       {
         "i386": "i386",
@@ -26,6 +30,12 @@
         msg: "You must use -l or --limit - when you really want to use all hosts, use -l 'all'"
       when: ansible_limit is not defined
       run_once: true
+      tags: ["always"]
+
+    - name: Check if supported distro
+      ansible.builtin.fail:
+        msg: "{{ ansible_distribution }} is not a supported distro for this playbook. Supported distro's: {{ supported_distros }}"
+      when: ansible_distribution not in supported_distros
       tags: ["always"]
 
     - name: Set lowercase versions of facts
@@ -96,6 +106,10 @@
     - name: Include Zabbix agent tasks
       ansible.builtin.include_tasks: tasks/zabbix-agent.yml
       tags: ["setup", "zabbix"]
+
+    - name: Include logging tasks
+      ansible.builtin.include_tasks: tasks/logging.yml
+      tags: ["setup", "logging"]
 
     - name: Include host specific tasks
       ansible.builtin.include_tasks: "tasks/hosts/{{ ansible_hostname }}.yml"

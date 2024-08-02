@@ -1,0 +1,42 @@
+# Firewall
+# Ensure to update firewall on cloud provider!
+firewalld:
+  zones:
+    - name: wireguard
+      source_networks: [wireguard_ipv4]
+  allowed_services:
+    - zone: public
+      services:
+        - http # 80/tcp
+        - https # 443/tcp
+        - http3 # 443/udp (QUIC)
+  allowed_ports:
+    - zone: public
+      ports:
+        - 51820/udp # Wireguard
+    - zone: wireguard
+      ports:
+        - 10050/tcp # Zabbix agent
+
+# Redirects
+redirects:
+  - from: "{{ general_domain_gwendv }}"
+    to: "www.instagram.com/gwendolyndevocht/"
+  - from: "www.{{ general_domain_gwendv }}"
+    to: "www.instagram.com/gwendolyndevocht/"
+  - from: "{{ general_domain_interwego_be }}"
+    to: "{{ general_domain_interwego }}"
+  - from: "www.{{ general_domain_interwego_be }}"
+    to: "{{ general_domain_interwego }}"
+  - from: "{{ general_domain_interwego_eu }}"
+    to: "{{ general_domain_interwego }}"
+  - from: "www.{{ general_domain_interwego_eu }}"
+    to: "{{ general_domain_interwego }}"
+  - from: "{{ general_domain_interwego_nl }}"
+    to: "{{ general_domain_interwego }}"
+  - from: "www.{{ general_domain_interwego_nl }}"
+    to: "{{ general_domain_interwego }}"
+  - from: "{{ general_domain_local }}"
+    to: "{{ general_domain_default }}"
+  - from: "www.{{ general_domain_local }}"
+    to: "{{ general_domain_default }}"

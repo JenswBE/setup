@@ -1,7 +1,3 @@
-- name: Include logging tasks
-  ansible.builtin.include_tasks: tasks/logging.yml
-  tags: ["setup", "logging"]
-
 - name: Include NBDE Tang tasks
   ansible.builtin.include_tasks: tasks/nbde_tang.yml
   tags: ["setup", "tang"]

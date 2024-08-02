@@ -2,16 +2,26 @@
   become: true
   tags: ["setup", "crowdsec"]
   block:
-    - name: CrowdSec - Add GPG key
+    - name: Debian - CrowdSec - Add GPG key
+      when: ansible_distribution == 'Debian'
       ansible.builtin.get_url:
         url: https://packagecloud.io/crowdsec/crowdsec/gpgkey
         dest: /etc/apt/trusted.gpg.d/crowdsec.asc
         mode: "644"
 
-    - name: CrowdSec - Add Repository
+    - name: Debian - CrowdSec - Add Repository
+      when: ansible_distribution == 'Debian'
       ansible.builtin.apt_repository:
         repo: "deb https://packagecloud.io/crowdsec/crowdsec/{{ ansible_distribution | lower }} {{ ansible_distribution_release | lower }} main"
         state: present
+
+    - name: AlmaLinux - CrowdSec - Add Repository
+      ansible.builtin.template:
+        src: crowdsec/yum.repo
+        dest: /etc/yum.repos.d/crowdsec_crowdsec.repo
+        owner: root
+        group: root
+        mode: "600"
 
     - name: CrowdSec - Ensure NFTables bouncer is installed
       ansible.builtin.package:
