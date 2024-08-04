@@ -49,6 +49,11 @@ x-tag-kubo: &tag_kubo
   tagstyle: is-info
   target: _blank
 
+x-tag-po: &po
+  tag: Po
+  tagstyle: is-danger
+  target: _blank
+
 # Interesting list for icons: https://github.com/loganmarchione/homelab-svg-assets/blob/main/ICONS.md
 services:
   - name: Files and Media
@@ -145,11 +150,6 @@ services:
         url: "https://tmm.{{ general_domain_local }}"
         <<: *tag_kubo
 
-      - name: Traefik Fiona
-        logo: https://raw.githubusercontent.com/traefik/traefik/master/webui/src/assets/traefik.avatar.svg
-        url: "https://traefik.fiona.{{ general_domain_local }}"
-        <<: *tag_fiona
-
       - name: UniFi Controller
         logo: assets/logos/unifi.png
         url: "https://unifi.{{ general_domain_local }}"
@@ -178,10 +178,20 @@ services:
         url: "https://traefik.eve.{{ general_domain_default }}"
         <<: *tag_eve
 
+      - name: Traefik Fiona
+        logo: https://raw.githubusercontent.com/traefik/traefik/master/webui/src/assets/traefik.avatar.svg
+        url: "https://traefik.fiona.{{ general_domain_local }}"
+        <<: *tag_fiona
+
       - name: Traefik Kubo
         logo: https://raw.githubusercontent.com/traefik/traefik/master/webui/src/assets/traefik.avatar.svg
         url: "https://traefik.kubo.{{ general_domain_default }}"
         <<: *tag_kubo
+
+      - name: Traefik Po
+        logo: https://raw.githubusercontent.com/traefik/traefik/master/webui/src/assets/traefik.avatar.svg
+        url: "https://traefik.po.{{ general_domain_default }}"
+        <<: *tag_po
 
       - name: Uptime Kuma
         logo: https://raw.githubusercontent.com/louislam/uptime-kuma/master/public/icon.svg
