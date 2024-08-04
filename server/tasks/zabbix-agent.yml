@@ -22,7 +22,7 @@
     - name: Zabbix agent - Ensure agent is installed
       ansible.builtin.package:
         name: zabbix-agent2
-        state: present
+        state: latest
 
     - name: Zabbix agent - Update config
       register: zabbix_agent_config

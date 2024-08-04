@@ -15,7 +15,16 @@
         enabled: true
 
     - name: FirewallD - Clear current firewall rules
-      ansible.builtin.shell: /bin/rm -rf /etc/firewalld/zones/*
+      ansible.builtin.shell: |
+        for filepath in /etc/firewalld/zones/*; do    
+          filename=$(basename $filepath)
+          if [[ $filename =~ ^docker.*$ ]]; then
+            echo "Skipping $filepath ..."
+            continue
+          fi
+          echo "Deleting $filepath ..."
+          /bin/rm $filepath
+        done
 
     - name: FirewallD - Disable Cockpit
       ansible.posix.firewalld:
