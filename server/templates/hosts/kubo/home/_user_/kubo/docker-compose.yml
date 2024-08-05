@@ -11,6 +11,12 @@ x-extra-hosts-docker-host: &extra-hosts-docker-host
   extra_hosts:
     - "host.docker.internal:host-gateway"
 
+x-extra-hosts-wireguard: &extra-hosts-wireguard
+  extra_hosts:
+    #BLOCK:- for wg_peer in (app_wireguard[0].peers | selectattr("host", "defined")) :BLOCK#
+    - "#VAR:wg_peer.host:VAR#.wireguard:#VAR:wg_peer.allowed_ips[0] | regex_replace('/\\d+$', ''):VAR#"
+    #BLOCK: endfor :BLOCK#
+
 x-glitchtip-env: &glitchtip-env
   TZ: "#VAR:general_timezone:VAR#"
   PORT: "8080"
@@ -897,13 +903,14 @@ services:
       POSTGRES_PASSWORD: "#VAR:app_zabbix_db_pass:VAR#"
 
   prometheus:
-    <<: *defaults
+    <<: [*defaults, *extra-hosts-wireguard]
     image: quay.io/prometheus/prometheus:latest
     container_name: prometheus
     user: "#VAR:ansible_real_user_id:VAR#:#VAR:ansible_real_group_id:VAR#"
     networks:
       - traefik
       - prometheus
+      - crowdsec
     environment:
       TZ: "#VAR:general_timezone:VAR#"
     volumes:
@@ -988,10 +995,12 @@ services:
   # =========================
   crowdsec:
     <<: *defaults
-    image: ghcr.io/crowdsecurity/crowdsec:v1.6.2
+    image: ghcr.io/crowdsecurity/crowdsec:v1.6.2-debian
     container_name: crowdsec
     ports:
       - 127.0.0.1:9000:8080
+    networks:
+      - crowdsec
     environment:
       TZ: "#VAR:general_timezone:VAR#"
       COLLECTIONS: >-
@@ -1008,7 +1017,7 @@ services:
       - crowdsec-db:/var/lib/crowdsec/data/
       - crowdsec-config:/etc/crowdsec/
       # Logs
-      - /var/log/auth.log:/var/log/auth.log:ro
+      - /var/log/journal:/var/log/host:ro # SSHD logs for Debian
       - traefik-access-logs:/var/log/traefik:ro
 
   # =========================
@@ -1070,6 +1079,9 @@ services:
 #                            NETWORKS                           #
 #################################################################
 networks:
+  crowdsec:
+    name: crowdsec
+
   glitchtip:
     name: glitchtip
 

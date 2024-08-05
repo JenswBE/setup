@@ -209,10 +209,11 @@ services:
   # =========================
   crowdsec:
     <<: *defaults
-    image: ghcr.io/crowdsecurity/crowdsec:v1.6.2
+    image: ghcr.io/crowdsecurity/crowdsec:v1.6.2-debian
     container_name: crowdsec
     ports:
       - 127.0.0.1:9000:8080
+      - 6060:6060
     environment:
       TZ: "#VAR:general_timezone:VAR#"
       COLLECTIONS: >-
@@ -229,7 +230,7 @@ services:
       - crowdsec-db:/var/lib/crowdsec/data/
       - crowdsec-config:/etc/crowdsec/
       # Logs
-      - /var/log/auth.log:/var/log/auth.log:ro
+      - /var/log/journal:/var/log/host:ro # SSHD logs for Debian
       - traefik-access-logs:/var/log/traefik:ro
 
   # ==========================

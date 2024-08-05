@@ -75,3 +75,11 @@ scrape_configs:
         target_label: instance
       - target_label: __address__
         replacement: eve.wireguard:9115
+
+  - job_name: crowdsec
+    static_configs:
+      - targets:
+          - crowdsec:6060
+          - eve.wireguard:6060
+          - fiona.{{ general_domain_local }}:6060
+          - po.wireguard:6060

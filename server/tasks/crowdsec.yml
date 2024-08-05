@@ -16,6 +16,7 @@
         state: present
 
     - name: AlmaLinux - CrowdSec - Add Repository
+      when: ansible_distribution == 'AlmaLinux'
       ansible.builtin.template:
         src: crowdsec/yum.repo
         dest: /etc/yum.repos.d/crowdsec_crowdsec.repo

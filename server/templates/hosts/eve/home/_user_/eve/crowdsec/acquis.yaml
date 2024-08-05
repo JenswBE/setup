@@ -1,6 +1,8 @@
-# SSHD logs
-filenames:
-  - /var/log/auth.log
+# SSHD logs for Debian
+source: journalctl
+journalctl_filter:
+  - "--directory=/var/log/host/"
+  - "_SYSTEMD_UNIT=ssh.service"
 labels:
   type: syslog
 
