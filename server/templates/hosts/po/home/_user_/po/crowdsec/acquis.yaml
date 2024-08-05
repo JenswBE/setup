@@ -1,6 +1,6 @@
-# SSHD logs
+# SSHD logs for AlmaLinux
 filenames:
-  - /var/log/auth.log
+  - /var/log/secure
 labels:
   type: syslog
 
@@ -10,3 +10,11 @@ filenames:
   - /var/log/traefik/*.log
 labels:
   type: traefik
+
+---
+# Rsyncd SSHD logs
+source: docker
+container_name:
+  - rsyncd
+labels:
+  type: syslog

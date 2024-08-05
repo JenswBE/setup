@@ -130,18 +130,34 @@ services:
   # =========================
   rsyncd:
     <<: *defaults
-    image: quay.io/panubo/sshd
+    build:
+      context: ./rsyncd
+      args:
+        SSH_USERS: interwego:900:900
     container_name: rsyncd
+    network_mode: host # Ensures Crowdsec has real source IP to act on
+    environment:
+      TZ: "#VAR:general_timezone:VAR#"
+    volumes:
+      - rsyncd-ssh-host-keys:/etc/ssh/keys
+      - website-interwego:/data/interwego
 
   # =========================
   # =        CROWDSEC       =
   # =========================
+  # Based on https://github.com/crowdsecurity/example-docker-compose/blob/main/container-socket/docker-compose.yml
   crowdsec:
     <<: *defaults
-    image: ghcr.io/crowdsecurity/crowdsec:v1.6.2
+    image: ghcr.io/crowdsecurity/crowdsec:v1.6.2-debian
     container_name: crowdsec
     ports:
       - 127.0.0.1:9000:8080
+      - "#VAR:app_wireguard[0].ip_addresses[0]:VAR#:6060:6060"
+    depends_on:
+      crowdsec-docker-proxy:
+        condition: service_started
+    networks:
+      - crowdsec
     environment:
       TZ: "#VAR:general_timezone:VAR#"
       COLLECTIONS: >-
@@ -150,6 +166,7 @@ services:
         crowdsecurity/traefik
       GID: "#VAR:ansible_real_group_id:VAR#"
       BOUNCER_KEY_firewall: "#VAR:app_crowdsec_bouncer_firewall_key:VAR#"
+      DOCKER_HOST: tcp://crowdsec-docker-proxy:2375
     volumes:
       # Config
       - ./crowdsec/acquis.yaml:/etc/crowdsec/acquis.yaml:ro,z
@@ -157,8 +174,40 @@ services:
       - crowdsec-db:/var/lib/crowdsec/data/
       - crowdsec-config:/etc/crowdsec/
       # Logs
-      - /var/log/auth.log:/var/log/auth.log:ro,z
+      - /var/log/secure:/var/log/secure:ro,z # RedHat-based
       - traefik-access-logs:/var/log/traefik:ro
+
+  crowdsec-docker-proxy:
+    <<: *defaults
+    image: lscr.io/linuxserver/socket-proxy:latest
+    container_name: crowdsec-docker-proxy
+    networks:
+      - crowdsec
+    environment:
+      INFO: 1
+      CONTAINERS: 1
+      POST: 0
+      BUILD: 0
+      COMMIT: 0
+      CONFIGS: 0
+      DISTRIBUTION: 0
+      EXEC: 0
+      GRPC: 0
+      IMAGES: 0
+      NETWORKS: 0
+      NODES: 0
+      PLUGINS: 0
+      SERVICES: 0
+      SESSION: 0
+      SWARM: 0
+      SYSTEM: 0
+      TASKS: 0
+      VOLUMES: 0
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro,z
+    read_only: true
+    tmpfs:
+      - /run
 
 # #################################################################
 # #                            VOLUMES                            #
@@ -168,6 +217,7 @@ volumes:
   crowdsec-db:
   oauth2-proxy-helper-config:
   oauth2-proxy-helper-data:
+  rsyncd-ssh-host-keys:
   traefik-access-logs:
   traefik-cert:
   website-interwego:
@@ -176,5 +226,8 @@ volumes:
 # #                            NETWORKS                           #
 # #################################################################
 networks:
+  crowdsec:
+    name: crowdsec
+
   traefik:
     name: traefik
