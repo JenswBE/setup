@@ -1,22 +1,35 @@
 # Firewall
 # Ensure to update firewall on cloud provider!
 firewalld:
-  zones:
-    - name: wireguard
-      source_networks: [wireguard_ipv4]
-  allowed_services:
-    - zone: public
-      services:
-        - http # 80/tcp
-        - https # 443/tcp
-        - http3 # 443/udp (QUIC)
-  allowed_ports:
-    - zone: public
-      ports:
-        - 51820/udp # Wireguard
-    - zone: wireguard
-      ports:
-        - 10050/tcp # Zabbix agent
+  - zone: public # Based on /usr/lib/firewalld/zones/public.xml
+    source_networks: []
+    allowed_services:
+      - dhcpv6-client
+      - http # 80/tcp
+      - https # 443/tcp
+      - http3 # 443/udp (QUIC)
+      - ssh
+    allowed_ports:
+      - port: 8477 # Rsyncd over SSH
+        proto: tcp
+      - port: 51820 # Wireguard
+        proto: udp
+    extra_strings:
+      - key: short
+        value: Public
+      - key: description
+        value: For use in public areas. You do not trust the other computers on networks to not harm your computer. Only selected incoming connections are accepted.
+    extra_booleans: [forward]
+  - zone: wireguard
+    source_networks: [wireguard_ipv4]
+    allowed_services: []
+    allowed_ports:
+      - port: 6060 # CrowdSec Prometheus
+        proto: tcp
+      - port: 10050 # Zabbix agent
+        proto: tcp
+    extra_strings: []
+    extra_booleans: []
 
 # Redirects
 redirects:

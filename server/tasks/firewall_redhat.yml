@@ -26,42 +26,16 @@
           /bin/rm $filepath
         done
 
-    - name: FirewallD - Disable Cockpit
-      ansible.posix.firewalld:
-        service: cockpit
-        permanent: true
-        state: disabled
-
     - name: FirewallD - Create custom zones
-      ansible.posix.firewalld:
-        zone: "{{ item.name }}"
-        state: present
-        permanent: true
-      loop: "{{ firewalld.zones }}"
-
-    - name: FirewallD - Apply sources to custom zones
-      ansible.posix.firewalld:
-        zone: "{{ item[0].name }}"
-        source: "{{ lookup('vars', 'network_' + item[1]) }}"
-        state: enabled
-        permanent: true
-      loop: "{{ firewalld.zones | subelements('source_networks') }}"
-
-    - name: FirewallD - Allow additional services
-      ansible.posix.firewalld:
-        zone: "{{ item[0].zone }}"
-        service: "{{ item[1] }}"
-        state: enabled
-        permanent: true
-      loop: "{{ firewalld.allowed_services | subelements('services') }}"
-
-    - name: FirewallD - Allow additional ports
-      ansible.posix.firewalld:
-        zone: "{{ item[0].zone }}"
-        port: "{{ item[1] }}"
-        state: enabled
-        permanent: true
-      loop: "{{ firewalld.allowed_ports | subelements('ports') }}"
+      ansible.builtin.template:
+        src: firewalld-zone.xml.j2
+        dest: "/etc/firewalld/zones/{{ item.zone }}.xml"
+        owner: root
+        group: root
+        mode: "600"
+      vars:
+        zone: "{{ item }}"
+      loop: "{{ firewalld }}"
 
     - name: FirewallD - Reload
       become: true

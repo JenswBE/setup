@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<zone>
+{% for network_name in zone.source_networks %}
+  <source address="{{ lookup('vars', 'network_' + network_name) }}"/>
+{% endfor %}
+{% for service_name in zone.allowed_services %}
+  <service name="{{ service_name }}"/>
+{% endfor %}
+{% for port in zone.allowed_ports %}
+  <port port="{{ port.port }}" protocol="{{ port.proto }}"/>
+{% endfor %}
+{% for item in zone.extra_strings %}
+  <{{ item.key }}>{{ item.value }}</{{ item.key }}>
+{% endfor %}
+{% for boolean_name in zone.extra_booleans %}
+  <{{ boolean_name }}/>
+{% endfor %}
+</zone>
