@@ -1,10 +1,25 @@
 http:
+  routers:
+    oauth2-proxy:
+      entryPoints: ["websecure"]
+      tls: { certresolver: le-tls }
+      rule: >-
+        (
+        Host(`traefik.{{ ansible_hostname }}.{{ general_domain_default }}`)
+        ) && PathPrefix(`/oauth2/`)
+      service: oauth2-proxy
+
+  services:
+    oauth2-proxy:
+      loadBalancer:
+        servers: [{ url: "http://oauth2-proxy:4180" }]
+
   middlewares:
     oauth2-proxy-handle-error:
       errors:
         status:
           - "601"
-        service: oauth2-proxy-{{ ansible_hostname }}@docker
+        service: oauth2-proxy
         query: /oauth2/sign_in
 
     oauth2-proxy-forward-auth-infra:

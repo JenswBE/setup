@@ -1,0 +1,20 @@
+http:
+  middlewares:
+    {%- for redirect in redirects %}
+    "redirect-{{ redirect.from }}":
+      redirectRegex:
+        regex: .*
+        replacement: "https://{{ redirect.to }}"
+    {% endfor %}
+
+  routers:
+    {%- for redirect in redirects %}
+    "redirect-{{ redirect.from }}":
+      entryPoints: ["websecure"]
+      rule: "Host(`{{ redirect.from }}`)"
+      middlewares:
+        - "redirect-{{ redirect.from }}"
+      service: noop@internal
+      tls:
+        certresolver: le-tls
+    {% endfor %}

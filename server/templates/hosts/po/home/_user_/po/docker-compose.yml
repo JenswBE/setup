@@ -37,9 +37,6 @@ services:
       - "--accesslog.filepath=/access-logs/access.log" # Used by CrowdSec
       - "--providers.file.directory=/conf"
       - "--providers.file.watch=true"
-      - "--providers.docker=true"
-      - "--providers.docker.network=traefik"
-      - "--providers.docker.exposedbydefault=false"
       - "--entrypoints.websecure.address=:443"
       - "--entrypoints.websecure.proxyProtocol.trustedIPs=#VAR:network_any_private:VAR#"
       - "--entrypoints.websecure.http.middlewares=secure-https@file"
@@ -63,7 +60,6 @@ services:
       - traefik
     volumes:
       - ./traefik:/conf:ro,z
-      - /var/run/docker.sock:/var/run/docker.sock:ro,z
       - traefik-cert:/letsencrypt/
       - traefik-access-logs:/access-logs
     environment:
@@ -88,15 +84,6 @@ services:
       - traefik
     environment:
       TZ: "#VAR:general_timezone:VAR#"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.oauth2-proxy.entrypoints=websecure"
-      - "traefik.http.routers.oauth2-proxy.tls.certresolver=le-tls"
-      - >-
-        traefik.http.routers.oauth2-proxy.rule=(
-        Host(`traefik.#VAR:ansible_hostname:VAR#.#VAR:general_domain_default:VAR#`)
-        ) && PathPrefix(`/oauth2/`)
-      - "traefik.http.services.oauth2-proxy-#VAR:ansible_hostname:VAR#.loadbalancer.server.port=4180"
 
   # Since the login page handling of OAuth2 Proxy is based on HTTP
   # status code 401, it might conflict with an upstream reply.
@@ -122,6 +109,8 @@ services:
     <<: *defaults
     image: joseluisq/static-web-server:2
     container_name: sws-interwego
+    networks:
+      - traefik
     volumes:
       - website-interwego:/public
 
