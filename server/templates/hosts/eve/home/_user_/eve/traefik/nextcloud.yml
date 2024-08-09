@@ -1,4 +1,19 @@
 http:
+  routers:
+    nextcloud:
+      entryPoints: ["websecure"]
+      tls: { certresolver: le-tls }
+      rule: Host(`nextcloud.{{ general_domain_default }}`) || Host(`bestanden.{{ general_domain_tuinfeest }}`)
+      service: nextcloud
+      middlewares:
+        - nextcloud-redirect-dav
+        - nextcloud-redirect-webfinger
+
+  services:
+    nextcloud:
+      loadBalancer:
+        servers: [{ url: "http://nextcloud" }]
+
   middlewares:
     nextcloud-redirect-dav:
       redirectRegex:

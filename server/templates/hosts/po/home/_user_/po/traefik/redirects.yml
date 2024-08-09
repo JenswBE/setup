@@ -11,10 +11,9 @@ http:
     {%- for redirect in redirects %}
     "redirect-{{ redirect.from }}":
       entryPoints: ["websecure"]
+      tls: { certresolver: le-tls }
       rule: "Host(`{{ redirect.from }}`)"
       middlewares:
         - "redirect-{{ redirect.from }}"
       service: noop@internal
-      tls:
-        certresolver: le-tls
     {% endfor %}

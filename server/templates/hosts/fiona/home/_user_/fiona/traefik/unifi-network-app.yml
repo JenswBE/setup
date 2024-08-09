@@ -1,0 +1,13 @@
+http:
+  routers:
+    unifi-network-app:
+      entryPoints: ["websecure"]
+      tls: { certresolver: le-dns }
+      rule: "Host(`unifi.{{ general_domain_local }}`)"
+      service: unifi-network-app
+
+  services:
+    unifi-network-app:
+      loadBalancer:
+        servers: [{ url: "https://unifi-network-app:8443" }]
+        serversTransport: insecure

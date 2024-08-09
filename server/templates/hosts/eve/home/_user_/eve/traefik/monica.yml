@@ -1,0 +1,12 @@
+http:
+  routers:
+    monica:
+      entryPoints: ["websecure"]
+      tls: { certresolver: le-tls }
+      rule: Host(`crm.{{ general_domain_default }}`) && !PathPrefix(`/register`)
+      service: monica
+
+  services:
+    monica:
+      loadBalancer:
+        servers: [{ url: "http://monica" }]

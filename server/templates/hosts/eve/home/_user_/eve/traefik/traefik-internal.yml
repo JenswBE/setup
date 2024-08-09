@@ -2,10 +2,9 @@ http:
   routers:
     api:
       entryPoints: ["websecure"]
+      tls: { certresolver: le-tls }
       rule: "Host(`traefik.{{ ansible_hostname }}.{{ general_domain_default }}`)"
       service: api@internal
-      tls:
-        certresolver: le-tls
       middlewares:
         - oauth2-proxy-handle-error
         - oauth2-proxy-forward-auth-infra
