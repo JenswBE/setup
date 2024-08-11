@@ -102,7 +102,7 @@ services:
       - "--entrypoints.mqtt.address=:8883"
       - "--entrypoints.mqtt.proxyProtocol.trustedIPs=#VAR:network_any_private:VAR#"
       - "--certificatesresolvers.le-dns.acme.dnschallenge=true"
-      - "--certificatesresolvers.le-dns.acme.dnschallenge.provider=cloudflare"
+      - "--certificatesresolvers.le-dns.acme.dnschallenge.provider=desec"
       - "--certificatesresolvers.le-dns.acme.email=#VAR:general_mail_admin:VAR#@#VAR:general_domain_default:VAR#"
       - "--certificatesresolvers.le-dns.acme.storage=/letsencrypt/acme-dns.json"
       - "--certificatesresolvers.le-tls.acme.tlsChallenge=true"
@@ -126,7 +126,7 @@ services:
       - traefik-access-logs:/access-logs
     environment:
       TZ: "#VAR:general_timezone:VAR#"
-      CF_DNS_API_TOKEN: "#VAR:app_traefik_cloudflare_token:VAR#"
+      DESEC_TOKEN: "#VAR:app_traefik_desec_token:VAR#"
 
   oauth2-proxy:
     <<: *defaults

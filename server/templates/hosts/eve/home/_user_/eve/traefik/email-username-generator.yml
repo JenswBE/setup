@@ -9,4 +9,4 @@ http:
   services:
     email-username-generator:
       loadBalancer:
-        servers: [{ url: "http://email-username-generator" }]
+        servers: [{ url: "http://email-username-generator:8080" }]

@@ -20,8 +20,8 @@ app_graylog_server: "" # Target for rsyslog and Docker logs
 
 # Traefik
 #   - https://doc.traefik.io/traefik/https/acme/#providers
-#   - https://dash.cloudflare.com/profile/api-tokens
-app_traefik_cloudflare_token: ""
+#   - https://desec.io/tokens
+app_traefik_desec_token: ""
 
 # Unifi Network Application
 app_unifi_mongodb_user: ""
