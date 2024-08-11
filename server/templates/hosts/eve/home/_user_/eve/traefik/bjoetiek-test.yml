@@ -1,0 +1,40 @@
+http:
+  routers:
+    bjoetiek-test-frontend:
+      entryPoints: ["websecure"]
+      tls: { certresolver: le-tls }
+      rule: Host(`test.{{ general_domain_bjoetiek }}`)
+      service: bjoetiek-test-frontend
+
+    bjoetiek-test-backend:
+      entryPoints: ["websecure"]
+      tls: { certresolver: le-tls }
+      rule: >-
+        (
+        Host(`test-backend.{{ general_domain_bjoetiek }}`) ||
+        Host(`test-beheer.{{ general_domain_bjoetiek }}`)
+        ) && !PathPrefix(`/images`)
+      service: bjoetiek-test-backend
+      middlewares:
+        - bjoetiek-cors
+
+    bjoetiek-test-imgproxy:
+      entryPoints: ["websecure"]
+      tls: { certresolver: le-tls }
+      rule: "Host(`test-backend.{{ general_domain_bjoetiek }}`) && PathPrefix(`/images`)"
+      service: bjoetiek-test-imgproxy
+      middlewares:
+        - strip-images-prefix
+
+  services:
+    bjoetiek-test-frontend:
+      loadBalancer:
+        servers: [{ url: "http://bjoetiek-test-frontend:8080" }]
+
+    bjoetiek-test-backend:
+      loadBalancer:
+        servers: [{ url: "http://bjoetiek-test-backend:8080" }]
+
+    bjoetiek-test-imgproxy:
+      loadBalancer:
+        servers: [{ url: "http://bjoetiek-test-imgproxy:8080" }]

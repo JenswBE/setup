@@ -1,0 +1,15 @@
+http:
+  routers:
+    assets:
+      entryPoints: ["websecure"]
+      tls: { certresolver: le-tls }
+      rule: Host(`assets.{{ general_domain_default }}`)
+      service: assets
+      middlewares:
+        - oauth2-proxy-handle-error
+        - oauth2-proxy-forward-auth-infra
+
+  services:
+    assets:
+      loadBalancer:
+        servers: [{ url: "http://assets:8080" }]

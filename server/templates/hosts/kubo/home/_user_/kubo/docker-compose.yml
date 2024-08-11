@@ -92,9 +92,6 @@ services:
       - "--accesslog.filepath=/access-logs/access.log" # Used by CrowdSec
       - "--providers.file.directory=/conf"
       - "--providers.file.watch=true"
-      - "--providers.docker=true"
-      - "--providers.docker.network=traefik"
-      - "--providers.docker.exposedbydefault=false"
       - "--entrypoints.websecure.address=:443"
       - "--entrypoints.websecure.proxyProtocol.trustedIPs=#VAR:network_any_private:VAR#"
       - "--entrypoints.websecure.http.middlewares=secure-https@file"
@@ -125,7 +122,6 @@ services:
       - traefik
     volumes:
       - ./traefik:/conf:ro
-      - /var/run/docker.sock:/var/run/docker.sock:ro
       - traefik-cert:/letsencrypt
       - traefik-access-logs:/access-logs
     environment:
@@ -151,18 +147,6 @@ services:
       - traefik
     environment:
       TZ: "#VAR:general_timezone:VAR#"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.oauth2-proxy.entrypoints=websecure"
-      - "traefik.http.routers.oauth2-proxy.tls.certresolver=le-tls"
-      - >-
-        traefik.http.routers.oauth2-proxy.rule=(
-        Host(`dtu.#VAR:general_domain_default:VAR#`) ||
-        Host(`pdf.#VAR:general_domain_default:VAR#`) ||
-        Host(`torrent.#VAR:general_domain_default:VAR#`) ||
-        Host(`traefik.#VAR:ansible_hostname:VAR#.#VAR:general_domain_default:VAR#`)
-        ) && PathPrefix(`/oauth2/`)
-      - "traefik.http.services.oauth2-proxy-#VAR:ansible_hostname:VAR#.loadbalancer.server.port=4180"
 
   # Since the login page handling of OAuth2 Proxy is based on HTTP
   # status code 401, it might conflict with an upstream reply.
@@ -197,13 +181,6 @@ services:
       - "#VAR:general_path_appdata:VAR#/home-automation/home-assistant/config:/config"
     environment:
       TZ: "#VAR:general_timezone:VAR#"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.ha.entrypoints=websecure"
-      - "traefik.http.routers.ha.rule=Host(`ha.#VAR:general_domain_local:VAR#`)"
-      - "traefik.http.routers.ha.tls.certresolver=le-dns"
-      - "traefik.http.routers.ha.middlewares=local-only@file"
-      - "traefik.http.services.ha-#VAR:ansible_hostname:VAR#.loadbalancer.server.port=8123"
 
   ha-zigbee2mqtt:
     <<: *defaults
@@ -235,12 +212,6 @@ services:
       - "ha-mosquitto-data:/mosquitto/data/"
     environment:
       TZ: "#VAR:general_timezone:VAR#"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.tcp.routers.mosquitto.entrypoints=mqtt"
-      - "traefik.tcp.routers.mosquitto.rule=HostSNI(`mqtt.#VAR:general_domain_local:VAR#`)"
-      - "traefik.tcp.routers.mosquitto.tls.certresolver=le-dns"
-      - "traefik.tcp.services.mosquitto-#VAR:ansible_hostname:VAR#.loadbalancer.server.port=1883"
 
   # =========================
   # =        MINIFLUX       =
@@ -267,12 +238,6 @@ services:
       OAUTH2_CLIENT_ID: "#VAR:app_miniflux_oidc_client_id:VAR#"
       OAUTH2_CLIENT_SECRET: "#VAR:app_miniflux_oidc_client_secret:VAR#"
       OAUTH2_REDIRECT_URL: "https://feed.#VAR:general_domain_default:VAR#/oauth2/oidc/callback"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.miniflux.entrypoints=websecure"
-      - "traefik.http.routers.miniflux.rule=Host(`feed.#VAR:general_domain_default:VAR#`)"
-      - "traefik.http.routers.miniflux.tls.certresolver=le-tls"
-      - "traefik.http.services.miniflux-#VAR:ansible_hostname:VAR#.loadbalancer.server.port=8080"
 
   miniflux-db:
     <<: [*defaults, *healthcheck-postgres]
@@ -337,12 +302,6 @@ services:
       - "/data/important/Photos:/Photos"
       - "#VAR:general_path_appdata:VAR#/jellyfin/config:/config"
       - "#VAR:general_path_appdata:VAR#/jellyfin/cache:/cache"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.jellyfin.entrypoints=websecure"
-      - "traefik.http.routers.jellyfin.rule=Host(`jellyfin.#VAR:general_domain_default:VAR#`)"
-      - "traefik.http.routers.jellyfin.tls.certresolver=le-tls"
-      - "traefik.http.services.jellyfin-#VAR:ansible_hostname:VAR#.loadbalancer.server.port=8096"
     deploy:
       resources:
         limits:
@@ -365,13 +324,6 @@ services:
       TZ: "#VAR:general_timezone:VAR#"
       USER_ID: "#VAR:ansible_real_user_id:VAR#"
       GROUP_ID: "#VAR:ansible_real_group_id:VAR#"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.tmm.entrypoints=websecure"
-      - "traefik.http.routers.tmm.rule=Host(`tmm.#VAR:general_domain_local:VAR#`)"
-      - "traefik.http.routers.tmm.tls.certresolver=le-dns"
-      - "traefik.http.routers.tmm.middlewares=local-only@file"
-      - "traefik.http.services.tmm-#VAR:ansible_hostname:VAR#.loadbalancer.server.port=5800"
     deploy:
       resources:
         limits:
@@ -398,12 +350,6 @@ services:
       TZ: "#VAR:general_timezone:VAR#"
       PUID: "#VAR:ansible_real_user_id:VAR#"
       PGID: "#VAR:ansible_real_user_id:VAR#"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.syncthing.entrypoints=websecure"
-      - "traefik.http.routers.syncthing.rule=Host(`syncthing.#VAR:ansible_hostname:VAR#.#VAR:general_domain_default:VAR#`)"
-      - "traefik.http.routers.syncthing.tls.certresolver=le-tls"
-      - "traefik.http.services.syncthing-#VAR:ansible_hostname:VAR#.loadbalancer.server.port=8384"
 
   # =========================
   # =         SAMBA         =
@@ -471,12 +417,6 @@ services:
       MYSQL_USER: "nextcloud"
       MYSQL_PASSWORD: "#VAR:app_nextcloud_db_pass_nextcloud:VAR#"
       MYSQL_HOST: "nc-db"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.nextcloud.entrypoints=websecure"
-      - "traefik.http.routers.nextcloud.rule=Host(`nextcloud-media.#VAR:general_domain_default:VAR#`)"
-      - "traefik.http.routers.nextcloud.tls.certresolver=le-tls"
-      - "traefik.http.routers.nextcloud.middlewares=nextcloud-redirect-dav@file, nextcloud-redirect-webfinger@file"
     deploy:
       resources:
         limits:
@@ -546,19 +486,6 @@ services:
       WIREGUARD_ADDRESSES: "#VAR:app_transmission_wireguard_addresses:VAR#"
       SERVER_CITIES: Brussels
       DOT_PROVIDERS: quad9
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.services.transmission-vpn-#VAR:ansible_hostname:VAR#.loadbalancer.server.port=9091"
-      # For users
-      - "traefik.http.routers.torrent.entrypoints=websecure"
-      - "traefik.http.routers.torrent.rule=Host(`torrent.#VAR:general_domain_default:VAR#`)"
-      - "traefik.http.routers.torrent.tls.certresolver=le-tls"
-      - "traefik.http.routers.torrent.middlewares=oauth2-proxy-handle-error@file, oauth2-proxy-forward-auth-media@file"
-      # For healthchecks and other integrations
-      - "traefik.http.routers.torrent-system.entrypoints=websecure"
-      - "traefik.http.routers.torrent-system.rule=Host(`torrent-system.#VAR:general_domain_default:VAR#`)"
-      - "traefik.http.routers.torrent-system.tls.certresolver=le-tls"
-      - "traefik.http.routers.torrent-system.middlewares=transmission-system-auth@file"
 
   # =========================
   # =         NGINX         =
@@ -573,11 +500,6 @@ services:
       - "#VAR:general_path_appdata:VAR#/nginx/hetvleermuizenkind:/usr/share/nginx/html"
     environment:
       TZ: "#VAR:general_timezone:VAR#"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.nginx-hetvleermuizenkind.entrypoints=websecure"
-      - "traefik.http.routers.nginx-hetvleermuizenkind.rule=Host(`hetvleermuizenkind.#VAR:general_domain_default:VAR#`)"
-      - "traefik.http.routers.nginx-hetvleermuizenkind.tls.certresolver=le-tls"
 
   # =========================
   # =     ERROR LOGGING     =
@@ -600,12 +522,6 @@ services:
       - glitchtip
     environment:
       <<: *glitchtip-env
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.glitchtip.entrypoints=websecure"
-      - "traefik.http.routers.glitchtip.rule=Host(`glitchtip.#VAR:general_domain_default:VAR#`)"
-      - "traefik.http.routers.glitchtip.tls.certresolver=le-tls"
-      - "traefik.http.services.glitchtip-#VAR:ansible_hostname:VAR#.loadbalancer.server.port=8080"
 
   glitchtip-worker:
     <<: *defaults
@@ -685,12 +601,6 @@ services:
     environment:
       TZ: "#VAR:general_timezone:VAR#"
       DOCKER_ENABLE_SECURITY: "false"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.stirling-pdf.entrypoints=websecure"
-      - "traefik.http.routers.stirling-pdf.rule=Host(`pdf.#VAR:general_domain_default:VAR#`)"
-      - "traefik.http.routers.stirling-pdf.tls.certresolver=le-tls"
-      - "traefik.http.routers.stirling-pdf.middlewares=oauth2-proxy-handle-error@file, oauth2-proxy-forward-auth-infra@file"
 
   # =========================
   # =       MONITORING      =
@@ -735,12 +645,6 @@ services:
         condition: service_healthy
       graylog-elasticsearch:
         condition: service_healthy
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.graylog.entrypoints=websecure"
-      - "traefik.http.routers.graylog.rule=Host(`logs.#VAR:general_domain_default:VAR#`)"
-      - "traefik.http.routers.graylog.tls.certresolver=le-tls"
-      - "traefik.http.services.graylog-#VAR:ansible_hostname:VAR#.loadbalancer.server.port=9000"
     deploy:
       resources:
         limits:
@@ -827,11 +731,6 @@ services:
       - "com.zabbix.webserver=nginx"
       - "com.zabbix.dbtype=pgsql"
       - "com.zabbix.os=alpine"
-      - "traefik.enable=true"
-      - "traefik.http.routers.zabbix.entrypoints=websecure"
-      - "traefik.http.routers.zabbix.rule=Host(`zabbix.#VAR:general_domain_local:VAR#`)"
-      - "traefik.http.routers.zabbix.tls.certresolver=le-dns"
-      - "traefik.http.routers.zabbix.middlewares=local-only@file"
     deploy:
       resources:
         limits:
@@ -916,13 +815,6 @@ services:
     volumes:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
       - "#VAR:general_path_appdata:VAR#/prometheus/data:/prometheus"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.prometheus.entrypoints=websecure"
-      - "traefik.http.routers.prometheus.rule=Host(`prometheus.#VAR:general_domain_local:VAR#`)"
-      - "traefik.http.routers.prometheus.tls.certresolver=le-dns"
-      - "traefik.http.routers.prometheus.middlewares=local-only@file"
-      - "traefik.http.services.prometheus-#VAR:ansible_hostname:VAR#.loadbalancer.server.port=9090"
     deploy:
       resources:
         limits:
@@ -983,12 +875,6 @@ services:
       GF_AUTH_GENERIC_OAUTH_TOKEN_URL: "#VAR:app_grafana_oauth2_base_url:VAR#/protocol/openid-connect/token"
       GF_AUTH_GENERIC_OAUTH_API_URL: "#VAR:app_grafana_oauth2_base_url:VAR#/protocol/openid-connect/userinfo"
       GF_AUTH_GENERIC_OAUTH_ROLE_ATTRIBUTE_PATH: "contains(roles[*], 'admin') && 'Admin' || contains(roles[*], 'editor') && 'Editor' || 'Viewer'"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.grafana.entrypoints=websecure"
-      - "traefik.http.routers.grafana.rule=Host(`grafana.#VAR:general_domain_default:VAR#`)"
-      - "traefik.http.routers.grafana.tls.certresolver=le-tls"
-      - "traefik.http.services.grafana-#VAR:ansible_hostname:VAR#.loadbalancer.server.port=3000"
 
   # =========================
   # =        CROWDSEC       =

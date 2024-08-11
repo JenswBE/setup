@@ -1,2 +1,3 @@
 github3.py # Required by module community.general.github_release
 passlib # Required by filter password_hash
+toml

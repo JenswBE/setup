@@ -112,7 +112,8 @@ services:
     networks:
       - traefik
     volumes:
-      - website-interwego:/public
+      - ./sws/interwego.toml:/config.toml:ro
+      - website-interwego:/public:ro
 
   # =========================
   # =      FILE UPLOADS     =

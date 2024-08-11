@@ -1,0 +1,15 @@
+http:
+  routers:
+    uptime-kuma:
+      entryPoints: ["websecure"]
+      tls: { certresolver: le-tls }
+      rule: Host(`uptime.{{ general_domain_default }}`)
+      service: uptime-kuma
+      middlewares:
+        - oauth2-proxy-handle-error
+        - oauth2-proxy-forward-auth-infra
+
+  services:
+    uptime-kuma:
+      loadBalancer:
+        servers: [{ url: "http://uptime-kuma:3001" }]

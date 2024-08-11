@@ -36,6 +36,7 @@
     destination_mode_files: "644"
     destination_mode_dirs: "755"
     destination_delete_extra: false
+    privileged: true
   tags: ["systemd", "mail_on_failed_unit"]
 
 - name: Force systemd reload
@@ -82,4 +83,5 @@
     destination_mode_files: "600"
     destination_mode_dirs: "700"
     destination_delete_extra: true
+    privileged: false
   tags: ["docker"]

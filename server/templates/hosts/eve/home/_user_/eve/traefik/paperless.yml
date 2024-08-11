@@ -1,0 +1,12 @@
+http:
+  routers:
+    paperless:
+      entryPoints: ["websecure"]
+      tls: { certresolver: le-tls }
+      rule: Host(`docs.{{ general_domain_default }}`)
+      service: paperless
+
+  services:
+    paperless:
+      loadBalancer:
+        servers: [{ url: "http://paperless:8000" }]

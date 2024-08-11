@@ -54,9 +54,6 @@ services:
       - "--accesslog.filepath=/access-logs/access.log" # Used by CrowdSec
       - "--providers.file.directory=/conf"
       - "--providers.file.watch=true"
-      - "--providers.docker=true"
-      - "--providers.docker.network=traefik"
-      - "--providers.docker.exposedbydefault=false"
       - "--entrypoints.websecure.address=:443"
       - "--entrypoints.websecure.proxyProtocol.trustedIPs=#VAR:network_any_private:VAR#"
       - "--entrypoints.websecure.http.middlewares=secure-https@file"
@@ -80,7 +77,6 @@ services:
       - traefik
     volumes:
       - ./traefik:/conf:ro
-      - /var/run/docker.sock:/var/run/docker.sock:ro
       - traefik-cert:/letsencrypt/
       - traefik-access-logs:/access-logs
     environment:
@@ -105,19 +101,6 @@ services:
       - traefik
     environment:
       TZ: "#VAR:general_timezone:VAR#"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.oauth2-proxy.entrypoints=websecure"
-      - "traefik.http.routers.oauth2-proxy.tls.certresolver=le-tls"
-      - >-
-        traefik.http.routers.oauth2-proxy.rule=(
-        Host(`assets.#VAR:general_domain_default:VAR#`) ||
-        Host(`start.#VAR:general_domain_default:VAR#`) ||
-        Host(`syncthing.#VAR:ansible_hostname:VAR#.#VAR:general_domain_default:VAR#`) ||
-        Host(`traefik.#VAR:ansible_hostname:VAR#.#VAR:general_domain_default:VAR#`) ||
-        Host(`uptime.#VAR:general_domain_default:VAR#`)
-        ) && PathPrefix(`/oauth2/`)
-      - "traefik.http.services.oauth2-proxy-#VAR:ansible_hostname:VAR#.loadbalancer.server.port=4180"
 
   # Since the login page handling of OAuth2 Proxy is based on HTTP
   # status code 401, it might conflict with an upstream reply.
@@ -159,12 +142,6 @@ services:
       MYSQL_USER: nextcloud
       MYSQL_PASSWORD: "#VAR:app_nextcloud_db_pass_nextcloud:VAR#"
       MYSQL_HOST: nc-db
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.nextcloud.entrypoints=websecure"
-      - "traefik.http.routers.nextcloud.rule=Host(`nextcloud.#VAR:general_domain_default:VAR#`) || Host(`bestanden.#VAR:general_domain_tuinfeest:VAR#`)"
-      - "traefik.http.routers.nextcloud.tls.certresolver=le-tls"
-      - "traefik.http.routers.nextcloud.middlewares=nextcloud-redirect-dav@file, nextcloud-redirect-webfinger@file"
     deploy:
       resources:
         limits:
@@ -223,11 +200,6 @@ services:
       DB_HOST: monica-db
       DB_USERNAME: monica
       DB_PASSWORD: "#VAR:app_monica_db_pass_monica:VAR#"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.monica.entrypoints=websecure"
-      - "traefik.http.routers.monica.rule=Host(`crm.#VAR:general_domain_default:VAR#`) && !PathPrefix(`/register`)"
-      - "traefik.http.routers.monica.tls.certresolver=le-tls"
 
   monica-db:
     <<: *defaults
@@ -281,12 +253,6 @@ services:
       DB_USER: wikijs
       DB_PASS: "#VAR:app_wikijs_db_pass:VAR#"
       DB_NAME: wikijs
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.wikijs.entrypoints=websecure"
-      - "traefik.http.routers.wikijs.rule=Host(`wiki.#VAR:general_domain_default:VAR#`)"
-      - "traefik.http.routers.wikijs.tls.certresolver=le-tls"
-      - "traefik.http.services.wikijs-#VAR:ansible_hostname:VAR#.loadbalancer.server.port=3000"
     deploy:
       resources:
         limits:
@@ -361,11 +327,6 @@ services:
       - traefik
     environment:
       TZ: "#VAR:general_timezone:VAR#"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.email-username-generator.entrypoints=websecure"
-      - "traefik.http.routers.email-username-generator.rule=Host(`ext.#VAR:general_domain_default:VAR#`)"
-      - "traefik.http.routers.email-username-generator.tls.certresolver=le-tls"
 
   # ===========================================================================
   # =   Assets                                                                =
@@ -379,12 +340,6 @@ services:
       - traefik
     environment:
       TZ: "#VAR:general_timezone:VAR#"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.assets.entrypoints=websecure"
-      - "traefik.http.routers.assets.rule=Host(`assets.#VAR:general_domain_default:VAR#`)"
-      - "traefik.http.routers.assets.tls.certresolver=le-tls"
-      - "traefik.http.routers.assets.middlewares=oauth2-proxy-handle-error@file, oauth2-proxy-forward-auth-infra@file"
 
   # ===========================================================================
   # =   BJOETIEK Y                                                            =
@@ -403,15 +358,6 @@ services:
       TZ: "#VAR:general_timezone:VAR#"
       BJOETIEK_Y_BACKEND_URL: http://bjoetiek-backend:8080/api
       NO_COLOR: true"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.bjoetiek-frontend.entrypoints=websecure"
-      - "traefik.http.routers.bjoetiek-frontend.rule=Host(`#VAR:general_domain_bjoetiek:VAR#`)"
-      - "traefik.http.routers.bjoetiek-frontend.tls.certresolver=le-tls"
-      - "traefik.http.routers.bjoetiek-frontend-www-redirect.entrypoints=websecure"
-      - "traefik.http.routers.bjoetiek-frontend-www-redirect.rule=Host(`www.#VAR:general_domain_bjoetiek:VAR#`)"
-      - "traefik.http.routers.bjoetiek-frontend-www-redirect.tls.certresolver=le-tls"
-      - "traefik.http.routers.bjoetiek-frontend-www-redirect.middlewares=redirect-www-to-root@file"
 
   bjoetiek-backend:
     <<: *defaults
@@ -444,16 +390,6 @@ services:
       IMAGE_PROXY_SALT: "#VAR:app_bjoetiek_image_proxy_salt:VAR#"
       IMAGE_PROXY_ALLOWED_CONFIGS: 100:100:FIT,150:150:FIT,400:400:FIT,550:550:FIT
       STORAGE_IMAGES_PATH: /images
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.bjoetiek-backend.entrypoints=websecure"
-      - >-
-        traefik.http.routers.bjoetiek-backend.rule=(
-        Host(`backend.#VAR:general_domain_bjoetiek:VAR#`) ||
-        Host(`beheer.#VAR:general_domain_bjoetiek:VAR#`)
-        ) && !PathPrefix(`/images`)
-      - "traefik.http.routers.bjoetiek-backend.tls.certresolver=le-tls"
-      - "traefik.http.routers.bjoetiek-backend.middlewares=bjoetiek-cors@file"
 
   bjoetiek-db:
     <<: [*defaults, *healthcheck-postgres]
@@ -484,12 +420,6 @@ services:
       - traefik
     volumes:
       - "#VAR:general_path_appdata:VAR#/bjoetiek/backend/images:/images:ro"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.bjoetiek-imgproxy.entrypoints=websecure"
-      - "traefik.http.routers.bjoetiek-imgproxy.rule=Host(`backend.#VAR:general_domain_bjoetiek:VAR#`) && PathPrefix(`/images`)"
-      - "traefik.http.routers.bjoetiek-imgproxy.tls.certresolver=le-tls"
-      - "traefik.http.routers.bjoetiek-imgproxy.middlewares=strip-images-prefix@file"
 
   # ===========================================================================
   # =   BJOETIEK Y - Test                                                     =
@@ -508,11 +438,6 @@ services:
       TZ: "#VAR:general_timezone:VAR#"
       BJOETIEK_Y_BACKEND_URL: http://bjoetiek-test-backend:8080/api
       NO_COLOR: "true"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.bjoetiek-test-frontend.entrypoints=websecure"
-      - "traefik.http.routers.bjoetiek-test-frontend.rule=Host(`test.#VAR:general_domain_bjoetiek:VAR#`)"
-      - "traefik.http.routers.bjoetiek-test-frontend.tls.certresolver=le-tls"
 
   bjoetiek-test-backend:
     <<: *defaults
@@ -545,16 +470,6 @@ services:
       IMAGE_PROXY_SALT: "#VAR:app_bjoetiek_test_image_proxy_salt:VAR#"
       IMAGE_PROXY_ALLOWED_CONFIGS: 100:100:FIT,150:150:FIT,400:400:FIT,550:550:FIT
       STORAGE_IMAGES_PATH: /images
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.bjoetiek-test-backend.entrypoints=websecure"
-      - >-
-        traefik.http.routers.bjoetiek-test-backend.rule=(
-        Host(`test-backend.#VAR:general_domain_bjoetiek:VAR#`) ||
-        Host(`test-beheer.#VAR:general_domain_bjoetiek:VAR#`)
-        ) && !PathPrefix(`/images`)
-      - "traefik.http.routers.bjoetiek-test-backend.tls.certresolver=le-tls"
-      - "traefik.http.routers.bjoetiek-test-backend.middlewares=bjoetiek-cors@file"
 
   bjoetiek-test-db:
     <<: [*defaults, *healthcheck-postgres]
@@ -584,12 +499,6 @@ services:
       - traefik
     volumes:
       - "#VAR:general_path_appdata:VAR#/bjoetiek/backend-test/images:/images:ro"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.bjoetiek-test-imgproxy.entrypoints=websecure"
-      - "traefik.http.routers.bjoetiek-test-imgproxy.rule=Host(`test-backend.#VAR:general_domain_bjoetiek:VAR#`) && PathPrefix(`/images`)"
-      - "traefik.http.routers.bjoetiek-test-imgproxy.tls.certresolver=le-tls"
-      - "traefik.http.routers.bjoetiek-test-imgproxy.middlewares=strip-images-prefix@file"
 
   # =========================
   # =    KRISTOF COENEN     =
@@ -632,12 +541,6 @@ services:
       - kristofcoenen-directus
     volumes:
       - "#VAR:general_path_appdata:VAR#/kristofcoenen/directus/uploads:/directus/uploads:z"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.kristofcoenen-directus.entrypoints=websecure"
-      - "traefik.http.routers.kristofcoenen-directus.rule=Host(`beheer.#VAR:general_domain_kristofcoenen:VAR#`)"
-      - "traefik.http.routers.kristofcoenen-directus.tls.certresolver=le-tls"
-      - "traefik.http.services.kristofcoenen-directus-#VAR:ansible_hostname:VAR#.loadbalancer.server.port=8055"
 
   kristofcoenen-directus-db:
     <<: [*defaults, *healthcheck-postgres]
@@ -700,12 +603,6 @@ services:
       - tuinfeest-directus
     volumes:
       - "#VAR:general_path_appdata:VAR#/tuinfeest/directus/uploads:/directus/uploads:z"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.tuinfeest-directus.entrypoints=websecure"
-      - "traefik.http.routers.tuinfeest-directus.rule=Host(`beheer.#VAR:general_domain_tuinfeest:VAR#`)"
-      - "traefik.http.routers.tuinfeest-directus.tls.certresolver=le-tls"
-      - "traefik.http.services.tuinfeest-directus-#VAR:ansible_hostname:VAR#.loadbalancer.server.port=8055"
 
   tuinfeest-directus-db:
     <<: [*defaults, *healthcheck-postgres]
@@ -768,12 +665,6 @@ services:
       - wtech-directus
     volumes:
       - "#VAR:general_path_appdata:VAR#/wtech/directus/uploads:/directus/uploads:z"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.wtech-directus.entrypoints=websecure"
-      - "traefik.http.routers.wtech-directus.rule=Host(`beheer.#VAR:general_domain_wtech:VAR#`)"
-      - "traefik.http.routers.wtech-directus.tls.certresolver=le-tls"
-      - "traefik.http.services.wtech-directus-#VAR:ansible_hostname:VAR#.loadbalancer.server.port=8055"
 
   wtech-directus-db:
     <<: [*defaults, *healthcheck-postgres]
@@ -813,21 +704,6 @@ services:
       - "#VAR:general_path_appdata:VAR#/goatcounter/db:/db"
     environment:
       TZ: "#VAR:general_timezone:VAR#"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.goatcounter.entrypoints=websecure"
-      - "traefik.http.routers.goatcounter.tls.certresolver=le-tls"
-      - >-
-        traefik.http.routers.goatcounter.rule=(
-        Host(`stats.#VAR:general_domain_default:VAR#`) ||
-        Host(`stats-spellebel.#VAR:general_domain_default:VAR#`) ||
-        Host(`stats.#VAR:general_domain_bjoetiek:VAR#`) ||
-        Host(`stats.#VAR:general_domain_interwego:VAR#`) ||
-        Host(`stats.#VAR:general_domain_klokracing:VAR#`) ||
-        Host(`stats.#VAR:general_domain_kristofcoenen:VAR#`) ||
-        Host(`stats.#VAR:general_domain_tuinfeest:VAR#`) ||
-        Host(`stats.#VAR:general_domain_wtech:VAR#`)
-        )
 
   # =========================
   # =         UPTIME        =
@@ -843,13 +719,6 @@ services:
       - uptime-kuma
     environment:
       TZ: "#VAR:general_timezone:VAR#"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.uptime-kuma.entrypoints=websecure"
-      - "traefik.http.routers.uptime-kuma.rule=Host(`uptime.#VAR:general_domain_default:VAR#`)"
-      - "traefik.http.routers.uptime-kuma.tls.certresolver=le-tls"
-      - "traefik.http.routers.uptime-kuma.middlewares=oauth2-proxy-handle-error@file, oauth2-proxy-forward-auth-infra@file"
-      - "traefik.http.services.uptime-kuma-#VAR:ansible_hostname:VAR#.loadbalancer.server.port=3001"
 
   autokuma:
     <<: *defaults
@@ -898,16 +767,6 @@ services:
       # Only for initial setup
       # KEYCLOAK_ADMIN: admin
       # KEYCLOAK_ADMIN_PASSWORD: change_me
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.keycloak.entrypoints=websecure"
-      - "traefik.http.routers.keycloak.tls.certresolver=le-tls"
-      - >-
-        traefik.http.routers.keycloak.rule=(
-        Host(`auth.#VAR:general_domain_default:VAR#`) ||
-        Host(`auth.#VAR:general_domain_bjoetiek:VAR#`)
-        )
-      - "traefik.http.services.keycloak-#VAR:ansible_hostname:VAR#.loadbalancer.server.port=8080"
     deploy:
       resources:
         limits:
@@ -945,12 +804,6 @@ services:
       - "./nginx/maintenance/nginx.conf:/etc/nginx/conf.d/default.conf:ro"
     environment:
       TZ: "#VAR:general_timezone:VAR#"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.maintenance.entrypoints=websecure"
-      - "traefik.http.routers.maintenance.rule=Host(`maintenance.#VAR:general_domain_default:VAR#`)"
-      - "traefik.http.routers.maintenance.tls.certresolver=le-tls"
-      - "traefik.http.services.maintenance-#VAR:ansible_hostname:VAR#.loadbalancer.server.port=8080"
 
   wip:
     <<: *defaults
@@ -964,12 +817,6 @@ services:
       - "./nginx/wip/nginx.conf:/etc/nginx/conf.d/default.conf:ro"
     environment:
       TZ: "#VAR:general_timezone:VAR#"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.wip.entrypoints=websecure"
-      - "traefik.http.routers.wip.rule=Host(`wip.#VAR:general_domain_default:VAR#`)"
-      - "traefik.http.routers.wip.tls.certresolver=le-tls"
-      - "traefik.http.services.wip-#VAR:ansible_hostname:VAR#.loadbalancer.server.port=8080"
 
   # =========================
   # =        CROWDSEC       =
@@ -1024,11 +871,6 @@ services:
       SMTP_FROM_NAME: Vaultwarden
     volumes:
       - "#VAR:general_path_appdata:VAR#/vaultwarden/data:/data"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.vaultwarden.entrypoints=websecure"
-      - "traefik.http.routers.vaultwarden.rule=Host(`vault.#VAR:general_domain_default:VAR#`)"
-      - "traefik.http.routers.vaultwarden.tls.certresolver=le-tls"
 
   # =========================
   # =         HOMER         =
@@ -1045,12 +887,6 @@ services:
       - "./homer/logos:/www/assets/logos:ro"
     environment:
       - "TZ=#VAR:general_timezone:VAR#"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.homer.entrypoints=websecure"
-      - "traefik.http.routers.homer.rule=Host(`start.#VAR:general_domain_default:VAR#`)"
-      - "traefik.http.routers.homer.tls.certresolver=le-tls"
-      - "traefik.http.routers.homer.middlewares=oauth2-proxy-handle-error@file, oauth2-proxy-forward-auth-infra@file"
 
   # =========================
   # =       PAPERLESS       =
@@ -1109,11 +945,6 @@ services:
       PAPERLESS_TIKA_ENABLED: "1"
       PAPERLESS_TIKA_GOTENBERG_ENDPOINT: http://paperless-gotenberg:3000
       PAPERLESS_TIKA_ENDPOINT: http://paperless-tika:9998
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.paperless.entrypoints=websecure"
-      - "traefik.http.routers.paperless.rule=Host(`docs.#VAR:general_domain_default:VAR#`)"
-      - "traefik.http.routers.paperless.tls.certresolver=le-tls"
     deploy:
       resources:
         limits:
@@ -1238,37 +1069,6 @@ services:
       TZ: "#VAR:general_timezone:VAR#"
       PUID: "#VAR:ansible_real_user_id:VAR#"
       PGID: "#VAR:ansible_real_user_id:VAR#"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.syncthing.entrypoints=websecure"
-      - "traefik.http.routers.syncthing.rule=Host(`syncthing.#VAR:ansible_hostname:VAR#.#VAR:general_domain_default:VAR#`)"
-      - "traefik.http.routers.syncthing.tls.certresolver=le-tls"
-      - "traefik.http.routers.syncthing.middlewares=oauth2-proxy-handle-error@file, oauth2-proxy-forward-auth-infra@file"
-      - "traefik.http.services.syncthing-#VAR:ansible_hostname:VAR#.loadbalancer.server.port=8384"
-
-  # =========================
-  # =  CONTAINER REGISTRY   =
-  # =========================
-  registry:
-    <<: *defaults
-    image: docker.io/library/registry:2
-    container_name: registry
-    networks:
-      - traefik
-    volumes:
-      - ./registry/config.yml:/config.yml
-      - "#VAR:general_path_appdata:VAR#/registry/data:/var/lib/registry"
-    environment:
-      TZ: "#VAR:general_timezone:VAR#"
-      REGISTRY_AUTH: htpasswd
-      REGISTRY_AUTH_HTPASSWD_PATH: /auth/htpasswd
-      REGISTRY_AUTH_HTPASSWD_REALM: Registry Realm
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.registry.entrypoints=websecure"
-      - "traefik.http.routers.registry.rule=Host(`containers.#VAR:ansible_hostname:VAR#.#VAR:general_domain_default:VAR#`)"
-      - "traefik.http.routers.registry.tls.certresolver=le-tls"
-      - "traefik.http.services.registry-#VAR:ansible_hostname:VAR#.loadbalancer.server.port=5001"
 
   # =========================
   # =         BACKUP        =

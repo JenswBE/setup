@@ -1,0 +1,14 @@
+http:
+  routers:
+    prometheus:
+      entryPoints: ["websecure"]
+      tls: { certresolver: le-dns }
+      rule: Host(`prometheus.{{ general_domain_local }}`)
+      service: prometheus
+      middlewares:
+        - local-only
+
+  services:
+    prometheus:
+      loadBalancer:
+        servers: [{ url: "http://prometheus:9090" }]

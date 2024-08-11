@@ -1,0 +1,12 @@
+http:
+  routers:
+    graylog:
+      entryPoints: ["websecure"]
+      tls: { certresolver: le-tls }
+      rule: Host(`logs.{{ general_domain_default }}`)
+      service: graylog
+
+  services:
+    graylog:
+      loadBalancer:
+        servers: [{ url: "http://graylog:9000" }]

@@ -1,0 +1,16 @@
+http:
+  routers:
+    keycloak:
+      entryPoints: ["websecure"]
+      tls: { certresolver: le-tls }
+      rule: >-
+        (
+        Host(`auth.{{ general_domain_default }}`) ||
+        Host(`auth.{{ general_domain_bjoetiek }}`)
+        )
+      service: keycloak
+
+  services:
+    keycloak:
+      loadBalancer:
+        servers: [{ url: "http://keycloak:8080" }]

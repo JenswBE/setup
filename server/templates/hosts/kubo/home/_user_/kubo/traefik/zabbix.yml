@@ -1,0 +1,14 @@
+http:
+  routers:
+    zabbix:
+      entryPoints: ["websecure"]
+      tls: { certresolver: le-dns }
+      rule: Host(`zabbix.{{ general_domain_local }}`)
+      service: zabbix
+      middlewares:
+        - local-only
+
+  services:
+    zabbix:
+      loadBalancer:
+        servers: [{ url: "http://zabbix:8080" }]

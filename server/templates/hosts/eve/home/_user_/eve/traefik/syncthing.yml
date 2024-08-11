@@ -1,0 +1,15 @@
+http:
+  routers:
+    syncthing:
+      entryPoints: ["websecure"]
+      tls: { certresolver: le-tls }
+      rule: Host(`syncthing.{{ ansible_hostname }}.{{ general_domain_default }}`)
+      service: syncthing
+      middlewares:
+        - oauth2-proxy-handle-error
+        - oauth2-proxy-forward-auth-infra
+
+  services:
+    syncthing:
+      loadBalancer:
+        servers: [{ url: "http://syncthing:8384" }]

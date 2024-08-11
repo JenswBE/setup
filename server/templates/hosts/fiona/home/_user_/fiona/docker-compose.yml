@@ -54,9 +54,6 @@ services:
       - "--accesslog.filepath=/access-logs/access.log" # Used by CrowdSec
       - "--providers.file.directory=/conf"
       - "--providers.file.watch=true"
-      - "--providers.docker=true"
-      - "--providers.docker.network=traefik"
-      - "--providers.docker.exposedbydefault=false"
       - "--entrypoints.websecure.address=:443"
       - "--entrypoints.websecure.proxyProtocol.trustedIPs=#VAR:network_any_private:VAR#"
       - "--entrypoints.websecure.http.middlewares=secure-https@file"
@@ -77,7 +74,6 @@ services:
       - traefik
     volumes:
       - ./traefik:/conf:ro
-      - /var/run/docker.sock:/var/run/docker.sock:ro
       - traefik-cert:/letsencrypt
       - traefik-access-logs:/access-logs
     environment:
@@ -152,14 +148,6 @@ services:
     depends_on:
       unifi-mongodb:
         condition: service_healthy
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.unifi.entrypoints=websecure"
-      - "traefik.http.routers.unifi.rule=Host(`unifi.#VAR:general_domain_local:VAR#`)"
-      - "traefik.http.routers.unifi.tls.certresolver=le-dns"
-      - "traefik.http.services.unifi-#VAR:ansible_hostname:VAR#.loadbalancer.server.port=8443"
-      - "traefik.http.services.unifi-#VAR:ansible_hostname:VAR#.loadbalancer.server.scheme=https"
-      - "traefik.http.services.unifi-#VAR:ansible_hostname:VAR#.loadbalancer.serverstransport=insecure@file"
     deploy:
       resources:
         limits:
@@ -198,11 +186,6 @@ services:
       TZ: "#VAR:general_timezone:VAR#"
       NUT_HOST: host.docker.internal
       WEB_HOST: "0.0.0.0"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.peanut.entrypoints=websecure"
-      - "traefik.http.routers.peanut.rule=Host(`ups.#VAR:general_domain_local:VAR#`)"
-      - "traefik.http.routers.peanut.tls.certresolver=le-dns"
 
   # =========================
   # =        CROWDSEC       =

@@ -1,0 +1,14 @@
+http:
+  routers:
+    tmm:
+      entryPoints: ["websecure"]
+      tls: { certresolver: le-dns }
+      rule: Host(`tmm.{{ general_domain_local }}`)
+      service: tmm
+      middlewares:
+        - local-only
+
+  services:
+    tmm:
+      loadBalancer:
+        servers: [{ url: "http://tmm:5800" }]

@@ -1,4 +1,5 @@
 - name: Create temporary dir
+  connection: "{{ privileged | ternary('ssh', 'local') }}"
   ansible.builtin.tempfile:
     state: directory
   register: tmp_dir
@@ -6,12 +7,10 @@
   tags: ["always"]
 
 - name: Create directory structure in temporary dir
-  become: true
+  connection: "{{ privileged | ternary('ssh', 'local') }}"
   ansible.builtin.file:
     path: "{{ tmp_dir.path }}/{{ item.path }}"
     state: directory
-    owner: "{{ destination_owner }}"
-    group: "{{ destination_group }}"
     mode: "{{ destination_mode_dirs }}"
   with_community.general.filetree: templates/{{ templates_folder }}
   when: item.state == 'directory'
@@ -19,12 +18,10 @@
   tags: ["always"]
 
 - name: Generate template files to temporary dir
-  become: true
+  connection: "{{ privileged | ternary('ssh', 'local') }}"
   ansible.builtin.template:
     src: "{{ item.root }}/{{ item.path }}"
     dest: "{{ tmp_dir.path }}/{{ item.path }}"
-    owner: "{{ destination_owner }}"
-    group: "{{ destination_group }}"
     mode: "{{ destination_mode_files }}"
     block_start_string: |-
       {{ '#BLOCK:' if item.path is match('docker-compose(\..*)?\.ya?ml') else '{%' }}
@@ -42,7 +39,7 @@
   tags: ["always"]
 
 - name: Copy binary files
-  become: true
+  connection: "{{ privileged | ternary('ssh', 'local') }}"
   ansible.builtin.copy:
     src: "{{ item.root }}/{{ item.path }}"
     dest: "{{ tmp_dir.path }}/{{ item.path }}"
@@ -55,7 +52,7 @@
   tags: ["always"]
 
 - name: Sync temporary dir to destination
-  become: true
+  become: "{{ privileged }}"
   ansible.posix.synchronize:
     src: "{{ tmp_dir.path }}/"
     dest: "{{ destination_folder }}"
@@ -70,7 +67,7 @@
       - "--chown={{ destination_owner }}:{{ destination_group }}"
       - "--chmod=D{{ destination_mode_dirs }},F{{ destination_mode_files }}"
     delete: "{{ destination_delete_extra }}"
-  delegate_to: "{{ inventory_hostname }}"
+  delegate_to: "{{ privileged | ternary(inventory_hostname, 'localhost') }}"
   register: rsync_output
   tags: ["always"]
 

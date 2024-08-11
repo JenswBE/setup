@@ -1,0 +1,12 @@
+http:
+  routers:
+    tuinfeest-directus:
+      entryPoints: ["websecure"]
+      tls: { certresolver: le-tls }
+      rule: Host(`beheer.{{ general_domain_tuinfeest }}`)
+      service: tuinfeest-directus
+
+  services:
+    tuinfeest-directus:
+      loadBalancer:
+        servers: [{ url: "http://tuinfeest-directus:8055" }]

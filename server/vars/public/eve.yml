@@ -32,6 +32,8 @@ ufw_additional_ports:
 
 # Redirects
 redirects:
+  - from: "www.{{ general_domain_bjoetiek }}"
+    to: "{{ general_domain_bjoetiek }}"
   - from: "{{ general_domain_gwendv }}"
     to: "www.instagram.com/gwendolyndevocht/"
   - from: "www.{{ general_domain_gwendv }}"

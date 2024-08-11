@@ -1,0 +1,12 @@
+http:
+  routers:
+    vaultwarden:
+      entryPoints: ["websecure"]
+      tls: { certresolver: le-tls }
+      rule: Host(`vault.{{ general_domain_default }}`)
+      service: vaultwarden
+
+  services:
+    vaultwarden:
+      loadBalancer:
+        servers: [{ url: "http://vaultwarden" }]

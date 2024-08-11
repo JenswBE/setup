@@ -1,0 +1,12 @@
+http:
+  routers:
+    kristofcoenen-directus:
+      entryPoints: ["websecure"]
+      tls: { certresolver: le-tls }
+      rule: Host(`beheer.{{ general_domain_kristofcoenen }}`)
+      service: kristofcoenen-directus
+
+  services:
+    kristofcoenen-directus:
+      loadBalancer:
+        servers: [{ url: "http://kristofcoenen-directus:8055" }]

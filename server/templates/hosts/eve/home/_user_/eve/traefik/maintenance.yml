@@ -1,0 +1,12 @@
+http:
+  routers:
+    maintenance:
+      entryPoints: ["websecure"]
+      tls: { certresolver: le-tls }
+      rule: Host(`maintenance.{{ general_domain_default }}`)
+      service: maintenance
+
+  services:
+    maintenance:
+      loadBalancer:
+        servers: [{ url: "http://maintenance:8080" }]

@@ -1,0 +1,12 @@
+http:
+  routers:
+    miniflux:
+      entryPoints: ["websecure"]
+      tls: { certresolver: le-tls }
+      rule: Host(`feed.{{ general_domain_default }}`)
+      service: miniflux
+
+  services:
+    miniflux:
+      loadBalancer:
+        servers: [{ url: "http://miniflux:8080" }]

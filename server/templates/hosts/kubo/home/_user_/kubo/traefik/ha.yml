@@ -1,0 +1,14 @@
+http:
+  routers:
+    ha:
+      entryPoints: ["websecure"]
+      tls: { certresolver: le-dns }
+      rule: Host(`ha.{{ general_domain_local }}`)
+      service: ha
+      middlewares:
+        - local-only
+
+  services:
+    ha:
+      loadBalancer:
+        servers: [{ url: "http://ha:8123" }]

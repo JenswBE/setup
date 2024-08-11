@@ -1,0 +1,12 @@
+http:
+  routers:
+    nginx-hetvleermuizenkind:
+      entryPoints: ["websecure"]
+      tls: { certresolver: le-tls }
+      rule: Host(`hetvleermuizenkind.{{ general_domain_default }}`)
+      service: nginx-hetvleermuizenkind
+
+  services:
+    nginx-hetvleermuizenkind:
+      loadBalancer:
+        servers: [{ url: "http://nginx-hetvleermuizenkind:8080" }]

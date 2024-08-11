@@ -35,3 +35,45 @@ firewalld:
 redirects:
   - from: "www.{{ general_domain_interwego }}"
     to: "{{ general_domain_interwego }}"
+
+# SWS config
+sws_config:
+  interwego:
+    advanced:
+      headers:
+        - source: "**"
+          headers:
+            Content-Security-Policy-Report-Only: >-
+              default-src 'none';
+              connect-src https://stats.{{ general_domain_interwego }}/count;
+              img-src 'self' data:;
+              script-src 'self' https://cdnjs.cloudflare.com/ajax/libs/bootstrap/ https://stats.{{ general_domain_interwego }}/count.js;
+              style-src 'self' https://cdnjs.cloudflare.com/ajax/libs/bootstrap/;
+              report-uri https://5e43cng1.uriports.com/reports/report;
+              report-to default;
+            Cross-Origin-Embedder-Policy: require-corp; report-to="default"
+            Cross-Origin-Opener-Policy: same-origin; report-to="default"
+            NEL: >-
+              {
+              "report_to":"default",
+              "max_age":2592000,
+              "include_subdomains":true,
+              "failure_fraction":1.0
+              }
+            Permissions-Policy: >-
+              accelerometer=(), ambient-light-sensor=(), autoplay=(),
+              battery=(), camera=(), cross-origin-isolated=(), display-capture=(),
+              encrypted-media=(), execution-while-not-rendered=(),
+              execution-while-out-of-viewport=(), fullscreen=(), geolocation=(), gyroscope=(),
+              keyboard-map=(), magnetometer=(), microphone=(), midi=(), navigation-override=(),
+              payment=(), picture-in-picture=(), publickey-credentials-get=(),
+              screen-wake-lock=(), sync-xhr=(), usb=(), web-share=(), xr-spatial-tracking=();
+              report-to=default
+            Report-To: >-
+              {
+              "group":"default",
+              "max_age":10886400,
+              "endpoints":[{"url":"https://5e43cng1.uriports.com/reports"}],
+              "include_subdomains":true
+              }
+            Reporting-Endpoints: 'default="https://5e43cng1.uriports.com/reports"'

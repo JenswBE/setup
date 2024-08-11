@@ -1,0 +1,12 @@
+http:
+  routers:
+    grafana:
+      entryPoints: ["websecure"]
+      tls: { certresolver: le-tls }
+      rule: Host(`grafana.{{ general_domain_default }}`)
+      service: grafana
+
+  services:
+    grafana:
+      loadBalancer:
+        servers: [{ url: "http://grafana:3000" }]

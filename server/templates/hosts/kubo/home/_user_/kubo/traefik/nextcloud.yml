@@ -1,4 +1,19 @@
 http:
+  routers:
+    nextcloud:
+      entryPoints: ["websecure"]
+      tls: { certresolver: le-tls }
+      rule: Host(`nextcloud-media.{{ general_domain_default }}`)
+      service: nextcloud
+      middlewares:
+        - nextcloud-redirect-dav
+        - nextcloud-redirect-webfinger
+
+  services:
+    nextcloud:
+      loadBalancer:
+        servers: [{ url: "http://nextcloud" }]
+
   middlewares:
     nextcloud-redirect-dav:
       redirectRegex:
