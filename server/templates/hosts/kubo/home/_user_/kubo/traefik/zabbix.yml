@@ -11,4 +11,4 @@ http:
   services:
     zabbix:
       loadBalancer:
-        servers: [{ url: "http://zabbix:8080" }]
+        servers: [{ url: "http://zabbix-web:8080" }]
