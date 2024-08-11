@@ -5,7 +5,6 @@ http:
       tls: { certresolver: le-tls }
       rule: >-
         (
-        Host(`assets.{{ general_domain_default }}`) ||
         Host(`start.{{ general_domain_default }}`) ||
         Host(`syncthing.{{ ansible_hostname }}.{{ general_domain_default }}`) ||
         Host(`traefik.{{ ansible_hostname }}.{{ general_domain_default }}`) ||

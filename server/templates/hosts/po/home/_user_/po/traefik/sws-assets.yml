@@ -4,12 +4,12 @@ http:
       entryPoints: ["websecure"]
       tls: { certresolver: le-tls }
       rule: Host(`assets.{{ general_domain_default }}`)
-      service: assets
+      service: sws-assets
       middlewares:
         - oauth2-proxy-handle-error
         - oauth2-proxy-forward-auth-infra
 
   services:
-    assets:
+    sws-assets:
       loadBalancer:
-        servers: [{ url: "http://assets:8080" }]
+        servers: [{ url: "http://sws-assets" }]

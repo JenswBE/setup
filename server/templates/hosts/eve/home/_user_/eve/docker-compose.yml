@@ -329,19 +329,6 @@ services:
       TZ: "#VAR:general_timezone:VAR#"
 
   # ===========================================================================
-  # =   Assets                                                                =
-  # =   https://github.com/JenswBE/assets                                     =
-  # ===========================================================================
-  assets:
-    <<: *defaults
-    image: ghcr.io/jenswbe/assets:latest
-    container_name: assets
-    networks:
-      - traefik
-    environment:
-      TZ: "#VAR:general_timezone:VAR#"
-
-  # ===========================================================================
   # =   BJOETIEK Y                                                            =
   # =   https://github.com/JenswBE/bjoetiek-y-frontend                        =
   # =   https://github.com/JenswBE/go-commerce                                =

@@ -105,6 +105,15 @@ services:
   # =========================
   # =      STATIC HOSTS     =
   # =========================
+  sws-assets:
+    <<: *defaults
+    image: joseluisq/static-web-server:2
+    container_name: sws-assets
+    networks:
+      - traefik
+    volumes:
+      - website-assets:/public:ro
+
   sws-interwego:
     <<: *defaults
     image: joseluisq/static-web-server:2
@@ -123,13 +132,16 @@ services:
     build:
       context: ./rsyncd
       args:
-        SSH_USERS: interwego:900:900
+        SSH_USERS: |
+          assets:900:900
+          interwego:901:901
     container_name: rsyncd
     network_mode: host # Ensures Crowdsec has real source IP to act on
     environment:
       TZ: "#VAR:general_timezone:VAR#"
     volumes:
       - rsyncd-ssh-host-keys:/etc/ssh/keys
+      - website-assets:/data/assets
       - website-interwego:/data/interwego
 
   # =========================
@@ -210,6 +222,7 @@ volumes:
   rsyncd-ssh-host-keys:
   traefik-access-logs:
   traefik-cert:
+  website-assets:
   website-interwego:
 
 # #################################################################
