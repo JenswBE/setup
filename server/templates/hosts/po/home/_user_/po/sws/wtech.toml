@@ -1,0 +1,1 @@
+{{ sws_config.wtech | to_toml }}

@@ -33,17 +33,70 @@ firewalld:
 
 # Redirects
 redirects:
+  - from: "www.{{ general_domain_bjoetiek }}"
+    to: "{{ general_domain_bjoetiek }}"
+  - from: "{{ general_domain_gwendv }}"
+    to: "www.instagram.com/gwendolyndevocht/"
+  - from: "www.{{ general_domain_gwendv }}"
+    to: "www.instagram.com/gwendolyndevocht/"
   - from: "www.{{ general_domain_interwego }}"
     to: "{{ general_domain_interwego }}"
+  - from: "{{ general_domain_interwego_be }}"
+    to: "{{ general_domain_interwego }}"
+  - from: "www.{{ general_domain_interwego_be }}"
+    to: "{{ general_domain_interwego }}"
+  - from: "{{ general_domain_interwego_eu }}"
+    to: "{{ general_domain_interwego }}"
+  - from: "www.{{ general_domain_interwego_eu }}"
+    to: "{{ general_domain_interwego }}"
+  - from: "{{ general_domain_interwego_nl }}"
+    to: "{{ general_domain_interwego }}"
+  - from: "www.{{ general_domain_interwego_nl }}"
+    to: "{{ general_domain_interwego }}"
+  - from: "{{ general_domain_local }}"
+    to: "{{ general_domain_default }}"
+  - from: "www.{{ general_domain_local }}"
+    to: "{{ general_domain_default }}"
+  - from: "www.{{ general_domain_wtech }}"
+    to: "{{ general_domain_wtech }}"
 
 # SWS config
+sws_default_headers: &sws_default_headers
+  Cross-Origin-Embedder-Policy: require-corp; report-to="default"
+  Cross-Origin-Opener-Policy: same-origin; report-to="default"
+  NEL: >-
+    {
+    "report_to":"default",
+    "max_age":2592000,
+    "include_subdomains":true,
+    "failure_fraction":1.0
+    }
+  Permissions-Policy: >-
+    accelerometer=(), ambient-light-sensor=(), autoplay=(),
+    battery=(), camera=(), cross-origin-isolated=(), display-capture=(),
+    encrypted-media=(), execution-while-not-rendered=(),
+    execution-while-out-of-viewport=(), fullscreen=(), geolocation=(), gyroscope=(),
+    keyboard-map=(), magnetometer=(), microphone=(), midi=(), navigation-override=(),
+    payment=(), picture-in-picture=(), publickey-credentials-get=(),
+    screen-wake-lock=(), sync-xhr=(), usb=(), web-share=(), xr-spatial-tracking=();
+    report-to=default
+  Report-To: >-
+    {
+    "group":"default",
+    "max_age":10886400,
+    "endpoints":[{"url":"https://5e43cng1.uriports.com/reports"}],
+    "include_subdomains":true
+    }
+  Reporting-Endpoints: 'default="https://5e43cng1.uriports.com/reports"'
+
 sws_config:
   interwego:
     advanced:
       headers:
         - source: "**"
           headers:
-            Content-Security-Policy-Report-Only: >-
+            <<: *sws_default_headers
+            Content-Security-Policy: >-
               default-src 'none';
               connect-src https://stats.{{ general_domain_interwego }}/count;
               img-src 'self' data:;
@@ -51,29 +104,19 @@ sws_config:
               style-src 'self' https://cdnjs.cloudflare.com/ajax/libs/bootstrap/;
               report-uri https://5e43cng1.uriports.com/reports/report;
               report-to default;
-            Cross-Origin-Embedder-Policy: require-corp; report-to="default"
-            Cross-Origin-Opener-Policy: same-origin; report-to="default"
-            NEL: >-
-              {
-              "report_to":"default",
-              "max_age":2592000,
-              "include_subdomains":true,
-              "failure_fraction":1.0
-              }
-            Permissions-Policy: >-
-              accelerometer=(), ambient-light-sensor=(), autoplay=(),
-              battery=(), camera=(), cross-origin-isolated=(), display-capture=(),
-              encrypted-media=(), execution-while-not-rendered=(),
-              execution-while-out-of-viewport=(), fullscreen=(), geolocation=(), gyroscope=(),
-              keyboard-map=(), magnetometer=(), microphone=(), midi=(), navigation-override=(),
-              payment=(), picture-in-picture=(), publickey-credentials-get=(),
-              screen-wake-lock=(), sync-xhr=(), usb=(), web-share=(), xr-spatial-tracking=();
-              report-to=default
-            Report-To: >-
-              {
-              "group":"default",
-              "max_age":10886400,
-              "endpoints":[{"url":"https://5e43cng1.uriports.com/reports"}],
-              "include_subdomains":true
-              }
-            Reporting-Endpoints: 'default="https://5e43cng1.uriports.com/reports"'
+
+  wtech:
+    advanced:
+      headers:
+        - source: "**"
+          headers:
+            <<: *sws_default_headers
+            Content-Security-Policy: >-
+              default-src 'none';
+              connect-src https://stats.{{ general_domain_wtech }}/count;
+              font-src https://fonts.gstatic.com/s/sourcesanspro/ https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/;
+              img-src 'self' data:;
+              script-src 'self' https://cdnjs.cloudflare.com/ajax/libs/bootstrap/ https://cdnjs.cloudflare.com/ajax/libs/simplelightbox/ https://stats.{{ general_domain_wtech }}/count.js;
+              style-src 'self' https://cdnjs.cloudflare.com/ajax/libs/bootstrap/ https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/ https://cdnjs.cloudflare.com/ajax/libs/simplelightbox/;
+              report-uri https://5e43cng1.uriports.com/reports/report;
+              report-to default;

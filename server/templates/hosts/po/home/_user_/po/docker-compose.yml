@@ -124,6 +124,16 @@ services:
       - ./sws/interwego.toml:/config.toml:ro
       - website-interwego:/public:ro
 
+  sws-wtech:
+    <<: *defaults
+    image: joseluisq/static-web-server:2
+    container_name: sws-wtech
+    networks:
+      - traefik
+    volumes:
+      - ./sws/wtech.toml:/config.toml:ro
+      - website-wtech:/public:ro
+
   # =========================
   # =      FILE UPLOADS     =
   # =========================
@@ -135,6 +145,7 @@ services:
         SSH_USERS: |
           assets:900:900
           interwego:901:901
+          wtech:902:902
     container_name: rsyncd
     network_mode: host # Ensures Crowdsec has real source IP to act on
     environment:
@@ -143,6 +154,7 @@ services:
       - rsyncd-ssh-host-keys:/etc/ssh/keys
       - website-assets:/data/assets
       - website-interwego:/data/interwego
+      - website-wtech:/data/wtech
 
   # =========================
   # =        CROWDSEC       =
@@ -224,6 +236,7 @@ volumes:
   traefik-cert:
   website-assets:
   website-interwego:
+  website-wtech:
 
 # #################################################################
 # #                            NETWORKS                           #

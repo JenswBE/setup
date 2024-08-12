@@ -30,31 +30,6 @@ ufw_additional_ports:
     protos: [udp]
     from_networks: [any]
 
-# Redirects
-redirects:
-  - from: "www.{{ general_domain_bjoetiek }}"
-    to: "{{ general_domain_bjoetiek }}"
-  - from: "{{ general_domain_gwendv }}"
-    to: "www.instagram.com/gwendolyndevocht/"
-  - from: "www.{{ general_domain_gwendv }}"
-    to: "www.instagram.com/gwendolyndevocht/"
-  - from: "{{ general_domain_interwego_be }}"
-    to: "{{ general_domain_interwego }}"
-  - from: "www.{{ general_domain_interwego_be }}"
-    to: "{{ general_domain_interwego }}"
-  - from: "{{ general_domain_interwego_eu }}"
-    to: "{{ general_domain_interwego }}"
-  - from: "www.{{ general_domain_interwego_eu }}"
-    to: "{{ general_domain_interwego }}"
-  - from: "{{ general_domain_interwego_nl }}"
-    to: "{{ general_domain_interwego }}"
-  - from: "www.{{ general_domain_interwego_nl }}"
-    to: "{{ general_domain_interwego }}"
-  - from: "{{ general_domain_local }}"
-    to: "{{ general_domain_default }}"
-  - from: "www.{{ general_domain_local }}"
-    to: "{{ general_domain_default }}"
-
 # GoatCounter
 app_goatcounter_arch: arm64
 app_goatcounter_version: v2.5.0
