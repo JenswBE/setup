@@ -1,5 +1,5 @@
 # Keep version aligned with .github/workflows/test.yml
-FROM docker.io/library/golang:1.22 AS builder
+FROM docker.io/library/golang:1.23 AS builder
 WORKDIR /src/
 COPY main.go main.go
 COPY go.mod go.mod
