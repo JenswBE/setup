@@ -89,7 +89,32 @@ sws_default_headers: &sws_default_headers
     }
   Reporting-Endpoints: 'default="https://5e43cng1.uriports.com/reports"'
 
+sws_default_headers_without_report: &sws_default_headers_without_report
+  Cross-Origin-Embedder-Policy: require-corp
+  Cross-Origin-Opener-Policy: same-origin
+  Permissions-Policy: >-
+    accelerometer=(), ambient-light-sensor=(), autoplay=(),
+    battery=(), camera=(), cross-origin-isolated=(), display-capture=(),
+    encrypted-media=(), execution-while-not-rendered=(),
+    execution-while-out-of-viewport=(), fullscreen=(), geolocation=(), gyroscope=(),
+    keyboard-map=(), magnetometer=(), microphone=(), midi=(), navigation-override=(),
+    payment=(), picture-in-picture=(), publickey-credentials-get=(),
+    screen-wake-lock=(), sync-xhr=(), usb=(), web-share=(), xr-spatial-tracking=()
+
 sws_config:
+  assets:
+    advanced:
+      headers:
+        - source: "**"
+          headers:
+            <<: *sws_default_headers_without_report
+            Content-Security-Policy: >-
+              default-src 'none';
+              font-src https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/;
+              img-src 'self';
+              script-src 'self' https://cdnjs.cloudflare.com/ajax/libs/bootstrap/ https://cdnjs.cloudflare.com/ajax/libs/mermaid/;
+              style-src 'self' https://cdnjs.cloudflare.com/ajax/libs/bootstrap/ https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/;
+
   interwego:
     advanced:
       headers:
@@ -120,3 +145,15 @@ sws_config:
               style-src 'self' https://cdnjs.cloudflare.com/ajax/libs/bootstrap/ https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/ https://cdnjs.cloudflare.com/ajax/libs/simplelightbox/;
               report-uri https://5e43cng1.uriports.com/reports/report;
               report-to default;
+
+  email_username_generator:
+    advanced:
+      headers:
+        - source: "**"
+          headers:
+            <<: *sws_default_headers_without_report
+            Content-Security-Policy: >-
+              default-src 'none';
+              img-src 'self';
+              script-src 'self' https://cdnjs.cloudflare.com/ajax/libs/bootstrap/;
+              style-src 'self' https://cdnjs.cloudflare.com/ajax/libs/bootstrap/;

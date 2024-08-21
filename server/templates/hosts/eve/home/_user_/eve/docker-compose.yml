@@ -316,19 +316,6 @@ services:
       TZ: "#VAR:general_timezone:VAR#"
 
   # ===========================================================================
-  # =   EMAIL USERNAME GENERATOR                                              =
-  # =   https://github.com/JenswBE/email-username-generator                   =
-  # ===========================================================================
-  email-username-generator:
-    <<: *defaults
-    image: docker.io/jenswbe/email-username-generator:stable
-    container_name: email-username-generator
-    networks:
-      - traefik
-    environment:
-      TZ: "#VAR:general_timezone:VAR#"
-
-  # ===========================================================================
   # =   BJOETIEK Y                                                            =
   # =   https://github.com/JenswBE/bjoetiek-y-frontend                        =
   # =   https://github.com/JenswBE/go-commerce                                =

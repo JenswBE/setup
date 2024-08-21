@@ -112,6 +112,7 @@ services:
     networks:
       - traefik
     volumes:
+      - ./sws/assets.toml:/config.toml:ro
       - website-assets:/public:ro
 
   sws-interwego:
@@ -123,6 +124,16 @@ services:
     volumes:
       - ./sws/interwego.toml:/config.toml:ro
       - website-interwego:/public:ro
+
+  sws-email-username-generator:
+    <<: *defaults
+    image: joseluisq/static-web-server:2
+    container_name: sws-email-username-generator
+    networks:
+      - traefik
+    volumes:
+      - ./sws/email-username-generator.toml:/config.toml:ro
+      - website-email-username-generator:/public:ro
 
   sws-wtech:
     <<: *defaults
@@ -145,7 +156,8 @@ services:
         SSH_USERS: |
           assets:900:900
           interwego:901:901
-          wtech:902:902
+          email-username-generator:902:902
+          wtech:903:903
     container_name: rsyncd
     network_mode: host # Ensures Crowdsec has real source IP to act on
     environment:
@@ -154,6 +166,7 @@ services:
       - rsyncd-ssh-host-keys:/etc/ssh/keys
       - website-assets:/data/assets
       - website-interwego:/data/interwego
+      - website-email-username-generator:/data/email-username-generator
       - website-wtech:/data/wtech
 
   # =========================
@@ -236,6 +249,7 @@ volumes:
   traefik-cert:
   website-assets:
   website-interwego:
+  website-email-username-generator:
   website-wtech:
 
 # #################################################################
