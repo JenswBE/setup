@@ -115,6 +115,25 @@ sws_config:
               script-src 'self' https://cdnjs.cloudflare.com/ajax/libs/bootstrap/ https://cdnjs.cloudflare.com/ajax/libs/mermaid/;
               style-src 'self' https://cdnjs.cloudflare.com/ajax/libs/bootstrap/ https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/;
 
+  email_username_generator:
+    advanced:
+      headers:
+        - source: "**"
+          headers:
+            <<: *sws_default_headers_without_report
+            Content-Security-Policy: >-
+              default-src 'none';
+              img-src 'self';
+              script-src 'self' https://cdnjs.cloudflare.com/ajax/libs/bootstrap/;
+              style-src 'self' https://cdnjs.cloudflare.com/ajax/libs/bootstrap/;
+
+  family_trees:
+    advanced:
+      headers:
+        - source: "**"
+          headers:
+            <<: *sws_default_headers_without_report
+
   interwego:
     advanced:
       headers:
@@ -145,15 +164,3 @@ sws_config:
               style-src 'self' https://cdnjs.cloudflare.com/ajax/libs/bootstrap/ https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/ https://cdnjs.cloudflare.com/ajax/libs/simplelightbox/;
               report-uri https://5e43cng1.uriports.com/reports/report;
               report-to default;
-
-  email_username_generator:
-    advanced:
-      headers:
-        - source: "**"
-          headers:
-            <<: *sws_default_headers_without_report
-            Content-Security-Policy: >-
-              default-src 'none';
-              img-src 'self';
-              script-src 'self' https://cdnjs.cloudflare.com/ajax/libs/bootstrap/;
-              style-src 'self' https://cdnjs.cloudflare.com/ajax/libs/bootstrap/;

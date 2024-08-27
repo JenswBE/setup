@@ -6,6 +6,7 @@ http:
       rule: >-
         (
         Host(`assets.{{ general_domain_default }}`) ||
+        Host(`stamboom.{{ general_domain_default }}`) ||
         Host(`traefik.{{ ansible_hostname }}.{{ general_domain_default }}`)
         ) && PathPrefix(`/oauth2/`)
       service: oauth2-proxy
@@ -22,6 +23,11 @@ http:
           - "601"
         service: oauth2-proxy
         query: /oauth2/sign_in
+
+    oauth2-proxy-forward-auth-family:
+      forwardAuth:
+        address: http://oauth2-proxy-helper/oauth2/auth?allowed_groups=family
+        trustForwardHeader: true
 
     oauth2-proxy-forward-auth-infra:
       forwardAuth:

@@ -115,16 +115,6 @@ services:
       - ./sws/assets.toml:/config.toml:ro
       - website-assets:/public:ro
 
-  sws-interwego:
-    <<: *defaults
-    image: joseluisq/static-web-server:2
-    container_name: sws-interwego
-    networks:
-      - traefik
-    volumes:
-      - ./sws/interwego.toml:/config.toml:ro
-      - website-interwego:/public:ro
-
   sws-email-username-generator:
     <<: *defaults
     image: joseluisq/static-web-server:2
@@ -134,6 +124,26 @@ services:
     volumes:
       - ./sws/email-username-generator.toml:/config.toml:ro
       - website-email-username-generator:/public:ro
+
+  sws-family-trees:
+    <<: *defaults
+    image: joseluisq/static-web-server:2
+    container_name: sws-family-trees
+    networks:
+      - traefik
+    volumes:
+      - ./sws/family-trees.toml:/config.toml:ro
+      - website-family-trees:/public:ro
+
+  sws-interwego:
+    <<: *defaults
+    image: joseluisq/static-web-server:2
+    container_name: sws-interwego
+    networks:
+      - traefik
+    volumes:
+      - ./sws/interwego.toml:/config.toml:ro
+      - website-interwego:/public:ro
 
   sws-wtech:
     <<: *defaults
@@ -155,9 +165,10 @@ services:
       args:
         SSH_USERS: |
           assets:900:900
-          interwego:901:901
-          email-username-generator:902:902
-          wtech:903:903
+          email-username-generator:901:901
+          family-trees:903:903
+          interwego:902:902
+          wtech:904:904
     container_name: rsyncd
     network_mode: host # Ensures Crowdsec has real source IP to act on
     environment:
@@ -165,8 +176,9 @@ services:
     volumes:
       - rsyncd-ssh-host-keys:/etc/ssh/keys
       - website-assets:/data/assets
-      - website-interwego:/data/interwego
       - website-email-username-generator:/data/email-username-generator
+      - website-family-trees:/data/family-trees
+      - website-interwego:/data/interwego
       - website-wtech:/data/wtech
 
   # =========================
@@ -248,8 +260,9 @@ volumes:
   traefik-access-logs:
   traefik-cert:
   website-assets:
-  website-interwego:
   website-email-username-generator:
+  website-family-trees:
+  website-interwego:
   website-wtech:
 
 # #################################################################

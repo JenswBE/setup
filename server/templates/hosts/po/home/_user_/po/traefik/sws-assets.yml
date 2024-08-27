@@ -1,6 +1,6 @@
 http:
   routers:
-    assets:
+    sws-assets:
       entryPoints: ["websecure"]
       tls: { certresolver: le-tls }
       rule: Host(`assets.{{ general_domain_default }}`)

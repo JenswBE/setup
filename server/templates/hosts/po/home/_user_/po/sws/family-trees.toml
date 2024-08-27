@@ -1,0 +1,1 @@
+{{ sws_config.family_trees | to_toml }}
