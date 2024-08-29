@@ -736,7 +736,7 @@ services:
     <<: [*defaults, *healthcheck-mongo]
     # MongoDB 6.0 is used at
     # https://go2docs.graylog.org/current/downloading_and_installing_graylog/docker_installation.htm
-    image: docker.io/library/mongo:6.0
+    image: docker.io/library/mongo:7.0
     container_name: graylog-mongodb
     environment:
       TZ: "#VAR:general_timezone:VAR#"
