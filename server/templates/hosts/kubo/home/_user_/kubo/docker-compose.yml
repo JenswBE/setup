@@ -602,6 +602,60 @@ services:
       TZ: "#VAR:general_timezone:VAR#"
       DOCKER_ENABLE_SECURITY: "false"
 
+  # ===========================
+  # =    UNIFI NETWORK APP    =
+  # ===========================
+  unifi-network-app:
+    <<: *defaults
+    image: lscr.io/linuxserver/unifi-network-application:latest
+    container_name: unifi-network-app
+    environment:
+      TZ: "#VAR:general_timezone:VAR#"
+      PUID: "1000"
+      PGID: "1000"
+      MEM_LIMIT: "1024"
+      MEM_STARTUP: "1024"
+      MONGO_HOST: unifi-mongodb
+      MONGO_PORT: "27017"
+      MONGO_USER: "#VAR:app_unifi_mongodb_user:VAR#"
+      MONGO_PASS: "#VAR:app_unifi_mongodb_password:VAR#"
+      MONGO_DBNAME: unifi
+    volumes:
+      - "#VAR:general_path_appdata:VAR#/unifi/network-app/config:/config"
+    ports:
+      - "10001:10001/udp" # Required for AP discovery
+      - "8080:8080" # Required for device communication
+    networks:
+      - traefik
+      - unifi
+    depends_on:
+      unifi-mongodb:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          cpus: "2"
+          memory: 2G
+
+  unifi-mongodb: # NOTE: MongoDB 5.0+ requires AVX!
+    <<: [*defaults, *healthcheck-mongo]
+    # "Version 8.1 and newer supports up to MongoDB 7.0."
+    # See release notes at https://www.ui.com/download/releases/network-server
+    build: ./unifi/mongodb
+    container_name: unifi-mongodb
+    environment:
+      TZ: "#VAR:general_timezone:VAR#"
+    networks:
+      - unifi
+    volumes:
+      - "#VAR:general_path_appdata:VAR#/unifi/mongodb/data:/data/db"
+      - unifi-mongodb-dump:/backup
+    deploy:
+      resources:
+        limits:
+          cpus: "2"
+          memory: 2G
+
   # =========================
   # =       MONITORING      =
   # =========================
@@ -937,6 +991,7 @@ services:
       - "nc-db-dump:/mnt/source/nextcloud/dbdump:ro"
       - "#VAR:general_path_appdata:VAR#/nextcloud/nextcloud/data:/mnt/source/nextcloud/data:ro"
       - "#VAR:general_path_appdata:VAR#/nextcloud/nextcloud/config:/mnt/source/nextcloud/config:ro"
+      - "unifi-mongodb-dump:/mnt/source/unifi/mongodb:ro"
       - "zabbix-db-dump:/mnt/source/zabbix/dbdump:ro"
       - "/data/important/Photos:/mnt/source/plex/photos:ro"
       - "/data/bulk/media/Music:/mnt/source/plex/music:ro"
@@ -989,6 +1044,9 @@ networks:
   traefik:
     name: traefik
 
+  unifi:
+    name: unifi
+
   zabbix:
     name: zabbix
 
@@ -1010,4 +1068,5 @@ volumes:
   scrutiny-sqlite:
   traefik-access-logs:
   traefik-cert:
+  unifi-mongodb-dump:
   zabbix-db-dump:

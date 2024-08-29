@@ -10,10 +10,6 @@ http:
         stsIncludeSubdomains: true
         stsSeconds: 31536000
 
-  serversTransports:
-    insecure:
-      insecureSkipVerify: true
-
 tls:
   options:
     default:

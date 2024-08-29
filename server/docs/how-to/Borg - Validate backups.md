@@ -23,8 +23,6 @@ Services which are backed up:
   - `wikijs-db` (Postgres): DB data
   - `wtech-directus` (Directus): Uploaded content
   - `wtech-directus-db` (Postgres): DB data
-- Fiona
-  - `unifi-controller` (Unifi Controller): Network config
 - Kubo
   - `github-backup` (GitHub Backup): All GitHub repo's
   - `glitchtip-db` (Postgres): DB data
@@ -34,6 +32,7 @@ Services which are backed up:
   - `nc-db` (MariaDB): DB data for Nextcloud
   - `nextcloud` (Nextcloud): User files and config
   - `plex` (Plex): Photo's and music
+  - `unifi-mongodb` (MongoDB): DB data
   - `zabbix-db` (Postgres): DB data
 
 ## Validations

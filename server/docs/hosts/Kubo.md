@@ -21,6 +21,7 @@ Home NAS
 - Dump Graylog DB (`templates/hosts/kubo/etc/systemd/system/graylog-dump-mongodb.timer`)
 - Dump Miniflux DB (`templates/hosts/kubo/etc/systemd/system/miniflux-dump-db.timer`)
 - Dump Nextcloud DB (`templates/hosts/kubo/etc/systemd/system/nextcloud-dump-db.timer`)
+- Dump Unifi DB (`templates/hosts/fiona/etc/systemd/system/unifi-dump-mongodb.timer`)
 - Dump Zabbix DB (`templates/hosts/kubo/etc/systemd/system/zabbix-dump-db.timer`)
 - GitHub Backup (`templates/hosts/kubo/etc/systemd/system/github-backup.timer`)
 

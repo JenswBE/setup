@@ -1,17 +1,3 @@
-# Borgmatic
-app_borgmatic_borg_passphrase: ""
-app_borgmatic_ssh_host: ""
-app_borgmatic_ssh_port: ""
-app_borgmatic_ssh_user: ""
-app_borgmatic_ssh_key: |
-  -----BEGIN OPENSSH PRIVATE KEY-----
-  ...
-  -----END OPENSSH PRIVATE KEY-----
-app_borgmatic_ssh_known_hosts: |
-  [HOSTNAME]:PORT,[IP_ADDRESS]:PORT ssh-ed25519 ...
-app_borgmatic_remote_folder: ""
-app_borgmatic_ping_id: "" # Ping ID for healthchecks.io
-
 # CrowdSec
 app_crowdsec_bouncer_firewall_key: "" # Alphanumeric string
 
@@ -22,10 +8,6 @@ app_graylog_server: "" # Target for rsyslog and Docker logs
 #   - https://doc.traefik.io/traefik/https/acme/#providers
 #   - https://desec.io/tokens
 app_traefik_desec_token: ""
-
-# Unifi Network Application
-app_unifi_mongodb_user: ""
-app_unifi_mongodb_password: ""
 
 # Zabbix
 app_zabbix_agent_server: "" # Incoming connections will be accepted only from the hosts listed here.

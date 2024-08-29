@@ -14,7 +14,7 @@ Low-power home server
 
 ### 02:00 Prepare backup
 
-- Dump Unifi DB (`templates/hosts/fiona/etc/systemd/system/unifi-dump-mongodb.timer`)
+- None
 
 ### 03:00 Perform backup
 

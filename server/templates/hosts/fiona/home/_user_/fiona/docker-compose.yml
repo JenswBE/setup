@@ -11,17 +11,6 @@ x-extra-docker-host: &extra-docker-host
   extra_hosts:
     - "host.docker.internal:host-gateway"
 
-x-healthcheck-mongo4: &healthcheck-mongo4
-  healthcheck:
-    test:
-      [
-        "CMD-SHELL",
-        "mongo --quiet localhost --eval 'quit(db.runCommand({ ping: 1 }).ok ? 0 : 1)'",
-      ]
-    interval: 30s
-    timeout: 10s
-    retries: 5
-
 x-fix-prettier-formatting:
 
 #################################################################
@@ -119,60 +108,6 @@ services:
       macvlan:
         ipv4_address: 192.168.50.61
 
-  # ===========================
-  # =    UNIFI NETWORK APP    =
-  # ===========================
-  unifi-network-app:
-    <<: *defaults
-    image: lscr.io/linuxserver/unifi-network-application:latest
-    container_name: unifi-network-app
-    environment:
-      TZ: "#VAR:general_timezone:VAR#"
-      PUID: "1000"
-      PGID: "1000"
-      MEM_LIMIT: "1024"
-      MEM_STARTUP: "1024"
-      MONGO_HOST: unifi-mongodb
-      MONGO_PORT: "27017"
-      MONGO_USER: "#VAR:app_unifi_mongodb_user:VAR#"
-      MONGO_PASS: "#VAR:app_unifi_mongodb_password:VAR#"
-      MONGO_DBNAME: unifi
-    volumes:
-      - "#VAR:general_path_appdata:VAR#/unifi/network-app/config:/config"
-    ports:
-      - "10001:10001/udp" # Required for AP discovery
-      - "8080:8080" # Required for device communication
-    networks:
-      - traefik
-      - unifi
-    depends_on:
-      unifi-mongodb:
-        condition: service_healthy
-    deploy:
-      resources:
-        limits:
-          cpus: "2"
-          memory: 2G
-
-  unifi-mongodb:
-    <<: [*defaults, *healthcheck-mongo4]
-    # "Version 8.1 and newer supports up to MongoDB 7.0."
-    # See release notes at https://www.ui.com/download/releases/network-server
-    build: ./unifi/mongodb
-    container_name: unifi-mongodb
-    environment:
-      TZ: "#VAR:general_timezone:VAR#"
-    networks:
-      - unifi
-    volumes:
-      - "#VAR:general_path_appdata:VAR#/unifi/mongodb/data:/data/db"
-      - unifi-mongodb-dump:/backup
-    deploy:
-      resources:
-        limits:
-          cpus: "2"
-          memory: 2G
-
   # =========================
   # =         PEANUT        =
   # =========================
@@ -216,49 +151,12 @@ services:
       - /var/log/journal:/var/log/host:ro # SSHD logs for Debian
       - traefik-access-logs:/var/log/traefik:ro
 
-  # ==========================
-  # =         BACKUP         =
-  # ==========================
-  borgmatic:
-    <<: *defaults
-    image: ghcr.io/borgmatic-collective/borgmatic:1.8.9
-    container_name: borgmatic
-    privileged: true # Required for borg mount
-    cap_add:
-      - SYS_ADMIN # Required for borg mount
-    volumes:
-      # Backup locations
-      - "unifi-mongodb-dump:/mnt/source/unifi/mongodb:ro"
-      # Config and cache
-      - "./borgmatic/borgmatic.d/config.yaml:/etc/borgmatic.d/config.yaml"
-      - "./borgmatic/ssh/BorgHost:/root/.ssh/BorgHost"
-      - "./borgmatic/ssh/known_hosts:/root/.ssh/known_hosts"
-      - "#VAR:general_path_appdata:VAR#/borgmatic/borgmatic/config:/root/.config/borg"
-      - "#VAR:general_path_appdata:VAR#/borgmatic/borgmatic/cache:/root/.cache/borg"
-      - "#VAR:general_path_appdata:VAR#/borgmatic/borgmatic/restore:/mnt/restore"
-    devices:
-      - "/dev/fuse:/dev/fuse" # Required for borg mount
-    environment:
-      TZ: "#VAR:general_timezone:VAR#"
-      BACKUP_CRON: "0 3 * * *"
-      BORG_PASSPHRASE: "#VAR:app_borgmatic_borg_passphrase:VAR#"
-      BORG_HOSTNAME_IS_UNIQUE: "yes" # Automatically removes stale locks
-      BORG_HOST_ID: "#VAR:ansible_hostname:VAR#"
-    deploy:
-      resources:
-        limits:
-          cpus: "3"
-          memory: 4G
-
 #################################################################
 #                            NETWORKS                           #
 #################################################################
 networks:
   traefik:
     name: traefik
-
-  unifi:
-    name: unifi
 
   macvlan:
     name: macvlan
@@ -279,4 +177,3 @@ volumes:
   crowdsec-db:
   traefik-access-logs:
   traefik-cert:
-  unifi-mongodb-dump:
