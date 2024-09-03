@@ -28,6 +28,11 @@ linters:
     - wsl
 
 linters-settings:
+  gosec:
+    excludes:
+      # Generates too many false positives (e.g. conversion uint8 -> int)
+      - G115
+
   paralleltest:
     # Ignore missing calls to `t.Parallel()` and only report incorrect uses of it.
     ignore-missing: true
