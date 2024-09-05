@@ -112,7 +112,7 @@ sws_config:
               default-src 'none';
               font-src https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/;
               img-src 'self';
-              script-src 'self' https://cdnjs.cloudflare.com/ajax/libs/bootstrap/ https://cdnjs.cloudflare.com/ajax/libs/mermaid/;
+              script-src 'self' https://cdnjs.cloudflare.com/ajax/libs/bootstrap/;
               style-src 'self' https://cdnjs.cloudflare.com/ajax/libs/bootstrap/ https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/;
 
   email_username_generator:
@@ -133,6 +133,9 @@ sws_config:
         - source: "**"
           headers:
             <<: *sws_default_headers_without_report
+            Content-Security-Policy: >-
+              default-src 'none';
+              img-src 'self';
 
   interwego:
     advanced:
