@@ -1,0 +1,12 @@
+http:
+  routers:
+    bjoetiek-directus:
+      entryPoints: ["websecure"]
+      tls: { certresolver: le-tls }
+      rule: Host(`beheer.{{ general_domain_bjoetiek }}`)
+      service: bjoetiek-directus
+
+  services:
+    bjoetiek-directus:
+      loadBalancer:
+        servers: [{ url: "http://bjoetiek-directus:8055" }]

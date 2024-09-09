@@ -32,7 +32,7 @@
     state: started
     enabled: true
   loop:
-    - bjoetiek-dump-db.timer
+    - bjoetiek-directus-dump-db.timer
     - docker-update-containers.timer
     - goatcounter-dump-db.timer
     - isa-rclone.timer

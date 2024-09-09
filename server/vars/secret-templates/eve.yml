@@ -1,21 +1,9 @@
-# Bjoetiek
-# See https://github.com/JenswBE/go-commerce for more info on expected values
-app_bjoetiek_auth_oidc_issuer_url: ""
-app_bjoetiek_auth_oidc_client_id: ""
-app_bjoetiek_auth_oidc_client_secret: ""
-app_bjoetiek_auth_session_auth_key: ""
-app_bjoetiek_auth_session_enc_key: ""
-app_bjoetiek_db_pass: ""
-app_bjoetiek_image_proxy_key: ""
-app_bjoetiek_image_proxy_salt: ""
-app_bjoetiek_sentry_dsn: ""
-app_bjoetiek_test_auth_oidc_issuer_url: ""
-app_bjoetiek_test_auth_oidc_client_id: ""
-app_bjoetiek_test_auth_oidc_client_secret: ""
-app_bjoetiek_test_auth_session_auth_key: ""
-app_bjoetiek_test_auth_session_enc_key: ""
-app_bjoetiek_test_image_proxy_key: ""
-app_bjoetiek_test_image_proxy_salt: ""
+# Bjoetiek - Directus
+app_bjoetiek_directus_admin_email: ""
+app_bjoetiek_directus_admin_password: ""
+app_bjoetiek_directus_github_token: ""
+app_bjoetiek_directus_key: "" # cat /proc/sys/kernel/random/uuid
+app_bjoetiek_directus_secret: "" # openssl rand -hex 32
 
 # Borgmatic
 app_borgmatic_borg_passphrase: ""

@@ -115,6 +115,13 @@ sws_config:
               script-src 'self' https://cdnjs.cloudflare.com/ajax/libs/bootstrap/;
               style-src 'self' https://cdnjs.cloudflare.com/ajax/libs/bootstrap/ https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/;
 
+  bjoetiek:
+    advanced:
+      headers:
+        - source: "**"
+          headers:
+            <<: *sws_default_headers_without_report
+
   email_username_generator:
     advanced:
       headers:

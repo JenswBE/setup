@@ -3,8 +3,8 @@
 Services which are backed up:
 
 - Eve
-  - `bjoetiek-backend` (GoCommerce): Images
-  - `bjoetiek-db` (Postgres): DB data
+  - `bjoetiek-directus` (Directus): Uploaded content
+  - `bjoetiek-directus-db` (Postgres): DB data
   - `goatcounter` (GoatCounter): SQLite DB
   - `keycloak-db` (Postgres): DB data
   - `kristofcoenen-directus` (Directus): Uploaded content
@@ -102,17 +102,6 @@ sudo docker exec borgmatic cp /mnt/borg/mnt/source/goatcounter/db/goatcounter.ba
 # Validate if backup contains recent site hits.
 # The accuracy of this check depens on the activity on your websites.
 sudo docker run --pull always --rm -v ${APPDATA_DIR:?}/borgmatic/borgmatic/restore:/backup alpine sh -c 'apk add sqlite; sqlite3 --table /backup/goatcounter.sqlite3 "SELECT s.link_domain, max(h.hour) FROM hit_counts h JOIN sites s ON h.site_id = s.site_id GROUP BY s.link_domain;"'
-```
-
-### GoCommerce
-
-```bash
-# List 3 newest files in live service.
-# List directly on host as the GoCommerce container has no shell.
-sudo ls -Alt ${APPDATA_DIR:?}/bjoetiek/backend/images | head -n 4
-
-# Compare against 3 newest files in backup
-sudo docker exec borgmatic ls -Alt /mnt/borg/mnt/source/bjoetiek/backend/images | head -n 4
 ```
 
 ### Graylog

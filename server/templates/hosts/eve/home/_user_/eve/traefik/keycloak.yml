@@ -3,11 +3,7 @@ http:
     keycloak:
       entryPoints: ["websecure"]
       tls: { certresolver: le-tls }
-      rule: >-
-        (
-        Host(`auth.{{ general_domain_default }}`) ||
-        Host(`auth.{{ general_domain_bjoetiek }}`)
-        )
+      rule: Host(`auth.{{ general_domain_default }}`)
       service: keycloak
 
   services:

@@ -317,162 +317,66 @@ services:
 
   # ===========================================================================
   # =   BJOETIEK Y                                                            =
-  # =   https://github.com/JenswBE/bjoetiek-y-frontend                        =
-  # =   https://github.com/JenswBE/go-commerce                                =
-  # =   https://github.com/JenswBE/go-commerce-admin                          =
   # ===========================================================================
-  bjoetiek-frontend:
+  # sudo docker exec -u root bjoetiek-directus chown -R node:node /directus/uploads
+  # sudo docker restart bjoetiek-directus
+  bjoetiek-directus:
     <<: *defaults
-    image: docker.io/jenswbe/bjoetiek-y-frontend:stable
-    container_name: bjoetiek-frontend
-    networks:
-      - bjoetiek
-      - traefik
-    environment:
-      TZ: "#VAR:general_timezone:VAR#"
-      BJOETIEK_Y_BACKEND_URL: http://bjoetiek-backend:8080/api
-      NO_COLOR: true"
-
-  bjoetiek-backend:
-    <<: *defaults
-    image: docker.io/jenswbe/go-commerce:v1.1.0
-    container_name: bjoetiek-backend
+    build:
+      context: directus
+      dockerfile: 11.Dockerfile
+    container_name: bjoetiek-directus
     depends_on:
-      bjoetiek-db:
+      bjoetiek-directus-db:
         condition: service_healthy
-    networks:
-      - bjoetiek
-      - traefik
-    volumes:
-      - "#VAR:general_path_appdata:VAR#/bjoetiek/backend/images:/images"
     environment:
+      # See https://docs.directus.io/self-hosted/config-options#general
+      # LOG_LEVEL: "trace"
       TZ: "#VAR:general_timezone:VAR#"
-      AUTH_OIDC_ISSUER_URL: "#VAR:app_bjoetiek_auth_oidc_issuer_url:VAR#"
-      AUTH_OIDC_CLIENT_ID: "#VAR:app_bjoetiek_auth_oidc_client_id:VAR#"
-      AUTH_OIDC_CLIENT_SECRET: "#VAR:app_bjoetiek_auth_oidc_client_secret:VAR#"
-      AUTH_SESSION_AUTH_KEY: "#VAR:app_bjoetiek_auth_session_auth_key:VAR#"
-      AUTH_SESSION_ENC_KEY: "#VAR:app_bjoetiek_auth_session_enc_key:VAR#"
-      DATABASE_DEFAULT_HOST: bjoetiek-db
-      DATABASE_DEFAULT_USER: bjoetiek
-      DATABASE_DEFAULT_PASSWORD: "#VAR:app_bjoetiek_db_pass:VAR#"
-      DATABASE_DEFAULT_DATABASE: bjoetiek
-      FEATURES_CONTENT_ENABLED: "false"
-      FEATURES_EVENTS_ENABLED: "false"
-      FEATURES_PRODUCTS_PUBLIC_URL_TEMPLATE: "https://#VAR:general_domain_bjoetiek:VAR#/#BLOCK:raw:BLOCK#producten/{{ .ID.String }}/{{ .Name }}#BLOCK:endraw:BLOCK#"
-      IMAGE_PROXY_BASE_URL: "https://backend.#VAR:general_domain_bjoetiek:VAR#/images/"
-      IMAGE_PROXY_KEY: "#VAR:app_bjoetiek_image_proxy_key:VAR#"
-      IMAGE_PROXY_SALT: "#VAR:app_bjoetiek_image_proxy_salt:VAR#"
-      IMAGE_PROXY_ALLOWED_CONFIGS: 100:100:FIT,150:150:FIT,400:400:FIT,550:550:FIT
-      STORAGE_IMAGES_PATH: /images
+      KEY: "#VAR:app_bjoetiek_directus_key:VAR#"
+      SECRET: "#VAR:app_bjoetiek_directus_secret:VAR#"
+      DB_CLIENT: pg
+      DB_HOST: bjoetiek-directus-db
+      DB_PORT: "5432"
+      DB_DATABASE: directus
+      DB_USER: directus
+      DB_PASSWORD: directus
+      ADMIN_EMAIL: "#VAR:app_bjoetiek_directus_admin_email:VAR#"
+      ADMIN_PASSWORD: "#VAR:app_bjoetiek_directus_admin_password:VAR#"
+      PUBLIC_URL: "https://beheer.#VAR:general_domain_bjoetiek:VAR#"
+      EMAIL_FROM: "beheer@#VAR:general_domain_bjoetiek:VAR#"
+      EMAIL_TRANSPORT: smtp
+      EMAIL_SMTP_HOST: "#VAR:mailjet_host:VAR#"
+      EMAIL_SMTP_PORT: "#VAR:mailjet_port_starttls:VAR#"
+      EMAIL_SMTP_USER: "#VAR:mailjet_username:VAR#"
+      EMAIL_SMTP_PASSWORD: "#VAR:mailjet_password:VAR#"
+      FLOWS_ENV_ALLOW_LIST: "FLOWS_ENV_GITHUB_TOKEN"
+      FLOWS_ENV_GITHUB_TOKEN: "#VAR:app_bjoetiek_directus_github_token:VAR#"
+    networks:
+      - traefik
+      - bjoetiek-directus
+    volumes:
+      - "#VAR:general_path_appdata:VAR#/bjoetiek/directus/uploads:/directus/uploads:z"
 
-  bjoetiek-db:
+  bjoetiek-directus-db:
     <<: [*defaults, *healthcheck-postgres]
-    image: docker.io/library/postgres:13-alpine
-    container_name: bjoetiek-db
+    # Directus supports the LTS versions of PostgreSQL
+    #   - https://docs.directus.io/self-hosted/docker-guide.html#supported-databases
+    #   - https://endoflife.date/postgresql (from official docs)
+    image: docker.io/library/postgres:16
+    container_name: bjoetiek-directus-db
     networks:
-      - bjoetiek
+      - bjoetiek-directus
+    security_opt:
+      - no-new-privileges=true
     volumes:
-      - "#VAR:general_path_appdata:VAR#/bjoetiek/postgres/data:/var/lib/postgresql/data"
-      - bjoetiek-db-dump:/backup
+      - "#VAR:general_path_appdata:VAR#/bjoetiek/directus/db:/var/lib/postgresql/data"
+      - bjoetiek-directus-db-dump:/backup
     environment:
       TZ: "#VAR:general_timezone:VAR#"
-      POSTGRES_DB: bjoetiek
-      POSTGRES_USER: bjoetiek
-      POSTGRES_PASSWORD: "#VAR:app_bjoetiek_db_pass:VAR#"
-
-  bjoetiek-imgproxy:
-    <<: *defaults
-    image: docker.io/darthsim/imgproxy:v3
-    container_name: bjoetiek-imgproxy
-    environment:
-      TZ: "#VAR:general_timezone:VAR#"
-      IMGPROXY_KEY: "#VAR:app_bjoetiek_image_proxy_key:VAR#"
-      IMGPROXY_SALT: "#VAR:app_bjoetiek_image_proxy_salt:VAR#"
-      IMGPROXY_LOCAL_FILESYSTEM_ROOT: /images
-      IMGPROXY_MAX_SRC_RESOLUTION: "64"
-    networks:
-      - traefik
-    volumes:
-      - "#VAR:general_path_appdata:VAR#/bjoetiek/backend/images:/images:ro"
-
-  # ===========================================================================
-  # =   BJOETIEK Y - Test                                                     =
-  # =   https://github.com/JenswBE/bjoetiek-y-frontend                        =
-  # =   https://github.com/JenswBE/go-commerce                                =
-  # =   https://github.com/JenswBE/go-commerce-admin                          =
-  # ===========================================================================
-  bjoetiek-test-frontend:
-    <<: *defaults
-    image: docker.io/jenswbe/bjoetiek-y-frontend:latest
-    container_name: bjoetiek-test-frontend
-    networks:
-      - bjoetiek-test
-      - traefik
-    environment:
-      TZ: "#VAR:general_timezone:VAR#"
-      BJOETIEK_Y_BACKEND_URL: http://bjoetiek-test-backend:8080/api
-      NO_COLOR: "true"
-
-  bjoetiek-test-backend:
-    <<: *defaults
-    image: docker.io/jenswbe/go-commerce:latest
-    container_name: bjoetiek-test-backend
-    depends_on:
-      bjoetiek-test-db:
-        condition: service_healthy
-    networks:
-      - bjoetiek-test
-      - traefik
-    volumes:
-      - "#VAR:general_path_appdata:VAR#/bjoetiek/backend-test/images:/images"
-    environment:
-      TZ: "#VAR:general_timezone:VAR#"
-      AUTH_OIDC_ISSUER_URL: "#VAR:app_bjoetiek_test_auth_oidc_issuer_url:VAR#"
-      AUTH_OIDC_CLIENT_ID: "#VAR:app_bjoetiek_test_auth_oidc_client_id:VAR#"
-      AUTH_OIDC_CLIENT_SECRET: "#VAR:app_bjoetiek_test_auth_oidc_client_secret:VAR#"
-      AUTH_SESSION_AUTH_KEY: "#VAR:app_bjoetiek_test_auth_session_auth_key:VAR#"
-      AUTH_SESSION_ENC_KEY: "#VAR:app_bjoetiek_test_auth_session_enc_key:VAR#"
-      DATABASE_DEFAULT_HOST: bjoetiek-test-db
-      DATABASE_DEFAULT_USER: bjoetiek-test
-      DATABASE_DEFAULT_PASSWORD: bjoetiek-test
-      DATABASE_DEFAULT_DATABASE: bjoetiek-test
-      FEATURES_CONTENT_ENABLED: "false"
-      FEATURES_EVENTS_ENABLED: "false"
-      FEATURES_PRODUCTS_PUBLIC_URL_TEMPLATE: "https://test.#VAR:general_domain_bjoetiek:VAR#/#BLOCK:raw:BLOCK#producten/{{ .ID.String }}/{{ .Name }}#BLOCK:endraw:BLOCK#"
-      IMAGE_PROXY_BASE_URL: "https://test-backend.#VAR:general_domain_bjoetiek:VAR#/images/"
-      IMAGE_PROXY_KEY: "#VAR:app_bjoetiek_test_image_proxy_key:VAR#"
-      IMAGE_PROXY_SALT: "#VAR:app_bjoetiek_test_image_proxy_salt:VAR#"
-      IMAGE_PROXY_ALLOWED_CONFIGS: 100:100:FIT,150:150:FIT,400:400:FIT,550:550:FIT
-      STORAGE_IMAGES_PATH: /images
-
-  bjoetiek-test-db:
-    <<: [*defaults, *healthcheck-postgres]
-    image: docker.io/library/postgres:13-alpine
-    container_name: bjoetiek-test-db
-    networks:
-      - bjoetiek-test
-    volumes:
-      - "bjoetiek-test-db-data:/var/lib/postgresql/data"
-    environment:
-      TZ: "#VAR:general_timezone:VAR#"
-      POSTGRES_DB: bjoetiek-test
-      POSTGRES_USER: bjoetiek-test
-      POSTGRES_PASSWORD: bjoetiek-test
-
-  bjoetiek-test-imgproxy:
-    <<: *defaults
-    image: docker.io/darthsim/imgproxy:latest
-    container_name: bjoetiek-test-imgproxy
-    environment:
-      TZ: "#VAR:general_timezone:VAR#"
-      IMGPROXY_KEY: "#VAR:app_bjoetiek_test_image_proxy_key:VAR#"
-      IMGPROXY_SALT: "#VAR:app_bjoetiek_test_image_proxy_salt:VAR#"
-      IMGPROXY_LOCAL_FILESYSTEM_ROOT: /images
-      IMGPROXY_MAX_SRC_RESOLUTION: "64"
-    networks:
-      - traefik
-    volumes:
-      - "#VAR:general_path_appdata:VAR#/bjoetiek/backend-test/images:/images:ro"
+      POSTGRES_DB: directus
+      POSTGRES_USER: directus
+      POSTGRES_PASSWORD: directus
 
   # =========================
   # =    KRISTOF COENEN     =
@@ -1073,8 +977,8 @@ services:
       - SYS_ADMIN # Required for borg mount
     volumes:
       # Backup locations
-      - "bjoetiek-db-dump:/mnt/source/bjoetiek/dbdump:ro"
-      - "#VAR:general_path_appdata:VAR#/bjoetiek/backend:/mnt/source/bjoetiek/backend:ro"
+      - "#VAR:general_path_appdata:VAR#/bjoetiek/directus/uploads:/mnt/source/bjoetiek/directus/uploads:z"
+      - "bjoetiek-directus-db-dump:/mnt/source/bjoetiek/directus/dbdump:ro"
       - "#VAR:general_path_appdata:VAR#/goatcounter/db:/mnt/source/goatcounter/db:ro"
       - "keycloak-db-dump:/mnt/source/keycloak/dbdump:ro"
       - "#VAR:general_path_appdata:VAR#/kristofcoenen/directus/uploads:/mnt/source/kristofcoenen/directus/uploads:z"
@@ -1121,8 +1025,7 @@ services:
 # #                            VOLUMES                            #
 # #################################################################
 volumes:
-  bjoetiek-db-dump:
-  bjoetiek-test-db-data:
+  bjoetiek-directus-db-dump:
   crowdsec-config:
   crowdsec-db:
   isa-output:
@@ -1148,11 +1051,8 @@ volumes:
 # #                            NETWORKS                           #
 # #################################################################
 networks:
-  bjoetiek:
-    name: bjoetiek
-
-  bjoetiek-test:
-    name: bjoetiek-test
+  bjoetiek-directus:
+    name: bjoetiek-directus
 
   backup-nc-db:
     name: backup-nc-db

@@ -1,5 +1,5 @@
 [Unit]
-Description=Dump Bjoetiek DB every night for backup
+Description=Dump Bjoetiek Y Directus DB every night for backup
 
 [Timer]
 OnCalendar=*-*-* 02:00:00

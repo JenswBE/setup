@@ -1,6 +1,0 @@
-[Unit]
-Description=Dump Bjoetiek DB for backup
-OnFailure=unit-fail-mail@%n.service
-
-[Service]
-ExecStart={{ docker_path }} exec bjoetiek-db /bin/sh -c "pg_dump --verbose --format=c --blobs --dbname=bjoetiek --username=bjoetiek --no-password --file=/backup/bjoetiek.pg_dump"
