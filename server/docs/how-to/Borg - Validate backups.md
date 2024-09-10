@@ -50,6 +50,16 @@ APPDATA_DIR=/opt/appdata
 
 ### Directus
 
+#### Bjoetiek Y
+
+```bash
+# List 3 newest files in live service.
+sudo docker exec bjoetiek-directus ls -Alt /directus/uploads | head -n 4
+
+# Compare against 3 newest files in backup
+sudo docker exec borgmatic ls -Alt /mnt/borg/mnt/source/bjoetiek/directus/uploads | head -n 4
+```
+
 #### Kristof Coenen
 
 ```bash
