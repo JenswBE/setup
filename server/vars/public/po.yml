@@ -170,6 +170,7 @@ sws_config:
               connect-src https://stats.{{ general_domain_wtech }}/count;
               font-src https://fonts.gstatic.com/s/sourcesanspro/ https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/;
               img-src 'self' data:;
+              manifest-src 'self';
               script-src 'self' https://cdnjs.cloudflare.com/ajax/libs/bootstrap/ https://cdnjs.cloudflare.com/ajax/libs/simplelightbox/ https://stats.{{ general_domain_wtech }}/count.js;
               style-src 'self' https://cdnjs.cloudflare.com/ajax/libs/bootstrap/ https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/ https://cdnjs.cloudflare.com/ajax/libs/simplelightbox/;
               report-uri https://5e43cng1.uriports.com/reports/report;
