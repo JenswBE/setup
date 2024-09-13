@@ -324,7 +324,6 @@ services:
     <<: *defaults
     build:
       context: directus
-      dockerfile: 11.Dockerfile
     container_name: bjoetiek-directus
     depends_on:
       bjoetiek-directus-db:

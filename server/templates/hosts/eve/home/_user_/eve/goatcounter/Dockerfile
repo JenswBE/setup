@@ -1,6 +1,6 @@
 ARG GOATCOUNTER_IMAGE=docker.io/library/alpine:latest
 
-FROM ${GOATCOUNTER_IMAGE} as builder
+FROM ${GOATCOUNTER_IMAGE} AS builder
 
 ARG arch
 ARG version

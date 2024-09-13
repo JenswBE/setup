@@ -2,7 +2,7 @@
 
 ARG KC_IMAGE=quay.io/keycloak/keycloak:25.0
 
-FROM ${KC_IMAGE} as builder
+FROM ${KC_IMAGE} AS builder
 ENV KC_DB=postgres
 ENV KC_METRICS_ENABLED=false
 RUN /opt/keycloak/bin/kc.sh build
