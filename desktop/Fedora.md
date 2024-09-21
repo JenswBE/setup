@@ -38,6 +38,7 @@ htop
 nextcloud-client
 nextcloud-client-nautilus
 podman-compose
+screen
 virt-manager
 libvirt
 EOF
