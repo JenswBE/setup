@@ -6,7 +6,7 @@ Run from this folder:
 
 ```bash
 git clone git@github.com:JenswBE/setup-private.git ../../../setup-private
-cd ../../../setup-private/vars
+cd ../../../setup-private
 SECRETS_DIR="$(pwd)"
 cd -
 ln -snf "${SECRETS_DIR:?}/server" secret
