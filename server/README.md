@@ -24,8 +24,10 @@ As a failsafe, it's mandatory to use `--limit` option.
 Without this option, the playbook will fail.
 
 ```bash
-# Install Python requirements
-sudo pip install -r requirements.txt
+# Install Ansible and Python requirements
+sudo apt install pipx
+pipx install ansible-core
+pipx inject ansible-core $(cat requirements.txt | sed 's/\n/ /g' | sed 's/#.*//') # pipx on Debian is too old to support flag "-r"
 
 # Install roles
 LC_ALL=C.UTF-8 ansible-galaxy role install --force -r requirements.yml
