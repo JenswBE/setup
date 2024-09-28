@@ -136,7 +136,7 @@ services:
     icon: fas fa-home
     items:
       - name: Home Assistant
-        logo: assets/logos/home-assistant.png
+        logo: https://cdn.jsdelivr.net/gh/selfhst/icons/svg/home-assistant.svg
         url: "https://ha.{{ general_domain_local }}"
         <<: *tag_kubo
 
@@ -158,11 +158,6 @@ services:
   - name: Technical
     icon: fas fa-chart-bar
     items:
-      - name: GlitchTip
-        logo: assets/logos/glitchtip.png
-        url: "https://glitchtip.{{ general_domain_default }}"
-        <<: *tag_kubo
-
       - name: Graylog
         logo: https://raw.githubusercontent.com/get-icon/geticon/master/icons/graylog.svg
         url: "https://logs.{{ general_domain_default }}"

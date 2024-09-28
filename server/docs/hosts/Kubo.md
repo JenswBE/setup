@@ -17,7 +17,6 @@ Home NAS
 
 ### 02:00 Prepare backup
 
-- Dump Glitchtip DB (`templates/hosts/kubo/etc/systemd/system/glitchtip-dump-db.timer`)
 - Dump Graylog DB (`templates/hosts/kubo/etc/systemd/system/graylog-dump-mongodb.timer`)
 - Dump Miniflux DB (`templates/hosts/kubo/etc/systemd/system/miniflux-dump-db.timer`)
 - Dump Nextcloud DB (`templates/hosts/kubo/etc/systemd/system/nextcloud-dump-db.timer`)

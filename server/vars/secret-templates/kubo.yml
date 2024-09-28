@@ -19,10 +19,6 @@ app_crowdsec_bouncer_firewall_key: "" # Alphanumeric string
 # See https://github.com/JenswBE/github-backup
 app_github_backup_pat: ""
 
-# GlitchTip
-app_glitchtip_db_pass: ""
-app_glitchtip_secret_key: ""
-
 # Grafana
 app_grafana_oauth2_base_url: ""
 app_grafana_oauth2_client_id: ""

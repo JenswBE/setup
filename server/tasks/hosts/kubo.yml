@@ -60,7 +60,6 @@
     - btrfs-scrub-important.timer
     - docker-update-containers.timer
     - github-backup.timer
-    - glitchtip-dump-db.timer
     - graylog-dump-mongodb.timer
     - miniflux-dump-db.timer
     - miniflux-reset-feed-errors.timer

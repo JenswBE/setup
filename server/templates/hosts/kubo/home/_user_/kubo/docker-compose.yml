@@ -17,16 +17,6 @@ x-extra-hosts-wireguard: &extra-hosts-wireguard
     - "#VAR:wg_peer.host:VAR#.wireguard:#VAR:wg_peer.allowed_ips[0] | regex_replace('/\\d+$', ''):VAR#"
     #BLOCK: endfor :BLOCK#
 
-x-glitchtip-env: &glitchtip-env
-  TZ: "#VAR:general_timezone:VAR#"
-  PORT: "8080"
-  DATABASE_URL: "postgres://glitchtip:#VAR:app_glitchtip_db_pass:VAR#@glitchtip-db:5432/glitchtip"
-  REDIS_HOST: "glitchtip-redis"
-  SECRET_KEY: "#VAR:app_glitchtip_secret_key:VAR#"
-  EMAIL_URL: "smtp://#VAR:mailjet_username:VAR#:#VAR:mailjet_password:VAR#@#VAR:mailjet_host:VAR#:#VAR:mailjet_port_starttls:VAR#"
-  DEFAULT_FROM_EMAIL: "glitchtip@#VAR:general_domain_default:VAR#"
-  GLITCHTIP_DOMAIN: "https://glitchtip.#VAR:general_domain_default:VAR#"
-
 x-healthcheck-elasticsearch: &healthcheck-elasticsearch
   healthcheck:
     test:
@@ -502,94 +492,6 @@ services:
       TZ: "#VAR:general_timezone:VAR#"
 
   # =========================
-  # =     ERROR LOGGING     =
-  # =========================
-  # Go to GlitchTip url /register to create first user
-  glitchtip:
-    <<: *defaults
-    image: docker.io/glitchtip/glitchtip:latest
-    container_name: glitchtip
-    hostname: "glitchtip.#VAR:general_domain_default:VAR#" # Prevents unvalidated sender in Mailjet
-    depends_on:
-      glitchtip-db:
-        condition: service_healthy
-      glitchtip-redis:
-        condition: service_started
-    volumes:
-      - "#VAR:general_path_appdata:VAR#/glitchtip/uploads:/code/uploads"
-    networks:
-      - traefik
-      - glitchtip
-    environment:
-      <<: *glitchtip-env
-
-  glitchtip-worker:
-    <<: *defaults
-    image: docker.io/glitchtip/glitchtip:latest
-    container_name: glitchtip-worker
-    command: ./bin/run-celery-with-beat.sh
-    hostname: "glitchtip.#VAR:general_domain_default:VAR#" # Prevents unvalidated sender in Mailjet
-    depends_on:
-      glitchtip-db:
-        condition: service_healthy
-      glitchtip-redis:
-        condition: service_started
-    networks:
-      - glitchtip
-    volumes:
-      - "#VAR:general_path_appdata:VAR#/glitchtip/uploads:/code/uploads"
-    environment:
-      <<: *glitchtip-env
-    deploy:
-      resources:
-        limits:
-          cpus: "2"
-          memory: 2G
-
-  glitchtip-migrate:
-    <<: *defaults
-    image: docker.io/glitchtip/glitchtip:latest
-    container_name: glitchtip-migrate
-    hostname: "glitchtip.#VAR:general_domain_default:VAR#" # Prevents unvalidated sender in Mailjet
-    restart: "no" # Only run on "docker compose up"
-    depends_on:
-      glitchtip-db:
-        condition: service_healthy
-      glitchtip-redis:
-        condition: service_started
-    command: "./manage.py migrate"
-    networks:
-      - glitchtip
-    environment:
-      <<: *glitchtip-env
-
-  glitchtip-db:
-    <<: [*defaults, *healthcheck-postgres]
-    # GlitchTip requires Postgres 12+
-    # https://glitchtip.com/documentation/install
-    image: docker.io/library/postgres:13-alpine
-    container_name: glitchtip-db
-    networks:
-      - glitchtip
-    volumes:
-      - "#VAR:general_path_appdata:VAR#/glitchtip/db:/var/lib/postgresql/data"
-      - "glitchtip-db-dump:/backup"
-    environment:
-      TZ: "#VAR:general_timezone:VAR#"
-      POSTGRES_DB: "glitchtip"
-      POSTGRES_USER: "glitchtip"
-      POSTGRES_PASSWORD: "#VAR:app_glitchtip_db_pass:VAR#"
-
-  glitchtip-redis:
-    <<: *defaults
-    image: docker.io/library/redis:latest
-    container_name: glitchtip-redis
-    networks:
-      - glitchtip
-    environment:
-      TZ: "#VAR:general_timezone:VAR#"
-
-  # =========================
   # =       PDF tools       =
   # =========================
   stirling-pdf:
@@ -984,7 +886,6 @@ services:
     volumes:
       # Backup locations
       - "github-backup:/mnt/source/github-backup/backup:ro"
-      - "glitchtip-db-dump:/mnt/source/glitchtip/dbdump:ro"
       - "graylog-mongodb-dump:/mnt/source/graylog/mongodb:ro"
       - "#VAR:general_path_appdata:VAR#/home-automation/home-assistant/config:/mnt/source/home-automation/home-assistant/config:ro"
       - "miniflux-db-dump:/mnt/source/miniflux/dbdump:ro"
@@ -1023,9 +924,6 @@ networks:
   crowdsec:
     name: crowdsec
 
-  glitchtip:
-    name: glitchtip
-
   graylog:
     name: graylog
 
@@ -1057,7 +955,6 @@ volumes:
   crowdsec-config:
   crowdsec-db:
   github-backup:
-  glitchtip-db-dump:
   graylog-mongodb-dump:
   ha-mosquitto-data:
   miniflux-db-dump:

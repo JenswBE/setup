@@ -1,6 +1,0 @@
-[Unit]
-Description=Dump GlitchTip DB for backup
-OnFailure=unit-fail-mail@%n.service
-
-[Service]
-ExecStart={{ docker_path }} exec glitchtip-db /bin/sh -c "pg_dump --verbose --format=c --blobs --dbname=glitchtip --username=glitchtip --no-password --file=/backup/glitchtip.pg_dump"

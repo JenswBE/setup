@@ -25,7 +25,6 @@ Services which are backed up:
   - `wtech-directus-db` (Postgres): DB data
 - Kubo
   - `github-backup` (GitHub Backup): All GitHub repo's
-  - `glitchtip-db` (Postgres): DB data
   - `graylog-mongodb` (MongoDB): DB data
   - `ha` (Home Assistant): Config files
   - `miniflux-db` (Postgres): DB data
