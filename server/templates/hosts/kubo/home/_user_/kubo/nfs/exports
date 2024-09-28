@@ -1,5 +1,5 @@
 # Below IP's are resolved by Ansible, since there is
-# a timing issue butween DNS and the NFS server.
+# a timing issue between DNS and the NFS server.
 # Leading to errror "exportfs: Failed to resolve" if resolved by NFS.
 
 # Hercules

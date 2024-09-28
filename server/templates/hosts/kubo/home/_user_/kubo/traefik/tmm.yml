@@ -11,4 +11,4 @@ http:
   services:
     tmm:
       loadBalancer:
-        servers: [{ url: "http://tmm:5800" }]
+        servers: [{ url: "http://tmm:4000" }]

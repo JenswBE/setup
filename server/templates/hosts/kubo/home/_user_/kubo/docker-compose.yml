@@ -286,13 +286,12 @@ services:
     image: docker.io/jellyfin/jellyfin:latest
     container_name: jellyfin
     user: "#VAR:ansible_real_user_id:VAR#:#VAR:ansible_real_group_id:VAR#"
-    group_add: # By id as these may not exist within the container. Needed to provide permissions to the VAAPI Devices
-      - "107" # Group "render"
+    # See https://jellyfin.org/docs/general/administration/hardware-acceleration/intel#configure-with-linux-virtualization
+    group_add: # By id as these may not exist within the container. Needed to provide permissions to the QSV/VA-API Devices
+      - "105" # Group "render"
       - "44" # Group "video"
     devices:
-      # VAAPI Devices
-      - /dev/dri/renderD128:/dev/dri/renderD128
-      - /dev/dri/card0:/dev/dri/card0
+      - /dev/dri/renderD128:/dev/dri/renderD128 # Intel Quick Sync Video (QSV)
     networks:
       - traefik
     ports:
@@ -313,7 +312,7 @@ services:
   # =========================
   tmm:
     <<: *defaults
-    image: docker.io/romancin/tinymediamanager:latest
+    image: docker.io/tinymediamanager/tinymediamanager:latest
     container_name: tmm
     networks:
       - traefik
@@ -324,6 +323,7 @@ services:
       TZ: "#VAR:general_timezone:VAR#"
       USER_ID: "#VAR:ansible_real_user_id:VAR#"
       GROUP_ID: "#VAR:ansible_real_group_id:VAR#"
+      LC_TIME: C.UTF-8
     deploy:
       resources:
         limits:
