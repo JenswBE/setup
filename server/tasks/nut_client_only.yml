@@ -23,6 +23,7 @@
         destination_mode_files: "640"
         destination_mode_dirs: "750"
         destination_delete_extra: false
+        privileged: true
 
     - name: Copy upssched-cmd
       ansible.builtin.template:

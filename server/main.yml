@@ -1,9 +1,5 @@
 - name: Setup server
   hosts: all
-  vars_files:
-    - vars/public/basics.yml
-    - vars/secret/basics.yml
-
   vars:
     supported_distros:
       - AlmaLinux
@@ -48,12 +44,8 @@
         arch: "{{ arch_map[ansible_architecture] }}"
       tags: ["always"]
 
-    - name: Load public host specific vars
-      ansible.builtin.include_vars: "public/{{ ansible_hostname }}.yml"
-      tags: ["always"]
-
-    - name: Load secret host specific vars
-      ansible.builtin.include_vars: "secret/{{ ansible_hostname }}.yml"
+    - name: Load domain vars
+      ansible.builtin.include_vars: public/domains.yml
       tags: ["always"]
 
     - name: Lookup IP's
@@ -75,6 +67,22 @@
       when: '"home" in group_names'
       ansible.builtin.debug:
         var: ip
+      tags: ["always"]
+
+    - name: Load public basic vars
+      ansible.builtin.include_vars: public/basics.yml
+      tags: ["always"]
+
+    - name: Load secret basic vars
+      ansible.builtin.include_vars: secret/basics.yml
+      tags: ["always"]
+
+    - name: Load public host specific vars
+      ansible.builtin.include_vars: "public/{{ ansible_hostname }}.yml"
+      tags: ["always"]
+
+    - name: Load secret host specific vars
+      ansible.builtin.include_vars: "secret/{{ ansible_hostname }}.yml"
       tags: ["always"]
 
   roles:
