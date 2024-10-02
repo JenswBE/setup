@@ -113,7 +113,7 @@ services:
       - name: MiniFlux
         logo: https://raw.githubusercontent.com/miniflux/logo/master/icon.svg
         url: "https://feed.{{ general_domain_default }}"
-        <<: *tag_kubo
+        <<: *tag_eve
 
       - name: Paperless
         logo: https://raw.githubusercontent.com/paperless-ngx/paperless-ngx/dev/resources/logo/web/svg/square.svg

@@ -38,6 +38,8 @@
     - isa-rclone.timer
     - keycloak-dump-db.timer
     - kristofcoenen-directus-dump-db.timer
+    - miniflux-dump-db.timer
+    - miniflux-reset-feed-errors.timer
     - monica-dump-db.timer
     - nextcloud-calcardbackup.timer
     - nextcloud-cron.timer

@@ -176,6 +176,48 @@ services:
       retries: 3
 
   # =========================
+  # =        MINIFLUX       =
+  # =========================
+  miniflux:
+    <<: *defaults
+    image: docker.io/miniflux/miniflux:latest
+    container_name: miniflux
+    networks:
+      - traefik
+      - miniflux
+    depends_on:
+      miniflux-db:
+        condition: service_healthy
+    environment:
+      TZ: "#VAR:general_timezone:VAR#"
+      DATABASE_URL: "postgres://miniflux:#VAR:app_miniflux_db_pass:VAR#@miniflux-db/miniflux?sslmode=disable"
+      RUN_MIGRATIONS: "1"
+      CREATE_ADMIN: "1"
+      ADMIN_USERNAME: "#VAR:app_miniflux_admin_user:VAR#"
+      ADMIN_PASSWORD: "#VAR:app_miniflux_admin_pass:VAR#"
+      OAUTH2_PROVIDER: "oidc"
+      OAUTH2_OIDC_DISCOVERY_ENDPOINT: "#VAR:app_miniflux_oidc_url:VAR#"
+      OAUTH2_CLIENT_ID: "#VAR:app_miniflux_oidc_client_id:VAR#"
+      OAUTH2_CLIENT_SECRET: "#VAR:app_miniflux_oidc_client_secret:VAR#"
+      OAUTH2_REDIRECT_URL: "https://feed.#VAR:general_domain_default:VAR#/oauth2/oidc/callback"
+
+  miniflux-db:
+    <<: [*defaults, *healthcheck-postgres]
+    # See https://github.com/miniflux/v2/blob/main/contrib/docker-compose/basic.yml
+    image: docker.io/library/postgres:13-alpine
+    container_name: miniflux-db
+    networks:
+      - miniflux
+    volumes:
+      - "#VAR:general_path_appdata:VAR#/miniflux/db:/var/lib/postgresql/data"
+      - "miniflux-db-dump:/backup"
+    environment:
+      TZ: "#VAR:general_timezone:VAR#"
+      POSTGRES_DB: "miniflux"
+      POSTGRES_USER: "miniflux"
+      POSTGRES_PASSWORD: "#VAR:app_miniflux_db_pass:VAR#"
+
+  # =========================
   # =       MONICA CRM      =
   # =========================
   monica:
@@ -982,6 +1024,7 @@ services:
       - "keycloak-db-dump:/mnt/source/keycloak/dbdump:ro"
       - "#VAR:general_path_appdata:VAR#/kristofcoenen/directus/uploads:/mnt/source/kristofcoenen/directus/uploads:z"
       - "kristofcoenen-directus-db-dump:/mnt/source/kristofcoenen/directus/dbdump:ro"
+      - "miniflux-db-dump:/mnt/source/miniflux/dbdump:ro"
       - "#VAR:general_path_appdata:VAR#/monica/monica/data:/mnt/source/monica/monica/data:z"
       - "monica-db-dump:/mnt/source/monica/dbdump:ro"
       - "nc-db-dump:/mnt/source/nextcloud/dbdump:ro"
@@ -1030,6 +1073,7 @@ volumes:
   isa-output:
   keycloak-db-dump:
   kristofcoenen-directus-db-dump:
+  miniflux-db-dump:
   monica-db-dump:
   nc-calcardbackup:
   nc-db-dump:
@@ -1061,6 +1105,9 @@ networks:
 
   kristofcoenen-directus:
     name: kristofcoenen-directus
+
+  miniflux:
+    name: miniflux
 
   monica:
     name: monica

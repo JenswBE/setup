@@ -61,8 +61,6 @@
     - docker-update-containers.timer
     - github-backup.timer
     - graylog-dump-mongodb.timer
-    - miniflux-dump-db.timer
-    - miniflux-reset-feed-errors.timer
     - nextcloud-cron.timer
     - nextcloud-db-add-missing-indices.timer
     - nextcloud-dump-db.timer

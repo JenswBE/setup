@@ -204,48 +204,6 @@ services:
       TZ: "#VAR:general_timezone:VAR#"
 
   # =========================
-  # =        MINIFLUX       =
-  # =========================
-  miniflux:
-    <<: *defaults
-    image: docker.io/miniflux/miniflux:latest
-    container_name: miniflux
-    networks:
-      - traefik
-      - miniflux
-    depends_on:
-      miniflux-db:
-        condition: service_healthy
-    environment:
-      TZ: "#VAR:general_timezone:VAR#"
-      DATABASE_URL: "postgres://miniflux:#VAR:app_miniflux_db_pass:VAR#@miniflux-db/miniflux?sslmode=disable"
-      RUN_MIGRATIONS: "1"
-      CREATE_ADMIN: "1"
-      ADMIN_USERNAME: "#VAR:app_miniflux_admin_user:VAR#"
-      ADMIN_PASSWORD: "#VAR:app_miniflux_admin_pass:VAR#"
-      OAUTH2_PROVIDER: "oidc"
-      OAUTH2_OIDC_DISCOVERY_ENDPOINT: "#VAR:app_miniflux_oidc_url:VAR#"
-      OAUTH2_CLIENT_ID: "#VAR:app_miniflux_oidc_client_id:VAR#"
-      OAUTH2_CLIENT_SECRET: "#VAR:app_miniflux_oidc_client_secret:VAR#"
-      OAUTH2_REDIRECT_URL: "https://feed.#VAR:general_domain_default:VAR#/oauth2/oidc/callback"
-
-  miniflux-db:
-    <<: [*defaults, *healthcheck-postgres]
-    # See https://github.com/miniflux/v2/blob/main/contrib/docker-compose/basic.yml
-    image: docker.io/library/postgres:13-alpine
-    container_name: miniflux-db
-    networks:
-      - miniflux
-    volumes:
-      - "#VAR:general_path_appdata:VAR#/miniflux/db:/var/lib/postgresql/data"
-      - "miniflux-db-dump:/backup"
-    environment:
-      TZ: "#VAR:general_timezone:VAR#"
-      POSTGRES_DB: "miniflux"
-      POSTGRES_USER: "miniflux"
-      POSTGRES_PASSWORD: "#VAR:app_miniflux_db_pass:VAR#"
-
-  # =========================
   # =       MULTIMEDIA      =
   # =========================
   plex:
@@ -888,7 +846,6 @@ services:
       - "github-backup:/mnt/source/github-backup/backup:ro"
       - "graylog-mongodb-dump:/mnt/source/graylog/mongodb:ro"
       - "#VAR:general_path_appdata:VAR#/home-automation/home-assistant/config:/mnt/source/home-automation/home-assistant/config:ro"
-      - "miniflux-db-dump:/mnt/source/miniflux/dbdump:ro"
       - "nc-db-dump:/mnt/source/nextcloud/dbdump:ro"
       - "#VAR:general_path_appdata:VAR#/nextcloud/nextcloud/data:/mnt/source/nextcloud/data:ro"
       - "#VAR:general_path_appdata:VAR#/nextcloud/nextcloud/config:/mnt/source/nextcloud/config:ro"
@@ -930,9 +887,6 @@ networks:
   home-automation:
     name: home-automation
 
-  miniflux:
-    name: miniflux
-
   nextcloud:
     name: nextcloud
 
@@ -957,7 +911,6 @@ volumes:
   github-backup:
   graylog-mongodb-dump:
   ha-mosquitto-data:
-  miniflux-db-dump:
   nc-db-dump:
   oauth2-proxy-helper-config:
   oauth2-proxy-helper-data:

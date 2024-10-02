@@ -9,6 +9,7 @@ Services which are backed up:
   - `keycloak-db` (Postgres): DB data
   - `kristofcoenen-directus` (Directus): Uploaded content
   - `kristofcoenen-directus-db` (Postgres): DB data
+  - `miniflux-db` (Postgres): DB data
   - `monica` (Monica): Uploaded content
   - `monica-db` (MariaDB): DB data for Monica
   - `nc-db` (MariaDB): DB data for Nextcloud
@@ -27,7 +28,6 @@ Services which are backed up:
   - `github-backup` (GitHub Backup): All GitHub repo's
   - `graylog-mongodb` (MongoDB): DB data
   - `ha` (Home Assistant): Config files
-  - `miniflux-db` (Postgres): DB data
   - `nc-db` (MariaDB): DB data for Nextcloud
   - `nextcloud` (Nextcloud): User files and config
   - `plex` (Plex): Photo's and music

@@ -14,6 +14,7 @@ VPS
 
 - Add missing indexes in DB for Nextcloud (`templates/hosts/eve/etc/systemd/system/nextcloud-db-add-missing-indices.timer`)
 - Rescan photos for Nextcloud Maps (`templates/hosts/eve/etc/systemd/system/nextcloud-maps-scan-photos.timer`)
+- Reset MiniFlux feed errors (`templates/hosts/kubo/etc/systemd/system/miniflux-reset-feed-errors.timer`)
 
 ### 02:00 Prepare backup
 
@@ -21,9 +22,10 @@ VPS
 - Dump Goatcounter DB (`templates/hosts/eve/etc/systemd/system/goatcounter-dump-db.timer`)
 - Dump Keycloak DB (`templates/hosts/eve/etc/systemd/system/keycloak-dump-db.timer`)
 - Dump Kristof Coenen Directus DB (`templates/hosts/eve/etc/systemd/system/kristofcoenen-directus-dump-db.timer`)
+- Dump Miniflux DB (`templates/hosts/kubo/etc/systemd/system/miniflux-dump-db.timer`)
 - Dump Monica DB (`templates/hosts/eve/etc/systemd/system/monica-dump-db.timer`)
-- Dump Nextcloud DB (`templates/hosts/eve/etc/systemd/system/nextcloud-dump-db.timer`)
 - Dump Nextcloud calendars and contacts (`templates/hosts/eve/etc/systemd/system/nextcloud-calcardbackup.timer`)
+- Dump Nextcloud DB (`templates/hosts/eve/etc/systemd/system/nextcloud-dump-db.timer`)
 - Dump Paperless-ngx DB (`templates/hosts/eve/etc/systemd/system/paperless-dump-db.timer`)
 - Dump Tuinfeest Directus DB (`templates/hosts/eve/etc/systemd/system/tuinfeest-directus-dump-db.timer`)
 - Dump Uptime Kuma DB (`templates/hosts/eve/etc/systemd/system/uptime-kuma-dump-db.timer`)

@@ -13,12 +13,10 @@ Home NAS
 
 - Add missing indexes in DB for Nextcloud (`templates/hosts/eve/etc/systemd/system/nextcloud-db-add-missing-indices.timer`)
 - Rescan photos for Nextcloud Maps (`templates/hosts/kubo/etc/systemd/system/nextcloud-maps-scan-photos.timer`)
-- Reset MiniFlux feed errors (`templates/hosts/kubo/etc/systemd/system/miniflux-reset-feed-errors.timer`)
 
 ### 02:00 Prepare backup
 
 - Dump Graylog DB (`templates/hosts/kubo/etc/systemd/system/graylog-dump-mongodb.timer`)
-- Dump Miniflux DB (`templates/hosts/kubo/etc/systemd/system/miniflux-dump-db.timer`)
 - Dump Nextcloud DB (`templates/hosts/kubo/etc/systemd/system/nextcloud-dump-db.timer`)
 - Dump Unifi DB (`templates/hosts/fiona/etc/systemd/system/unifi-dump-mongodb.timer`)
 - Dump Zabbix DB (`templates/hosts/kubo/etc/systemd/system/zabbix-dump-db.timer`)
