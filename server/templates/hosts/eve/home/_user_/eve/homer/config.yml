@@ -19,42 +19,8 @@ theme: default # 'default' or one of the themes available in 'src/assets/themes'
 # Optional navbar
 links: [] # Allows for navbar (dark mode, layout, and search) without any links
 
-# message:
-#   content: >
-#     <img src="assets/logos/duckduckgo.png" width="50" style="margin-right:20px;">
-#     <iframe src="https://duckduckgo.com/search.html?prefill=Search DuckDuckGo&focus=yes&kz=1&kac=1&kn=1&kp=-2&kam=osm&kaj=m"
-#     style="overflow:hidden;margin:0;padding:0;width:calc(100% - 100px);height:60px;" frameborder="0"></iframe>
-# DuckDuckGo options
-# See https://duckduckgo.com/params
-# - kz: Open Instant Answers
-# - kac: Auto-suggest
-# - kn: New Window
-# - kp: Safe Search
-# - kam: Directions Source (maps)
-# - kaj: Units of Measure
-
 # Services
-x-tag-base: &tag_base
-  target: _blank
-
-x-tag-eve: &tag_eve
-  tag: Eve
-  tagstyle: is-success
-  target: _blank
-
-x-tag-fiona: &tag_fiona
-  tag: Fiona
-  tagstyle: is-warning
-  target: _blank
-
-x-tag-kubo: &tag_kubo
-  tag: Kubo
-  tagstyle: is-info
-  target: _blank
-
-x-tag-po: &tag_po
-  tag: Po
-  tagstyle: is-danger
+x-default: &default
   target: _blank
 
 # Interesting list for icons: https://github.com/loganmarchione/homelab-svg-assets/blob/main/ICONS.md
@@ -63,218 +29,250 @@ services:
     icon: fas fa-sync
     items:
       - name: Jellyfin
+        subtitle: Kubo - Public
         logo: https://raw.githubusercontent.com/jellyfin/jellyfin-ux/master/branding/SVG/icon-transparent.svg
         url: "https://jellyfin.{{ general_domain_default }}"
-        <<: *tag_kubo
+        <<: *default
 
       - name: Nextcloud
+        subtitle: Eve - Public
         logo: assets/logos/nextcloud.png
         url: "https://nextcloud.{{ general_domain_default }}"
-        <<: *tag_eve
+        <<: *default
 
       - name: Nextcloud Media
+        subtitle: Kubo - Public
         logo: assets/logos/nextcloud.png
         url: "https://nextcloud-media.{{ general_domain_default }}"
-        <<: *tag_kubo
+        <<: *default
 
       - name: Transmission
+        subtitle: Kubo - Public
         logo: https://raw.githubusercontent.com/transmission/transmission/main/web/assets/img/logo.png
         url: "https://torrent.{{ general_domain_default }}"
-        <<: *tag_kubo
+        <<: *default
 
       - name: Syncthing Eve
+        subtitle: Eve - Public
         logo: https://raw.githubusercontent.com/syncthing/syncthing/main/assets/logo-only.svg
         url: "https://syncthing.eve.{{ general_domain_default }}"
-        <<: *tag_eve
+        <<: *default
 
       - name: Syncthing Kubo
+        subtitle: Kubo - Public
         logo: https://raw.githubusercontent.com/syncthing/syncthing/main/assets/logo-only.svg
         url: "https://syncthing.kubo.{{ general_domain_default }}"
-        <<: *tag_kubo
+        <<: *default
 
   - name: Tools
     icon: fas fa-wrench
     items:
       - name: Assets
+        subtitle: Eve - Public
         logo: https://icons.getbootstrap.com/assets/icons/hdd-fill.svg
         url: "https://assets.{{ general_domain_default }}"
-        <<: *tag_eve
+        <<: *default
 
       - name: External email generator
+        subtitle: Eve - Public
         logo: https://icons.getbootstrap.com/assets/icons/at.svg
         url: "https://ext.{{ general_domain_default }}"
-        <<: *tag_eve
+        <<: *default
 
       - name: Grafana
+        subtitle: Kubo - Private
         logo: https://raw.githubusercontent.com/grafana/grafana/main/public/img/grafana_icon.svg
-        url: "https://grafana.{{ general_domain_default }}"
-        <<: *tag_kubo
+        url: "https://grafana.{{ general_domain_local }}"
+        <<: *default
 
       - name: MiniFlux
+        subtitle: Eve - Public
         logo: https://raw.githubusercontent.com/miniflux/logo/master/icon.svg
         url: "https://feed.{{ general_domain_default }}"
-        <<: *tag_eve
+        <<: *default
 
       - name: Paperless
+        subtitle: Eve - Public
         logo: https://raw.githubusercontent.com/paperless-ngx/paperless-ngx/dev/resources/logo/web/svg/square.svg
         url: "https://docs.{{ general_domain_default }}"
-        <<: *tag_eve
+        <<: *default
 
       - name: Stirling PDF
+        subtitle: Kubo - Public
         logo: https://raw.githubusercontent.com/Frooodle/Stirling-PDF/main/docs/stirling-transparent.svg
         url: "https://pdf.{{ general_domain_default }}"
-        <<: *tag_kubo
+        <<: *default
 
       - name: Vaultwarden
+        subtitle: Eve - Public
         logo: https://raw.githubusercontent.com/dani-garcia/vaultwarden/main/resources/vaultwarden-icon.svg
         url: "https://vault.{{ general_domain_default }}"
-        <<: *tag_eve
+        <<: *default
 
       - name: Wiki.js
+        subtitle: Eve - Public
         logo: https://raw.githubusercontent.com/loganmarchione/homelab-svg-assets/main/assets/wikijs.svg
         url: "https://wiki.{{ general_domain_default }}"
-        <<: *tag_eve
+        <<: *default
 
   - name: Local
     icon: fas fa-home
     items:
       - name: Home Assistant
+        subtitle: Kubo - Private
         logo: https://cdn.jsdelivr.net/gh/selfhst/icons/svg/home-assistant.svg
         url: "https://ha.{{ general_domain_local }}"
-        <<: *tag_kubo
+        <<: *default
 
       - name: PeaNUT
+        subtitle: Fiona - Private
         logo: https://raw.githubusercontent.com/Brandawg93/PeaNUT/main/src/app/icon.svg
         url: "https://ups.{{ general_domain_local }}"
-        <<: *tag_fiona
+        <<: *default
 
       - name: TinyMediaManager
+        subtitle: Kubo - Private
         logo: https://gitlab.com/tinyMediaManager/tinyMediaManager/-/raw/devel/AppBundler/svg/logo1.svg
         url: "https://tmm.{{ general_domain_local }}"
-        <<: *tag_kubo
+        <<: *default
 
       - name: UniFi Controller
+        subtitle: Kubo - Private
         logo: assets/logos/unifi.png
         url: "https://unifi.{{ general_domain_local }}"
-        <<: *tag_fiona
+        <<: *default
 
   - name: Technical
     icon: fas fa-chart-bar
     items:
       - name: Graylog
+        subtitle: Kubo - Private
         logo: https://raw.githubusercontent.com/get-icon/geticon/master/icons/graylog.svg
-        url: "https://logs.{{ general_domain_default }}"
-        <<: *tag_kubo
+        url: "https://logs.{{ general_domain_local }}"
+        <<: *default
 
       - name: Keycloak
+        subtitle: Eve - Public
         logo: https://raw.githubusercontent.com/keycloak/keycloak-misc/main/logo/icon.svg
         url: "https://auth.{{ general_domain_default }}"
-        <<: *tag_eve
+        <<: *default
 
       - name: Traefik Eve
+        subtitle: Eve - Public
         logo: https://raw.githubusercontent.com/traefik/traefik/master/webui/src/assets/traefik.avatar.svg
         url: "https://traefik.eve.{{ general_domain_default }}"
-        <<: *tag_eve
+        <<: *default
 
       - name: Traefik Fiona
+        subtitle: Fiona - Private
         logo: https://raw.githubusercontent.com/traefik/traefik/master/webui/src/assets/traefik.avatar.svg
         url: "https://traefik.fiona.{{ general_domain_local }}"
-        <<: *tag_fiona
+        <<: *default
 
       - name: Traefik Kubo
+        subtitle: Kubo - Private
         logo: https://raw.githubusercontent.com/traefik/traefik/master/webui/src/assets/traefik.avatar.svg
         url: "https://traefik.kubo.{{ general_domain_default }}"
-        <<: *tag_kubo
+        <<: *default
 
       - name: Traefik Po
+        subtitle: Po - Private
         logo: https://raw.githubusercontent.com/traefik/traefik/master/webui/src/assets/traefik.avatar.svg
         url: "https://traefik.po.{{ general_domain_default }}"
-        <<: *tag_po
+        <<: *default
 
       - name: Uptime Kuma
+        subtitle: Eve - Public
         logo: https://raw.githubusercontent.com/louislam/uptime-kuma/master/public/icon.svg
         url: "https://uptime.{{ general_domain_default }}"
-        <<: *tag_eve
+        <<: *default
 
       - name: Zabbix
+        subtitle: Kubo - Private
         logo: https://raw.githubusercontent.com/loganmarchione/homelab-svg-assets/main/assets/zabbix.svg
         url: "https://zabbix.{{ general_domain_local }}"
-        <<: *tag_kubo
+        <<: *default
 
   - name: Analytics
     icon: fas fa-chart-bar
     items:
       - name: Bjoetiek Y
-        subtitle: GoatCounter
+        subtitle: Eve - Public - GoatCounter
         logo: https://raw.githubusercontent.com/arp242/goatcounter/master/public/logo.svg
         url: "https://stats.{{ general_domain_bjoetiek }}"
-        <<: *tag_eve
+        <<: *default
 
       - name: Interwego
-        subtitle: GoatCounter
+        subtitle: Eve - Public - GoatCounter
         logo: https://raw.githubusercontent.com/arp242/goatcounter/master/public/logo.svg
         url: "https://stats.{{ general_domain_interwego }}"
-        <<: *tag_eve
+        <<: *default
 
       - name: Klokracing
-        subtitle: GoatCounter
+        subtitle: Eve - Public - GoatCounter
         logo: https://raw.githubusercontent.com/arp242/goatcounter/master/public/logo.svg
         url: "https://stats.{{ general_domain_klokracing }}"
-        <<: *tag_eve
+        <<: *default
 
       - name: Kristof Coenen
-        subtitle: GoatCounter
+        subtitle: Eve - Public - GoatCounter
         logo: https://raw.githubusercontent.com/arp242/goatcounter/master/public/logo.svg
         url: "https://stats.{{ general_domain_kristofcoenen }}"
-        <<: *tag_eve
+        <<: *default
 
       - name: Spellebel
-        subtitle: GoatCounter
+        subtitle: Eve - Public - GoatCounter
         logo: https://raw.githubusercontent.com/arp242/goatcounter/master/public/logo.svg
         url: "https://stats-spellebel.{{ general_domain_default }}"
-        <<: *tag_eve
+        <<: *default
 
       - name: Tuinfeest Beerse
-        subtitle: GoatCounter
+        subtitle: Eve - Public - GoatCounter
         logo: https://raw.githubusercontent.com/arp242/goatcounter/master/public/logo.svg
         url: "https://stats.{{ general_domain_tuinfeest }}"
-        <<: *tag_eve
+        <<: *default
 
       - name: WTech
-        subtitle: GoatCounter
+        subtitle: Eve - Public - GoatCounter
         logo: https://raw.githubusercontent.com/arp242/goatcounter/master/public/logo.svg
         url: "https://stats.{{ general_domain_wtech }}"
-        <<: *tag_eve
+        <<: *default
 
   - name: Tools
     icon: fas fa-wrench
     items:
-      - name: mail tester
-        subtitle: Check email security (SPF, DKIM, DMARC, ...)
-        logo: https://www.mail-tester.com/img/favicon.png
-        url: https://www.mail-tester.com/
-        <<: *tag_base
+      - name: Framadate
+        subtitle: Date picker (e.g. Doodle/Datumprikker)
+        logo: https://framadate.org/abc/img/icons/apple-touch-icon.png
+        url: https://framadate.org/abc/en/
+        <<: *default
 
       - name: Lunacy
         subtitle: Design software, website, mockup
         logo: https://icons8.com/vue-static/landings/lunacy-new/favicon-96.png
         url: https://icons8.com/lunacy
-        <<: *tag_base
+        <<: *default
 
-      - name: Framadate
-        subtitle: Date picker (e.g. Doodle/Datumprikker)
-        logo: https://framadate.org/abc/img/icons/apple-touch-icon.png
-        url: https://framadate.org/abc/en/
-        <<: *tag_base
+      - name: Mail tester
+        subtitle: Check email security (SPF, DKIM, DMARC, ...)
+        logo: https://www.mail-tester.com/img/favicon.png
+        url: https://www.mail-tester.com/
+        <<: *default
 
       - name: QElectroTech
         subtitle: Electric diagram/drawing
         logo: https://raw.githubusercontent.com/qelectrotech/qelectrotech-source-mirror/master/ico/128x128/diagram.png
         url: https://qelectrotech.org/
-        <<: *tag_base
+        <<: *default
 
       - name: Selfhosted Icons
         subtitle: List of icons of selfhosted software
         logo: https://selfh.st/content/images/size/w256h256/2023/09/favicon-1.png
         url: https://selfh.st/icons/
-        <<: *tag_base
+        <<: *default
+
+      - name: Tally
+        subtitle: Forms service (Belgium based)
+        logo: https://tally.so/images/logo_v2.png
+        url: https://tally.so
+        <<: *default

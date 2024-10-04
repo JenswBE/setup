@@ -12,15 +12,15 @@ ufw_additional_ports:
   - comment: NetPerf - Prometheus blackbox exporter
     port: 9115
     protos: [tcp]
-    from_networks: [wireguard_ipv4]
+    from_networks: [local_ipv4]
   - comment: NetPerf - File generator
     port: 9116
     protos: [tcp]
-    from_networks: [wireguard_ipv4]
+    from_networks: [local_ipv4]
   - comment: Zabbix agent
     port: 10050
     protos: [tcp]
-    from_networks: [wireguard_ipv4]
+    from_networks: [local_ipv4]
   - comment: Syncthing TCP and QUIC
     port: 22000
     protos: [tcp, udp]

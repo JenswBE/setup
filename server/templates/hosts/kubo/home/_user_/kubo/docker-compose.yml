@@ -13,7 +13,7 @@ x-extra-hosts-docker-host: &extra-hosts-docker-host
 
 x-extra-hosts-wireguard: &extra-hosts-wireguard
   extra_hosts:
-    #BLOCK:- for wg_peer in (app_wireguard[0].peers | selectattr("host", "defined")) :BLOCK#
+    #BLOCK:- for wg_peer in (app_wireguard[1].peers | selectattr("host", "defined")) :BLOCK#
     - "#VAR:wg_peer.host:VAR#.wireguard:#VAR:wg_peer.allowed_ips[0] | regex_replace('/\\d+$', ''):VAR#"
     #BLOCK: endfor :BLOCK#
 
@@ -754,7 +754,7 @@ services:
     environment:
       TZ: "#VAR:general_timezone:VAR#"
     ports:
-      - "#VAR:app_wireguard[0].ip_addresses[0]:VAR#:9116:8080"
+      - "#VAR:app_wireguard[1].ip_addresses[0]:VAR#:9116:8080"
     healthcheck:
       test: ["CMD", "/network-performance-file-generator", "--healthcheck"]
 

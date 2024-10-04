@@ -2,9 +2,11 @@ http:
   routers:
     grafana:
       entryPoints: ["websecure"]
-      tls: { certresolver: le-tls }
-      rule: Host(`grafana.{{ general_domain_default }}`)
+      tls: { certresolver: le-dns }
+      rule: Host(`grafana.{{ general_domain_local }}`)
       service: grafana
+      middlewares:
+        - local-only
 
   services:
     grafana:
