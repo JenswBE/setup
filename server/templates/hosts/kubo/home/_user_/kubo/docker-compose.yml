@@ -471,7 +471,7 @@ services:
       TZ: "#VAR:general_timezone:VAR#"
       GRAYLOG_PASSWORD_SECRET: "#VAR:app_graylog_secret:VAR#"
       GRAYLOG_ROOT_PASSWORD_SHA2: "#VAR:app_graylog_admin_password | hash('sha256'):VAR#"
-      GRAYLOG_HTTP_EXTERNAL_URI: "https://logs.#VAR:general_domain_default:VAR#/"
+      GRAYLOG_HTTP_EXTERNAL_URI: "https://logs.#VAR:general_domain_local:VAR#/"
       GRAYLOG_ELASTICSEARCH_HOSTS: http://graylog-elasticsearch:9200
       GRAYLOG_MONGODB_URI: mongodb://graylog-mongodb/graylog
       GRAYLOG_TRANSPORT_EMAIL_ENABLED: "true"
@@ -483,7 +483,7 @@ services:
       GRAYLOG_TRANSPORT_EMAIL_AUTH_USERNAME: "#VAR:mailjet_username:VAR#"
       GRAYLOG_TRANSPORT_EMAIL_AUTH_PASSWORD: "#VAR:mailjet_password:VAR#"
       GRAYLOG_TRANSPORT_EMAIL_FROM_EMAIL: graylog@jensw.be
-      GRAYLOG_TRANSPORT_EMAIL_WEB_INTERFACE_URL: "https://logs.#VAR:general_domain_default:VAR#"
+      GRAYLOG_TRANSPORT_EMAIL_WEB_INTERFACE_URL: "https://logs.#VAR:general_domain_local:VAR#"
     depends_on:
       graylog-mongodb:
         condition: service_healthy
@@ -701,7 +701,7 @@ services:
       - "#VAR:general_path_appdata:VAR#/grafana/data:/var/lib/grafana"
     environment:
       GF_PATHS_PROVISIONING: "/provisioning"
-      GF_SERVER_ROOT_URL: "https://grafana.#VAR:general_domain_default:VAR#"
+      GF_SERVER_ROOT_URL: "https://grafana.#VAR:general_domain_local:VAR#"
       GF_AUTH_ANONYMOUS_ENABLED: "false"
       GF_AUTH_BASIC_ENABLED: "false"
       GF_AUTH_DISABLE_LOGIN_FORM: "true"

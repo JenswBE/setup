@@ -143,7 +143,7 @@ services:
       OAUTH2_OIDC_DISCOVERY_ENDPOINT: "#VAR:app_miniflux_oidc_url:VAR#"
       OAUTH2_CLIENT_ID: "#VAR:app_miniflux_oidc_client_id:VAR#"
       OAUTH2_CLIENT_SECRET: "#VAR:app_miniflux_oidc_client_secret:VAR#"
-      OAUTH2_REDIRECT_URL: "https://feed.#VAR:general_domain_default:VAR#/oauth2/oidc/callback"
+      OAUTH2_REDIRECT_URL: "https://feed.#VAR:general_domain_local:VAR#/oauth2/oidc/callback"
 
   miniflux-db:
     <<: [*defaults, *healthcheck-postgres]
@@ -181,7 +181,7 @@ services:
       APP_DISABLE_SIGNUP: "true"
       APP_ENV: production
       APP_KEY: "#VAR:app_monica_app_key:VAR#"
-      APP_URL: "https://crm.#VAR:general_domain_default:VAR#"
+      APP_URL: "https://crm.#VAR:general_domain_local:VAR#"
       DB_CONNECTION: mysql
       DB_HOST: monica-db
       DB_USERNAME: monica
@@ -774,7 +774,7 @@ services:
       PAPERLESS_DBHOST: paperless-db
       PAPERLESS_SECRET_KEY: "#VAR:app_paperless_secret_key:VAR#"
       PAPERLESS_FILENAME_FORMAT: "{created_year}.{created_month}.{created_day} - {correspondent} - {title}"
-      PAPERLESS_URL: "https://docs.#VAR:general_domain_default:VAR#"
+      PAPERLESS_URL: "https://docs.#VAR:general_domain_local:VAR#"
       PAPERLESS_TASK_WORKERS: "2"
       PAPERLESS_TIKA_ENABLED: "1"
       PAPERLESS_TIKA_GOTENBERG_ENDPOINT: http://paperless-gotenberg:3000

@@ -26,6 +26,10 @@ firewalld:
     interfaces: [wg0]
     source_networks: []
     allowed_services:
+      - ssh # 22/tcp
+      - http # 80/tcp
+      - https # 443/tcp
+      - http3 # 443/udp (QUIC)
       - zabbix-agent # 10050/tcp
       - syncthing # 21027/udp, 22000/tcp and 22000/udp
     allowed_ports:

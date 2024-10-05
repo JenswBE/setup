@@ -68,13 +68,13 @@ services:
     icon: fas fa-wrench
     items:
       - name: Assets
-        subtitle: Eve - Public
+        subtitle: Po - Public
         logo: https://icons.getbootstrap.com/assets/icons/hdd-fill.svg
         url: "https://assets.{{ general_domain_default }}"
         <<: *default
 
       - name: External email generator
-        subtitle: Eve - Public
+        subtitle: Po - Public
         logo: https://icons.getbootstrap.com/assets/icons/at.svg
         url: "https://ext.{{ general_domain_default }}"
         <<: *default
@@ -86,21 +86,27 @@ services:
         <<: *default
 
       - name: MiniFlux
-        subtitle: Eve - Public
+        subtitle: Eve - Private
         logo: https://raw.githubusercontent.com/miniflux/logo/master/icon.svg
-        url: "https://feed.{{ general_domain_default }}"
+        url: "https://feed.{{ general_domain_local }}"
+        <<: *default
+
+      - name: Monica
+        subtitle: Eve - Private
+        logo: https://cdn.jsdelivr.net/gh/selfhst/icons/svg/monica.svg
+        url: "https://crm.{{ general_domain_local }}"
         <<: *default
 
       - name: Paperless
-        subtitle: Eve - Public
+        subtitle: Eve - Private
         logo: https://raw.githubusercontent.com/paperless-ngx/paperless-ngx/dev/resources/logo/web/svg/square.svg
-        url: "https://docs.{{ general_domain_default }}"
+        url: "https://docs.{{ general_domain_local }}"
         <<: *default
 
       - name: Stirling PDF
-        subtitle: Kubo - Public
+        subtitle: Kubo - Private
         logo: https://raw.githubusercontent.com/Frooodle/Stirling-PDF/main/docs/stirling-transparent.svg
-        url: "https://pdf.{{ general_domain_default }}"
+        url: "https://pdf.{{ general_domain_local }}"
         <<: *default
 
       - name: Vaultwarden
@@ -110,9 +116,9 @@ services:
         <<: *default
 
       - name: Wiki.js
-        subtitle: Eve - Public
+        subtitle: Eve - Private
         logo: https://raw.githubusercontent.com/loganmarchione/homelab-svg-assets/main/assets/wikijs.svg
-        url: "https://wiki.{{ general_domain_default }}"
+        url: "https://wiki.{{ general_domain_local }}"
         <<: *default
 
   - name: Local
@@ -157,34 +163,10 @@ services:
         url: "https://auth.{{ general_domain_default }}"
         <<: *default
 
-      - name: Traefik Eve
-        subtitle: Eve - Private
-        logo: https://raw.githubusercontent.com/traefik/traefik/master/webui/src/assets/traefik.avatar.svg
-        url: "https://traefik.eve.{{ general_domain_local }}"
-        <<: *default
-
-      - name: Traefik Fiona
-        subtitle: Fiona - Private
-        logo: https://raw.githubusercontent.com/traefik/traefik/master/webui/src/assets/traefik.avatar.svg
-        url: "https://traefik.fiona.{{ general_domain_local }}"
-        <<: *default
-
-      - name: Traefik Kubo
-        subtitle: Kubo - Private
-        logo: https://raw.githubusercontent.com/traefik/traefik/master/webui/src/assets/traefik.avatar.svg
-        url: "https://traefik.kubo.{{ general_domain_local }}"
-        <<: *default
-
-      - name: Traefik Po
-        subtitle: Po - Private
-        logo: https://raw.githubusercontent.com/traefik/traefik/master/webui/src/assets/traefik.avatar.svg
-        url: "https://traefik.po.{{ general_domain_local }}"
-        <<: *default
-
       - name: Uptime Kuma
-        subtitle: Eve - Public
+        subtitle: Eve - Private
         logo: https://raw.githubusercontent.com/louislam/uptime-kuma/master/public/icon.svg
-        url: "https://uptime.{{ general_domain_default }}"
+        url: "https://uptime.{{ general_domain_local }}"
         <<: *default
 
       - name: Zabbix
