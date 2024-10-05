@@ -2,12 +2,11 @@ http:
   routers:
     syncthing:
       entryPoints: ["websecure"]
-      tls: { certresolver: le-tls }
-      rule: Host(`syncthing.{{ ansible_hostname }}.{{ general_domain_default }}`)
+      tls: { certresolver: le-dns }
+      rule: Host(`syncthing.{{ ansible_hostname }}.{{ general_domain_local }}`)
       service: syncthing
       middlewares:
-        - oauth2-proxy-handle-error
-        - oauth2-proxy-forward-auth-infra
+        - local-only
 
   services:
     syncthing:

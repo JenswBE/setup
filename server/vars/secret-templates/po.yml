@@ -1,3 +1,7 @@
+# Caddy
+# https://desec.io/tokens
+app_caddy_desec_token: ""
+
 # CrowdSec
 app_crowdsec_bouncer_firewall_key: "" # Alphanumeric string
 

@@ -11,23 +11,23 @@
 			client_secret "{{ app_caddy_security_oidc_client_secret }}"
 			scopes openid email profile
 			metadata_url "{{ app_caddy_security_oidc_issuer_url }}/.well-known/openid-configuration"
+			delay_start 5 # Delay 5s to allow Keycloak to start
 		}
 
-		authentication portal portal_local {
+		authentication portal portal_public {
 			crypto default token lifetime 3600
 			crypto key sign-verify "{{ app_caddy_security_jwt_secret }}"
 			enable identity provider keycloak
-			cookie domain "{{ general_domain_local }}"
+			cookie domain "{{ general_domain_default }}"
 		}
 	}
 }
 
 import ./configs/shared_snippets.txt
 
-"portal.{{ general_domain_local }}" {
+"portal.{{ general_domain_default }}" {
 	import defaults
-	import local_access
-	authenticate with portal_local
+	authenticate with portal_public
 }
 
 import ./configs/*.Caddyfile

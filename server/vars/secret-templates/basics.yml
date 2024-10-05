@@ -1,3 +1,10 @@
+# Caddy Security / AuthCrunch
+# Same config should be shared between all Caddy Security/AuthCrunch instances.
+app_caddy_security_jwt_secret: "" # Random string
+app_caddy_security_oidc_issuer_url: ""
+app_caddy_security_oidc_client_id: ""
+app_caddy_security_oidc_client_secret: ""
+
 # Docker
 docker_ghcr_personal_access_token: ""
 

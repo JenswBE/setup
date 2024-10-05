@@ -1,0 +1,18 @@
+"dtu.{{ general_domain_default }}" {
+	reverse_proxy "http://opendtu.{{ general_domain_local }}"
+	import defaults
+	authorize with policy_public_sun
+}
+
+"jellyfin.{{ general_domain_default }}" {
+	reverse_proxy "http://jellyfin:8096"
+	import defaults
+}
+
+"nextcloud-media.{{ general_domain_default }}" {
+	reverse_proxy "http://nextcloud"
+	import defaults
+	redir /.well-known/carddav /remote.php/dav 301
+	redir /.well-known/caldav /remote.php/dav 301
+	redir /.well-known/webfinger /public.php?service=webfinger 301
+}

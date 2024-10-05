@@ -55,10 +55,9 @@ services:
   # =========================
   # Having 2 reverse proxies (1 on host network and 1 on bridge network)
   # allows to have the real client IP's available inside the bridged
-  # Treafik instance (using PROXY protocol). In case you would only have
+  # Caddy instance (using PROXY protocol). In case you would only have
   # a single reverse proxy on the host network, you would loose all the convenience
-  # of the Traefik Docker provider support (not having to expose each service on a host
-  # port and auto-configuration of the services/loadbalancers).
+  # of using Docker networks.
   nginx:
     <<: *defaults
     image: docker.io/library/nginx:alpine
@@ -67,85 +66,22 @@ services:
     volumes:
       - ./nginx/default.conf:/etc/nginx/nginx.conf:ro
 
-  traefik:
+  caddy:
     <<: *defaults
-    image: docker.io/library/traefik:latest
-    container_name: traefik
-    command:
-      # - "--log.level=DEBUG"
-      - "--accesslog.filepath=/access-logs/access.log" # Used by CrowdSec
-      - "--providers.file.directory=/conf"
-      - "--providers.file.watch=true"
-      - "--entrypoints.websecure.address=:443"
-      - "--entrypoints.websecure.proxyProtocol.trustedIPs=#VAR:network_any_private:VAR#"
-      - "--entrypoints.websecure.http.middlewares=secure-https@file"
-      - "--entrypoints.web.address=:80"
-      - "--entrypoints.web.proxyProtocol.trustedIPs=#VAR:network_any_private:VAR#"
-      - "--entrypoints.web.http.redirections.entryPoint.to=websecure"
-      - "--entrypoints.web.http.redirections.entryPoint.scheme=https"
-      - "--entrypoints.mqtt.address=:8883"
-      - "--entrypoints.mqtt.proxyProtocol.trustedIPs=#VAR:network_any_private:VAR#"
-      - "--certificatesresolvers.le-dns.acme.dnschallenge=true"
-      - "--certificatesresolvers.le-dns.acme.dnschallenge.provider=desec"
-      - "--certificatesresolvers.le-dns.acme.email=#VAR:general_mail_admin:VAR#@#VAR:general_domain_default:VAR#"
-      - "--certificatesresolvers.le-dns.acme.storage=/letsencrypt/acme-dns.json"
-      - "--certificatesresolvers.le-tls.acme.tlsChallenge=true"
-      - "--certificatesresolvers.le-tls.acme.email=#VAR:general_mail_admin:VAR#@#VAR:general_domain_default:VAR#"
-      - "--certificatesresolvers.le-tls.acme.storage=/letsencrypt/acme-tls.json"
-      - "--certificatesresolvers.le-tls-staging.acme.tlsChallenge=true"
-      - "--certificatesresolvers.le-tls-staging.acme.email=#VAR:general_mail_admin:VAR#@#VAR:general_domain_default:VAR#"
-      - "--certificatesresolvers.le-tls-staging.acme.storage=/letsencrypt/acme-tls-staging.json"
-      - "--certificatesResolvers.le-tls-staging.acme.caServer=https://acme-staging-v02.api.letsencrypt.org/directory"
-      - "--api=true"
-      - "--ping.manualrouting=true"
+    build: ./caddy
+    container_name: caddy
     ports:
       - 127.0.0.1:2080:80
       - 127.0.0.1:2443:443
       - 127.0.0.1:28883:8883
     networks:
-      - traefik
+      - caddy
     volumes:
-      - ./traefik:/conf:ro
-      - traefik-cert:/letsencrypt
-      - traefik-access-logs:/access-logs
-    environment:
-      TZ: "#VAR:general_timezone:VAR#"
-      DESEC_TOKEN: "#VAR:app_traefik_desec_token:VAR#"
-
-  oauth2-proxy:
-    <<: *defaults
-    image: quay.io/oauth2-proxy/oauth2-proxy:latest
-    container_name: oauth2-proxy
-    command: >
-      --http-address=0.0.0.0:4180
-      --reverse-proxy
-      --provider=keycloak-oidc
-      --oidc-issuer-url=#VAR:app_oauth2_proxy_issuer_url:VAR#
-      --client-id=#VAR:app_oauth2_proxy_client_id:VAR#
-      --client-secret=#VAR:app_oauth2_proxy_client_secret:VAR#
-      --code-challenge-method=S256
-      --email-domain=*
-      --cookie-domain=#VAR:general_domain_default:VAR#
-      --cookie-secret=#VAR:app_oauth2_proxy_cookie_secret:VAR#
-    networks:
-      - traefik
-    environment:
-      TZ: "#VAR:general_timezone:VAR#"
-
-  # Since the login page handling of OAuth2 Proxy is based on HTTP
-  # status code 401, it might conflict with an upstream reply.
-  # Therefore, this helper translates an error response of OAuth2 Proxy
-  # to status code 601. This prevents any conflicts.
-  oauth2-proxy-helper:
-    <<: *defaults
-    image: docker.io/library/caddy:2
-    container_name: oauth2-proxy-helper
-    networks:
-      - traefik
-    volumes:
-      - ./oauth2-proxy/helper/Caddyfile:/etc/caddy/Caddyfile
-      - oauth2-proxy-helper-config:/config
-      - oauth2-proxy-helper-data:/data
+      - ./caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./caddy/configs:/etc/caddy/configs:ro
+      - caddy-access-logs:/access_logs
+      - caddy-config:/config
+      - caddy-data:/data
     environment:
       TZ: "#VAR:general_timezone:VAR#"
 
@@ -157,7 +93,7 @@ services:
     image: ghcr.io/home-assistant/home-assistant:stable
     container_name: ha
     networks:
-      - traefik
+      - caddy
       - home-automation
     volumes:
       - "./home-automation/home-assistant/automations.yaml:/config/automations.yaml"
@@ -188,7 +124,7 @@ services:
     image: docker.io/library/eclipse-mosquitto:latest
     container_name: ha-mosquitto
     networks:
-      - traefik
+      - caddy
       - home-automation
     volumes:
       - "./home-automation/mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro"
@@ -235,7 +171,7 @@ services:
     devices:
       - /dev/dri/renderD128:/dev/dri/renderD128 # Intel Quick Sync Video (QSV)
     networks:
-      - traefik
+      - caddy
     ports:
       - "8096:8096"
     volumes:
@@ -257,7 +193,7 @@ services:
     image: docker.io/tinymediamanager/tinymediamanager:latest
     container_name: tmm
     networks:
-      - traefik
+      - caddy
     volumes:
       - "/data/bulk/media:/media"
       - "#VAR:general_path_appdata:VAR#/tmm/config:/config"
@@ -281,7 +217,7 @@ services:
     container_name: syncthing
     hostname: "#VAR:ansible_hostname:VAR#"
     networks:
-      - traefik
+      - caddy
     ports:
       - "22000:22000"
       - "22000:22000/udp"
@@ -345,7 +281,7 @@ services:
     container_name: nextcloud
     hostname: nextcloud
     networks:
-      - traefik
+      - caddy
       - nextcloud
     depends_on:
       nc-db:
@@ -415,7 +351,7 @@ services:
     cap_add:
       - NET_ADMIN
     networks:
-      - traefik
+      - caddy
     devices:
       - /dev/net/tun:/dev/net/tun
     volumes:
@@ -437,7 +373,7 @@ services:
     image: docker.io/library/nginx:latest
     container_name: nginx-hetvleermuizenkind
     networks:
-      - traefik
+      - caddy
     volumes:
       - "#VAR:general_path_appdata:VAR#/nginx/hetvleermuizenkind:/usr/share/nginx/html"
     environment:
@@ -451,7 +387,7 @@ services:
     image: docker.io/frooodle/s-pdf:latest
     container_name: stirling-pdf
     networks:
-      - traefik
+      - caddy
     environment:
       TZ: "#VAR:general_timezone:VAR#"
       DOCKER_ENABLE_SECURITY: "false"
@@ -480,7 +416,7 @@ services:
       - "10001:10001/udp" # Required for AP discovery
       - "8080:8080" # Required for device communication
     networks:
-      - traefik
+      - caddy
       - unifi
     depends_on:
       unifi-mongodb:
@@ -523,7 +459,7 @@ services:
       - "#VAR:general_path_appdata:VAR#/graylog/graylog/config:/usr/share/graylog/config"
       - "#VAR:general_path_appdata:VAR#/graylog/graylog/journal:/usr/share/graylog/journal"
     networks:
-      - traefik
+      - caddy
       - graylog
     ports:
       - 1514:1514 # Syslog TCP
@@ -619,7 +555,7 @@ services:
       retries: 3
       start_period: 30s
     networks:
-      - traefik
+      - caddy
       - zabbix
     stop_grace_period: 10s
     sysctls:
@@ -715,7 +651,7 @@ services:
     container_name: prometheus
     user: "#VAR:ansible_real_user_id:VAR#:#VAR:ansible_real_group_id:VAR#"
     networks:
-      - traefik
+      - caddy
       - prometheus
       - crowdsec
     environment:
@@ -758,7 +694,7 @@ services:
     container_name: grafana
     user: "#VAR:ansible_real_user_id:VAR#:#VAR:ansible_real_group_id:VAR#"
     networks:
-      - traefik
+      - caddy
       - prometheus
     volumes:
       - ./grafana:/provisioning
@@ -798,9 +734,9 @@ services:
     environment:
       TZ: "#VAR:general_timezone:VAR#"
       COLLECTIONS: >-
+        crowdsecurity/caddy
         crowdsecurity/http-cve
         crowdsecurity/linux
-        crowdsecurity/traefik
       PARSERS: >-
         crowdsecurity/nextcloud-whitelist
       GID: "#VAR:ansible_real_group_id:VAR#"
@@ -812,7 +748,7 @@ services:
       - crowdsec-config:/etc/crowdsec/
       # Logs
       - /var/log/journal:/var/log/host:ro # SSHD logs for Debian
-      - traefik-access-logs:/var/log/traefik:ro
+      - caddy-access-logs:/var/log/caddy:ro
 
   # =========================
   # =         BACKUP        =
@@ -872,6 +808,9 @@ services:
 #                            NETWORKS                           #
 #################################################################
 networks:
+  caddy:
+    name: caddy
+
   crowdsec:
     name: crowdsec
 
@@ -887,9 +826,6 @@ networks:
   prometheus:
     name: prometheus
 
-  traefik:
-    name: traefik
-
   unifi:
     name: unifi
 
@@ -900,6 +836,9 @@ networks:
 #                            VOLUMES                            #
 #################################################################
 volumes:
+  caddy-access-logs:
+  caddy-config:
+  caddy-data:
   crowdsec-config:
   crowdsec-db:
   github-backup:
@@ -910,7 +849,5 @@ volumes:
   oauth2-proxy-helper-data:
   scrutiny-influxdb:
   scrutiny-sqlite:
-  traefik-access-logs:
-  traefik-cert:
   unifi-mongodb-dump:
   zabbix-db-dump:

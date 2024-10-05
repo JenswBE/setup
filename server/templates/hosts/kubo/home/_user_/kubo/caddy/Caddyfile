@@ -1,0 +1,11 @@
+{
+	import ./configs/shared_global.txt
+
+	security {
+		import ./configs/shared_security.txt
+	}
+}
+
+import ./configs/shared_snippets.txt
+
+import ./configs/*.Caddyfile

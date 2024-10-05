@@ -32,7 +32,6 @@ firewalld:
       - nfs # 2049/tcp
       - nfs3 # 2049/tcp and 2049/udp
       - syncthing # 21027/udp, 22000/tcp and 22000/udp
-      - wireguard # 51820/udp
     allowed_ports:
       - port: 1514 # Graylog - Syslog
         protos: [tcp, udp]

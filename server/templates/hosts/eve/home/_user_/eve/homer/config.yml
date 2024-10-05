@@ -158,9 +158,9 @@ services:
         <<: *default
 
       - name: Traefik Eve
-        subtitle: Eve - Public
+        subtitle: Eve - Private
         logo: https://raw.githubusercontent.com/traefik/traefik/master/webui/src/assets/traefik.avatar.svg
-        url: "https://traefik.eve.{{ general_domain_default }}"
+        url: "https://traefik.eve.{{ general_domain_local }}"
         <<: *default
 
       - name: Traefik Fiona
@@ -172,13 +172,13 @@ services:
       - name: Traefik Kubo
         subtitle: Kubo - Private
         logo: https://raw.githubusercontent.com/traefik/traefik/master/webui/src/assets/traefik.avatar.svg
-        url: "https://traefik.kubo.{{ general_domain_default }}"
+        url: "https://traefik.kubo.{{ general_domain_local }}"
         <<: *default
 
       - name: Traefik Po
         subtitle: Po - Private
         logo: https://raw.githubusercontent.com/traefik/traefik/master/webui/src/assets/traefik.avatar.svg
-        url: "https://traefik.po.{{ general_domain_default }}"
+        url: "https://traefik.po.{{ general_domain_local }}"
         <<: *default
 
       - name: Uptime Kuma

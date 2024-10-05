@@ -1,0 +1,47 @@
+"grafana.{{ general_domain_local }}" {
+	reverse_proxy "http://grafana:3000"
+	import defaults
+	import local_access
+}
+
+"ha.{{ general_domain_local }}" {
+	reverse_proxy "http://ha:8123"
+	import defaults
+	import local_access
+}
+
+"logs.{{ general_domain_local }}" {
+	reverse_proxy "http://graylog:9000"
+	import defaults
+	import local_access
+}
+
+"pdf.{{ general_domain_local }}" {
+	reverse_proxy "stirling-pdf:8080"
+	import defaults
+	import local_access
+}
+
+"prometheus.{{ general_domain_local }}" {
+	reverse_proxy "http://prometheus:9090"
+	import defaults
+	import local_access
+}
+
+"tmm.{{ general_domain_local }}" {
+	reverse_proxy "http://tmm:4000"
+	import defaults
+	import local_access
+}
+
+"unifi.{{ general_domain_local }}" {
+	reverse_proxy "https://unifi-network-app:8443"
+	import defaults
+	import local_access
+}
+
+"zabbix.{{ general_domain_local }}" {
+	reverse_proxy "http://zabbix-web:8080"
+	import defaults
+	import local_access
+}

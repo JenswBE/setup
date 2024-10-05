@@ -33,89 +33,33 @@ services:
   # =========================
   # Having 2 reverse proxies (1 on host network and 1 on bridge network)
   # allows to have the real client IP's available inside the bridged
-  # Treafik instance (using PROXY protocol). In case you would only have
+  # Caddy instance (using PROXY protocol). In case you would only have
   # a single reverse proxy on the host network, you would loose all the convenience
-  # of the Traefik Docker provider support (not having to expose each service on a host
-  # port and auto-configuration of the services/loadbalancers).
+  # of using Docker networks.
   nginx:
     <<: *defaults
     image: docker.io/library/nginx:alpine
     container_name: nginx
     network_mode: host
     volumes:
-      - ./nginx/host/default.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/default.conf:/etc/nginx/nginx.conf:ro
 
-  traefik:
+  caddy:
     <<: *defaults
-    image: docker.io/library/traefik:latest
-    container_name: traefik
-    command:
-      # - "--log.level=DEBUG"
-      - "--accesslog.filepath=/access-logs/access.log" # Used by CrowdSec
-      - "--providers.file.directory=/conf"
-      - "--providers.file.watch=true"
-      - "--entrypoints.websecure.address=:443"
-      - "--entrypoints.websecure.proxyProtocol.trustedIPs=#VAR:network_any_private:VAR#"
-      - "--entrypoints.websecure.http.middlewares=secure-https@file"
-      - "--entrypoints.web.address=:80"
-      - "--entrypoints.web.proxyProtocol.trustedIPs=#VAR:network_any_private:VAR#"
-      - "--entrypoints.web.http.redirections.entryPoint.to=websecure"
-      - "--entrypoints.web.http.redirections.entryPoint.scheme=https"
-      - "--certificatesresolvers.le-tls.acme.tlsChallenge=true"
-      - "--certificatesresolvers.le-tls.acme.email=#VAR:general_mail_admin:VAR#@#VAR:general_domain_default:VAR#"
-      - "--certificatesresolvers.le-tls.acme.storage=/letsencrypt/acme.json"
-      - "--certificatesresolvers.le-tls-staging.acme.tlsChallenge=true"
-      - "--certificatesresolvers.le-tls-staging.acme.email=#VAR:general_mail_admin:VAR#@#VAR:general_domain_default:VAR#"
-      - "--certificatesresolvers.le-tls-staging.acme.storage=/letsencrypt/acme-staging.json"
-      - "--certificatesResolvers.le-tls-staging.acme.caServer=https://acme-staging-v02.api.letsencrypt.org/directory"
-      - "--api=true"
-      - "--ping.manualrouting=true"
+    build: ./caddy
+    container_name: caddy
     ports:
       - 127.0.0.1:2080:80
       - 127.0.0.1:2443:443
+      - 127.0.0.1:28883:8883
     networks:
-      - traefik
+      - caddy
     volumes:
-      - ./traefik:/conf:ro
-      - traefik-cert:/letsencrypt/
-      - traefik-access-logs:/access-logs
-    environment:
-      TZ: "#VAR:general_timezone:VAR#"
-
-  oauth2-proxy:
-    <<: *defaults
-    image: quay.io/oauth2-proxy/oauth2-proxy:latest
-    container_name: oauth2-proxy
-    command: >
-      --http-address=0.0.0.0:4180
-      --reverse-proxy
-      --provider=keycloak-oidc
-      --oidc-issuer-url=#VAR:app_oauth2_proxy_issuer_url:VAR#
-      --client-id=#VAR:app_oauth2_proxy_client_id:VAR#
-      --client-secret=#VAR:app_oauth2_proxy_client_secret:VAR#
-      --code-challenge-method=S256
-      --email-domain=*
-      --cookie-domain=#VAR:general_domain_default:VAR#
-      --cookie-secret=#VAR:app_oauth2_proxy_cookie_secret:VAR#
-    networks:
-      - traefik
-    environment:
-      TZ: "#VAR:general_timezone:VAR#"
-
-  # Since the login page handling of OAuth2 Proxy is based on HTTP
-  # status code 401, it might conflict with an upstream reply.
-  # Therefore, this helper translates an error response of OAuth2 Proxy
-  # to status code 601. This prevents any conflicts.
-  oauth2-proxy-helper:
-    <<: *defaults
-    image: docker.io/library/caddy:2
-    container_name: oauth2-proxy-helper
-    networks:
-      - traefik
-    volumes:
-      - ./oauth2-proxy/helper/Caddyfile:/etc/caddy/Caddyfile
-      - oauth2-proxy-helper-config:/config
-      - oauth2-proxy-helper-data:/data
+      - ./caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./caddy/configs:/etc/caddy/configs:ro
+      - caddy-access-logs:/access_logs
+      - caddy-config:/config
+      - caddy-data:/data
     environment:
       TZ: "#VAR:general_timezone:VAR#"
 
@@ -129,7 +73,7 @@ services:
     hostname: nextcloud
     networks:
       - nextcloud
-      - traefik
+      - caddy
     depends_on:
       nc-db:
         condition: service_healthy
@@ -183,7 +127,7 @@ services:
     image: docker.io/miniflux/miniflux:latest
     container_name: miniflux
     networks:
-      - traefik
+      - caddy
       - miniflux
     depends_on:
       miniflux-db:
@@ -225,7 +169,7 @@ services:
     image: docker.io/library/monica:4
     container_name: monica
     networks:
-      - traefik
+      - caddy
       - monica
     depends_on:
       monica-db:
@@ -276,7 +220,7 @@ services:
     image: lscr.io/linuxserver/wikijs:latest
     container_name: wikijs
     networks:
-      - traefik
+      - caddy
       - wikijs
     depends_on:
       wikijs-db:
@@ -394,7 +338,7 @@ services:
       FLOWS_ENV_ALLOW_LIST: "FLOWS_ENV_GITHUB_TOKEN"
       FLOWS_ENV_GITHUB_TOKEN: "#VAR:app_bjoetiek_directus_github_token:VAR#"
     networks:
-      - traefik
+      - caddy
       - bjoetiek-directus
     volumes:
       - "#VAR:general_path_appdata:VAR#/bjoetiek/directus/uploads:/directus/uploads:z"
@@ -456,7 +400,7 @@ services:
       FLOWS_ENV_ALLOW_LIST: "FLOWS_ENV_GITHUB_TOKEN"
       FLOWS_ENV_GITHUB_TOKEN: "#VAR:app_kristofcoenen_directus_github_token:VAR#"
     networks:
-      - traefik
+      - caddy
       - kristofcoenen-directus
     volumes:
       - "#VAR:general_path_appdata:VAR#/kristofcoenen/directus/uploads:/directus/uploads:z"
@@ -518,7 +462,7 @@ services:
       FLOWS_ENV_ALLOW_LIST: "FLOWS_ENV_GITHUB_TOKEN"
       FLOWS_ENV_GITHUB_TOKEN: "#VAR:app_tuinfeest_directus_github_token:VAR#"
     networks:
-      - traefik
+      - caddy
       - tuinfeest-directus
     volumes:
       - "#VAR:general_path_appdata:VAR#/tuinfeest/directus/uploads:/directus/uploads:z"
@@ -580,7 +524,7 @@ services:
       FLOWS_ENV_ALLOW_LIST: "FLOWS_ENV_GITHUB_TOKEN"
       FLOWS_ENV_GITHUB_TOKEN: "#VAR:app_wtech_directus_github_token:VAR#"
     networks:
-      - traefik
+      - caddy
       - wtech-directus
     volumes:
       - "#VAR:general_path_appdata:VAR#/wtech/directus/uploads:/directus/uploads:z"
@@ -618,7 +562,7 @@ services:
     container_name: goatcounter
     user: "#VAR:ansible_real_user_id:VAR#"
     networks:
-      - traefik
+      - caddy
     volumes:
       - "#VAR:general_path_appdata:VAR#/goatcounter/db:/db"
     environment:
@@ -634,7 +578,7 @@ services:
     volumes:
       - "#VAR:general_path_appdata:VAR#/uptime-kuma/data:/app/data"
     networks:
-      - traefik
+      - caddy
       - uptime-kuma
     environment:
       TZ: "#VAR:general_timezone:VAR#"
@@ -671,7 +615,7 @@ services:
         condition: service_healthy
     networks:
       - keycloak
-      - traefik
+      - caddy
     environment:
       TZ: "#VAR:general_timezone:VAR#"
       KC_DB_URL_HOST: keycloak-db
@@ -680,7 +624,7 @@ services:
       KC_DB_PASSWORD: "#VAR:app_keycloak_db_pass:VAR#"
       KC_DB_SCHEMA: public
       KC_HOSTNAME: "auth.#VAR:general_domain_default:VAR#"
-      KC_HOSTNAME_STRICT: "false" # Hostnames validated by Traefik
+      KC_HOSTNAME_STRICT: "false" # Hostnames validated by Caddy
       KC_PROXY_HEADERS: xforwarded
       KC_HTTP_ENABLED: "true"
       # Only for initial setup
@@ -709,35 +653,6 @@ services:
       POSTGRES_PASSWORD: "#VAR:app_keycloak_db_pass:VAR#"
 
   # =========================
-  # =      PLACEHOLDERS     =
-  # =========================
-  maintenance:
-    <<: *defaults
-    image: docker.io/nginxinc/nginx-unprivileged:alpine
-    container_name: maintenance
-    user: "#VAR:ansible_real_user_id:VAR#"
-    networks:
-      - traefik
-    volumes:
-      - "./nginx/maintenance/public:/usr/share/nginx/html:ro"
-      - "./nginx/maintenance/nginx.conf:/etc/nginx/conf.d/default.conf:ro"
-    environment:
-      TZ: "#VAR:general_timezone:VAR#"
-
-  wip:
-    <<: *defaults
-    image: docker.io/nginxinc/nginx-unprivileged:alpine
-    container_name: wip
-    user: "#VAR:ansible_real_user_id:VAR#"
-    networks:
-      - traefik
-    volumes:
-      - "./nginx/wip/public:/usr/share/nginx/html:ro"
-      - "./nginx/wip/nginx.conf:/etc/nginx/conf.d/default.conf:ro"
-    environment:
-      TZ: "#VAR:general_timezone:VAR#"
-
-  # =========================
   # =        CROWDSEC       =
   # =========================
   crowdsec:
@@ -750,9 +665,9 @@ services:
     environment:
       TZ: "#VAR:general_timezone:VAR#"
       COLLECTIONS: >-
+        crowdsecurity/caddy
         crowdsecurity/http-cve
         crowdsecurity/linux
-        crowdsecurity/traefik
       PARSERS: >-
         crowdsecurity/nextcloud-whitelist
       GID: "#VAR:ansible_real_group_id:VAR#"
@@ -765,7 +680,7 @@ services:
       - crowdsec-config:/etc/crowdsec/
       # Logs
       - /var/log/journal:/var/log/host:ro # SSHD logs for Debian
-      - traefik-access-logs:/var/log/traefik:ro
+      - caddy-access-logs:/var/log/caddy:ro
 
   # =========================
   # =      VAULTWARDEN      =
@@ -775,7 +690,7 @@ services:
     image: docker.io/vaultwarden/server:latest
     container_name: vaultwarden
     networks:
-      - traefik
+      - caddy
     environment:
       TZ: "#VAR:general_timezone:VAR#"
       DOMAIN: "https://vault.#VAR:general_domain_default:VAR#"
@@ -800,7 +715,7 @@ services:
     container_name: homer
     user: "#VAR:ansible_real_user_id:VAR#"
     networks:
-      - traefik
+      - caddy
     volumes:
       - "./homer/config.yml:/www/assets/config.yml:ro"
       - "./homer/logos:/www/assets/logos:ro"
@@ -815,7 +730,7 @@ services:
     container_name: paperless
     image: ghcr.io/paperless-ngx/paperless-ngx:latest
     networks:
-      - traefik
+      - caddy
       - paperless
     security_opt:
       - no-new-privileges=true
@@ -976,7 +891,7 @@ services:
     container_name: syncthing
     hostname: "#VAR:ansible_hostname:VAR#"
     networks:
-      - traefik
+      - caddy
     ports:
       - "22000:22000"
       - "22000:22000/udp"
@@ -1068,6 +983,9 @@ services:
 # #################################################################
 volumes:
   bjoetiek-directus-db-dump:
+  caddy-access-logs:
+  caddy-config:
+  caddy-data:
   crowdsec-config:
   crowdsec-db:
   isa-output:
@@ -1083,8 +1001,6 @@ volumes:
   paperless-db-dump:
   paperless-export:
   paperless-redis-data:
-  traefik-access-logs:
-  traefik-cert:
   tuinfeest-directus-db-dump:
   wikijs-backup:
   wikijs-db-dump:
@@ -1100,6 +1016,9 @@ networks:
   backup-nc-db:
     name: backup-nc-db
     internal: true
+
+  caddy:
+    name: caddy
 
   keycloak:
     name: keycloak
@@ -1118,9 +1037,6 @@ networks:
 
   paperless:
     name: paperless
-
-  traefik:
-    name: traefik
 
   tuinfeest-directus:
     name: tuinfeest-directus

@@ -22,7 +22,7 @@ services:
   # =========================
   # Having 2 reverse proxies (1 on host network and 1 on bridge network)
   # allows to have the real client IP's available inside the bridged
-  # Treafik instance (using PROXY protocol). In case you would only have
+  # Caddy instance (using PROXY protocol). In case you would only have
   # a single reverse proxy on the host network, you would loose all the convenience
   # of using Docker networks.
   nginx:
@@ -43,13 +43,13 @@ services:
     networks:
       - caddy
     volumes:
-      - ./caddy/Caddyfile:/etc/caddy/Caddyfile
+      - ./caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./caddy/configs:/etc/caddy/configs:ro
       - caddy-access-logs:/access_logs
       - caddy-config:/config
       - caddy-data:/data
     environment:
       TZ: "#VAR:general_timezone:VAR#"
-      DESEC_TOKEN: "#VAR:app_caddy_desec_token:VAR#"
 
   # ==========================
   # =         BLOCKY         =
@@ -117,9 +117,9 @@ services:
     environment:
       TZ: "#VAR:general_timezone:VAR#"
       COLLECTIONS: >-
+        crowdsecurity/caddy
         crowdsecurity/http-cve
         crowdsecurity/linux
-        crowdsecurity/caddy
       PARSERS: >-
         crowdsecurity/nextcloud-whitelist
       GID: "#VAR:ansible_real_group_id:VAR#"
@@ -147,9 +147,9 @@ networks:
       parent: enp2s0
     ipam:
       config:
-        - subnet: 192.168.50.0/24
-          ip_range: 192.168.50.60/30 # .60 - .63
-          gateway: 192.168.50.1
+        - subnet: 192.168.51.0/24
+          ip_range: 192.168.51.60/30 # .60 - .63
+          gateway: 192.168.51.1
 
 #################################################################
 #                            VOLUMES                            #

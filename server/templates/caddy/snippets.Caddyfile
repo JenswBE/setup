@@ -1,0 +1,26 @@
+(defaults) {
+	log {
+		output file /access_logs/caddy.log
+	}
+
+	header {
+		# Based on https://owasp.org/www-project-secure-headers/#div-bestpractices
+		Referrer-Policy no-referrer
+		Strict-Transport-Security max-age=31536000; includeSubDomains
+		X-Content-Type-Options nosniff
+		X-Frame-Options DENY
+		X-XSS-Protection 0
+	}
+}
+
+(local_access) {
+	tls {
+		dns desec {
+			token "{{ app_caddy_desec_token }}"
+		}
+		propagation_delay 60s
+	}
+
+	@denied not remote_ip private_ranges
+	abort @denied
+}

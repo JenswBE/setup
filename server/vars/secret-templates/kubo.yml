@@ -12,6 +12,10 @@ app_borgmatic_ssh_known_hosts: |
 app_borgmatic_remote_folder: ""
 app_borgmatic_ping_id: "" # Ping ID for healthchecks.io
 
+# Caddy
+# https://desec.io/tokens
+app_caddy_desec_token: ""
+
 # CrowdSec
 app_crowdsec_bouncer_firewall_key: "" # Alphanumeric string
 
@@ -39,11 +43,6 @@ app_mosquitto_password_file_contents: |
 # Nextcloud
 app_nextcloud_db_pass_root: ""
 app_nextcloud_db_pass_nextcloud: ""
-
-# Traefik
-#   - https://doc.traefik.io/traefik/https/acme/#providers
-#   - https://desec.io/tokens
-app_traefik_desec_token: ""
 
 # Transmission
 # See also "basics.yml"

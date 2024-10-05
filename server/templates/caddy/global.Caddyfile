@@ -1,0 +1,14 @@
+email "{{ general_mail_admin }}@{{ general_domain_default }}"
+
+order authenticate before respond
+order authorize before basicauth
+
+servers {
+	listener_wrappers {
+		proxy_protocol {
+			timeout 2s
+			allow "{{ network_docker_ipv4 }}"
+		}
+		tls
+	}
+}

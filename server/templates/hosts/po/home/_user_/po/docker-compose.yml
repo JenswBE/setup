@@ -25,8 +25,7 @@ services:
   # allows to have the real client IP's available inside the bridged
   # Treafik instance (using PROXY protocol). In case you would only have
   # a single reverse proxy on the host network, you would loose all the convenience
-  # of the Traefik Docker provider support (not having to expose each service on a host
-  # port and auto-configuration of the services/loadbalancers).
+  # of using Docker networks.
   nginx:
     <<: *defaults
     image: docker.io/library/nginx:alpine

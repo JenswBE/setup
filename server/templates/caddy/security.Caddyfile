@@ -1,0 +1,11 @@
+authorization policy policy_local_infra {
+	set auth url "https://portal.{{ general_domain_local }}/"
+	allow roles infra
+	crypto key verify "{{ app_caddy_security_jwt_secret }}"
+}
+
+authorization policy policy_public_sun {
+	set auth url "https://portal.{{ general_domain_default }}/"
+	allow roles sun
+	crypto key verify "{{ app_caddy_security_jwt_secret }}"
+}
