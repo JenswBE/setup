@@ -11,12 +11,6 @@ x-extra-hosts-docker-host: &extra-hosts-docker-host
   extra_hosts:
     - "host.docker.internal:host-gateway"
 
-x-extra-hosts-wireguard: &extra-hosts-wireguard
-  extra_hosts:
-    #BLOCK:- for wg_peer in (app_wireguard[1].peers | selectattr("host", "defined")) :BLOCK#
-    - "#VAR:wg_peer.host:VAR#.wireguard:#VAR:wg_peer.allowed_ips[0] | regex_replace('/\\d+$', ''):VAR#"
-    #BLOCK: endfor :BLOCK#
-
 x-healthcheck-elasticsearch: &healthcheck-elasticsearch
   healthcheck:
     test:
@@ -716,7 +710,7 @@ services:
       POSTGRES_PASSWORD: "#VAR:app_zabbix_db_pass:VAR#"
 
   prometheus:
-    <<: [*defaults, *extra-hosts-wireguard]
+    <<: [*defaults]
     image: quay.io/prometheus/prometheus:latest
     container_name: prometheus
     user: "#VAR:ansible_real_user_id:VAR#:#VAR:ansible_real_group_id:VAR#"
@@ -754,7 +748,7 @@ services:
     environment:
       TZ: "#VAR:general_timezone:VAR#"
     ports:
-      - "#VAR:app_wireguard[1].ip_addresses[0]:VAR#:9116:8080"
+      - "9116:8080"
     healthcheck:
       test: ["CMD", "/network-performance-file-generator", "--healthcheck"]
 

@@ -15,8 +15,14 @@
         enabled: true
 
     - name: FirewallD - Clear current firewall rules
+      register: clear_rules
       ansible.builtin.shell: |
-        for filepath in /etc/firewalld/zones/*; do    
+        ZONES_DIR=/etc/firewalld/zones
+        if ! compgen -G "${ZONES_DIR:?}/*" > /dev/null; then
+            echo "No custom zones yet, skip clearing rules ..."
+            exit 0
+        fi
+        for filepath in ${ZONES_DIR:?}/*; do    
           filename=$(basename $filepath)
           if [[ $filename =~ ^docker.*$ ]]; then
             echo "Skipping $filepath ..."
@@ -25,6 +31,13 @@
           echo "Deleting $filepath ..."
           /bin/rm $filepath
         done
+      args:
+        executable: /bin/bash # If not forced, dash is used on Debian which doesn't correctly handle the regex filename matching
+
+    - name: FirewallD - Show clear rules log
+      ansible.builtin.debug:
+        var: clear_rules.stdout_lines
+      tags: ["always"]
 
     - name: FirewallD - Create custom zones
       ansible.builtin.template:

@@ -93,6 +93,15 @@
     - role: geerlingguy.docker
       become: true
       tags: ["setup", "roles"]
+      vars:
+        docker_daemon_options:
+          default-address-pools:
+            - base: "172.16.0.0/12"
+              size: 24 # Default is /16
+          icc: false
+          log-driver: gelf
+          log-opts:
+            gelf-address: "udp://{{ app_graylog_server }}:12201"
 
   tasks:
     - name: Include basic setup tasks
@@ -100,7 +109,7 @@
       tags: ["setup", "basics"]
 
     - name: Include firewall tasks
-      ansible.builtin.include_tasks: "tasks/firewall_{{ ansible_os_family_lowercase }}.yml"
+      ansible.builtin.include_tasks: "tasks/firewall.yml"
       tags: ["setup", "firewall"]
 
     - name: Include CrowdSec tasks

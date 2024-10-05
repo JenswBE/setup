@@ -1,82 +1,77 @@
 # Firewall
 # Ensure to update firewall on cloud provider!
-ufw_additional_ports:
-  - comment: Nginx HTTP
-    port: 80
-    protos: [tcp]
-    from_networks: [any]
-  - comment: NFS (v3 only)
-    port: 111
-    protos: [tcp, udp]
-    from_networks: [local_ipv4, local_ipv6]
-  - comment: Nginx HTTPS
-    port: 443
-    protos: [tcp]
-    from_networks: [any]
-  - comment: Graylog - Syslog
-    port: 1514
-    protos: [tcp, udp]
-    from_networks: [docker_ipv4, local_ipv4, local_ipv6, wireguard_ipv4]
-  - comment: NFS (UDP is v3 only)
-    port: 2049
-    protos: [tcp, udp]
-    from_networks: [local_ipv4, local_ipv6]
-  - comment: Tang (https://github.com/latchset/tang)
-    port: 7500
-    protos: [tcp]
-    from_networks: [local_ipv4, local_ipv6]
-  - comment: Graylog - Beats
-    port: 5044
-    protos: [tcp]
-    from_networks: [docker_ipv4, local_ipv4, local_ipv6, wireguard_ipv4]
-  - comment: UniFi - Device communication
-    port: 8080
-    protos: [tcp]
-    from_networks: [local_ipv4, local_ipv6]
-  - comment: Jellyfin
-    port: 8096
-    protos: [tcp]
-    from_networks: [local_ipv4, local_ipv6]
-  - comment: Nginx MQTT
-    port: 8883
-    protos: [tcp]
-    from_networks: [any]
-  - comment: NetPerf - File generator
-    port: 9116
-    protos: [tcp]
-    from_networks: [wireguard_ipv4]
-  - comment: UniFi - AP discovery
-    port: 10001
-    protos: [udp]
-    from_networks: [local_ipv4, local_ipv6]
-  - comment: Zabbix agent
-    port: 10050
-    protos: [tcp]
-    from_networks: [docker_ipv4]
-  - comment: Graylog - GELF
-    port: 12201
-    protos: [tcp, udp]
-    from_networks: [docker_ipv4, local_ipv4, local_ipv6, wireguard_ipv4]
-  - comment: Syncthing TCP and QUIC
-    port: 22000
-    protos: [tcp, udp]
-    from_networks: [any]
-  - comment: Plex
-    port: 32400
-    protos: [tcp]
-    from_networks: [any]
-  - comment: NFS (v3 only)
-    port: 32765
-    protos: [tcp, udp]
-    from_networks: [local_ipv4, local_ipv6]
-  - comment: NFS (v3 only)
-    port: 32767
-    protos: [tcp, udp]
-    from_networks: [local_ipv4, local_ipv6]
-  - comment: Wireguard
-    port: 51820
-    protos: [udp]
-    from_networks: [any]
+firewalld:
+  - zone: public # Based on /usr/lib/firewalld/zones/public.xml
+    interfaces: []
+    source_networks: []
+    allowed_services:
+      - ssh # 22/tcp
+      - http # 80/tcp
+      - https # 443/tcp
+      - http3 # 443/udp (QUIC)
+      - syncthing # 21027/udp, 22000/tcp and 22000/udp
+      - dhcpv6-client # 546/udp
+    allowed_ports: []
+    extra_strings:
+      - key: short
+        value: Public
+      - key: description
+        value: For use in public areas. You do not trust the other computers on networks to not harm your computer. Only selected incoming connections are accepted.
+    extra_booleans: [forward]
+
+  - zone: local
+    interfaces: []
+    source_networks: [local_ipv4, local_ipv6]
+    allowed_services:
+      - ssh # 22/tcp
+      - http # 80/tcp
+      - rpc-bind # 111/tcp and 111/udp for NFS v3
+      - https # 443/tcp
+      - http3 # 443/udp (QUIC)
+      - dhcpv6-client # 546/udp
+      - nfs # 2049/tcp
+      - nfs3 # 2049/tcp and 2049/udp
+      - syncthing # 21027/udp, 22000/tcp and 22000/udp
+      - wireguard # 51820/udp
+    allowed_ports:
+      - port: 1514 # Graylog - Syslog
+        protos: [tcp, udp]
+      - port: 5044 # Graylog - Beats
+        protos: [tcp]
+      - port: 7500 # Tang (https://github.com/latchset/tang)
+        protos: [tcp]
+      - port: 8080 # UniFi - Device communication
+        protos: [tcp]
+      - port: 8096 # Jellyfin
+        protos: [tcp]
+      - port: 8883 # Nginx MQTT
+        protos: [tcp]
+      - port: 12201 # Graylog - GELF
+        protos: [tcp, udp]
+      - port: 32400 # Plex
+        protos: [tcp, udp]
+      - port: 32765 # NFS STATD_PORT
+        protos: [tcp, udp]
+      - port: 32767 # NFS MNT_PORT
+        protos: [tcp, udp]
+    extra_strings: []
+    extra_booleans: []
+
+  - zone: wireguard
+    interfaces: [wg0]
+    source_networks: []
+    allowed_services: []
+    allowed_ports:
+      - port: 1514 # Graylog - Syslog
+        protos: [tcp, udp]
+      - port: 5044 # Graylog - Beats
+        protos: [tcp]
+      - port: 9116 # NetPerf - File generator
+        protos: [tcp]
+      - port: 12201 # Graylog - GELF
+        protos: [tcp, udp]
+    extra_strings: []
+    extra_booleans: []
 
 # Nextcloud
 app_nextcloud_apps_disable: "firstrunwizard,dashboard,weather_status"

@@ -1,34 +1,40 @@
 # Firewall
 # Ensure to update firewall on cloud provider!
-ufw_additional_ports:
-  - comment: Nginx HTTP
-    port: 80
-    protos: [tcp]
-    from_networks: [any]
-  - comment: Nginx HTTPS
-    port: 443
-    protos: [tcp]
-    from_networks: [any]
-  - comment: NetPerf - Prometheus blackbox exporter
-    port: 9115
-    protos: [tcp]
-    from_networks: [local_ipv4]
-  - comment: NetPerf - File generator
-    port: 9116
-    protos: [tcp]
-    from_networks: [local_ipv4]
-  - comment: Zabbix agent
-    port: 10050
-    protos: [tcp]
-    from_networks: [local_ipv4]
-  - comment: Syncthing TCP and QUIC
-    port: 22000
-    protos: [tcp, udp]
-    from_networks: [any]
-  - comment: Wireguard
-    port: 51820
-    protos: [udp]
-    from_networks: [any]
+firewalld:
+  - zone: public # Based on /usr/lib/firewalld/zones/public.xml
+    interfaces: []
+    source_networks: []
+    allowed_services:
+      - ssh # 22/tcp
+      - http # 80/tcp
+      - https # 443/tcp
+      - http3 # 443/udp (QUIC)
+      - dhcpv6-client # 546/udp
+      - syncthing # 21027/udp, 22000/tcp and 22000/udp
+      - wireguard # 51820/udp
+    allowed_ports:
+      - port: 8477 # Rsyncd over SSH
+        protos: [tcp]
+    extra_strings:
+      - key: short
+        value: Public
+      - key: description
+        value: For use in public areas. You do not trust the other computers on networks to not harm your computer. Only selected incoming connections are accepted.
+    extra_booleans: [forward]
+
+  - zone: wireguard
+    interfaces: [wg0]
+    source_networks: []
+    allowed_services:
+      - zabbix-agent # 10050/tcp
+      - syncthing # 21027/udp, 22000/tcp and 22000/udp
+    allowed_ports:
+      - port: 9115 # NetPerf - Prometheus blackbox exporter
+        protos: [tcp]
+      - port: 9116 # NetPerf - File generator
+        protos: [tcp]
+    extra_strings: []
+    extra_booleans: []
 
 # GoatCounter
 app_goatcounter_arch: arm64

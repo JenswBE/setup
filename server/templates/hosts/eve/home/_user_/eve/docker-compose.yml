@@ -1099,6 +1099,7 @@ networks:
 
   backup-nc-db:
     name: backup-nc-db
+    internal: true
 
   keycloak:
     name: keycloak

@@ -36,18 +36,3 @@
       ansible.builtin.service:
         name: filebeat
         state: restarted
-
-    - name: Copy docker config
-      register: docker_config
-      ansible.builtin.template:
-        src: docker-daemon.json
-        dest: /etc/docker/daemon.json
-        owner: root
-        group: root
-        mode: "644"
-
-    - name: Restart docker if config was changed
-      when: docker_config.changed
-      ansible.builtin.service:
-        name: docker
-        state: restarted

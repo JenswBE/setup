@@ -6,7 +6,6 @@ general_user: jens
 
 # Docker
 docker_path: /usr/bin/docker # Used by systemd units
-docker_users: []
 
 # Firewall
 firewall_ssh_port: 22

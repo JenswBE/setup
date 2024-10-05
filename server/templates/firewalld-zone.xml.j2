@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <zone>
+{% for interface in zone.interfaces %}
+  <interface name="{{ interface }}"/>
+{% endfor %}
 {% for network_name in zone.source_networks %}
   <source address="{{ lookup('vars', 'network_' + network_name) }}"/>
 {% endfor %}
@@ -7,7 +10,9 @@
   <service name="{{ service_name }}"/>
 {% endfor %}
 {% for port in zone.allowed_ports %}
-  <port port="{{ port.port }}" protocol="{{ port.proto }}"/>
+{% for proto in port.protos %}
+  <port port="{{ port.port }}" protocol="{{ proto }}"/>
+{% endfor %}
 {% endfor %}
 {% for item in zone.extra_strings %}
   <{{ item.key }}>{{ item.value }}</{{ item.key }}>
