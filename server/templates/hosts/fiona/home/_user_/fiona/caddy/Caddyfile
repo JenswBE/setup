@@ -1,0 +1,41 @@
+{
+	servers {
+		listener_wrappers {
+			proxy_protocol {
+				timeout 2s
+				allow "{{ network_docker_ipv4 }}"
+			}
+			tls
+		}
+	}
+}
+
+(defaults) {
+	log {
+		output file /access_logs/caddy.log
+	}
+
+	header {
+		# Based on https://owasp.org/www-project-secure-headers/#div-bestpractices
+		Referrer-Policy no-referrer
+		Strict-Transport-Security max-age=31536000; includeSubDomains
+		X-Content-Type-Options nosniff
+		X-Frame-Options true
+		X-XSS-Protection 0
+	}
+}
+
+(acme-dns) {
+	tls admin@jensw.be {
+		dns desec {
+			token {$DESEC_TOKEN}
+		}
+		propagation_delay 60s
+	}
+}
+
+"ups.{{ general_domain_local }}" {
+	reverse_proxy http://peanut:8080
+	import defaults
+	import acme-dns
+}

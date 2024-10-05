@@ -24,8 +24,7 @@ services:
   # allows to have the real client IP's available inside the bridged
   # Treafik instance (using PROXY protocol). In case you would only have
   # a single reverse proxy on the host network, you would loose all the convenience
-  # of the Traefik Docker provider support (not having to expose each service on a host
-  # port and auto-configuration of the services/loadbalancers).
+  # of using Docker networks.
   nginx:
     <<: *defaults
     image: docker.io/library/nginx:alpine
@@ -34,40 +33,23 @@ services:
     volumes:
       - ./nginx/default.conf:/etc/nginx/nginx.conf:ro
 
-  traefik:
+  caddy:
     <<: *defaults
-    image: docker.io/library/traefik:latest
-    container_name: traefik
-    command:
-      # - "--log.level=DEBUG"
-      - "--accesslog.filepath=/access-logs/access.log" # Used by CrowdSec
-      - "--providers.file.directory=/conf"
-      - "--providers.file.watch=true"
-      - "--entrypoints.websecure.address=:443"
-      - "--entrypoints.websecure.proxyProtocol.trustedIPs=#VAR:network_any_private:VAR#"
-      - "--entrypoints.websecure.http.middlewares=secure-https@file"
-      - "--entrypoints.web.address=:80"
-      - "--entrypoints.web.proxyProtocol.trustedIPs=#VAR:network_any_private:VAR#"
-      - "--entrypoints.web.http.redirections.entryPoint.to=websecure"
-      - "--entrypoints.web.http.redirections.entryPoint.scheme=https"
-      - "--certificatesresolvers.le-dns.acme.dnschallenge=true"
-      - "--certificatesresolvers.le-dns.acme.dnschallenge.provider=desec"
-      - "--certificatesresolvers.le-dns.acme.email=#VAR:general_mail_admin:VAR#@#VAR:general_domain_default:VAR#"
-      - "--certificatesresolvers.le-dns.acme.storage=/letsencrypt/acme-dns.json"
-      - "--api=true"
-      - "--ping.manualrouting=true"
+    build: ./caddy
+    container_name: caddy
     ports:
       - 127.0.0.1:2080:80
       - 127.0.0.1:2443:443
     networks:
-      - traefik
+      - caddy
     volumes:
-      - ./traefik:/conf:ro
-      - traefik-cert:/letsencrypt
-      - traefik-access-logs:/access-logs
+      - ./caddy/Caddyfile:/etc/caddy/Caddyfile
+      - caddy-access-logs:/access_logs
+      - caddy-config:/config
+      - caddy-data:/data
     environment:
       TZ: "#VAR:general_timezone:VAR#"
-      DESEC_TOKEN: "#VAR:app_traefik_desec_token:VAR#"
+      DESEC_TOKEN: "#VAR:app_caddy_desec_token:VAR#"
 
   # ==========================
   # =         BLOCKY         =
@@ -77,18 +59,18 @@ services:
     image: ghcr.io/0xerr0r/blocky:latest
     container_name: blocky
     networks:
-      - traefik
+      - caddy
     ports:
       - "53:53/tcp" # DNS TCP
       - "53:53/udp" # DNS UDP
     volumes:
       - ./blocky/config.yml:/app/config.yml:ro
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.blocky.entrypoints=websecure"
-      - "traefik.http.routers.blocky.rule=Method(`GET`) && Host(`blocky.fiona.#VAR:general_domain_local:VAR#`) && Path(`/metrics`)"
-      - "traefik.http.routers.blocky.tls.certresolver=le-dns"
-      - "traefik.http.services.blocky-#VAR:ansible_hostname:VAR#.loadbalancer.server.port=8080"
+    # labels:
+    #   - "traefik.enable=true"
+    #   - "traefik.http.routers.blocky.entrypoints=websecure"
+    #   - "traefik.http.routers.blocky.rule=Method(`GET`) && Host(`blocky.fiona.#VAR:general_domain_local:VAR#`) && Path(`/metrics`)"
+    #   - "traefik.http.routers.blocky.tls.certresolver=le-dns"
+    #   - "traefik.http.services.blocky-#VAR:ansible_hostname:VAR#.loadbalancer.server.port=8080"
 
   blocky-pixelserv-tls: # Serves transparent pixels for Blocky
     <<: *defaults
@@ -116,7 +98,7 @@ services:
     image: docker.io/brandawg93/peanut:latest
     container_name: peanut
     networks:
-      - traefik
+      - caddy
     environment:
       TZ: "#VAR:general_timezone:VAR#"
       NUT_HOST: host.docker.internal
@@ -137,7 +119,7 @@ services:
       COLLECTIONS: >-
         crowdsecurity/http-cve
         crowdsecurity/linux
-        crowdsecurity/traefik
+        crowdsecurity/caddy
       PARSERS: >-
         crowdsecurity/nextcloud-whitelist
       GID: "#VAR:ansible_real_group_id:VAR#"
@@ -149,14 +131,14 @@ services:
       - crowdsec-config:/etc/crowdsec/
       # Logs
       - /var/log/journal:/var/log/host:ro # SSHD logs for Debian
-      - traefik-access-logs:/var/log/traefik:ro
+      - caddy-access-logs:/var/log/caddy:ro
 
 #################################################################
 #                            NETWORKS                           #
 #################################################################
 networks:
-  traefik:
-    name: traefik
+  caddy:
+    name: caddy
 
   macvlan:
     name: macvlan
@@ -173,7 +155,8 @@ networks:
 #                            VOLUMES                            #
 #################################################################
 volumes:
+  caddy-access-logs:
+  caddy-config:
+  caddy-data:
   crowdsec-config:
   crowdsec-db:
-  traefik-access-logs:
-  traefik-cert:
