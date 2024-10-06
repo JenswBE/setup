@@ -1,6 +1,6 @@
 "auth.{{ general_domain_default }}" {
 	import default_public_reverse_proxy "http://keycloak:8080"
-	header >X-Frame-Options SAMEORIGIN
+	header >X-Frame-Options "SAMEORIGIN"
 }
 
 "beheer.{{ general_domain_bjoetiek }}" {

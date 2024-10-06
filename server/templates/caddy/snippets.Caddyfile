@@ -34,11 +34,11 @@
 
 (reverse_proxy_secure_headers) {
 	# Based on https://owasp.org/www-project-secure-headers/#div-bestpractices
-	header_down Referrer-Policy no-referrer
-	header_down Strict-Transport-Security max-age=31536000; includeSubDomains
-	header_down X-Content-Type-Options nosniff
-	header_down X-Frame-Options DENY
-	header_down X-XSS-Protection 0
+	header_down Referrer-Policy "no-referrer"
+	header_down Strict-Transport-Security "max-age=31536000; includeSubDomains"
+	header_down X-Content-Type-Options "nosniff"
+	header_down X-Frame-Options "DENY"
+	header_down X-XSS-Protection "0"
 }
 
 (local_access) {
