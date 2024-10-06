@@ -1,5 +1,3 @@
 "ups.{{ general_domain_local }}" {
-	reverse_proxy http://peanut:8080
-	import defaults
-	import local_access
+	import default_local_reverse_proxy "http://peanut:8080"
 }
