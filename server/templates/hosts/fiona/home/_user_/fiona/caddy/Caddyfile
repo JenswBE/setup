@@ -1,3 +1,6 @@
+import ./configs/shared_snippets.txt
+
+# Global
 {
 	import ./configs/shared_global.txt
 
@@ -21,8 +24,6 @@
 		}
 	}
 }
-
-import ./configs/shared_snippets.txt
 
 "portal.{{ general_domain_local }}" {
 	import defaults

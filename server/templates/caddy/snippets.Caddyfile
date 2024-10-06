@@ -1,3 +1,31 @@
+# ===== SECURITY =====
+
+(default_authorization) {
+	crypto key verify "{{ app_caddy_security_jwt_secret }}"
+	allow roles {args[0]}
+}
+
+(default_authorization_local) {
+	authorization policy policy_local_{args[0]} {
+		import default_authorization {args[0]}
+		set auth url "https://portal.{{ general_domain_local }}/"
+	}
+}
+
+(default_authorization_public) {
+	authorization policy policy_public_{args[0]} {
+		import default_authorization {args[0]}
+		set auth url "https://portal.{{ general_domain_default }}/"
+	}
+}
+
+(default_authorization_local_and_public) {
+	import default_authorization_local {args[0]}
+	import default_authorization_public {args[0]}
+}
+
+# ===== SITES =====
+
 (defaults) {
 	log {
 		output file /access_logs/caddy.log
@@ -23,6 +51,13 @@
 
 	@denied not remote_ip private_ranges
 	abort @denied
+}
+
+(default_redirect) {
+	{args[0]} {
+		import defaults
+		redir https://{args[1]}{uri}
+	}
 }
 
 (default_reverse_proxy) {

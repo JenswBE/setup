@@ -32,35 +32,6 @@ firewalld:
     extra_strings: []
     extra_booleans: []
 
-# Redirects
-redirects:
-  - from: "www.{{ general_domain_bjoetiek }}"
-    to: "{{ general_domain_bjoetiek }}"
-  - from: "{{ general_domain_gwendv }}"
-    to: "www.instagram.com/gwendolyndevocht/"
-  - from: "www.{{ general_domain_gwendv }}"
-    to: "www.instagram.com/gwendolyndevocht/"
-  - from: "www.{{ general_domain_interwego }}"
-    to: "{{ general_domain_interwego }}"
-  - from: "{{ general_domain_interwego_be }}"
-    to: "{{ general_domain_interwego }}"
-  - from: "www.{{ general_domain_interwego_be }}"
-    to: "{{ general_domain_interwego }}"
-  - from: "{{ general_domain_interwego_eu }}"
-    to: "{{ general_domain_interwego }}"
-  - from: "www.{{ general_domain_interwego_eu }}"
-    to: "{{ general_domain_interwego }}"
-  - from: "{{ general_domain_interwego_nl }}"
-    to: "{{ general_domain_interwego }}"
-  - from: "www.{{ general_domain_interwego_nl }}"
-    to: "{{ general_domain_interwego }}"
-  - from: "{{ general_domain_local }}"
-    to: "{{ general_domain_default }}"
-  - from: "www.{{ general_domain_local }}"
-    to: "{{ general_domain_default }}"
-  - from: "www.{{ general_domain_wtech }}"
-    to: "{{ general_domain_wtech }}"
-
 # SWS config
 sws_default_headers: &sws_default_headers
   Cross-Origin-Embedder-Policy: require-corp; report-to="default"

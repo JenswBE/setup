@@ -845,8 +845,6 @@ volumes:
   graylog-mongodb-dump:
   ha-mosquitto-data:
   nc-db-dump:
-  oauth2-proxy-helper-config:
-  oauth2-proxy-helper-data:
   scrutiny-influxdb:
   scrutiny-sqlite:
   unifi-mongodb-dump:

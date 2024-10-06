@@ -1,0 +1,25 @@
+"assets.{{ general_domain_default }}" {
+	import default_public_reverse_proxy "http://sws-assets"
+	authorize with policy_public_infra
+}
+
+"ext.{{ general_domain_default }}" {
+	import default_public_reverse_proxy "http://sws-email-username-generator"
+}
+
+"stamboom.{{ general_domain_default }}" {
+	import default_public_reverse_proxy "http://sws-family-trees"
+	authorize with policy_public_family
+}
+
+"{{ general_domain_bjoetiek }}" {
+	import default_public_reverse_proxy "http://sws-bjoetiek"
+}
+
+"{{ general_domain_interwego }}" {
+	import default_public_reverse_proxy "http://sws-interwego"
+}
+
+"{{ general_domain_wtech }}" {
+	import default_public_reverse_proxy "http://sws-wtech"
+}

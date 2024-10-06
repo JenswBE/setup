@@ -995,8 +995,6 @@ volumes:
   monica-db-dump:
   nc-calcardbackup:
   nc-db-dump:
-  oauth2-proxy-helper-config:
-  oauth2-proxy-helper-data:
   paperless-consume:
   paperless-db-dump:
   paperless-export:
