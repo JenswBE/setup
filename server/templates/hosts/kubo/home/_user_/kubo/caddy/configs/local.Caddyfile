@@ -1,4 +1,5 @@
 import site_local_blocky
+import site_local_crowdsec
 
 "grafana.{{ general_domain_local }}" {
 	import default_local_reverse_proxy "http://grafana:3000"

@@ -7,14 +7,18 @@ scrape_configs:
     scheme: https
     static_configs:
       - targets:
+          - "blocky.eve.{{ general_domain_local }}"
           - "blocky.fiona.{{ general_domain_local }}"
           - "blocky.kubo.{{ general_domain_local }}"
-          - "blocky.eve.{{ general_domain_local }}"
 
-  - job_name: opendtu
-    metrics_path: /api/prometheus/metrics
+  - job_name: crowdsec
+    scheme: https
     static_configs:
-      - targets: ["opendtu.{{ general_domain_local }}"]
+      - targets:
+          - "crowdsec.eve.{{ general_domain_local }}"
+          - "crowdsec.fiona.{{ general_domain_local }}"
+          - "crowdsec.kubo.{{ general_domain_local }}"
+          - "crowdsec.po.{{ general_domain_local }}"
 
   - job_name: netperf-home-download
     scrape_interval: 5m
@@ -80,10 +84,7 @@ scrape_configs:
       - target_label: __address__
         replacement: eve.wireguard:9115
 
-  - job_name: crowdsec
+  - job_name: opendtu
+    metrics_path: /api/prometheus/metrics
     static_configs:
-      - targets:
-          - crowdsec:6060
-          - eve.wireguard:6060
-          - fiona.{{ general_domain_local }}:6060
-          - po.wireguard:6060
+      - targets: ["opendtu.{{ general_domain_local }}"]

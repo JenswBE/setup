@@ -746,7 +746,7 @@ services:
     ports:
       - 127.0.0.1:9000:8080
     networks:
-      - crowdsec
+      - caddy
     environment:
       TZ: "#VAR:general_timezone:VAR#"
       COLLECTIONS: >-

@@ -141,6 +141,7 @@ services:
       crowdsec-docker-proxy:
         condition: service_started
     networks:
+      - caddy
       - crowdsec
     environment:
       TZ: "#VAR:general_timezone:VAR#"
@@ -150,7 +151,7 @@ services:
         crowdsecurity/linux
       GID: "#VAR:ansible_real_group_id:VAR#"
       BOUNCER_KEY_firewall: "#VAR:app_crowdsec_bouncer_firewall_key:VAR#"
-      DOCKER_HOST: tcp://crowdsec-docker-proxy:2375
+      DOCKER_HOST: tcp://crowdsec-docker-proxy:2375 # Needed for rsyncd logs
     volumes:
       # Config
       - ./crowdsec/acquis.yaml:/etc/crowdsec/acquis.yaml:ro,z

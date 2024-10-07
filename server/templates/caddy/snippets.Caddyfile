@@ -97,13 +97,26 @@
 
 (site_local_blocky) {
 	"blocky.{{ ansible_hostname }}.{{ general_domain_local }}" {
-		@blocky_not_allowed_api_request {
+		@not_get_metrics {
 			not {
 				method GET
 				path /metrics
 			}
 		}
-		respond @blocky_not_allowed_api_request "403 Forbidden: Only GET /metrics is allowed" 403
+		respond @not_get_metrics "403 Forbidden: Only GET /metrics is allowed" 403
 		import default_local_reverse_proxy "http://blocky:8080"
+	}
+}
+
+(site_local_crowdsec) {
+	"crowdsec.{{ ansible_hostname }}.{{ general_domain_local }}" {
+		@not_get_metrics {
+			not {
+				method GET
+				path /metrics
+			}
+		}
+		respond @not_get_metrics "403 Forbidden: Only GET /metrics is allowed" 403
+		import default_local_reverse_proxy "http://crowdsec:6060"
 	}
 }

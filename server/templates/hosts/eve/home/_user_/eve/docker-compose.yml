@@ -677,7 +677,8 @@ services:
     container_name: crowdsec
     ports:
       - 127.0.0.1:9000:8080
-      - "#VAR:app_wireguard[0].ip_addresses[0]:VAR#:6060:6060"
+    networks:
+      - caddy
     environment:
       TZ: "#VAR:general_timezone:VAR#"
       COLLECTIONS: >-

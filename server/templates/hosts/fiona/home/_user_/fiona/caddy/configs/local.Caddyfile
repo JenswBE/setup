@@ -1,4 +1,5 @@
 import site_local_blocky
+import site_local_crowdsec
 
 "ups.{{ general_domain_local }}" {
 	import default_local_reverse_proxy "http://peanut:8080"

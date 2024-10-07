@@ -90,7 +90,8 @@ services:
     container_name: crowdsec
     ports:
       - 127.0.0.1:9000:8080
-      - 6060:6060
+    networks:
+      - caddy
     environment:
       TZ: "#VAR:general_timezone:VAR#"
       COLLECTIONS: >-
