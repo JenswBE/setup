@@ -1,0 +1,44 @@
+bootstrapDns:
+  - upstream: https://dns.quad9.net/dns-query
+    ips:
+      - "9.9.9.9"
+      - "149.112.112.112"
+      # - "2620:fe::fe"
+      # - "2620:fe::9"
+
+upstreams:
+  groups:
+    default:
+      - https://dns.quad9.net/dns-query
+      - https://zero.dns0.eu/
+
+customDNS:
+  zone: |
+    {{ app_blocky_zone | indent( width=4) }}
+
+blocking:
+  blockType: zeroIP
+  denylists:
+    base:
+      - https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts # adware + malware
+      - |
+        # https://www.security.nl/posting/847704
+        # Since we use up-to-date browsers, it is likely not needed anyway
+        *.polyfill.io
+    extra:
+      - https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/fakenews-only/hosts
+      - https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/gambling-only/hosts
+  clientGroupsBlock:
+    default:
+      - minimal
+      - extra
+    192.168.21.1/24: # Unfiltered
+      - minimal
+
+ports:
+  http: 8080
+prometheus:
+  enable: true
+queryLog:
+  type: none
+  # type: console # Enable for debugging

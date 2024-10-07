@@ -49,8 +49,8 @@
 		propagation_delay 60s
 	}
 
-	@denied not remote_ip private_ranges
-	abort @denied
+	@not_local_ip not remote_ip private_ranges
+	abort @not_local_ip
 }
 
 (default_redirect) {
@@ -93,4 +93,17 @@
 
 (default_public_reverse_proxy_with_insecure_upstream) {
 	import default_reverse_proxy_with_insecure_upstream {args[0]}
+}
+
+(site_local_blocky) {
+	"blocky.{{ ansible_hostname }}.{{ general_domain_local }}" {
+		@blocky_not_allowed_api_request {
+			not {
+				method GET
+				path /metrics
+			}
+		}
+		respond @blocky_not_allowed_api_request "403 Forbidden: Only GET /metrics is allowed" 403
+		import default_local_reverse_proxy "http://blocky:8080"
+	}
 }

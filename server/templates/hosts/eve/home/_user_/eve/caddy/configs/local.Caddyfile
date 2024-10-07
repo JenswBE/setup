@@ -1,3 +1,5 @@
+import site_local_blocky
+
 "crm.{{ general_domain_local }}" {
 	import default_local_reverse_proxy "http://monica"
 }

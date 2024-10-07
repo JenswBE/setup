@@ -52,43 +52,20 @@ services:
       TZ: "#VAR:general_timezone:VAR#"
 
   # ==========================
-  # =         BLOCKY         =
+  # =      DNS - BLOCKY      =
   # ==========================
   blocky:
     <<: *defaults
     image: ghcr.io/0xerr0r/blocky:latest
     container_name: blocky
+    user: "#VAR:ansible_real_user_id:VAR#:#VAR:ansible_real_group_id:VAR#"
     networks:
       - caddy
     ports:
       - "53:53/tcp" # DNS TCP
       - "53:53/udp" # DNS UDP
     volumes:
-      - ./blocky/config.yml:/app/config.yml:ro
-    # labels:
-    #   - "traefik.enable=true"
-    #   - "traefik.http.routers.blocky.entrypoints=websecure"
-    #   - "traefik.http.routers.blocky.rule=Method(`GET`) && Host(`blocky.fiona.#VAR:general_domain_local:VAR#`) && Path(`/metrics`)"
-    #   - "traefik.http.routers.blocky.tls.certresolver=le-dns"
-    #   - "traefik.http.services.blocky-#VAR:ansible_hostname:VAR#.loadbalancer.server.port=8080"
-
-  blocky-pixelserv-tls: # Serves transparent pixels for Blocky
-    <<: *defaults
-    image: docker.io/imthai/pixelserv-tls:latest
-    container_name: blocky-pixelserv-tls
-    volumes:
-      # MANUAL ACTION: Add /root/ca/ca.crt and /root/ca/ca.key with root only access.
-      # sudo /root/ca/
-      # sudo chmod 700 /root/ca/
-      # sudo touch /root/ca/ca.key
-      # sudo chmod 600 /root/ca/ca.key
-      # sudo nano /root/ca/ca.key
-      # sudo nano /root/ca/ca.crt
-      # sudo chmod 600 /root/ca/ca.crt
-      - /root/ca:/var/cache/pixelserv
-    networks:
-      macvlan:
-        ipv4_address: 192.168.50.61
+      - ./blocky/config.txt:/app/config.yml:ro
 
   # =========================
   # =         PEANUT        =
@@ -139,17 +116,6 @@ services:
 networks:
   caddy:
     name: caddy
-
-  macvlan:
-    name: macvlan
-    driver: macvlan
-    driver_opts:
-      parent: enp2s0
-    ipam:
-      config:
-        - subnet: 192.168.51.0/24
-          ip_range: 192.168.51.60/30 # .60 - .63
-          gateway: 192.168.51.1
 
 #################################################################
 #                            VOLUMES                            #

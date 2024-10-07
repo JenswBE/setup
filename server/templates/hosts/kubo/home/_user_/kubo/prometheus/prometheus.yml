@@ -4,8 +4,12 @@ scrape_configs:
       - targets: ["localhost:9090"]
 
   - job_name: blocky
+    scheme: https
     static_configs:
-      - targets: ["blocky.fiona.{{ general_domain_local }}"]
+      - targets:
+          - "blocky.fiona.{{ general_domain_local }}"
+          - "blocky.kubo.{{ general_domain_local }}"
+          - "blocky.eve.{{ general_domain_local }}"
 
   - job_name: opendtu
     metrics_path: /api/prometheus/metrics

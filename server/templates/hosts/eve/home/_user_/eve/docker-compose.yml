@@ -288,6 +288,22 @@ services:
     environment:
       TZ: "#VAR:general_timezone:VAR#"
 
+  # ==========================
+  # =      DNS - BLOCKY      =
+  # ==========================
+  blocky:
+    <<: *defaults
+    image: ghcr.io/0xerr0r/blocky:latest
+    container_name: blocky
+    user: "#VAR:ansible_real_user_id:VAR#:#VAR:ansible_real_group_id:VAR#"
+    networks:
+      - caddy
+    ports:
+      - "53:53/tcp" # DNS TCP
+      - "53:53/udp" # DNS UDP
+    volumes:
+      - ./blocky/config.txt:/app/config.yml:ro
+
   # ===========================================================================
   # =   DEAD LINK CHECKER                                                     =
   # =   https://github.com/JenswBE/python-dead-link-checker                   =

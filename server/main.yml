@@ -52,7 +52,7 @@
       when: '"home" in group_names'
       register: lookup_ips
       ansible.builtin.command: dig +short {{ item }}.{{ general_domain_local }}
-      failed_when: lookup_ips.stdout == ""
+      failed_when: lookup_ips.stdout == "" or "connection refused" in lookup_ips.stdout
       changed_when: false
       loop: "{{ hostnames }}"
       tags: ["always"]

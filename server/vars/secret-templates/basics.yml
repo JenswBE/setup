@@ -1,3 +1,7 @@
+# Blocky
+app_blocky_zone: |
+  ZONE CONTENTS
+
 # Caddy Security / AuthCrunch
 # Same config should be shared between all Caddy Security/AuthCrunch instances.
 app_caddy_security_jwt_secret: "" # Random string
