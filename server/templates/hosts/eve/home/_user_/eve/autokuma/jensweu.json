@@ -2,6 +2,6 @@
   "type": "http",
   "name": "Redirect: Jensw.eu",
   "url": "https://{{ general_domain_local }}",
-  "acceptedStatuscodes": ["302"],
+  "accepted_statuscodes": ["302"],
   "maxRedirects": 0
 }

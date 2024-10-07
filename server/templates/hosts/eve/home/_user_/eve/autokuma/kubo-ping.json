@@ -1,5 +1,0 @@
-{
-  "type": "http",
-  "name": "Kubo: Ping",
-  "url": "https://ping.kubo.{{ general_domain_default }}"
-}

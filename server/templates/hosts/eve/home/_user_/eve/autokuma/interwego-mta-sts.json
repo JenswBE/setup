@@ -2,7 +2,7 @@
   "type": "http",
   "name": "URIports: MTA-STS Interwego.com",
   "url": "https://mta-sts.{{ general_domain_interwego }}/.well-known/mta-sts.txt",
-  "maxRetries": 3,
+  "max_retries": 3,
   "interval": 300,
   "retryInterval": 300
 }

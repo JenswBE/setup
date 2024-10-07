@@ -2,7 +2,7 @@
   "type": "http",
   "name": "URIports: MTA-STS Jensw.be",
   "url": "https://mta-sts.{{ general_domain_default }}/.well-known/mta-sts.txt",
-  "maxRetries": 3,
+  "max_retries": 3,
   "interval": 300,
   "retryInterval": 300
 }
