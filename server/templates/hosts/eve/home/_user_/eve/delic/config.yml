@@ -40,6 +40,8 @@ sites:
       - email_technical_en
 
   - url: https://kristofcoenen.be
+    ignored_links:
+      - ^https://kristofcoenen.be/assets/ # Often gives "503 - Service Unavailable" (hosted by external party)
     notify:
       - email_technical_en
 
