@@ -1,3 +1,4 @@
 import default_authorization_local_and_public "family"
 import default_authorization_local_and_public "infra"
+import default_authorization_local_and_public "media"
 import default_authorization_local_and_public "sun"
