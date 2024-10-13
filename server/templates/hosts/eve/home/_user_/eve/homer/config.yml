@@ -241,6 +241,12 @@ services:
         url: https://www.mail-tester.com/
         <<: *default
 
+      - name: ProxyStore
+        subtitle: Privacy friendly store (e.g. Mullvad renew)
+        logo: https://icons.getbootstrap.com/assets/icons/shield-check.svg
+        url: https://digitalgoods.proxysto.re/en
+        <<: *default
+
       - name: QElectroTech
         subtitle: Electric diagram/drawing
         logo: https://raw.githubusercontent.com/qelectrotech/qelectrotech-source-mirror/master/ico/128x128/diagram.png
