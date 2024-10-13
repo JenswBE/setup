@@ -18,7 +18,7 @@ import ./configs/shared_snippets.txt
 		}
 
 		authentication portal portal_public {
-			crypto default token lifetime 3600
+			crypto default token lifetime 604800 # 7 days (60 * 60 * 24 * 7)
 			crypto key sign-verify "{{ app_caddy_security_jwt_secret }}"
 			enable identity provider keycloak
 			cookie domain "{{ general_domain_default }}"
