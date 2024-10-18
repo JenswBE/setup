@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<opml version="2.0">
+    <head>
+        <title>Miniflux</title>
+        <dateCreated>Wed, 16 Oct 2024 10:05:54 CEST</dateCreated>
+    </head>
+    <body>
+        <outline text="Golang">
+            <outline title="The Go Blog" text="The Go Blog" xmlUrl="https://go.dev/blog/feed.atom?format=xml" htmlUrl="https://go.dev/blog/feed.atom?format=xml" type="rss"></outline>
+        </outline>
+        <outline text="News">
+            <outline title="Blog – Plex" text="Blog – Plex" xmlUrl="https://www.plex.tv/blog/feed/atom/" htmlUrl="https://www.plex.tv" type="rss"></outline>
+            <outline title="Enable Sysadmin" text="Enable Sysadmin" xmlUrl="https://www.redhat.com/sysadmin/rss.xml" htmlUrl="https://www.redhat.com/sysadmin/" type="rss"></outline>
+            <outline title="Fedora Magazine" text="Fedora Magazine" xmlUrl="https://fedoramagazine.org/feed/" htmlUrl="https://fedoramagazine.org" type="rss"></outline>
+            <outline title="It&#39;s FOSS" text="It&#39;s FOSS" xmlUrl="https://itsfoss.com/rss/" htmlUrl="https://itsfoss.com" type="rss"></outline>
+            <outline title="Opensource.com" text="Opensource.com" xmlUrl="https://opensource.com/feed" htmlUrl="https://opensource.com/frontpage" type="rss"></outline>
+            <outline title="Phoronix" text="Phoronix" xmlUrl="https://www.phoronix.com/rss.php" htmlUrl="https://www.phoronix.com/" type="rss"></outline>
+            <outline title="selfh.st/ed" text="selfh.st/ed" xmlUrl="https://selfh.st/rss/" htmlUrl="https://selfh.st/" type="rss"></outline>
+            <outline title="The latest updates – Nextcloud" text="The latest updates – Nextcloud" xmlUrl="https://nextcloud.com/feed/" htmlUrl="https://nextcloud.com" type="rss"></outline>
+            <outline title="Visual Studio Code - Code Editing. Redefined." text="Visual Studio Code - Code Editing. Redefined." xmlUrl="https://code.visualstudio.com/feed.xml" htmlUrl="https://code.visualstudio.com/" type="rss"></outline>
+        </outline>
+        <outline text="Security">
+            <outline title="Security.NL maakt Nederland veilig" text="Security.NL maakt Nederland veilig" xmlUrl="https://www.security.nl/rss/headlines.xml" htmlUrl="https://www.security.nl" type="rss"></outline>
+        </outline>
+        <outline text="Steam">
+            <outline title="Craftomation 101 RSS Feed" text="Craftomation 101 RSS Feed" xmlUrl="https://steamcommunity.com/games/1724140/rss/" htmlUrl="https://steamcommunity.com/games/1724140" type="rss"></outline>
+            <outline title="Scrap Mechanic RSS Feed" text="Scrap Mechanic RSS Feed" xmlUrl="https://steamcommunity.com/games/387990/rss/" htmlUrl="https://steamcommunity.com/games/387990" type="rss"></outline>
+            <outline title="The Planet Crafter RSS Feed" text="The Planet Crafter RSS Feed" xmlUrl="https://steamcommunity.com/games/1284190/rss/" htmlUrl="https://steamcommunity.com/games/1284190" type="rss"></outline>
+            <outline title="Voidtrain RSS Feed" text="Voidtrain RSS Feed" xmlUrl="https://steamcommunity.com/games/1159690/rss/" htmlUrl="https://steamcommunity.com/games/1159690" type="rss"></outline>
+            <outline title="Volcanoids RSS Feed" text="Volcanoids RSS Feed" xmlUrl="https://steamcommunity.com/games/951440/rss/" htmlUrl="https://steamcommunity.com/games/951440" type="rss"></outline>
+        </outline>
+        <outline text="Updates">
+            <outline title="Release notes from caddy" text="Release notes from caddy" xmlUrl="https://github.com/caddyserver/caddy/releases.atom" htmlUrl="https://github.com/caddyserver/caddy/releases" type="rss"></outline>
+            <outline title="Release notes from caddy-security" text="Release notes from caddy-security" xmlUrl="https://github.com/greenpau/caddy-security/releases.atom" htmlUrl="https://github.com/greenpau/caddy-security/releases" type="rss"></outline>
+            <outline title="Release notes from directus" text="Release notes from directus" xmlUrl="https://github.com/directus/directus/releases.atom" htmlUrl="https://github.com/directus/directus/releases" type="rss"></outline>
+            <outline title="Release notes from docker-borgmatic" text="Release notes from docker-borgmatic" xmlUrl="https://github.com/borgmatic-collective/docker-borgmatic/releases.atom" htmlUrl="https://github.com/b3vis/docker-borgmatic/releases" type="rss"></outline>
+            <outline title="Release notes from docker-sshd" text="Release notes from docker-sshd" xmlUrl="https://github.com/panubo/docker-sshd/releases.atom" htmlUrl="https://github.com/panubo/docker-sshd/releases" type="rss"></outline>
+            <outline title="Release notes from paperless-ngx" text="Release notes from paperless-ngx" xmlUrl="https://github.com/paperless-ngx/paperless-ngx/releases.atom" htmlUrl="https://github.com/paperless-ngx/paperless-ngx/releases" type="rss"></outline>
+        </outline>
+    </body>
+</opml>
