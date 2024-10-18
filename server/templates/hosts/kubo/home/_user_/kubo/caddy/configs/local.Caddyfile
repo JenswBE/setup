@@ -25,6 +25,20 @@ import site_local_crowdsec
 	import default_local_reverse_proxy "http://tmm:4000"
 }
 
+"torrent-system.{{ general_domain_local }}" {
+	basic_auth {
+		"{{ app_transmission_system_username }}" "{{ app_transmission_system_password | password_hash('blowfish', rounds=10, ident='2y') }}"
+	}
+	@not_get_metrics {
+		not {
+			method GET
+			path /transmission/web/
+		}
+	}
+	respond @not_get_metrics "403 Forbidden: Only GET /transmission/web/ is allowed" 403
+	import default_local_reverse_proxy "http://transmission-vpn:9091"
+}
+
 "unifi.{{ general_domain_local }}" {
 	import default_local_reverse_proxy_with_insecure_upstream "https://unifi-network-app:8443"
 }

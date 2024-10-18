@@ -1,7 +1,7 @@
 {
   "type": "http",
   "name": "Kubo: Torrent",
-  "url": "https://torrent-system.{{ general_domain_default }}/transmission/web/",
+  "url": "https://torrent-system.{{ general_domain_local }}/transmission/web/",
   "authMethod": "basic",
   "basicAuthUser": "{{ app_transmission_system_username }}",
   "basicAuthPassword": "{{ app_transmission_system_password }}"

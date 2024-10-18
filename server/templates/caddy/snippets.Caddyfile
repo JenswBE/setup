@@ -46,6 +46,7 @@
 		dns desec {
 			token "{{ app_caddy_desec_token }}"
 		}
+		resolvers 9.9.9.9 149.112.112.112
 		propagation_delay 60s
 	}
 
