@@ -467,7 +467,7 @@ services:
   # =========================
   graylog:
     <<: *defaults
-    image: docker.io/graylog/graylog:6.0
+    image: docker.io/graylog/graylog:6.1
     container_name: graylog
     entrypoint: /usr/bin/tini -- wait-for-it graylog-elasticsearch:9200 --  /docker-entrypoint.sh
     volumes:
