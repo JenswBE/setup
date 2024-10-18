@@ -241,6 +241,12 @@ services:
         url: https://www.mail-tester.com/
         <<: *default
 
+      - name: namei
+        subtitle: Debug Linux permission issues
+        icon: "fa-brands fa-linux"
+        url: https://www.man7.org/linux/man-pages/man1/namei.1.html
+        <<: *default
+
       - name: ProxyStore
         subtitle: Privacy friendly store (e.g. Mullvad renew)
         logo: https://icons.getbootstrap.com/assets/icons/shield-check.svg
