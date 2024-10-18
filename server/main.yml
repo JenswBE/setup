@@ -49,7 +49,8 @@
       tags: ["always"]
 
     - name: Lookup IP's
-      when: '"home" in group_names'
+      connection: local # Can be executed anywhere using VPN
+      # when: '"home" in group_names' # Can be executed anywhere using VPN
       register: lookup_ips
       ansible.builtin.command: dig +short {{ item }}.{{ general_domain_local }}
       failed_when: lookup_ips.stdout == "" or "connection refused" in lookup_ips.stdout
@@ -58,13 +59,13 @@
       tags: ["always"]
 
     - name: Build IP map
-      when: '"home" in group_names'
+      # when: '"home" in group_names' # Can be executed anywhere using VPN
       ansible.builtin.set_fact:
         ip: "{{ lookup_ips.results | map(attribute='item') | zip(lookup_ips.results | map(attribute='stdout')) | community.general.dict }}"
       tags: ["always"]
 
     - name: Print IP lookup result
-      when: '"home" in group_names'
+      # when: '"home" in group_names' # Can be executed anywhere using VPN
       ansible.builtin.debug:
         var: ip
       tags: ["always"]

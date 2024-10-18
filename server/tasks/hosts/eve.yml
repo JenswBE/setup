@@ -6,6 +6,17 @@
   loop: "{{ app_wireguard | dict2items }}"
   tags: ["setup", "wireguard"]
 
+- name: Ensure correct DNS servers are set
+  become: true
+  ansible.builtin.blockinfile:
+    path: /etc/resolvconf/resolv.conf.d/head
+    marker: "# {mark} ANSIBLE MANAGED BLOCK - Custom DNS"
+    block: |
+      nameserver 127.0.0.1
+      nameserver {{ ip["fiona"] }}
+      nameserver {{ ip["kubo"] }}
+  tags: ["setup", "dns"]
+
 - name: Copy systemd system unit templates
   ansible.builtin.include_tasks: tasks/helpers/copy_templates_folder.yml
   vars:

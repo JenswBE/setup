@@ -7,12 +7,6 @@ x-defaults: &defaults
   # Putting the anchor in this file ensures it's a valid YAML file for Renovate Bot
   #VAR:lookup('ansible.builtin.file', 'files/docker-compose-defaults.yml',) | indent(width=2):VAR#
 
-x-extra-hosts-wireguard: &extra-hosts-wireguard
-  extra_hosts:
-    #BLOCK:- for wg_peer in (app_wireguard[0].peers | selectattr("host", "defined")) :BLOCK#
-    - "#VAR:wg_peer.host:VAR#.wireguard:#VAR:wg_peer.allowed_ips[0] | regex_replace('/\\d+$', ''):VAR#"
-    #BLOCK: endfor :BLOCK#
-
 x-healthcheck-postgres: &healthcheck-postgres
   healthcheck:
     test:
@@ -877,7 +871,7 @@ services:
   # =  NETWORK PERFORMANCE  =
   # =========================
   netperf-blackbox-exporter:
-    <<: [*defaults, *extra-hosts-wireguard]
+    <<: *defaults
     image: quay.io/prometheus/blackbox-exporter:latest
     container_name: netperf-blackbox-exporter
     command: --config.file=/config.yml

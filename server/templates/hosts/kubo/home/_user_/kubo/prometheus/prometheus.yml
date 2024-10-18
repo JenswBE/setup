@@ -27,7 +27,7 @@ scrape_configs:
       module: [http_2xx]
     static_configs:
       - targets:
-          - http://eve.wireguard:9116
+          - "http://eve.{{ general_domain_local }}:9116"
     relabel_configs:
       - source_labels: [__address__]
         target_label: __param_target
@@ -43,14 +43,14 @@ scrape_configs:
       module: [http_2xx]
     static_configs:
       - targets:
-          - http://kubo.wireguard:9116
+          - "http://kubo.{{ general_domain_local }}:9116"
     relabel_configs:
       - source_labels: [__address__]
         target_label: __param_target
       - source_labels: [__param_target]
         target_label: instance
       - target_label: __address__
-        replacement: eve.wireguard:9115
+        replacement: "eve.{{ general_domain_local }}:9115"
 
   - job_name: netperf-dns-eve-from-kubo
     scrape_interval: 1m
@@ -82,7 +82,7 @@ scrape_configs:
       - source_labels: [__param_target]
         target_label: instance
       - target_label: __address__
-        replacement: eve.wireguard:9115
+        replacement: "eve.{{ general_domain_local }}:9115"
 
   - job_name: opendtu
     metrics_path: /api/prometheus/metrics
