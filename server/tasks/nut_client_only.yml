@@ -11,7 +11,7 @@
       ansible.builtin.user:
         name: nut
         groups: smtp-cli
-        append: yes
+        append: true
 
     - name: Copy NUT config
       ansible.builtin.include_tasks: tasks/helpers/copy_templates_folder.yml

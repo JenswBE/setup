@@ -1,0 +1,13 @@
+exclude_paths:
+  - collections
+  - roles
+  - "*.png"
+
+warn_list:
+  - name[template]
+  - no-changed-when
+  - no-handler
+
+skip_list:
+  - package-latest
+  - yaml[line-length]

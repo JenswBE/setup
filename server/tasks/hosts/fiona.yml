@@ -39,7 +39,7 @@
     - docker-update-containers.timer
   tags: ["systemd"]
 
-- name: "Copy home/_user_/{{ ansible_hostname }} templates"
+- name: "Copy templates home/_user_/{{ ansible_hostname }}"
   ansible.builtin.include_tasks: tasks/helpers/copy_templates_folder.yml
   vars:
     templates_folder: "hosts/{{ ansible_hostname }}/home/_user_/{{ ansible_hostname }}"
@@ -51,10 +51,3 @@
     destination_delete_extra: true
     privileged: false
   tags: ["docker"]
-# - name: Fix Blocky config permissions
-#   ansible.builtin.file:
-#     path: "{{ ansible_user_dir }}/{{ ansible_hostname }}/blocky/config.yml"
-#     owner: "{{ ansible_real_user_id }}"
-#     group: "{{ ansible_real_group_id }}"
-#     mode: "0644"
-#   tags: ["docker"]

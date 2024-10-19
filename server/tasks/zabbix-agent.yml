@@ -35,7 +35,7 @@
       ansible.builtin.user:
         name: zabbix
         groups: docker
-        append: yes
+        append: true
 
     - name: Zabbix agent - Restart if config was changed
       when: zabbix_agent_config.changed

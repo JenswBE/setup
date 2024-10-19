@@ -38,9 +38,17 @@
         group: root
         mode: "600"
 
+    - name: CrowdSec - Check crowdsec status
+      when: crowdsec_nftables_bouncer.changed
+      register: crowdsec_status
+      ansible.builtin.command: "{% raw %}docker inspect -f '{{.State.Status}}' crowdsec{% endraw %}"
+      failed_when: 'crowdsec_status.rc != 0 or "No such object: crowdsec" in crowdsec_status.stderr'
+      changed_when: false
+
     - name: CrowdSec - Restart NFTables bouncer if config was changed
       when: crowdsec_nftables_bouncer.changed
-      ignore_errors: true # Step fails if crowdsec is not running
+      register: result
+      failed_when: result.failed and "running" in crowdsec_status.stdout
       ansible.builtin.service:
         name: crowdsec-firewall-bouncer
         state: restarted

@@ -22,7 +22,7 @@
             echo "No custom zones yet, skip clearing rules ..."
             exit 0
         fi
-        for filepath in ${ZONES_DIR:?}/*; do    
+        for filepath in ${ZONES_DIR:?}/*; do
           filename=$(basename $filepath)
           if [[ $filename =~ ^docker.*$ ]]; then
             echo "Skipping $filepath ..."

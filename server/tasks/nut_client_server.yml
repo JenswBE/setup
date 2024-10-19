@@ -14,7 +14,7 @@
       ansible.builtin.user:
         name: nut
         groups: smtp-cli
-        append: yes
+        append: true
 
     - name: Copy NUT config
       ansible.builtin.include_tasks: tasks/helpers/copy_templates_folder.yml
@@ -45,11 +45,7 @@
         - nut-client
         - nut-monitor
 
-    - name: Restart NUT driver - Stop
-      ignore_errors: true # Will fail if driver wasn't started
-      ansible.builtin.command: /usr/sbin/upsdrvctl stop
-
-    - name: Restart NUT driver - Start
+    - name: Restart NUT driver - Start # Will automatically stop old driver if already running
       ansible.builtin.command: /usr/sbin/upsdrvctl start
 
     - name: Test upssched-cmd (should receive email)

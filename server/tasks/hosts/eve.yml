@@ -74,7 +74,7 @@
     cmd: "{{ docker_path }} login -u USERNAME -p {{ docker_ghcr_personal_access_token }} ghcr.io"
   tags: ["docker"]
 
-- name: "Copy home/_user_/{{ ansible_hostname }} templates"
+- name: "Copy templates home/_user_/{{ ansible_hostname }}"
   ansible.builtin.include_tasks: tasks/helpers/copy_templates_folder.yml
   vars:
     templates_folder: "hosts/{{ ansible_hostname }}/home/_user_/{{ ansible_hostname }}"

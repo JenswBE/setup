@@ -35,7 +35,7 @@
     - docker-update-containers.timer
   tags: ["systemd"]
 
-- name: "Copy home/_user_/{{ ansible_hostname }} templates"
+- name: "Copy templates home/_user_/{{ ansible_hostname }}"
   ansible.builtin.include_tasks: tasks/helpers/copy_templates_folder.yml
   vars:
     templates_folder: "hosts/{{ ansible_hostname }}/home/_user_/{{ ansible_hostname }}"

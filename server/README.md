@@ -28,15 +28,17 @@ Without this option, the playbook will fail.
 sudo apt install pipx
 pipx install ansible-core
 pipx inject ansible-core $(cat requirements.txt | sed 's/\n/ /g' | sed 's/#.*//') # pipx on Debian is too old to support flag "-r"
+sudo apt install -y dnsutils # Installs dig
 
-# Install roles
-LC_ALL=C.UTF-8 ansible-galaxy role install --force -r requirements.yml
+# Install roles and collections
+ansible-galaxy role install --force -r requirements.yml
+ansible-galaxy collection install --force -r requirements.yml
 
 # Run complete setup for a host
-LC_ALL=C.UTF-8 ansible-playbook main.yml --limit <HOSTNAME>
+ansible-playbook main.yml --limit <HOSTNAME>
 
 # To only run Docker steps
-LC_ALL=C.UTF-8 ansible-playbook main.yml --tags docker --limit <HOSTNAME>
+ansible-playbook main.yml --tags docker --limit <HOSTNAME>
 
 # Available tags:
 #   - setup
