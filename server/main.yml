@@ -49,7 +49,7 @@
       tags: ["always"]
 
     - name: Lookup IP's
-      connection: local # Can be executed anywhere using VPN
+      delegate_to: localhost # Can be executed anywhere using VPN
       # when: '"home" in group_names' # Can be executed anywhere using VPN
       register: lookup_ips
       ansible.builtin.command: dig +short {{ item }}.{{ general_domain_local }}

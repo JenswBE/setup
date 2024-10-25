@@ -1,5 +1,5 @@
 - name: Create temporary dir
-  connection: "{{ privileged | ternary('ssh', 'local') }}"
+  delegate_to: "{{ privileged | ternary(inventory_hostname, 'localhost') }}"
   ansible.builtin.tempfile:
     state: directory
   register: tmp_dir
@@ -7,7 +7,7 @@
   tags: ["always"]
 
 - name: Create directory structure in temporary dir
-  connection: "{{ privileged | ternary('ssh', 'local') }}"
+  delegate_to: "{{ privileged | ternary(inventory_hostname, 'localhost') }}"
   ansible.builtin.file:
     path: "{{ tmp_dir.path }}/{{ item.path }}"
     state: directory
@@ -18,7 +18,7 @@
   tags: ["always"]
 
 - name: Generate template files to temporary dir
-  connection: "{{ privileged | ternary('ssh', 'local') }}"
+  delegate_to: "{{ privileged | ternary(inventory_hostname, 'localhost') }}"
   ansible.builtin.template:
     src: "{{ item.root }}/{{ item.path }}"
     dest: "{{ tmp_dir.path }}/{{ item.path }}"
@@ -39,7 +39,7 @@
   tags: ["always"]
 
 - name: Copy binary files
-  connection: "{{ privileged | ternary('ssh', 'local') }}"
+  delegate_to: "{{ privileged | ternary(inventory_hostname, 'localhost') }}"
   ansible.builtin.copy:
     src: "{{ item.root }}/{{ item.path }}"
     dest: "{{ tmp_dir.path }}/{{ item.path }}"

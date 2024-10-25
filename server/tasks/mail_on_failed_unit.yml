@@ -22,7 +22,7 @@
         action: latest_release
       register: smtp_cli_latest
       become: false
-      connection: local
+      delegate_to: localhost
 
     - name: Get latest smtp-cli binary
       ansible.builtin.get_url:
