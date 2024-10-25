@@ -14,7 +14,7 @@ import ./configs/shared_snippets.txt
 			client_secret "{{ app_caddy_security_oidc_client_secret }}"
 			scopes openid email profile
 			metadata_url "{{ app_caddy_security_oidc_issuer_url }}/.well-known/openid-configuration"
-			delay_start 5 # Delay 5s to allow Keycloak to start
+			delay_start 20 # Delay 20s to allow Keycloak to start
 		}
 
 		authentication portal portal_public {
