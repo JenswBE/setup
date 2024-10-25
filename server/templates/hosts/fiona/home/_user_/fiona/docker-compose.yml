@@ -76,10 +76,10 @@ services:
     container_name: peanut
     networks:
       - caddy
+    volumes:
+      - ./peanut/settings.yml:/config/settings.yml
     environment:
       TZ: "#VAR:general_timezone:VAR#"
-      NUT_HOST: host.docker.internal
-      WEB_HOST: "0.0.0.0"
 
   # =========================
   # =        CROWDSEC       =

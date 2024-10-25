@@ -1,0 +1,4 @@
+NUT_HOST: host.docker.internal
+NUT_PORT: 3493
+WEB_HOST: 0.0.0.0
+WEB_PORT: 8080
