@@ -362,8 +362,6 @@ services:
     container_name: bjoetiek-directus-db
     networks:
       - bjoetiek-directus
-    security_opt:
-      - no-new-privileges=true
     volumes:
       - "#VAR:general_path_appdata:VAR#/bjoetiek/directus/db:/var/lib/postgresql/data"
       - bjoetiek-directus-db-dump:/backup
@@ -424,8 +422,6 @@ services:
     container_name: kristofcoenen-directus-db
     networks:
       - kristofcoenen-directus
-    security_opt:
-      - no-new-privileges=true
     volumes:
       - "#VAR:general_path_appdata:VAR#/kristofcoenen/directus/db:/var/lib/postgresql/data"
       - kristofcoenen-directus-db-dump:/backup
@@ -486,8 +482,6 @@ services:
     container_name: tuinfeest-directus-db
     networks:
       - tuinfeest-directus
-    security_opt:
-      - no-new-privileges=true
     volumes:
       - "#VAR:general_path_appdata:VAR#/tuinfeest/directus/db:/var/lib/postgresql/data"
       - tuinfeest-directus-db-dump:/backup
@@ -548,8 +542,6 @@ services:
     container_name: wtech-directus-db
     networks:
       - wtech-directus
-    security_opt:
-      - no-new-privileges=true
     volumes:
       - "#VAR:general_path_appdata:VAR#/wtech/directus/db:/var/lib/postgresql/data"
       - wtech-directus-db-dump:/backup
@@ -743,8 +735,6 @@ services:
     networks:
       - caddy
       - paperless
-    security_opt:
-      - no-new-privileges=true
     depends_on:
       paperless-redis:
         condition: service_started
@@ -804,8 +794,6 @@ services:
     image: docker.io/library/postgres:16
     networks:
       - paperless
-    security_opt:
-      - no-new-privileges=true
     volumes:
       - "#VAR:general_path_appdata:VAR#/paperless/db:/var/lib/postgresql/data"
       - paperless-db-dump:/backup
@@ -823,8 +811,6 @@ services:
     image: docker.io/library/redis:7
     networks:
       - paperless
-    security_opt:
-      - no-new-privileges=true
     volumes:
       - paperless-redis-data:/data
     environment:
@@ -939,7 +925,6 @@ services:
     <<: *defaults
     image: ghcr.io/borgmatic-collective/borgmatic:1.8
     container_name: borgmatic
-    privileged: true # Required for borg mount
     cap_add:
       - SYS_ADMIN # Required for borg mount
     volumes:

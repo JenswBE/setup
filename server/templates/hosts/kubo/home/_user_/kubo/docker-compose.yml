@@ -255,7 +255,8 @@ services:
     <<: *defaults
     image: docker.io/erichough/nfs-server:latest
     container_name: nfs
-    privileged: true # Required for mount several filesystems inside the container to support its operation
+    cap_add:
+      - SYS_ADMIN # Required for mount several filesystems inside the container to support its operation
     ports:
       - "111:111"
       - "111:111/udp"
@@ -784,7 +785,6 @@ services:
     <<: *defaults
     image: ghcr.io/borgmatic-collective/borgmatic:1.8
     container_name: borgmatic
-    privileged: true # Required for borg mount
     cap_add:
       - SYS_ADMIN # Required for borg mount
     volumes:
