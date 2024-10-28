@@ -223,6 +223,12 @@ services:
   - name: Tools
     icon: fas fa-wrench
     items:
+      - name: expr-lang/expr
+        subtitle: Golang filter expressions
+        logo: https://expr-lang.org/img/logo.png
+        url: https://expr-lang.org/
+        <<: *default
+
       - name: Framadate
         subtitle: Date picker (e.g. Doodle/Datumprikker)
         logo: https://framadate.org/abc/img/icons/apple-touch-icon.png
