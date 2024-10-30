@@ -10,3 +10,7 @@ import ./configs/shared_snippets.txt
 }
 
 import ./configs/*.Caddyfile
+
+# Needed to force apply proxy_protocol listener wrapper to HTTP connections
+http:// {
+}
