@@ -1,4 +1,6 @@
 warn_list:
   - no-handler
   - no-changed-when
+
+skip_list:
   - yaml[line-length]

@@ -1,2 +1,6 @@
 __pycache__
 .vault_password
+
+# Ansible
+collections/
+roles/
