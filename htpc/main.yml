@@ -121,6 +121,7 @@
           # Apparently has better codec support than pre-installed one.
           # See https://fedoramagazine.org/how-i-customize-fedora-silverblue-and-fedora-kinoite/.
           - org.mozilla.firefox
+          - org.videolan.VLC
           - tv.kodi.Kodi
 
     - name: Ensure Kodi has access to /var/media
