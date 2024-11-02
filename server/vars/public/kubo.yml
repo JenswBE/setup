@@ -11,7 +11,9 @@ firewalld:
       - http3 # 443/udp (QUIC)
       - syncthing # 21027/udp, 22000/tcp and 22000/udp
       - dhcpv6-client # 546/udp
-    allowed_ports: []
+    allowed_ports:
+      - port: 32400 # Plex
+        protos: [tcp, udp]
     extra_strings:
       - key: short
         value: Public
