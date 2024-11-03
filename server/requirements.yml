@@ -10,4 +10,4 @@ collections:
     version: 1.6.2
 
   - name: community.general
-    version: 9.5.0
+    version: 9.5.1
