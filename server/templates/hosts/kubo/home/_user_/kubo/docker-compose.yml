@@ -196,7 +196,7 @@ services:
       - caddy
     volumes:
       - "/data/bulk/media:/media"
-      - "#VAR:general_path_appdata:VAR#/tmm/config:/config"
+      - "#VAR:general_path_appdata:VAR#/tmm/data:/data"
     environment:
       TZ: "#VAR:general_timezone:VAR#"
       USER_ID: "#VAR:ansible_real_user_id:VAR#"
