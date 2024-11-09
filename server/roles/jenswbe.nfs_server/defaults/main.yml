@@ -1,0 +1,7 @@
+nfs_export_root: "/srv/nfs"
+nfs_exports: []
+# nfs_exports:
+#   - name: "" # E.g. backups
+#     source_path: "" # E.g. /mnt/hdd/backups
+#     depends_on: "" # Optional, specify unit on which the export depends (e.g. data-important.mount)
+#     allowed_ips: [] # Clients allowed to access the NFS share

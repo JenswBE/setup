@@ -27,12 +27,10 @@ firewalld:
     allowed_services:
       - ssh # 22/tcp
       - http # 80/tcp
-      - rpc-bind # 111/tcp and 111/udp for NFS v3
       - https # 443/tcp
       - http3 # 443/udp (QUIC)
       - dhcpv6-client # 546/udp
       - nfs # 2049/tcp
-      - nfs3 # 2049/tcp and 2049/udp
       - syncthing # 21027/udp, 22000/tcp and 22000/udp
     allowed_ports:
       - port: 1514 # Graylog - Syslog
@@ -50,10 +48,6 @@ firewalld:
       - port: 12201 # Graylog - GELF
         protos: [tcp, udp]
       - port: 32400 # Plex
-        protos: [tcp, udp]
-      - port: 32765 # NFS STATD_PORT
-        protos: [tcp, udp]
-      - port: 32767 # NFS MNT_PORT
         protos: [tcp, udp]
     extra_strings: []
     extra_booleans: []
@@ -77,3 +71,18 @@ firewalld:
 # Nextcloud
 app_nextcloud_apps_disable: "firstrunwizard,dashboard,weather_status"
 app_nextcloud_apps_install: "previewgenerator"
+
+# NFS
+nfs_exports:
+  - name: media
+    source_path: /data/bulk/media
+    depends_on: data-bulk.mount
+    allowed_ips:
+      - "{{ ip['hercules'] }}"
+      - "{{ ip['rango'] }}"
+  - name: photos
+    source_path: /data/important/Photos
+    depends_on: data-important.mount
+    allowed_ips:
+      - "{{ ip['hercules'] }}"
+      - "{{ ip['rango'] }}"

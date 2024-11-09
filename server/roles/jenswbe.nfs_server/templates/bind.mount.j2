@@ -1,0 +1,18 @@
+# Managed by Ansible
+# Role: jenswbe.nfs_server
+
+[Unit]
+Description=Bind mount {{ item.source_path }} for NFS access
+{% if item.depends_on %}
+After={{ item.depends_on }}
+Requires={{ item.depends_on }}
+{% endif %}
+
+[Mount]
+What={{ item.source_path }}
+Where={{ [nfs_export_root, item.name] | path_join }}
+Type=none
+Options=bind
+
+[Install]
+WantedBy=multi-user.target

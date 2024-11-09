@@ -1,0 +1,29 @@
+- name: Collect existing export names
+  ansible.builtin.set_fact:
+    export_names: "{{ nfs_exports | map(attribute='name') | list }}"
+
+- name: Find orphan bind mounts
+  ansible.builtin.find:
+    paths: /etc/systemd/system/
+    file_type: file
+    contains: jenswbe.nfs_server
+    read_whole_file: true
+    excludes: "{{ [nfs_export_root] | product(export_names) | map('path_join') | map('systemd_escape_mount') | list }}"
+  register: orphaned_bind_mounts
+
+- name: Print orphans to delete
+  ansible.builtin.debug:
+    msg: "{{ orphaned_bind_mounts['files'] | map(attribute='path') | map('basename') }}"
+
+- name: Disable orphaned bind mounts
+  ansible.builtin.systemd:
+    name: "{{ item }}"
+    enabled: false
+    state: stopped
+  loop: "{{ orphaned_bind_mounts['files'] | map(attribute='path') | map('basename') }}"
+
+- name: Delete orphaned bind mounts
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  loop: "{{ orphaned_bind_mounts['files'] | map(attribute='path') }}"

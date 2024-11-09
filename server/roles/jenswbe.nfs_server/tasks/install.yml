@@ -1,0 +1,13 @@
+- name: Debian - Install NFS server
+  when: ansible_distribution == 'Debian'
+  ansible.builtin.package:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - nfs-kernel-server
+
+- name: AlmaLinux - Install NFS server
+  when: ansible_distribution == 'AlmaLinux'
+  ansible.builtin.package:
+    name: nfs-utils
+    state: present

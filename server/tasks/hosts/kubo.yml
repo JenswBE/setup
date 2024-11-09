@@ -2,8 +2,12 @@
   ansible.builtin.include_tasks: tasks/powertop.yml
   tags: ["setup", "powertop"]
 
-- name: Include NFS tasks
-  ansible.builtin.include_tasks: tasks/nfs.yml
+- name: Include NFS server role
+  ansible.builtin.include_role:
+    name: jenswbe.nfs_server
+    apply:
+      tags:
+        - nfs
   tags: ["setup", "nfs"]
 
 - name: Include NBDE Tang tasks

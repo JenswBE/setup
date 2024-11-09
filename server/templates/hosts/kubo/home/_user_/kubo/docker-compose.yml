@@ -249,31 +249,6 @@ services:
       -s "ps2;/data/ps2;yes;no;yes"
 
   # =========================
-  # =          NFS          =
-  # =========================
-  nfs:
-    <<: *defaults
-    image: docker.io/erichough/nfs-server:latest
-    container_name: nfs
-    cap_add:
-      - SYS_ADMIN # Required for mount several filesystems inside the container to support its operation
-    ports:
-      - "111:111"
-      - "111:111/udp"
-      - "2049:2049"
-      - "2049:2049/udp"
-      - "32765:32765"
-      - "32765:32765/udp"
-      - "32767:32767"
-      - "32767:32767/udp"
-    volumes:
-      - "/data/bulk/media:/data/media"
-      - "/data/important/Photos:/data/photos"
-      - "./nfs/exports:/etc/exports:ro"
-    environment:
-      TZ: "#VAR:general_timezone:VAR#"
-
-  # =========================
   # =       NEXTCLOUD       =
   # =========================
   nextcloud:

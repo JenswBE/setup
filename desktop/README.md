@@ -99,7 +99,7 @@ Description=Mount Kubo Media
 After=nss-lookup.target
 
 [Mount]
-What=kubo.jensw.eu:/data/media
+What=kubo.jensw.eu:/media
 Where=${NFS_PATH:?}
 Options=noexec,nosuid,nofail,noatime,user
 Type=nfs
