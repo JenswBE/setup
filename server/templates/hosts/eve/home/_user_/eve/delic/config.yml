@@ -15,6 +15,9 @@ notifiers:
     url: "smtp://{{ mailjet_username }}:{{ mailjet_password }}@{{ mailjet_host }}:{{ mailjet_port_starttls }}/?from=delic@{{ general_domain_default }}&to={{ general_mail_admin }}@{{ general_domain_default }}&usehtml=true&Encryption=ExplicitTLS&subject=Defecte%20links%20gevonden"
     template_name: simple_nl
 
+ignored_links:
+  - ^https://facebook.com # Seems Facebook started blocking requests with "400 - Bad Request"
+
 sites:
   - url: https://bjoetiek-y.be
     notify:
