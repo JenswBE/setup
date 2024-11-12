@@ -1,25 +1,25 @@
 "assets.{{ general_domain_default }}" {
-	import default_public_reverse_proxy "http://sws-assets"
+	import default_static_site_without_reporting "/public/assets"
 	authorize with policy_public_infra
 }
 
 "ext.{{ general_domain_default }}" {
-	import default_public_reverse_proxy "http://sws-email-username-generator"
+	import default_static_site_without_reporting "/public/email-username-generator"
 }
 
 "stamboom.{{ general_domain_default }}" {
-	import default_public_reverse_proxy "http://sws-family-trees"
+	import default_static_site_without_reporting "/public/family-trees"
 	authorize with policy_public_family
 }
 
 "{{ general_domain_bjoetiek }}" {
-	import default_public_reverse_proxy "http://sws-bjoetiek"
+	import default_static_site_without_reporting "/public/bjoetiek"
 }
 
 "{{ general_domain_interwego }}" {
-	import default_public_reverse_proxy "http://sws-interwego"
+	import default_static_site_with_reporting "/public/interwego"
 }
 
 "{{ general_domain_wtech }}" {
-	import default_public_reverse_proxy "http://sws-wtech"
+	import default_static_site_with_reporting "/public/wtech"
 }

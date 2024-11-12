@@ -7,20 +7,13 @@ x-defaults: &defaults
   # Putting the anchor in this file ensures it's a valid YAML file for Renovate Bot
   #VAR:lookup('ansible.builtin.file', 'files/docker-compose-defaults.yml',) | indent(width=2):VAR#
 
-x-sws: &sws
-  image: joseluisq/static-web-server:2
-  networks:
-    - caddy
-  environment:
-    TZ: "#VAR:general_timezone:VAR#"
-
 #################################################################
 #                            SERVICES                           #
 #################################################################
 services:
-  # =========================
-  # =         PROXY         =
-  # =========================
+  # ==============================
+  # =   PROXY + STATIC HOSTING   =
+  # ==============================
   # Having 2 reverse proxies (1 on host network and 1 on bridge network)
   # allows to have the real client IP's available inside the bridged
   # Caddy instance (using PROXY protocol). In case you would only have
@@ -49,53 +42,15 @@ services:
       - caddy-access-logs:/access_logs
       - caddy-config:/config
       - caddy-data:/data
+      - website-assets:/public/assets:ro
+      - website-bjoetiek:/public/bjoetiek:ro
+      - website-email-username-generator:/public/email-username-generator:ro
+      - website-family-trees:/public/family-trees:ro
+      - website-hetvleermuizenkind:/public/hetvleermuizenkind:ro
+      - website-interwego:/public/interwego:ro
+      - website-wtech:/public/wtech:ro
     environment:
       TZ: "#VAR:general_timezone:VAR#"
-
-  # =========================
-  # =      STATIC HOSTS     =
-  # =========================
-  sws-assets:
-    <<: [*defaults, *sws]
-    container_name: sws-assets
-    volumes:
-      - ./sws/assets.toml:/config.toml:ro
-      - website-assets:/public:ro
-
-  sws-bjoetiek:
-    <<: [*defaults, *sws]
-    container_name: sws-bjoetiek
-    volumes:
-      - ./sws/bjoetiek.toml:/config.toml:ro
-      - website-bjoetiek:/public:ro
-
-  sws-email-username-generator:
-    <<: [*defaults, *sws]
-    container_name: sws-email-username-generator
-    volumes:
-      - ./sws/email-username-generator.toml:/config.toml:ro
-      - website-email-username-generator:/public:ro
-
-  sws-family-trees:
-    <<: [*defaults, *sws]
-    container_name: sws-family-trees
-    volumes:
-      - ./sws/family-trees.toml:/config.toml:ro
-      - website-family-trees:/public:ro
-
-  sws-interwego:
-    <<: [*defaults, *sws]
-    container_name: sws-interwego
-    volumes:
-      - ./sws/interwego.toml:/config.toml:ro
-      - website-interwego:/public:ro
-
-  sws-wtech:
-    <<: [*defaults, *sws]
-    container_name: sws-wtech
-    volumes:
-      - ./sws/wtech.toml:/config.toml:ro
-      - website-wtech:/public:ro
 
   # =========================
   # =      FILE UPLOADS     =
@@ -110,8 +65,9 @@ services:
           bjoetiek:901:901
           email-username-generator:902:902
           family-trees:903:903
-          interwego:904:904
-          wtech:905:905
+          hetvleermuizenkind:904:904
+          interwego:905:905
+          wtech:906:906
     container_name: rsyncd
     network_mode: host # Ensures Crowdsec has real source IP to act on
     environment:
@@ -122,6 +78,7 @@ services:
       - website-bjoetiek:/data/bjoetiek
       - website-email-username-generator:/data/email-username-generator
       - website-family-trees:/data/family-trees
+      - website-hetvleermuizenkind:/data/hetvleermuizenkind
       - website-interwego:/data/interwego
       - website-wtech:/data/wtech
 
@@ -207,6 +164,7 @@ volumes:
   website-bjoetiek:
   website-email-username-generator:
   website-family-trees:
+  website-hetvleermuizenkind:
   website-interwego:
   website-wtech:
 

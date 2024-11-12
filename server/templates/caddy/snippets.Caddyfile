@@ -32,6 +32,15 @@
 	}
 }
 
+(static_secure_headers) {
+	# Based on https://owasp.org/www-project-secure-headers/#div-bestpractices
+	header Referrer-Policy "no-referrer"
+	header Strict-Transport-Security "max-age=31536000; includeSubDomains"
+	header X-Content-Type-Options "nosniff"
+	header X-Frame-Options "DENY"
+	header X-XSS-Protection "0"
+}
+
 (reverse_proxy_secure_headers) {
 	# Based on https://owasp.org/www-project-secure-headers/#div-bestpractices
 	header_down Referrer-Policy "no-referrer"
@@ -52,6 +61,61 @@
 
 	@not_local_ip not remote_ip private_ranges
 	abort @not_local_ip
+}
+
+(default_static_site) {
+	import defaults
+	import static_secure_headers
+	root * {args[0]}
+	file_server
+}
+
+(default_static_site_with_reporting) {
+	import default_static_site {args[0]}
+	header Cross-Origin-Embedder-Policy `require-corp; report-to="default"`
+	header Cross-Origin-Opener-Policy `same-origin; report-to="default"`
+	header NEL <<HEADER
+			{
+			"report_to":"default",
+			"max_age":2592000,
+			"include_subdomains":true,
+			"failure_fraction":1.0
+			}
+			HEADER
+	header Permissions-Policy <<HEADER
+			accelerometer=(), ambient-light-sensor=(), autoplay=(),
+			battery=(), camera=(), cross-origin-isolated=(), display-capture=(),
+			encrypted-media=(), execution-while-not-rendered=(),
+			execution-while-out-of-viewport=(), fullscreen=(), geolocation=(), gyroscope=(),
+			keyboard-map=(), magnetometer=(), microphone=(), midi=(), navigation-override=(),
+			payment=(), picture-in-picture=(), publickey-credentials-get=(),
+			screen-wake-lock=(), sync-xhr=(), usb=(), web-share=(), xr-spatial-tracking=();
+			report-to=default
+			HEADER
+	header Report-To <<HEADER
+			{
+			"group":"default",
+			"max_age":10886400,
+			"endpoints":[{"url":"https://5e43cng1.uriports.com/reports"}],
+			"include_subdomains":true
+			}
+			HEADER
+	header Reporting-Endpoints `default="https://5e43cng1.uriports.com/reports"`
+}
+
+(default_static_site_without_reporting) {
+	import default_static_site {args[0]}
+	header Cross-Origin-Embedder-Policy `require-corp`
+	header Cross-Origin-Opener-Policy `same-origin`
+	header Permissions-Policy <<HEADER
+			accelerometer=(), ambient-light-sensor=(), autoplay=(),
+			battery=(), camera=(), cross-origin-isolated=(), display-capture=(),
+			encrypted-media=(), execution-while-not-rendered=(),
+			execution-while-out-of-viewport=(), fullscreen=(), geolocation=(), gyroscope=(),
+			keyboard-map=(), magnetometer=(), microphone=(), midi=(), navigation-override=(),
+			payment=(), picture-in-picture=(), publickey-credentials-get=(),
+			screen-wake-lock=(), sync-xhr=(), usb=(), web-share=(), xr-spatial-tracking=()
+			HEADER
 }
 
 (default_redirect) {

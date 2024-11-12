@@ -36,54 +36,12 @@ firewalld:
     extra_strings: []
     extra_booleans: []
 
-# SWS config
-sws_default_headers: &sws_default_headers
-  Cross-Origin-Embedder-Policy: require-corp; report-to="default"
-  Cross-Origin-Opener-Policy: same-origin; report-to="default"
-  NEL: >-
-    {
-    "report_to":"default",
-    "max_age":2592000,
-    "include_subdomains":true,
-    "failure_fraction":1.0
-    }
-  Permissions-Policy: >-
-    accelerometer=(), ambient-light-sensor=(), autoplay=(),
-    battery=(), camera=(), cross-origin-isolated=(), display-capture=(),
-    encrypted-media=(), execution-while-not-rendered=(),
-    execution-while-out-of-viewport=(), fullscreen=(), geolocation=(), gyroscope=(),
-    keyboard-map=(), magnetometer=(), microphone=(), midi=(), navigation-override=(),
-    payment=(), picture-in-picture=(), publickey-credentials-get=(),
-    screen-wake-lock=(), sync-xhr=(), usb=(), web-share=(), xr-spatial-tracking=();
-    report-to=default
-  Report-To: >-
-    {
-    "group":"default",
-    "max_age":10886400,
-    "endpoints":[{"url":"https://5e43cng1.uriports.com/reports"}],
-    "include_subdomains":true
-    }
-  Reporting-Endpoints: 'default="https://5e43cng1.uriports.com/reports"'
-
-sws_default_headers_without_report: &sws_default_headers_without_report
-  Cross-Origin-Embedder-Policy: require-corp
-  Cross-Origin-Opener-Policy: same-origin
-  Permissions-Policy: >-
-    accelerometer=(), ambient-light-sensor=(), autoplay=(),
-    battery=(), camera=(), cross-origin-isolated=(), display-capture=(),
-    encrypted-media=(), execution-while-not-rendered=(),
-    execution-while-out-of-viewport=(), fullscreen=(), geolocation=(), gyroscope=(),
-    keyboard-map=(), magnetometer=(), microphone=(), midi=(), navigation-override=(),
-    payment=(), picture-in-picture=(), publickey-credentials-get=(),
-    screen-wake-lock=(), sync-xhr=(), usb=(), web-share=(), xr-spatial-tracking=()
-
 sws_config:
   assets:
     advanced:
       headers:
         - source: "**"
           headers:
-            <<: *sws_default_headers_without_report
             Content-Security-Policy: >-
               default-src 'none';
               base-uri 'none';
@@ -94,19 +52,11 @@ sws_config:
               script-src 'self' https://cdnjs.cloudflare.com/ajax/libs/bootstrap/;
               style-src 'self' https://cdnjs.cloudflare.com/ajax/libs/bootstrap/ https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/;
 
-  bjoetiek:
-    advanced:
-      headers:
-        - source: "**"
-          headers:
-            <<: *sws_default_headers_without_report
-
   email_username_generator:
     advanced:
       headers:
         - source: "**"
           headers:
-            <<: *sws_default_headers_without_report
             Content-Security-Policy: >-
               default-src 'none';
               base-uri 'none';
@@ -121,7 +71,6 @@ sws_config:
       headers:
         - source: "**"
           headers:
-            <<: *sws_default_headers_without_report
             Content-Security-Policy: >-
               default-src 'none';
               base-uri 'none';
@@ -134,7 +83,6 @@ sws_config:
       headers:
         - source: "**"
           headers:
-            <<: *sws_default_headers
             Content-Security-Policy: >-
               default-src 'none';
               base-uri 'none';
@@ -152,7 +100,6 @@ sws_config:
       headers:
         - source: "**"
           headers:
-            <<: *sws_default_headers
             Content-Security-Policy: >-
               default-src 'none';
               base-uri 'none';

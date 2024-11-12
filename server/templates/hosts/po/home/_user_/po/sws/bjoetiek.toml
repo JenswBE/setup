@@ -1,1 +1,0 @@
-{{ sws_config.bjoetiek | to_toml }}

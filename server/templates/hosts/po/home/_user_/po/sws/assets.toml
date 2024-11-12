@@ -1,1 +1,0 @@
-{{ sws_config.assets | to_toml }}
