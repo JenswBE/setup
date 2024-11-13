@@ -1,17 +1,15 @@
-#!/usr/bin/python
-
-import toml
-import json
+#!/usr/bin/python3
 
 class FilterModule(object):
-
     def filters(self):
         return {
-            'to_toml': self.to_toml,
+            'to_caddy_headers': self.to_caddy_headers,
         }
+    
+    def remove_newlines(self, input):
+        return input.replace("\\n", "")
 
-    # Based on https://www.iops.tech/blog/generate-toml-using-ansible-template/
-    def to_toml(self, input):
-        s = json.dumps(dict(input))
-        d = json.loads(s)
-        return toml.dumps(d)
+    def to_caddy_headers(self, headers, directive="header"):
+        header_list = [f"{directive} {header} `{self.remove_newlines(value)}`" for header, value in dict(headers).items()]
+        return "\n".join(header_list)
+

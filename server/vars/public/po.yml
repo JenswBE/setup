@@ -36,80 +36,62 @@ firewalld:
     extra_strings: []
     extra_booleans: []
 
-sws_config:
+caddy_extra_headers:
   assets:
-    advanced:
-      headers:
-        - source: "**"
-          headers:
-            Content-Security-Policy: >-
-              default-src 'none';
-              base-uri 'none';
-              font-src https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/;
-              form-action 'self';
-              frame-ancestors 'none';
-              img-src 'self';
-              script-src 'self' https://cdnjs.cloudflare.com/ajax/libs/bootstrap/;
-              style-src 'self' https://cdnjs.cloudflare.com/ajax/libs/bootstrap/ https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/;
+    Content-Security-Policy: >-
+      default-src 'none';
+      base-uri 'none';
+      font-src https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/;
+      form-action 'self';
+      frame-ancestors 'none';
+      img-src 'self';
+      script-src 'self' https://cdnjs.cloudflare.com/ajax/libs/bootstrap/;
+      style-src 'self' https://cdnjs.cloudflare.com/ajax/libs/bootstrap/ https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/;
+
+  bjoetiek: {}
 
   email_username_generator:
-    advanced:
-      headers:
-        - source: "**"
-          headers:
-            Content-Security-Policy: >-
-              default-src 'none';
-              base-uri 'none';
-              form-action 'self';
-              frame-ancestors 'none';
-              img-src 'self';
-              script-src 'self' https://cdnjs.cloudflare.com/ajax/libs/bootstrap/;
-              style-src 'self' https://cdnjs.cloudflare.com/ajax/libs/bootstrap/;
+    Content-Security-Policy: >-
+      default-src 'none';
+      base-uri 'none';
+      form-action 'self';
+      frame-ancestors 'none';
+      img-src 'self';
+      script-src 'self' https://cdnjs.cloudflare.com/ajax/libs/bootstrap/;
+      style-src 'self' https://cdnjs.cloudflare.com/ajax/libs/bootstrap/;
 
   family_trees:
-    advanced:
-      headers:
-        - source: "**"
-          headers:
-            Content-Security-Policy: >-
-              default-src 'none';
-              base-uri 'none';
-              form-action 'self';
-              frame-ancestors 'none';
-              img-src 'self';
+    Content-Security-Policy: >-
+      default-src 'none';
+      base-uri 'none';
+      form-action 'self';
+      frame-ancestors 'none';
+      img-src 'self';
 
   interwego:
-    advanced:
-      headers:
-        - source: "**"
-          headers:
-            Content-Security-Policy: >-
-              default-src 'none';
-              base-uri 'none';
-              connect-src https://stats.{{ general_domain_interwego }}/count;
-              form-action 'self';
-              frame-ancestors 'none';
-              img-src 'self' data:;
-              script-src 'self' https://cdnjs.cloudflare.com/ajax/libs/bootstrap/ https://stats.{{ general_domain_interwego }}/count.js;
-              style-src 'self' https://cdnjs.cloudflare.com/ajax/libs/bootstrap/;
-              report-uri https://5e43cng1.uriports.com/reports/report;
-              report-to default;
+    Content-Security-Policy: >-
+      default-src 'none';
+      base-uri 'none';
+      connect-src https://stats.{{ general_domain_interwego }}/count;
+      form-action 'self';
+      frame-ancestors 'none';
+      img-src 'self' data:;
+      script-src 'self' https://cdnjs.cloudflare.com/ajax/libs/bootstrap/ https://stats.{{ general_domain_interwego }}/count.js;
+      style-src 'self' https://cdnjs.cloudflare.com/ajax/libs/bootstrap/;
+      report-uri https://5e43cng1.uriports.com/reports/report;
+      report-to default;
 
   wtech:
-    advanced:
-      headers:
-        - source: "**"
-          headers:
-            Content-Security-Policy: >-
-              default-src 'none';
-              base-uri 'none';
-              connect-src https://stats.{{ general_domain_wtech }}/count;
-              font-src https://fonts.gstatic.com/s/sourcesanspro/ https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/;
-              form-action 'self';
-              frame-ancestors 'none';
-              img-src 'self' data:;
-              manifest-src 'self';
-              script-src 'self' https://cdnjs.cloudflare.com/ajax/libs/bootstrap/ https://cdnjs.cloudflare.com/ajax/libs/simplelightbox/ https://stats.{{ general_domain_wtech }}/count.js;
-              style-src 'self' https://cdnjs.cloudflare.com/ajax/libs/bootstrap/ https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/ https://cdnjs.cloudflare.com/ajax/libs/simplelightbox/;
-              report-uri https://5e43cng1.uriports.com/reports/report;
-              report-to default;
+    Content-Security-Policy: >-
+      default-src 'none';
+      base-uri 'none';
+      connect-src https://stats.{{ general_domain_wtech }}/count;
+      font-src https://fonts.gstatic.com/s/sourcesanspro/ https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/;
+      form-action 'self';
+      frame-ancestors 'none';
+      img-src 'self' data:;
+      manifest-src 'self';
+      script-src 'self' https://cdnjs.cloudflare.com/ajax/libs/bootstrap/ https://cdnjs.cloudflare.com/ajax/libs/simplelightbox/ https://stats.{{ general_domain_wtech }}/count.js;
+      style-src 'self' https://cdnjs.cloudflare.com/ajax/libs/bootstrap/ https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/ https://cdnjs.cloudflare.com/ajax/libs/simplelightbox/;
+      report-uri https://5e43cng1.uriports.com/reports/report;
+      report-to default;

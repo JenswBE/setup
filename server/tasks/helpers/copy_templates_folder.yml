@@ -24,13 +24,13 @@
     dest: "{{ tmp_dir.path }}/{{ item.path }}"
     mode: "{{ destination_mode_files }}"
     block_start_string: |-
-      {{ '#BLOCK:' if item.path is match('docker-compose(\..*)?\.ya?ml') else '{%' }}
+      {{ '#BLOCK:' if item.path is match('docker-compose(\..*)?\.ya?ml') or item.path.endswith('Caddyfile') else '{%' }}
     block_end_string: |-
-      {{ ':BLOCK#' if item.path is match('docker-compose(\..*)?\.ya?ml') else '%}' }}
+      {{ ':BLOCK#' if item.path is match('docker-compose(\..*)?\.ya?ml') or item.path.endswith('Caddyfile') else '%}' }}
     variable_start_string: |-
-      {{ '#VAR:' if item.path is match('docker-compose(\..*)?\.ya?ml') else '{{' }}
+      {{ '#VAR:' if item.path is match('docker-compose(\..*)?\.ya?ml') or item.path.endswith('Caddyfile') else '{{' }}
     variable_end_string: |-
-      {{ ':VAR#' if item.path is match('docker-compose(\..*)?\.ya?ml') else '}}' }}
+      {{ ':VAR#' if item.path is match('docker-compose(\..*)?\.ya?ml') or item.path.endswith('Caddyfile') else '}}' }}
     lstrip_blocks: true
     trim_blocks: false
   with_community.general.filetree: templates/{{ templates_folder }}

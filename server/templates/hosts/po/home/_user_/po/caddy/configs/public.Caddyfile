@@ -1,25 +1,31 @@
-"assets.{{ general_domain_default }}" {
+"assets.#VAR:general_domain_default:VAR#" {
 	import default_static_site_without_reporting "/public/assets"
 	authorize with policy_public_infra
+	#VAR:caddy_extra_headers.assets | to_caddy_headers:VAR#
 }
 
-"ext.{{ general_domain_default }}" {
+"ext.#VAR:general_domain_default:VAR#" {
 	import default_static_site_without_reporting "/public/email-username-generator"
+	#VAR:caddy_extra_headers.email_username_generator | to_caddy_headers:VAR#
 }
 
-"stamboom.{{ general_domain_default }}" {
+"stamboom.#VAR:general_domain_default:VAR#" {
 	import default_static_site_without_reporting "/public/family-trees"
 	authorize with policy_public_family
+	#VAR:caddy_extra_headers.family_trees | to_caddy_headers:VAR#
 }
 
-"{{ general_domain_bjoetiek }}" {
+"#VAR:general_domain_bjoetiek:VAR#" {
 	import default_static_site_without_reporting "/public/bjoetiek"
+	#VAR:caddy_extra_headers.bjoetiek | to_caddy_headers:VAR#
 }
 
-"{{ general_domain_interwego }}" {
+"#VAR:general_domain_interwego:VAR#" {
 	import default_static_site_with_reporting "/public/interwego"
+	#VAR:caddy_extra_headers.interwego | to_caddy_headers:VAR#
 }
 
-"{{ general_domain_wtech }}" {
+"#VAR:general_domain_wtech:VAR#" {
 	import default_static_site_with_reporting "/public/wtech"
+	#VAR:caddy_extra_headers.wtech | to_caddy_headers:VAR#
 }

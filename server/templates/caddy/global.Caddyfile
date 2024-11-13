@@ -1,4 +1,4 @@
-email "{{ general_mail_admin }}@{{ general_domain_default }}"
+email "#VAR:general_mail_admin:VAR#@#VAR:general_domain_default:VAR#"
 
 order authenticate before respond
 order authorize before basicauth
@@ -8,7 +8,7 @@ servers :80 {
 	listener_wrappers {
 		proxy_protocol {
 			timeout 2s
-			allow "{{ network_docker_ipv4 }}"
+			allow "#VAR:network_docker_ipv4:VAR#"
 		}
 	}
 }
@@ -18,7 +18,7 @@ servers :443 {
 	listener_wrappers {
 		proxy_protocol {
 			timeout 2s
-			allow "{{ network_docker_ipv4 }}"
+			allow "#VAR:network_docker_ipv4:VAR#"
 		}
 		tls
 	}

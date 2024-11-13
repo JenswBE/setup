@@ -1,18 +1,18 @@
-"dtu.{{ general_domain_default }}" {
-	import default_public_reverse_proxy "http://opendtu.{{ general_domain_local }}"
+"dtu.#VAR:general_domain_default:VAR#" {
+	import default_public_reverse_proxy "http://opendtu.#VAR:general_domain_local:VAR#"
 	authorize with policy_public_sun
 }
 
-"jellyfin.{{ general_domain_default }}" {
+"jellyfin.#VAR:general_domain_default:VAR#" {
 	import default_public_reverse_proxy "http://jellyfin:8096"
 }
 
-"torrent.{{ general_domain_default }}" {
+"torrent.#VAR:general_domain_default:VAR#" {
 	import default_public_reverse_proxy "http://transmission-vpn:9091"
 	authorize with policy_public_media
 }
 
-"nextcloud-media.{{ general_domain_default }}" {
+"nextcloud-media.#VAR:general_domain_default:VAR#" {
 	import default_public_reverse_proxy "http://nextcloud"
 	redir /.well-known/carddav /remote.php/dav 301
 	redir /.well-known/caldav /remote.php/dav 301

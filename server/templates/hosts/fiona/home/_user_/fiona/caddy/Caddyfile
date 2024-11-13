@@ -10,22 +10,22 @@ import ./configs/shared_snippets.txt
 		oauth identity provider keycloak {
 			driver generic
 			realm keycloak
-			client_id "{{ app_caddy_security_oidc_client_id }}"
-			client_secret "{{ app_caddy_security_oidc_client_secret }}"
+			client_id "#VAR:app_caddy_security_oidc_client_id:VAR#"
+			client_secret "#VAR:app_caddy_security_oidc_client_secret:VAR#"
 			scopes openid email profile
-			metadata_url "{{ app_caddy_security_oidc_issuer_url }}/.well-known/openid-configuration"
+			metadata_url "#VAR:app_caddy_security_oidc_issuer_url:VAR#/.well-known/openid-configuration"
 		}
 
 		authentication portal portal_local {
 			crypto default token lifetime 604800 # 7 days (60 * 60 * 24 * 7)
-			crypto key sign-verify "{{ app_caddy_security_jwt_secret }}"
+			crypto key sign-verify "#VAR:app_caddy_security_jwt_secret:VAR#"
 			enable identity provider keycloak
-			cookie domain "{{ general_domain_local }}"
+			cookie domain "#VAR:general_domain_local:VAR#"
 		}
 	}
 }
 
-"portal.{{ general_domain_local }}" {
+"portal.#VAR:general_domain_local:VAR#" {
 	import defaults
 	import local_access
 	authenticate with portal_local

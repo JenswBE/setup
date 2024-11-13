@@ -1,28 +1,28 @@
 import site_local_blocky
 import site_local_crowdsec
 
-"crm.{{ general_domain_local }}" {
+"crm.#VAR:general_domain_local:VAR#" {
 	import default_local_reverse_proxy "http://monica"
 }
 
-"docs.{{ general_domain_local }}" {
+"docs.#VAR:general_domain_local:VAR#" {
 	import default_local_reverse_proxy "http://paperless:8000"
 	header >Referrer-Policy "same-origin"
 }
 
-"feed.{{ general_domain_local }}" {
+"feed.#VAR:general_domain_local:VAR#" {
 	import default_local_reverse_proxy "http://miniflux:8080"
 }
 
-"start.{{ general_domain_local }}" {
+"start.#VAR:general_domain_local:VAR#" {
 	import default_local_reverse_proxy "http://homer:8080"
 }
 
-"uptime.{{ general_domain_local }}" {
+"uptime.#VAR:general_domain_local:VAR#" {
 	import default_local_reverse_proxy "http://uptime-kuma:3001"
 	authorize with policy_local_infra
 }
 
-"wiki.{{ general_domain_local }}" {
+"wiki.#VAR:general_domain_local:VAR#" {
 	import default_local_reverse_proxy "http://wikijs:3000"
 }

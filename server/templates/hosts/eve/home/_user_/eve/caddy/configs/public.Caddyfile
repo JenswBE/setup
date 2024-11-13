@@ -1,42 +1,42 @@
-"auth.{{ general_domain_default }}" {
+"auth.#VAR:general_domain_default:VAR#" {
 	import default_public_reverse_proxy "http://keycloak:8080"
 	header >X-Frame-Options "SAMEORIGIN"
 }
 
-"beheer.{{ general_domain_bjoetiek }}" {
+"beheer.#VAR:general_domain_bjoetiek:VAR#" {
 	import default_public_reverse_proxy "http://bjoetiek-directus:8055"
 }
 
-"beheer.{{ general_domain_kristofcoenen }}" {
+"beheer.#VAR:general_domain_kristofcoenen:VAR#" {
 	import default_public_reverse_proxy "http://kristofcoenen-directus:8055"
 }
 
-"beheer.{{ general_domain_tuinfeest }}" {
+"beheer.#VAR:general_domain_tuinfeest:VAR#" {
 	import default_public_reverse_proxy "http://tuinfeest-directus:8055"
 }
 
-"beheer.{{ general_domain_wtech }}" {
+"beheer.#VAR:general_domain_wtech:VAR#" {
 	import default_public_reverse_proxy "http://wtech-directus:8055"
 }
 
-"nextcloud.{{ general_domain_default }}" {
+"nextcloud.#VAR:general_domain_default:VAR#" {
 	import default_public_reverse_proxy "http://nextcloud"
 	redir /.well-known/carddav /remote.php/dav 301
 	redir /.well-known/caldav /remote.php/dav 301
 	redir /.well-known/webfinger /public.php?service=webfinger 301
 }
 
-"stats.{{ general_domain_default }}",
-"stats-spellebel.{{ general_domain_default }}",
-"stats.{{ general_domain_bjoetiek }}",
-"stats.{{ general_domain_interwego }}",
-"stats.{{ general_domain_klokracing }}",
-"stats.{{ general_domain_kristofcoenen }}",
-"stats.{{ general_domain_tuinfeest }}",
-"stats.{{ general_domain_wtech }}" {
+"stats.#VAR:general_domain_default:VAR#",
+"stats-spellebel.#VAR:general_domain_default:VAR#",
+"stats.#VAR:general_domain_bjoetiek:VAR#",
+"stats.#VAR:general_domain_interwego:VAR#",
+"stats.#VAR:general_domain_klokracing:VAR#",
+"stats.#VAR:general_domain_kristofcoenen:VAR#",
+"stats.#VAR:general_domain_tuinfeest:VAR#",
+"stats.#VAR:general_domain_wtech:VAR#" {
 	import default_public_reverse_proxy "http://goatcounter"
 }
 
-"vault.{{ general_domain_default }}" {
+"vault.#VAR:general_domain_default:VAR#" {
 	import default_public_reverse_proxy "http://vaultwarden"
 }

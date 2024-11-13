@@ -10,6 +10,55 @@ docker_path: /usr/bin/docker # Used by systemd units
 # Firewall
 firewall_ssh_port: 22
 
+# HTTP headers
+# Based on https://owasp.org/www-project-secure-headers/#div-bestpractices
+http_security_headers:
+  Referrer-Policy: "no-referrer"
+  Strict-Transport-Security: "max-age=31536000; includeSubDomains"
+  X-Content-Type-Options: "nosniff"
+  X-Frame-Options: "DENY"
+  X-XSS-Protection: "0"
+
+http_security_headers_static_with_reporting:
+  Cross-Origin-Embedder-Policy: require-corp; report-to="default"
+  Cross-Origin-Opener-Policy: same-origin; report-to="default"
+  NEL: >-
+    {
+    "report_to":"default",
+    "max_age":2592000,
+    "include_subdomains":true,
+    "failure_fraction":1.0
+    }
+  Permissions-Policy: >-
+    accelerometer=(), ambient-light-sensor=(), autoplay=(),
+    battery=(), camera=(), cross-origin-isolated=(), display-capture=(),
+    encrypted-media=(), execution-while-not-rendered=(),
+    execution-while-out-of-viewport=(), fullscreen=(), geolocation=(), gyroscope=(),
+    keyboard-map=(), magnetometer=(), microphone=(), midi=(), navigation-override=(),
+    payment=(), picture-in-picture=(), publickey-credentials-get=(),
+    screen-wake-lock=(), sync-xhr=(), usb=(), web-share=(), xr-spatial-tracking=();
+    report-to=default
+  Report-To: >-
+    {
+    "group":"default",
+    "max_age":10886400,
+    "endpoints":[{"url":"https://5e43cng1.uriports.com/reports"}],
+    "include_subdomains":true
+    }
+  Reporting-Endpoints: 'default="https://5e43cng1.uriports.com/reports"'
+
+http_security_headers_static_without_reporting:
+  Cross-Origin-Embedder-Policy: require-corp
+  Cross-Origin-Opener-Policy: same-origin
+  Permissions-Policy: >-
+    accelerometer=(), ambient-light-sensor=(), autoplay=(),
+    battery=(), camera=(), cross-origin-isolated=(), display-capture=(),
+    encrypted-media=(), execution-while-not-rendered=(),
+    execution-while-out-of-viewport=(), fullscreen=(), geolocation=(), gyroscope=(),
+    keyboard-map=(), magnetometer=(), microphone=(), midi=(), navigation-override=(),
+    payment=(), picture-in-picture=(), publickey-credentials-get=(),
+    screen-wake-lock=(), sync-xhr=(), usb=(), web-share=(), xr-spatial-tracking=()
+
 # Packages
 packages_base_general:
   # Unfortunately not covered by role geerlingguy.docker
