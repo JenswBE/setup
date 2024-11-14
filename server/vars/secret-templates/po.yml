@@ -9,13 +9,14 @@ app_crowdsec_bouncer_firewall_key: "" # Alphanumeric string
 app_graylog_server: "" # Target for rsyslog and Docker logs
 
 # Wireguard
-app_wireguard:
-  0: # Becomes wg0
+wireguard_interfaces:
+  wg0:
     ip_addresses: [""] # E.g. 10.0.0.1
+    listen_port: "" # E.g. 51820
     private_key: "" # Run "wg genkey" on server
     routing_table: "" # "auto" or a routing table number
     peers:
-      - host: "" # Optional - Hostname to be added to /etc/hosts
+      - host: "" # Hostname to be added to /etc/hosts
         endpoint: "" # Address of the server. E.g. wireguard.example.com:51820
         public_key: "" # Run "wg pubkey" on client
         psk: "" # Run "wg genpsk" on server

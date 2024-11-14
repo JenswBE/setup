@@ -1,0 +1,12 @@
+- name: Debian - Install Wireguard
+  when: ansible_distribution == 'Debian'
+  become: true
+  ansible.builtin.package:
+    name: wireguard
+    state: present
+
+- name: Install Wireguard Tools
+  become: true
+  ansible.builtin.package:
+    name: wireguard-tools
+    state: present

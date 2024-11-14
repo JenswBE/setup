@@ -1,9 +1,9 @@
-- name: Include Wireguard tasks
-  ansible.builtin.include_tasks: tasks/wireguard.yml
-  vars:
-    wg_interface_index: "{{ item.key }}"
-    wg_config: "{{ item.value }}"
-  loop: "{{ app_wireguard | dict2items }}"
+- name: Include Wireguard role
+  ansible.builtin.include_role:
+    name: jenswbe.wireguard
+    apply:
+      tags:
+        - wireguard
   tags: ["setup", "wireguard"]
 
 - name: Ensure correct DNS servers are set

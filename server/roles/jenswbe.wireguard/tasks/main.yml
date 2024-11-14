@@ -1,0 +1,12 @@
+- name: Install Wireguard
+  ansible.builtin.include_tasks: install.yml
+
+- name: Configure Wireguard
+  ansible.builtin.include_tasks: configure.yml
+  vars:
+    interface_name: "{{ item.key }}"
+    wg_config: "{{ item.value }}"
+  loop: "{{ wireguard_interfaces | dict2items }}"
+
+- name: Remove orphaned interfaces
+  ansible.builtin.include_tasks: remove_orphans.yml

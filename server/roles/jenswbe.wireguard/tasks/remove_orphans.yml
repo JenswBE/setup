@@ -1,0 +1,28 @@
+- name: Find orphaned interfaces
+  become: true
+  ansible.builtin.find:
+    paths: /etc/wireguard/
+    file_type: file
+    contains: jenswbe.wireguard
+    read_whole_file: true
+    excludes: "{{ wireguard_interfaces | list | product(['.conf']) | map('join') | list }}"
+  register: orphaned_interfaces
+
+- name: Print orphaned interfaces to delete
+  ansible.builtin.debug:
+    msg: "{{ orphaned_interfaces['files'] | map(attribute='path') | map('basename') }}"
+
+- name: Disable orphaned interfaces
+  become: true
+  ansible.builtin.systemd:
+    name: "wg-quick@{{ item }}"
+    enabled: false
+    state: stopped
+  loop: "{{ orphaned_interfaces['files'] | map(attribute='path') | map('basename') | map('splitext') | map('first') }}"
+
+- name: Delete orphaned interfaces
+  become: true
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  loop: "{{ orphaned_interfaces['files'] | map(attribute='path') }}"

@@ -16,7 +16,7 @@ notifiers:
     template_name: simple_nl
 
 ignored_links:
-  - ^https://facebook.com # Seems Facebook started blocking requests with "400 - Bad Request"
+  - ^https://www.facebook.com # Seems Facebook started blocking requests with "400 - Bad Request"
 
 sites:
   - url: https://bjoetiek-y.be

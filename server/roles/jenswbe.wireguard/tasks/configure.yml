@@ -1,0 +1,23 @@
+- name: Setup Wireguard config
+  become: true
+  register: wireguard_config
+  ansible.builtin.template:
+    src: "wireguard.conf.j2"
+    dest: "/etc/wireguard/{{ interface_name }}.conf"
+    owner: root
+    group: root
+    mode: "600"
+
+- name: Enable Wireguard on boot
+  become: true
+  ansible.builtin.systemd:
+    name: "wg-quick@{{ interface_name }}"
+    enabled: true
+    state: started
+
+- name: Restart Wireguard interface if config was changed
+  become: true
+  when: wireguard_config.changed
+  ansible.builtin.systemd:
+    name: "wg-quick@{{ interface_name }}"
+    state: restarted

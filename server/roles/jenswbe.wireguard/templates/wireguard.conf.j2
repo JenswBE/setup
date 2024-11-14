@@ -1,9 +1,12 @@
+# Managed by Ansible
+# Role: jenswbe.wireguard
+
 [Interface]
 {% for address in wg_config.ip_addresses %}
 Address = {{ address }}
 {% endfor %}
 PrivateKey = {{ wg_config.private_key }}
-ListenPort = 5182{{ wg_interface_index }}
+ListenPort = {{ wg_config.listen_port }}
 Table = {{ wg_config.routing_table }}
 
 {% for peer in wg_config.peers %}
