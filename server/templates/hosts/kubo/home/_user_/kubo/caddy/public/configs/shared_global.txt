@@ -1,3 +1,1 @@
 {{ lookup('ansible.builtin.template', 'caddy/public/global.Caddyfile', variable_start_string='#VAR:', variable_end_string=':VAR#') }}
-
-{{ lookup('ansible.builtin.template', 'caddy/local/global.Caddyfile', variable_start_string='#VAR:', variable_end_string=':VAR#') }}

@@ -1,28 +1,43 @@
-import site_local_blocky
-import site_local_crowdsec
+"*.#VAR:general_domain_local:VAR#" {
+	import logging
+	import tls_acme_dns
 
-"crm.#VAR:general_domain_local:VAR#" {
-	import default_local_reverse_proxy "http://monica"
-}
+	route {
+		import allow_local_only
 
-"docs.#VAR:general_domain_local:VAR#" {
-	import default_local_reverse_proxy "http://paperless:8000"
-	header >Referrer-Policy "same-origin"
-}
+		import handler_local_blocky
+		import handler_local_crowdsec
 
-"feed.#VAR:general_domain_local:VAR#" {
-	import default_local_reverse_proxy "http://miniflux:8080"
-}
+		@crm host "crm.#VAR:general_domain_local:VAR#"
+		handle @crm {
+			import default_local_reverse_proxy "http://monica"
+		}
 
-"start.#VAR:general_domain_local:VAR#" {
-	import default_local_reverse_proxy "http://homer:8080"
-}
+		@docs host "docs.#VAR:general_domain_local:VAR#"
+		handle @docs {
+			import default_local_reverse_proxy "http://paperless:8000"
+			header >Referrer-Policy "same-origin"
+		}
 
-"uptime.#VAR:general_domain_local:VAR#" {
-	import default_local_reverse_proxy "http://uptime-kuma:3001"
-	authorize with policy_local_infra
-}
+		@feed host "feed.#VAR:general_domain_local:VAR#"
+		handle @feed {
+			import default_local_reverse_proxy "http://miniflux:8080"
+		}
 
-"wiki.#VAR:general_domain_local:VAR#" {
-	import default_local_reverse_proxy "http://wikijs:3000"
+		@start host "start.#VAR:general_domain_local:VAR#"
+		handle @start {
+			import default_local_reverse_proxy "http://homer:8080"
+		}
+
+		@uptime host "uptime.#VAR:general_domain_local:VAR#"
+		handle @uptime {
+			import default_local_reverse_proxy "http://uptime-kuma:3001"
+			authorize with policy_local_infra
+		}
+
+		@wiki host "wiki.#VAR:general_domain_local:VAR#"
+		handle @wiki {
+			import default_local_reverse_proxy "http://wikijs:3000"
+		}
+	}
 }

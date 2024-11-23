@@ -1,1 +1,10 @@
-import site_local_crowdsec
+"*.#VAR:general_domain_local:VAR#" {
+	import logging
+	import tls_acme_dns
+
+	route {
+		import allow_local_only
+
+		import handler_local_crowdsec
+	}
+}

@@ -1,0 +1,89 @@
+import ./configs/shared_snippets.txt
+
+# Global
+{
+	import ./configs/shared_global.txt
+
+	security {
+		import ./configs/shared_security.txt
+	}
+
+	layer4 {
+		0.0.0.0:8883 {
+			@secure tls sni "mqtt.#VAR:general_domain_local:VAR#"
+			route @secure {
+				tls
+				proxy ha-mosquitto:1883
+			}
+		}
+	}
+}
+
+import ./configs/*.Caddyfile
+
+"*.#VAR:general_domain_local:VAR#" {
+	import logging
+	import tls_acme_dns
+
+	route {
+		import allow_local_only
+
+		import handler_local_blocky
+		import handler_local_crowdsec
+
+		@grafana host "grafana.#VAR:general_domain_local:VAR#"
+		handle @grafana {
+			import default_local_reverse_proxy "http://grafana:3000"
+		}
+
+		@ha host "ha.#VAR:general_domain_local:VAR#"
+		handle @ha {
+			import default_local_reverse_proxy "http://ha:8123"
+		}
+
+		@logs host "logs.#VAR:general_domain_local:VAR#"
+		handle @logs {
+			import default_local_reverse_proxy "http://graylog:9000"
+		}
+
+		@pdf host "pdf.#VAR:general_domain_local:VAR#"
+		handle @pdf {
+			import default_local_reverse_proxy "stirling-pdf:8080"
+		}
+
+		@prometheus host "prometheus.#VAR:general_domain_local:VAR#"
+		handle @prometheus {
+			import default_local_reverse_proxy "http://prometheus:9090"
+		}
+
+		@tmm host "tmm.#VAR:general_domain_local:VAR#"
+		handle @tmm {
+			import default_local_reverse_proxy "http://tmm:4000"
+		}
+
+		@torrent_system host "torrent-system.#VAR:general_domain_local:VAR#"
+		handle @torrent_system {
+			basic_auth {
+				"#VAR:app_transmission_system_username:VAR#" "#VAR:app_transmission_system_password | password_hash('blowfish', rounds=10, ident='2y'):VAR#"
+			}
+			@not_get_metrics {
+				not {
+					method GET
+					path /transmission/web/
+				}
+			}
+			respond @not_get_metrics "403 Forbidden: Only GET /transmission/web/ is allowed" 403
+			import default_local_reverse_proxy "http://transmission-vpn:9091"
+		}
+
+		@unifi host "unifi.#VAR:general_domain_local:VAR#"
+		handle @unifi {
+			import default_local_reverse_proxy_with_insecure_upstream "https://unifi-network-app:8443"
+		}
+
+		@zabbix host "zabbix.#VAR:general_domain_local:VAR#"
+		handle @zabbix {
+			import default_local_reverse_proxy "http://zabbix-web:8080"
+		}
+	}
+}

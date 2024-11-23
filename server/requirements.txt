@@ -1,2 +1,3 @@
 github3.py # Required by module community.general.github_release
+netaddr # Required by filter ansible.utils.ipaddr
 passlib # Required by filter password_hash

@@ -18,6 +18,7 @@
       - fiona
       - hercules
       - kubo
+      - kubo-local
       - rango
 
   pre_tasks:

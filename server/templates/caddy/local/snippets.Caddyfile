@@ -1,0 +1,57 @@
+(default_authorization_local) {
+	authorization policy policy_local_{args[0]} {
+		import default_authorization {args[0]}
+		set auth url "https://portal.#VAR:general_domain_local:VAR#/"
+	}
+}
+
+(tls_acme_dns) {
+	tls {
+		dns desec {
+			token "#VAR:app_caddy_desec_token:VAR#"
+		}
+		resolvers 9.9.9.9 149.112.112.112
+		propagation_delay 60s
+	}
+}
+
+(allow_local_only) {
+	@not_local_ip not remote_ip private_ranges
+	abort @not_local_ip
+}
+
+(default_local_reverse_proxy) {
+	import default_reverse_proxy {args[0]}
+}
+
+(default_local_reverse_proxy_with_insecure_upstream) {
+	import default_reverse_proxy_with_insecure_upstream {args[0]}
+}
+
+(handler_local_blocky) {
+	@blocky host "blocky.#VAR:ansible_hostname:VAR#.#VAR:general_domain_local:VAR#"
+	handle @blocky {
+		@not_get_metrics {
+			not {
+				method GET
+				path /metrics
+			}
+		}
+		respond @not_get_metrics "403 Forbidden: Only GET /metrics is allowed" 403
+		import default_reverse_proxy "http://blocky:8080"
+	}
+}
+
+(handler_local_crowdsec) {
+	@crowdsec host "crowdsec.#VAR:ansible_hostname:VAR#.#VAR:general_domain_local:VAR#"
+	handle @crowdsec {
+		@not_get_metrics {
+			not {
+				method GET
+				path /metrics
+			}
+		}
+		respond @not_get_metrics "403 Forbidden: Only GET /metrics is allowed" 403
+		import default_reverse_proxy "http://crowdsec:6060"
+	}
+}

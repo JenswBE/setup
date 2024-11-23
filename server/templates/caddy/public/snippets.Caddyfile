@@ -1,0 +1,16 @@
+(default_authorization_public) {
+	authorization policy policy_public_{args[0]} {
+		import default_authorization {args[0]}
+		set auth url "https://portal.#VAR:general_domain_default:VAR#/"
+	}
+}
+
+(default_public_reverse_proxy) {
+	import logging
+	import default_reverse_proxy {args[0]}
+}
+
+(default_public_reverse_proxy_with_insecure_upstream) {
+	import logging
+	import default_reverse_proxy_with_insecure_upstream {args[0]}
+}

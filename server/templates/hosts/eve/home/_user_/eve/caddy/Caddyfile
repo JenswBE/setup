@@ -27,7 +27,7 @@ import ./configs/shared_snippets.txt
 }
 
 "portal.#VAR:general_domain_default:VAR#" {
-	import defaults
+	import logging
 	authenticate with portal_public
 }
 

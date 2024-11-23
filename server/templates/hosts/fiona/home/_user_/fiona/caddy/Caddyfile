@@ -26,8 +26,8 @@ import ./configs/shared_snippets.txt
 }
 
 "portal.#VAR:general_domain_local:VAR#" {
-	import defaults
-	import local_access
+	import logging
+	import allow_local_only
 	authenticate with portal_local
 }
 
@@ -35,4 +35,21 @@ import ./configs/*.Caddyfile
 
 # Needed to force apply proxy_protocol listener wrapper to HTTP connections
 http:// {
+}
+
+"*.#VAR:general_domain_local:VAR#" {
+	import logging
+	import tls_acme_dns
+
+	route {
+		import allow_local_only
+
+		import handler_local_blocky
+		import handler_local_crowdsec
+
+		@ups host "ups.#VAR:general_domain_local:VAR#"
+		handle @ups {
+			import default_local_reverse_proxy "http://peanut:8080"
+		}
+	}
 }

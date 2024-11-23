@@ -1,3 +1,20 @@
+import ./configs/shared_snippets.txt
+
+# Global
+{
+	import ./configs/shared_global.txt
+
+	security {
+		import ./configs/shared_security.txt
+	}
+}
+
+import ./configs/*.Caddyfile
+
+# Needed to force apply proxy_protocol listener wrapper to HTTP connections
+http:// {
+}
+
 "dtu.#VAR:general_domain_default:VAR#" {
 	import default_public_reverse_proxy "http://opendtu.#VAR:general_domain_local:VAR#"
 	authorize with policy_public_sun

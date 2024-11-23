@@ -1,0 +1,12 @@
+email "#VAR:general_mail_admin:VAR#@#VAR:general_domain_default:VAR#"
+
+order authenticate before respond
+order authorize before basicauth
+
+servers :80 {
+	name http
+}
+
+servers :443 {
+	name https
+}

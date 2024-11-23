@@ -26,13 +26,34 @@
 	redir /.well-known/webfinger /public.php?service=webfinger 301
 }
 
-"stats.#VAR:general_domain_default:VAR#",
-"stats-spellebel.#VAR:general_domain_default:VAR#",
-"stats.#VAR:general_domain_bjoetiek:VAR#",
-"stats.#VAR:general_domain_interwego:VAR#",
-"stats.#VAR:general_domain_klokracing:VAR#",
-"stats.#VAR:general_domain_kristofcoenen:VAR#",
-"stats.#VAR:general_domain_tuinfeest:VAR#",
+"stats.#VAR:general_domain_default:VAR#" {
+	import default_public_reverse_proxy "http://goatcounter"
+}
+
+"stats-spellebel.#VAR:general_domain_default:VAR#" {
+	import default_public_reverse_proxy "http://goatcounter"
+}
+
+"stats.#VAR:general_domain_bjoetiek:VAR#" {
+	import default_public_reverse_proxy "http://goatcounter"
+}
+
+"stats.#VAR:general_domain_interwego:VAR#" {
+	import default_public_reverse_proxy "http://goatcounter"
+}
+
+"stats.#VAR:general_domain_klokracing:VAR#" {
+	import default_public_reverse_proxy "http://goatcounter"
+}
+
+"stats.#VAR:general_domain_kristofcoenen:VAR#" {
+	import default_public_reverse_proxy "http://goatcounter"
+}
+
+"stats.#VAR:general_domain_tuinfeest:VAR#" {
+	import default_public_reverse_proxy "http://goatcounter"
+}
+
 "stats.#VAR:general_domain_wtech:VAR#" {
 	import default_public_reverse_proxy "http://goatcounter"
 }

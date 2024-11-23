@@ -5,28 +5,9 @@
 	allow roles {args[0]}
 }
 
-(default_authorization_local) {
-	authorization policy policy_local_{args[0]} {
-		import default_authorization {args[0]}
-		set auth url "https://portal.#VAR:general_domain_local:VAR#/"
-	}
-}
-
-(default_authorization_public) {
-	authorization policy policy_public_{args[0]} {
-		import default_authorization {args[0]}
-		set auth url "https://portal.#VAR:general_domain_default:VAR#/"
-	}
-}
-
-(default_authorization_local_and_public) {
-	import default_authorization_local {args[0]}
-	import default_authorization_public {args[0]}
-}
-
 # ===== SITES =====
 
-(defaults) {
+(logging) {
 	log {
 		output file /access_logs/caddy.log
 	}
@@ -40,21 +21,8 @@
 	#VAR:http_security_headers | to_caddy_headers(directive="header_down"):VAR#
 }
 
-(local_access) {
-	tls {
-		dns desec {
-			token "#VAR:app_caddy_desec_token:VAR#"
-		}
-		resolvers 9.9.9.9 149.112.112.112
-		propagation_delay 60s
-	}
-
-	@not_local_ip not remote_ip private_ranges
-	abort @not_local_ip
-}
-
 (default_static_site) {
-	import defaults
+	import logging
 	import static_secure_headers
 	root * {args[0]}
 	file_server
@@ -72,68 +40,22 @@
 
 (default_redirect) {
 	{args[0]} {
-		import defaults
+		import logging
 		redir https://{args[1]}{uri}
 	}
 }
 
 (default_reverse_proxy) {
-	import defaults
 	reverse_proxy {args[0]} {
 		import reverse_proxy_secure_headers
 	}
 }
 
 (default_reverse_proxy_with_insecure_upstream) {
-	import defaults
 	reverse_proxy {args[0]} {
 		import reverse_proxy_secure_headers
 		transport http {
 			tls_insecure_skip_verify
 		}
-	}
-}
-
-(default_local_reverse_proxy) {
-	import local_access
-	import default_reverse_proxy {args[0]}
-}
-
-(default_local_reverse_proxy_with_insecure_upstream) {
-	import local_access
-	import default_reverse_proxy_with_insecure_upstream {args[0]}
-}
-
-(default_public_reverse_proxy) {
-	import default_reverse_proxy {args[0]}
-}
-
-(default_public_reverse_proxy_with_insecure_upstream) {
-	import default_reverse_proxy_with_insecure_upstream {args[0]}
-}
-
-(site_local_blocky) {
-	"blocky.#VAR:ansible_hostname:VAR#.#VAR:general_domain_local:VAR#" {
-		@not_get_metrics {
-			not {
-				method GET
-				path /metrics
-			}
-		}
-		respond @not_get_metrics "403 Forbidden: Only GET /metrics is allowed" 403
-		import default_local_reverse_proxy "http://blocky:8080"
-	}
-}
-
-(site_local_crowdsec) {
-	"crowdsec.#VAR:ansible_hostname:VAR#.#VAR:general_domain_local:VAR#" {
-		@not_get_metrics {
-			not {
-				method GET
-				path /metrics
-			}
-		}
-		respond @not_get_metrics "403 Forbidden: Only GET /metrics is allowed" 403
-		import default_local_reverse_proxy "http://crowdsec:6060"
 	}
 }
