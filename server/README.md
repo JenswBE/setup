@@ -28,7 +28,6 @@ Without this option, the playbook will fail.
 sudo apt install pipx
 pipx install ansible-core
 pipx inject ansible-core $(cat requirements.txt | sed 's/\n/ /g' | sed 's/#.*//') # pipx on Debian is too old to support flag "-r"
-sudo apt install -y dnsutils # Installs dig
 
 # Install roles and collections
 ansible-galaxy role install --force -r requirements.yml

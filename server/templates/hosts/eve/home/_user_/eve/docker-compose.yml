@@ -38,21 +38,38 @@ services:
     volumes:
       - ./nginx/default.conf:/etc/nginx/nginx.conf:ro
 
-  caddy:
+  caddy-public:
     <<: *defaults
     build: ./caddy
-    container_name: caddy
+    container_name: caddy-public
     ports:
       - 127.0.0.1:2080:80
       - 127.0.0.1:2443:443
     networks:
-      - caddy
+      - caddy-public
     volumes:
-      - ./caddy/Caddyfile:/etc/caddy/Caddyfile:ro
-      - ./caddy/configs:/etc/caddy/configs:ro
-      - caddy-access-logs:/access_logs
-      - caddy-config:/config
-      - caddy-data:/data
+      - ./caddy/public/Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./caddy/public/configs:/etc/caddy/configs:ro
+      - caddy-public-access-logs:/access_logs
+      - caddy-public-config:/config
+      - caddy-public-data:/data
+    environment:
+      TZ: "#VAR:general_timezone:VAR#"
+
+  caddy-private:
+    <<: *defaults
+    build: ./caddy
+    container_name: caddy-private
+    ports:
+      - "#VAR:ip.private.eve:VAR#:80:80"
+      - "#VAR:ip.private.eve:VAR#:443:443"
+    networks:
+      caddy-private:
+    volumes:
+      - ./caddy/private/Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./caddy/private/configs:/etc/caddy/configs:ro
+      - caddy-private-config:/config
+      - caddy-private-data:/data
     environment:
       TZ: "#VAR:general_timezone:VAR#"
 
@@ -66,7 +83,7 @@ services:
     hostname: nextcloud
     networks:
       - nextcloud
-      - caddy
+      - caddy-public
     depends_on:
       nc-db:
         condition: service_healthy
@@ -120,7 +137,7 @@ services:
     image: docker.io/miniflux/miniflux:latest
     container_name: miniflux
     networks:
-      - caddy
+      - caddy-private
       - miniflux
     depends_on:
       miniflux-db:
@@ -162,7 +179,7 @@ services:
     image: docker.io/library/monica:4
     container_name: monica
     networks:
-      - caddy
+      - caddy-private
       - monica
     depends_on:
       monica-db:
@@ -213,7 +230,7 @@ services:
     image: lscr.io/linuxserver/wikijs:latest
     container_name: wikijs
     networks:
-      - caddy
+      - caddy-private
       - wikijs
     depends_on:
       wikijs-db:
@@ -290,7 +307,7 @@ services:
     container_name: blocky
     user: "#VAR:ansible_real_user_id:VAR#:#VAR:ansible_real_group_id:VAR#"
     networks:
-      - caddy
+      - caddy-private
     ports:
       - "53:53/tcp" # DNS TCP
       - "53:53/udp" # DNS UDP
@@ -347,7 +364,7 @@ services:
       FLOWS_ENV_ALLOW_LIST: "FLOWS_ENV_GITHUB_TOKEN"
       FLOWS_ENV_GITHUB_TOKEN: "#VAR:app_bjoetiek_directus_github_token:VAR#"
     networks:
-      - caddy
+      - caddy-public
       - bjoetiek-directus
     volumes:
       - "#VAR:general_path_appdata:VAR#/bjoetiek/directus/uploads:/directus/uploads:z"
@@ -407,7 +424,7 @@ services:
       FLOWS_ENV_ALLOW_LIST: "FLOWS_ENV_GITHUB_TOKEN"
       FLOWS_ENV_GITHUB_TOKEN: "#VAR:app_kristofcoenen_directus_github_token:VAR#"
     networks:
-      - caddy
+      - caddy-public
       - kristofcoenen-directus
     volumes:
       - "#VAR:general_path_appdata:VAR#/kristofcoenen/directus/uploads:/directus/uploads:z"
@@ -467,7 +484,7 @@ services:
       FLOWS_ENV_ALLOW_LIST: "FLOWS_ENV_GITHUB_TOKEN"
       FLOWS_ENV_GITHUB_TOKEN: "#VAR:app_tuinfeest_directus_github_token:VAR#"
     networks:
-      - caddy
+      - caddy-public
       - tuinfeest-directus
     volumes:
       - "#VAR:general_path_appdata:VAR#/tuinfeest/directus/uploads:/directus/uploads:z"
@@ -527,7 +544,7 @@ services:
       FLOWS_ENV_ALLOW_LIST: "FLOWS_ENV_GITHUB_TOKEN"
       FLOWS_ENV_GITHUB_TOKEN: "#VAR:app_wtech_directus_github_token:VAR#"
     networks:
-      - caddy
+      - caddy-public
       - wtech-directus
     volumes:
       - "#VAR:general_path_appdata:VAR#/wtech/directus/uploads:/directus/uploads:z"
@@ -563,7 +580,7 @@ services:
     container_name: goatcounter
     user: "#VAR:ansible_real_user_id:VAR#"
     networks:
-      - caddy
+      - caddy-public
     volumes:
       - "#VAR:general_path_appdata:VAR#/goatcounter/db:/db"
     environment:
@@ -579,7 +596,7 @@ services:
     volumes:
       - "#VAR:general_path_appdata:VAR#/uptime-kuma/data:/app/data"
     networks:
-      - caddy
+      - caddy-private
       - uptime-kuma
     environment:
       TZ: "#VAR:general_timezone:VAR#"
@@ -616,7 +633,7 @@ services:
         condition: service_healthy
     networks:
       - keycloak
-      - caddy
+      - caddy-public
     environment:
       TZ: "#VAR:general_timezone:VAR#"
       KC_DB_URL_HOST: keycloak-db
@@ -663,7 +680,7 @@ services:
     ports:
       - 127.0.0.1:9000:8080
     networks:
-      - caddy
+      - caddy-private
     environment:
       TZ: "#VAR:general_timezone:VAR#"
       COLLECTIONS: >-
@@ -682,7 +699,7 @@ services:
       - crowdsec-config:/etc/crowdsec/
       # Logs
       - /var/log/journal:/var/log/host:ro # SSHD logs for Debian
-      - caddy-access-logs:/var/log/caddy:ro
+      - caddy-public-access-logs:/var/log/caddy:ro
 
   # =========================
   # =      VAULTWARDEN      =
@@ -692,7 +709,7 @@ services:
     image: docker.io/vaultwarden/server:latest
     container_name: vaultwarden
     networks:
-      - caddy
+      - caddy-public
     environment:
       TZ: "#VAR:general_timezone:VAR#"
       DOMAIN: "https://vault.#VAR:general_domain_default:VAR#"
@@ -717,7 +734,7 @@ services:
     container_name: homer
     user: "#VAR:ansible_real_user_id:VAR#"
     networks:
-      - caddy
+      - caddy-private
     volumes:
       - "./homer/config.yml:/www/assets/config.yml:ro"
       - "./homer/logos:/www/assets/logos:ro"
@@ -732,7 +749,7 @@ services:
     container_name: paperless
     image: ghcr.io/paperless-ngx/paperless-ngx:latest
     networks:
-      - caddy
+      - caddy-private
       - paperless
     depends_on:
       paperless-redis:
@@ -887,7 +904,7 @@ services:
     container_name: syncthing
     hostname: "#VAR:ansible_hostname:VAR#"
     networks:
-      - caddy
+      - caddy-public
     ports:
       - "22000:22000"
       - "22000:22000/udp"
@@ -978,9 +995,11 @@ services:
 # #################################################################
 volumes:
   bjoetiek-directus-db-dump:
-  caddy-access-logs:
-  caddy-config:
-  caddy-data:
+  caddy-private-config:
+  caddy-private-data:
+  caddy-public-access-logs:
+  caddy-public-config:
+  caddy-public-data:
   crowdsec-config:
   crowdsec-db:
   isa-output:
@@ -1010,8 +1029,11 @@ networks:
     name: backup-nc-db
     internal: true
 
-  caddy:
-    name: caddy
+  caddy-private:
+    name: caddy-private
+
+  caddy-public:
+    name: caddy-public
 
   keycloak:
     name: keycloak

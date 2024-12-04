@@ -1,3 +1,40 @@
+import ./configs/shared_snippets.txt
+
+# Global
+{
+	import ./configs/shared_global.txt
+
+	security {
+		import ./configs/shared_security.txt
+
+		oauth identity provider keycloak {
+			driver generic
+			realm keycloak
+			client_id "#VAR:app_caddy_security_oidc_client_id:VAR#"
+			client_secret "#VAR:app_caddy_security_oidc_client_secret:VAR#"
+			scopes openid email profile
+			metadata_url "#VAR:app_caddy_security_oidc_issuer_url:VAR#/.well-known/openid-configuration"
+			delay_start 20 # Delay 20s to allow Keycloak to start
+		}
+
+		authentication portal portal_public {
+			crypto default token lifetime 604800 # 7 days (60 * 60 * 24 * 7)
+			crypto key sign-verify "#VAR:app_caddy_security_jwt_secret:VAR#"
+			enable identity provider keycloak
+			cookie domain "#VAR:general_domain_default:VAR#"
+		}
+	}
+}
+
+"portal.#VAR:general_domain_default:VAR#" {
+	import logging
+	authenticate with portal_public
+}
+
+# Needed to force apply proxy_protocol listener wrapper to HTTP connections
+http:// {
+}
+
 "auth.#VAR:general_domain_default:VAR#" {
 	import default_public_reverse_proxy "http://keycloak:8080"
 	header >X-Frame-Options "SAMEORIGIN"

@@ -1,1 +1,0 @@
-{{ lookup('ansible.builtin.template', 'caddy/local/security.Caddyfile', variable_start_string='#VAR:', variable_end_string=':VAR#') }}

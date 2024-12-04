@@ -85,19 +85,19 @@ services:
     environment:
       TZ: "#VAR:general_timezone:VAR#"
 
-  caddy-local:
+  caddy-private:
     <<: *defaults
     build: ./caddy
-    container_name: caddy-local
+    container_name: caddy-private
     networks:
-      caddy-local-ip:
-        ipv4_address: "#VAR:ip['kubo-local']:VAR#"
-      caddy-local:
+      caddy-private-ip:
+        ipv4_address: "#VAR:ip.private.kubo:VAR#"
+      caddy-private:
     volumes:
-      - ./caddy/local/Caddyfile:/etc/caddy/Caddyfile:ro
-      - ./caddy/local/configs:/etc/caddy/configs:ro
-      - caddy-local-config:/config
-      - caddy-local-data:/data
+      - ./caddy/private/Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./caddy/private/configs:/etc/caddy/configs:ro
+      - caddy-private-config:/config
+      - caddy-private-data:/data
     environment:
       TZ: "#VAR:general_timezone:VAR#"
 
@@ -109,7 +109,7 @@ services:
     image: ghcr.io/home-assistant/home-assistant:stable
     container_name: ha
     networks:
-      - caddy-local
+      - caddy-private
       - home-automation
     volumes:
       - "./home-automation/home-assistant/automations.yaml:/config/automations.yaml"
@@ -140,7 +140,7 @@ services:
     image: docker.io/library/eclipse-mosquitto:latest
     container_name: ha-mosquitto
     networks:
-      - caddy-local
+      - caddy-private
       - home-automation
     volumes:
       - "./home-automation/mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro"
@@ -209,7 +209,7 @@ services:
     image: docker.io/tinymediamanager/tinymediamanager:latest
     container_name: tmm
     networks:
-      - caddy-local
+      - caddy-private
     volumes:
       - "/data/bulk/media:/media"
       - "#VAR:general_path_appdata:VAR#/tmm/data:/data"
@@ -344,7 +344,7 @@ services:
       - NET_ADMIN
     networks:
       - caddy-public
-      - caddy-local
+      - caddy-private
     devices:
       - /dev/net/tun:/dev/net/tun
     volumes:
@@ -381,7 +381,7 @@ services:
     container_name: blocky
     user: "#VAR:ansible_real_user_id:VAR#:#VAR:ansible_real_group_id:VAR#"
     networks:
-      - caddy-local
+      - caddy-private
     ports:
       - "53:53/tcp" # DNS TCP
       - "53:53/udp" # DNS UDP
@@ -396,7 +396,7 @@ services:
     image: ghcr.io/stirling-tools/stirling-pdf:latest
     container_name: stirling-pdf
     networks:
-      - caddy-local
+      - caddy-private
     environment:
       TZ: "#VAR:general_timezone:VAR#"
       DOCKER_ENABLE_SECURITY: "false"
@@ -427,7 +427,7 @@ services:
       - "10001:10001/udp" # Required for AP discovery
       - "8080:8080" # Required for device communication
     networks:
-      - caddy-local
+      - caddy-private
       - unifi
     depends_on:
       unifi-mongodb:
@@ -470,7 +470,7 @@ services:
       - "#VAR:general_path_appdata:VAR#/graylog/graylog/config:/usr/share/graylog/config"
       - "#VAR:general_path_appdata:VAR#/graylog/graylog/journal:/usr/share/graylog/journal"
     networks:
-      - caddy-local
+      - caddy-private
       - graylog
     ports:
       - 1514:1514 # Syslog TCP
@@ -566,7 +566,7 @@ services:
       retries: 3
       start_period: 30s
     networks:
-      - caddy-local
+      - caddy-private
       - zabbix
     stop_grace_period: 10s
     sysctls:
@@ -662,7 +662,7 @@ services:
     container_name: prometheus
     user: "#VAR:ansible_real_user_id:VAR#:#VAR:ansible_real_group_id:VAR#"
     networks:
-      - caddy-local
+      - caddy-private
       - prometheus
       - crowdsec
     environment:
@@ -705,7 +705,7 @@ services:
     container_name: grafana
     user: "#VAR:ansible_real_user_id:VAR#:#VAR:ansible_real_group_id:VAR#"
     networks:
-      - caddy-local
+      - caddy-private
       - prometheus
     volumes:
       - ./grafana:/provisioning
@@ -741,7 +741,7 @@ services:
     ports:
       - 127.0.0.1:9000:8080
     networks:
-      - caddy-local
+      - caddy-private
     environment:
       TZ: "#VAR:general_timezone:VAR#"
       COLLECTIONS: >-
@@ -821,19 +821,19 @@ networks:
   caddy-public:
     name: caddy-public
 
-  caddy-local-ip:
-    name: aaa-caddy-local-ip # Must be alphabetically before network "caddy-local" for Docker to use it as default gateway
+  caddy-private-ip:
+    name: aaa-caddy-private-ip # Must be alphabetically before network "caddy-private" for Docker to use it as default gateway
     driver: macvlan
     driver_opts:
       parent: enp3s0
     ipam:
       config:
-        - subnet: "#VAR: (ip['kubo-local'] + '/24') | ansible.utils.ipaddr('network/prefix') :VAR#"
-          ip_range: "#VAR:ip['kubo-local']:VAR#/32"
-          gateway: "#VAR: (ip['kubo-local'] + '/24') | ansible.utils.ipaddr('1') | ansible.utils.ipaddr('address') :VAR#"
+        - subnet: "#VAR: (ip.private.kubo + '/24') | ansible.utils.ipaddr('network/prefix') :VAR#"
+          ip_range: "#VAR:ip.private.kubo:VAR#/32"
+          gateway: "#VAR: (ip.private.kubo + '/24') | ansible.utils.ipaddr('1') | ansible.utils.ipaddr('address') :VAR#"
 
-  caddy-local:
-    name: caddy-local
+  caddy-private:
+    name: caddy-private
 
   crowdsec:
     name: crowdsec
@@ -860,8 +860,8 @@ networks:
 #                            VOLUMES                            #
 #################################################################
 volumes:
-  caddy-local-config:
-  caddy-local-data:
+  caddy-private-config:
+  caddy-private-data:
   caddy-public-access-logs:
   caddy-public-config:
   caddy-public-data:

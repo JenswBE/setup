@@ -1,0 +1,60 @@
+import ./configs/shared_snippets.txt
+
+# Global
+{
+	import ./configs/shared_global.txt
+
+	security {
+		import ./configs/shared_security.txt
+	}
+}
+
+# Needed to force apply proxy_protocol listener wrapper to HTTP connections
+http:// {
+}
+
+import default_redirect "www.#VAR:general_domain_bjoetiek:VAR#" "#VAR:general_domain_bjoetiek:VAR#"
+import default_redirect "#VAR:general_domain_gwendv:VAR#" "www.instagram.com/gwendolyndevocht/"
+import default_redirect "www.#VAR:general_domain_gwendv:VAR#" "www.instagram.com/gwendolyndevocht/"
+import default_redirect "www.#VAR:general_domain_interwego:VAR#" "#VAR:general_domain_interwego:VAR#"
+import default_redirect "#VAR:general_domain_interwego_be:VAR#" "#VAR:general_domain_interwego:VAR#"
+import default_redirect "www.#VAR:general_domain_interwego_be:VAR#" "#VAR:general_domain_interwego:VAR#"
+import default_redirect "#VAR:general_domain_interwego_eu:VAR#" "#VAR:general_domain_interwego:VAR#"
+import default_redirect "www.#VAR:general_domain_interwego_eu:VAR#" "#VAR:general_domain_interwego:VAR#"
+import default_redirect "#VAR:general_domain_interwego_nl:VAR#" "#VAR:general_domain_interwego:VAR#"
+import default_redirect "www.#VAR:general_domain_interwego_nl:VAR#" "#VAR:general_domain_interwego:VAR#"
+import default_redirect "#VAR:general_domain_local:VAR#" "#VAR:general_domain_default:VAR#"
+import default_redirect "www.#VAR:general_domain_local:VAR#" "#VAR:general_domain_default:VAR#"
+import default_redirect "www.#VAR:general_domain_wtech:VAR#" "#VAR:general_domain_wtech:VAR#"
+
+"assets.#VAR:general_domain_default:VAR#" {
+	import default_static_site_without_reporting "/public/assets"
+	authorize with policy_public_infra
+	#VAR:caddy_extra_headers.assets | to_caddy_headers:VAR#
+}
+
+"ext.#VAR:general_domain_default:VAR#" {
+	import default_static_site_without_reporting "/public/email-username-generator"
+	#VAR:caddy_extra_headers.email_username_generator | to_caddy_headers:VAR#
+}
+
+"stamboom.#VAR:general_domain_default:VAR#" {
+	import default_static_site_without_reporting "/public/family-trees"
+	authorize with policy_public_family
+	#VAR:caddy_extra_headers.family_trees | to_caddy_headers:VAR#
+}
+
+"#VAR:general_domain_bjoetiek:VAR#" {
+	import default_static_site_without_reporting "/public/bjoetiek"
+	#VAR:caddy_extra_headers.bjoetiek | to_caddy_headers:VAR#
+}
+
+"#VAR:general_domain_interwego:VAR#" {
+	import default_static_site_with_reporting "/public/interwego"
+	#VAR:caddy_extra_headers.interwego | to_caddy_headers:VAR#
+}
+
+"#VAR:general_domain_wtech:VAR#" {
+	import default_static_site_with_reporting "/public/wtech"
+	#VAR:caddy_extra_headers.wtech | to_caddy_headers:VAR#
+}

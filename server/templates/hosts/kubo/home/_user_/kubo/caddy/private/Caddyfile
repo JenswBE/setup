@@ -19,8 +19,6 @@ import ./configs/shared_snippets.txt
 	}
 }
 
-import ./configs/*.Caddyfile
-
 "*.#VAR:general_domain_local:VAR#" {
 	import logging
 	import tls_acme_dns

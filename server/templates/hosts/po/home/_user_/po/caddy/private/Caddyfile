@@ -9,8 +9,13 @@ import ./configs/shared_snippets.txt
 	}
 }
 
-import ./configs/*.Caddyfile
+"*.#VAR:general_domain_local:VAR#" {
+	import logging
+	import tls_acme_dns
 
-# Needed to force apply proxy_protocol listener wrapper to HTTP connections
-http:// {
+	route {
+		import allow_local_only
+
+		import handler_local_crowdsec
+	}
 }

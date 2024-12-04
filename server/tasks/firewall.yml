@@ -55,3 +55,7 @@
       ansible.builtin.systemd:
         name: firewalld
         state: reloaded
+
+    - name: Sleep 2 seconds to allow firewall to settle
+      ansible.builtin.wait_for:
+        timeout: 2

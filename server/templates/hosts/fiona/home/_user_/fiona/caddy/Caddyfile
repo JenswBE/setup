@@ -25,14 +25,6 @@ import ./configs/shared_snippets.txt
 	}
 }
 
-"portal.#VAR:general_domain_local:VAR#" {
-	import logging
-	import allow_local_only
-	authenticate with portal_local
-}
-
-import ./configs/*.Caddyfile
-
 # Needed to force apply proxy_protocol listener wrapper to HTTP connections
 http:// {
 }
@@ -46,6 +38,11 @@ http:// {
 
 		import handler_local_blocky
 		import handler_local_crowdsec
+
+		@portal host "portal.#VAR:general_domain_local:VAR#"
+		handle @portal {
+			authenticate with portal_local
+		}
 
 		@ups host "ups.#VAR:general_domain_local:VAR#"
 		handle @ups {

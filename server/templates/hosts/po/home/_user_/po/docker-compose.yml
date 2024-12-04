@@ -27,21 +27,21 @@ services:
     volumes:
       - ./nginx/default.conf:/etc/nginx/nginx.conf:ro,z
 
-  caddy:
+  caddy-public:
     <<: *defaults
     build: ./caddy
-    container_name: caddy
+    container_name: caddy-public
     ports:
       - 127.0.0.1:2080:80
       - 127.0.0.1:2443:443
     networks:
-      - caddy
+      - caddy-public
     volumes:
-      - ./caddy/Caddyfile:/etc/caddy/Caddyfile:ro
-      - ./caddy/configs:/etc/caddy/configs:ro
-      - caddy-access-logs:/access_logs
-      - caddy-config:/config
-      - caddy-data:/data
+      - ./caddy/public/Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./caddy/public/configs:/etc/caddy/configs:ro
+      - caddy-public-access-logs:/access_logs
+      - caddy-public-config:/config
+      - caddy-public-data:/data
       - website-assets:/public/assets:ro
       - website-bjoetiek:/public/bjoetiek:ro
       - website-email-username-generator:/public/email-username-generator:ro
@@ -49,6 +49,23 @@ services:
       - website-hetvleermuizenkind:/public/hetvleermuizenkind:ro
       - website-interwego:/public/interwego:ro
       - website-wtech:/public/wtech:ro
+    environment:
+      TZ: "#VAR:general_timezone:VAR#"
+
+  caddy-private:
+    <<: *defaults
+    build: ./caddy
+    container_name: caddy-private
+    ports:
+      - "#VAR:ip.private.po:VAR#:80:80"
+      - "#VAR:ip.private.po:VAR#:443:443"
+    networks:
+      caddy-private:
+    volumes:
+      - ./caddy/private/Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./caddy/private/configs:/etc/caddy/configs:ro
+      - caddy-private-config:/config
+      - caddy-private-data:/data
     environment:
       TZ: "#VAR:general_timezone:VAR#"
 
@@ -97,7 +114,7 @@ services:
       crowdsec-docker-proxy:
         condition: service_started
     networks:
-      - caddy
+      - caddy-private
       - crowdsec
     environment:
       TZ: "#VAR:general_timezone:VAR#"
@@ -116,7 +133,7 @@ services:
       - crowdsec-config:/etc/crowdsec/
       # Logs
       - /var/log/secure:/var/log/secure:ro,z # RedHat-based
-      - caddy-access-logs:/var/log/caddy:ro
+      - caddy-public-access-logs:/var/log/caddy:ro
 
   crowdsec-docker-proxy:
     <<: *defaults
@@ -154,9 +171,11 @@ services:
 # #                            VOLUMES                            #
 # #################################################################
 volumes:
-  caddy-access-logs:
-  caddy-config:
-  caddy-data:
+  caddy-private-config:
+  caddy-private-data:
+  caddy-public-access-logs:
+  caddy-public-config:
+  caddy-public-data:
   crowdsec-config:
   crowdsec-db:
   rsyncd-ssh-host-keys:
@@ -172,8 +191,11 @@ volumes:
 # #                            NETWORKS                           #
 # #################################################################
 networks:
-  caddy:
-    name: caddy
+  caddy-private:
+    name: caddy-private
+
+  caddy-public:
+    name: caddy-public
 
   crowdsec:
     name: crowdsec

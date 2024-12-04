@@ -1,0 +1,12 @@
+hostnames:
+  private:
+    eve: "eve.{{ general_domain_local }}"
+    fiona: "fiona.{{ general_domain_local }}"
+    hercules: "hercules.{{ general_domain_local }}"
+    kubo: "kubo-private.{{ general_domain_local }}"
+    po: "po.{{ general_domain_local }}"
+    rango: "rango.{{ general_domain_local }}"
+  public:
+    eve: "eve.{{ general_domain_default }}"
+    kubo: "kubo.{{ general_domain_local }}"
+    po: "po.{{ general_domain_default }}"

@@ -14,13 +14,6 @@
         "armv7l": "armv7",
       }
 
-    hostnames:
-      - fiona
-      - hercules
-      - kubo
-      - kubo-local
-      - rango
-
   pre_tasks:
     - name: Use of limit arg is mandatory # noqa: run-once[task]
       ansible.builtin.fail:
@@ -49,24 +42,16 @@
       ansible.builtin.include_vars: public/domains.yml
       tags: ["always"]
 
-    - name: Lookup IP's
-      delegate_to: localhost # Can be executed anywhere using VPN
-      # when: '"home" in group_names' # Can be executed anywhere using VPN
-      register: lookup_ips
-      ansible.builtin.command: dig +short {{ item }}.{{ general_domain_local }}
-      failed_when: lookup_ips.stdout == "" or "connection refused" in lookup_ips.stdout
-      changed_when: false
-      loop: "{{ hostnames }}"
+    - name: Load hostname vars
+      ansible.builtin.include_vars: public/hostnames.yml
       tags: ["always"]
 
     - name: Build IP map
-      # when: '"home" in group_names' # Can be executed anywhere using VPN
       ansible.builtin.set_fact:
-        ip: "{{ lookup_ips.results | map(attribute='item') | zip(lookup_ips.results | map(attribute='stdout')) | community.general.dict }}"
+        ip: "{{ hostnames | hostnames_to_ips }}"
       tags: ["always"]
 
     - name: Print IP lookup result
-      # when: '"home" in group_names' # Can be executed anywhere using VPN
       ansible.builtin.debug:
         var: ip
       tags: ["always"]
