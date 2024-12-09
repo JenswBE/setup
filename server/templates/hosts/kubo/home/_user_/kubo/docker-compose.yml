@@ -358,20 +358,6 @@ services:
       SERVER_CITIES: Brussels
       DOT_PROVIDERS: quad9
 
-  # =========================
-  # =         NGINX         =
-  # =========================
-  nginx-hetvleermuizenkind:
-    <<: *defaults
-    image: docker.io/library/nginx:latest
-    container_name: nginx-hetvleermuizenkind
-    networks:
-      - caddy-public
-    volumes:
-      - "#VAR:general_path_appdata:VAR#/nginx/hetvleermuizenkind:/usr/share/nginx/html"
-    environment:
-      TZ: "#VAR:general_timezone:VAR#"
-
   # ==========================
   # =      DNS - BLOCKY      =
   # ==========================

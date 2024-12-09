@@ -13,29 +13,33 @@
 	}
 }
 
-(static_secure_headers) {
-	#VAR:http_security_headers | to_caddy_headers:VAR#
-}
-
-(reverse_proxy_secure_headers) {
-	#VAR:http_security_headers | to_caddy_headers(directive="header_down"):VAR#
+(secure_headers) {
+	header {
+		#VAR:http_security_headers.default | to_caddy_header_values("default"):VAR#
+		#VAR:http_security_headers.enforce | to_caddy_header_values("replace"):VAR#
+		defer
+	}
 }
 
 (default_static_site) {
 	import logging
-	import static_secure_headers
+	import secure_headers
 	root * {args[0]}
 	file_server
 }
 
 (default_static_site_with_reporting) {
 	import default_static_site {args[0]}
-	#VAR:http_security_headers_static_with_reporting | to_caddy_headers:VAR#
+	header {
+		#VAR:http_security_headers_static_with_reporting | to_caddy_header_values("replace"):VAR#
+	}
 }
 
 (default_static_site_without_reporting) {
 	import default_static_site {args[0]}
-	#VAR:http_security_headers_static_without_reporting | to_caddy_headers:VAR#
+	header {
+		#VAR:http_security_headers_static_without_reporting | to_caddy_header_values("replace"):VAR#
+	}
 }
 
 (default_redirect) {
@@ -46,14 +50,13 @@
 }
 
 (default_reverse_proxy) {
-	reverse_proxy {args[0]} {
-		import reverse_proxy_secure_headers
-	}
+	import secure_headers
+	reverse_proxy {args[0]}
 }
 
 (default_reverse_proxy_with_insecure_upstream) {
+	import secure_headers
 	reverse_proxy {args[0]} {
-		import reverse_proxy_secure_headers
 		transport http {
 			tls_insecure_skip_verify
 		}

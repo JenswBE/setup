@@ -13,11 +13,16 @@ firewall_ssh_port: 22
 # HTTP headers
 # Based on https://owasp.org/www-project-secure-headers/#div-bestpractices
 http_security_headers:
-  Referrer-Policy: "no-referrer"
-  Strict-Transport-Security: "max-age=31536000; includeSubDomains"
-  X-Content-Type-Options: "nosniff"
-  X-Frame-Options: "DENY"
-  X-XSS-Protection: "0"
+  default:
+    # Some services embed themselves in an iframe for security purposes (e.g. Vaultwarden for WebAuthn).
+    # Using "DENY" would break these services. Since "SAMEORIGIN" also protects against
+    # clickjacking attacks, I prefer this header as a default instead of having to override it for exceptions.
+    X-Frame-Options: "SAMEORIGIN"
+  enforce:
+    Referrer-Policy: "no-referrer"
+    Strict-Transport-Security: "max-age=31536000; includeSubDomains"
+    X-Content-Type-Options: "nosniff"
+    X-XSS-Protection: "0"
 
 http_security_headers_static_with_reporting:
   Cross-Origin-Embedder-Policy: require-corp; report-to="default"

@@ -9,7 +9,7 @@ class FilterModule(object):
     def filters(self):
         return {
             'hostnames_to_ips': self.hostnames_to_ips,
-            'to_caddy_headers': self.to_caddy_headers,
+            'to_caddy_header_values': self.to_caddy_header_values,
         }
     
     def hostnames_to_ips(self, input):
@@ -28,6 +28,13 @@ class FilterModule(object):
     def remove_newlines(self, input):
         return input.replace("\\n", "")
 
-    def to_caddy_headers(self, headers, directive="header"):
-        header_list = [f"{directive} {header} `{self.remove_newlines(value)}`" for header, value in dict(headers).items()]
+    def to_caddy_header_values(self, headers, action):
+        match action:
+            case "replace":
+                prefix_sign = ""
+            case "default":
+                prefix_sign = "?"
+            case _:
+                raise AnsibleError(f"Param action is missing or has an unsupported value")
+        header_list = [f"{prefix_sign}{header} `{self.remove_newlines(value)}`" for header, value in dict(headers).items()]
         return "\n".join(header_list)
