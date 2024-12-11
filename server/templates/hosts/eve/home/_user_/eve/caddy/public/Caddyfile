@@ -37,7 +37,6 @@ http:// {
 
 "auth.#VAR:general_domain_default:VAR#" {
 	import default_public_reverse_proxy "http://keycloak:8080"
-	header >X-Frame-Options "SAMEORIGIN"
 }
 
 "beheer.#VAR:general_domain_bjoetiek:VAR#" {
