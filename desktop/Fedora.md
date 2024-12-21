@@ -41,6 +41,8 @@ podman-compose
 screen
 virt-manager
 libvirt
+yubikey-manager-qt
+zstd
 EOF
 systemctl reboot
 sudo systemctl enable --now libvirtd
