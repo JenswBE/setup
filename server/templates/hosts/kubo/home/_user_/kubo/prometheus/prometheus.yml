@@ -43,7 +43,7 @@ scrape_configs:
       module: [http_2xx]
     static_configs:
       - targets:
-          - "http://kubo.{{ general_domain_local }}:9116"
+          - "http://kubo-private.{{ general_domain_local }}:9116"
     relabel_configs:
       - source_labels: [__address__]
         target_label: __param_target
