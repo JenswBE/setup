@@ -27,7 +27,6 @@ import ./configs/shared_snippets.txt
 		@docs host "docs.#VAR:general_domain_local:VAR#"
 		handle @docs {
 			import default_local_reverse_proxy "http://paperless:8000"
-			header >Referrer-Policy "same-origin"
 		}
 
 		@feed host "feed.#VAR:general_domain_local:VAR#"

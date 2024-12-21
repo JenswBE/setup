@@ -18,8 +18,8 @@ http_security_headers:
     # Using "DENY" would break these services. Since "SAMEORIGIN" also protects against
     # clickjacking attacks, I prefer this header as a default instead of having to override it for exceptions.
     X-Frame-Options: "SAMEORIGIN"
-  enforce:
     Referrer-Policy: "no-referrer"
+  enforce:
     Strict-Transport-Security: "max-age=31536000; includeSubDomains"
     X-Content-Type-Options: "nosniff"
     X-XSS-Protection: "0"
