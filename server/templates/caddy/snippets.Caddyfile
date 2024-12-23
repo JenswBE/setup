@@ -25,7 +25,9 @@
 	import logging
 	import secure_headers
 	root * {args[0]}
-	file_server
+	file_server {
+		index index.html index.htm index.txt
+	}
 }
 
 (default_static_site_with_reporting) {

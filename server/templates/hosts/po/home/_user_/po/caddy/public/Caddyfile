@@ -42,6 +42,13 @@ import default_redirect "www.#VAR:general_domain_wtech:VAR#" "#VAR:general_domai
 	}
 }
 
+"hetvleermuizenkind.#VAR:general_domain_default:VAR#" {
+	import default_static_site_without_reporting "/public/hetvleermuizenkind"
+	header {
+		#VAR:caddy_extra_headers.hetvleermuizenkind | to_caddy_header_values("replace"):VAR#
+	}
+}
+
 "stamboom.#VAR:general_domain_default:VAR#" {
 	import default_static_site_without_reporting "/public/family-trees"
 	authorize with policy_public_family

@@ -68,6 +68,8 @@ caddy_extra_headers:
       frame-ancestors 'none';
       img-src 'self';
 
+  hetvleermuizenkind: {}
+
   interwego:
     Content-Security-Policy: >-
       default-src 'none';
