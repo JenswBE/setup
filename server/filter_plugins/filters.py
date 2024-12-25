@@ -8,19 +8,32 @@ from ansible.module_utils.common.text.converters import to_native
 class FilterModule(object):
     def filters(self):
         return {
-            'hostnames_to_ips': self.hostnames_to_ips,
+            'enrich_hostnames': self.enrich_hostnames,
             'to_caddy_header_values': self.to_caddy_header_values,
         }
     
-    def hostnames_to_ips(self, input):
+    def enrich_hostnames(self, input):
         result = {}
         for ip_type, hostnames in input.items():
             type_result = {}
-            for hostname, fqdn in hostnames.items():
+            for hostname, data in hostnames.items():
+                host_result = data
+                fqdn = data["fqdn"]
                 try:
-                    type_result[hostname] = socket.gethostbyname(fqdn)
+                    host_result["ipv4"] = socket.gethostbyname(fqdn)
                 except Exception as e:
-                    raise AnsibleError(f"Failed to lookup FQDN '{fqdn}': {to_native(e)}")
+                    raise AnsibleError(f"Failed to lookup IPv4 for FQDN '{fqdn}': {to_native(e)}")
+                
+                if data["ipv6"]:
+                    try:
+                        (_, _, _, _, sockaddr) = socket.getaddrinfo(fqdn, None, socket.AF_INET6)[0]
+                        host_result["ipv6"] = sockaddr[0]
+                    except Exception as e:
+                        raise AnsibleError(f"Failed to lookup IPv6 for FQDN '{fqdn}': {to_native(e)}")
+                else:
+                    del(data["ipv6"]) # Ensures an error is thrown when trying to use "ipv6" in templates
+                
+                type_result[hostname] = host_result
             result[ip_type] = type_result
         return result
 

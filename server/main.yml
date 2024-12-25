@@ -46,14 +46,14 @@
       ansible.builtin.include_vars: public/hostnames.yml
       tags: ["always"]
 
-    - name: Build IP map
+    - name: Enrich hostnames
       ansible.builtin.set_fact:
-        ip: "{{ hostnames | hostnames_to_ips }}"
+        hostnames: "{{ hostnames | enrich_hostnames }}"
       tags: ["always"]
 
-    - name: Print IP lookup result
+    - name: Print hostnames result
       ansible.builtin.debug:
-        var: ip
+        var: hostnames
       tags: ["always"]
 
     - name: Load public basic vars

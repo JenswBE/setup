@@ -1,12 +1,30 @@
 hostnames:
   private:
-    eve: "eve.{{ general_domain_local }}"
-    fiona: "fiona.{{ general_domain_local }}"
-    hercules: "hercules.{{ general_domain_local }}"
-    kubo: "kubo-private.{{ general_domain_local }}"
-    po: "po.{{ general_domain_local }}"
-    rango: "rango.{{ general_domain_local }}"
+    eve:
+      fqdn: "eve.{{ general_domain_local }}"
+      ipv6: false
+    fiona:
+      fqdn: "fiona.{{ general_domain_local }}"
+      ipv6: false
+    hercules:
+      fqdn: "hercules.{{ general_domain_local }}"
+      ipv6: false
+    kubo:
+      fqdn: "kubo-private.{{ general_domain_local }}"
+      ipv6: false
+    po:
+      fqdn: "po.{{ general_domain_local }}"
+      ipv6: false
+    rango:
+      fqdn: "rango.{{ general_domain_local }}"
+      ipv6: false
   public:
-    eve: "eve.{{ general_domain_default }}"
-    kubo: "kubo.{{ general_domain_local }}"
-    po: "po.{{ general_domain_default }}"
+    eve:
+      fqdn: "eve.{{ general_domain_default }}"
+      ipv6: false
+    kubo:
+      fqdn: "kubo.{{ general_domain_local }}"
+      ipv6: false
+    po:
+      fqdn: "po.{{ general_domain_default }}"
+      ipv6: true

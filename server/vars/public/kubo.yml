@@ -78,11 +78,11 @@ nfs_exports:
     source_path: /data/bulk/media
     depends_on: data-bulk.mount
     allowed_ips:
-      - "{{ ip['hercules'] }}"
-      - "{{ ip['rango'] }}"
+      - "{{ hostnames.private.hercules.ipv4 }}"
+      - "{{ hostnames.private.rango.ipv4 }}"
   - name: photos
     source_path: /data/important/Photos
     depends_on: data-important.mount
     allowed_ips:
-      - "{{ ip['hercules'] }}"
-      - "{{ ip['rango'] }}"
+      - "{{ hostnames.private.hercules.ipv4 }}"
+      - "{{ hostnames.private.rango.ipv4 }}"

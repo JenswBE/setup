@@ -91,7 +91,7 @@ services:
     container_name: caddy-private
     networks:
       caddy-private-ip:
-        ipv4_address: "#VAR:ip.private.kubo:VAR#"
+        ipv4_address: "#VAR:hostnames.private.kubo.ipv4:VAR#"
       caddy-private:
     volumes:
       - ./caddy/private/Caddyfile:/etc/caddy/Caddyfile:ro
@@ -814,9 +814,9 @@ networks:
       parent: enp3s0
     ipam:
       config:
-        - subnet: "#VAR: (ip.private.kubo + '/24') | ansible.utils.ipaddr('network/prefix') :VAR#"
-          ip_range: "#VAR:ip.private.kubo:VAR#/32"
-          gateway: "#VAR: (ip.private.kubo + '/24') | ansible.utils.ipaddr('1') | ansible.utils.ipaddr('address') :VAR#"
+        - subnet: "#VAR: (hostnames.private.kubo.ipv4 + '/24') | ansible.utils.ipaddr('network/prefix') :VAR#"
+          ip_range: "#VAR:hostnames.private.kubo.ipv4:VAR#/32"
+          gateway: "#VAR: (hostnames.private.kubo.ipv4 + '/24') | ansible.utils.ipaddr('1') | ansible.utils.ipaddr('address') :VAR#"
 
   caddy-private:
     name: caddy-private

@@ -57,8 +57,8 @@ services:
     build: ./caddy
     container_name: caddy-private
     ports:
-      - "#VAR:ip.private.po:VAR#:80:80"
-      - "#VAR:ip.private.po:VAR#:443:443"
+      - "#VAR:hostnames.private.po.ipv4:VAR#:80:80"
+      - "#VAR:hostnames.private.po.ipv4:VAR#:443:443"
     networks:
       caddy-private:
     volumes:
