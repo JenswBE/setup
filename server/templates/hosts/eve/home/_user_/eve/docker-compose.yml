@@ -920,6 +920,8 @@ services:
   # =========================
   # =         BACKUP        =
   # =========================
+  # Options set in and executed by
+  # server/templates/hosts/eve/etc/systemd/system/nextcloud-calcardbackup.service
   nc-calcardbackup:
     <<: *defaults
     image: docker.io/waja/calcardbackup:latest
@@ -930,12 +932,12 @@ services:
       nc-db:
         condition: service_healthy
     volumes:
+      - "./nextcloud/calcardbackup/mariadb-client.cnf:/etc/my.cnf.d/mariadb-client.cnf:ro"
       - "#VAR:general_path_appdata:VAR#/nextcloud/nextcloud/config/config:/nextcloud/config:ro"
       - nc-calcardbackup:/backup
     environment:
       TZ: "#VAR:general_timezone:VAR#"
-      CRON_TIME: "#" # Disable cron, executed by SystemD timer/service
-      CALCARD_OPTS: "--remove 7" # Remove files older than 7 days
+      CRON_TIME: "#" # Disable cron
 
   borgmatic:
     <<: *defaults
