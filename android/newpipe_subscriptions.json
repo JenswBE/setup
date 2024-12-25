@@ -1,6 +1,6 @@
 {
-  "app_version": "0.27.2",
-  "app_version_int": 999,
+  "app_version": "0.27.4",
+  "app_version_int": 1001,
   "subscriptions": [
     {
       "service_id": 0,
@@ -16,6 +16,11 @@
       "service_id": 0,
       "url": "https://www.youtube.com/channel/UCS0N5baNlQWJCUrhCEo8WlA",
       "name": "Ben Eater"
+    },
+    {
+      "service_id": 0,
+      "url": "https://www.youtube.com/channel/UClsFdM0HzTdF1JYoraQ0aUw",
+      "name": "Brick Experiment Channel"
     },
     {
       "service_id": 0,
@@ -79,6 +84,11 @@
     },
     {
       "service_id": 0,
+      "url": "https://www.youtube.com/channel/UCzgA9CBrIXPtkB2yNTTiy1w",
+      "name": "Level 2 Jeff"
+    },
+    {
+      "service_id": 0,
       "url": "https://www.youtube.com/channel/UCXuqSBlHAE6Xw-yeJA0Tunw",
       "name": "Linus Tech Tips"
     },
@@ -94,8 +104,18 @@
     },
     {
       "service_id": 0,
+      "url": "https://www.youtube.com/channel/UCMOqf8ab-42UUQIdVoKwjlQ",
+      "name": "Practical Engineering"
+    },
+    {
+      "service_id": 0,
       "url": "https://www.youtube.com/channel/UCPCw5ycqW0fme1BdvNqOxbw",
       "name": "ProjectAir"
+    },
+    {
+      "service_id": 0,
+      "url": "https://www.youtube.com/channel/UCv6J_jJa8GJqFwQNgNrMuww",
+      "name": "ServeTheHome"
     },
     {
       "service_id": 0,
@@ -126,6 +146,11 @@
       "service_id": 0,
       "url": "https://www.youtube.com/channel/UCFe9-V_rN9nLqVNiI8Yof3w",
       "name": "That DevOps Guy"
+    },
+    {
+      "service_id": 0,
+      "url": "https://www.youtube.com/channel/UC1VLQPn9cYSqx8plbk9RxxQ",
+      "name": "The Action Lab"
     },
     {
       "service_id": 0,
