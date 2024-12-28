@@ -1,0 +1,54 @@
+# Expected variables
+# profile_name: "Personal"
+# git_name: ""
+# git_email: ""
+
+- name: "{{ profile_name }} - Derive facts"
+  ansible.builtin.set_fact:
+    profile_name_lowercase: "{{ profile_name | lower }}"
+    ssh_key_path: "{{ ansible_user_dir }}/.ssh/{{ profile_name_lowercase }}"
+
+- name: "{{ profile_name }} - Ensure .ssh folder exists"
+  ansible.builtin.file:
+    state: directory
+    path: "{{ ansible_user_dir }}/.ssh"
+    mode: '0700'
+
+- name: "{{ profile_name }} - Create public/private key pair"
+  register: create_ssh_key
+  community.crypto.openssh_keypair:
+    path: "{{ ssh_key_path }}"
+    regenerate: never
+    owner: "{{ ansible_real_user_id }}"
+    group: "{{ ansible_real_group_id }}"
+    mode: "600"
+
+- name: Confirm SSH pubkey setup on GitHub
+  when: create_ssh_key.changed
+  ansible.builtin.pause:
+    prompt: |
+      Configure following public key on GitHub:
+      {{ lookup('ansible.builtin.file', ssh_key_path+'.pub') }}
+
+- name: "{{ profile_name }} - Configure SSH"
+  community.general.ssh_config:
+    user: "{{ ansible_user_id }}"
+    host: "github-{{ profile_name_lowercase }}"
+    hostname: github.com
+    remote_user: git
+    identity_file: "{{ ssh_key_path }}"
+    identities_only: true
+
+- name: "{{ profile_name }} - Ensure source code folder exists"
+  ansible.builtin.file:
+    state: directory
+    path: "{{ ansible_user_dir }}/Dev/{{ profile_name }}"
+    mode: '0750'
+
+- name: "{{ profile_name }} - Configure gitconfig_include"
+  ansible.builtin.copy:
+    dest: "{{ ansible_user_dir }}/Dev/{{ profile_name }}/.gitconfig_include"
+    content: |
+      [user]
+      name = {{ git_name }}
+      email = {{ git_email }}

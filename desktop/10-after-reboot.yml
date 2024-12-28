@@ -1,0 +1,200 @@
+- name: Finalize desktop setup after reboot
+  hosts: localhost
+
+  tasks:
+    - name: Check if Firefox is already removed
+      register: rpm_ostree_requested_base_removals
+      ansible.builtin.command: rpm-ostree status -J '$.deployments[0].requested-base-removals'
+      changed_when: false
+
+    - name: Remove pre-installed Firefox
+      when: '"firefox" not in rpm_ostree_requested_base_removals.stdout'
+      become: true
+      ansible.builtin.command: rpm-ostree override remove firefox-langpacks firefox
+
+    - name: Install overlay packages
+      become: true
+      community.general.rpm_ostree_pkg:
+        name:
+          - distrobox
+          - gnome-tweaks
+          - htop
+          - nextcloud-client
+          - nextcloud-client-nautilus
+          - podman-compose
+          - screen
+          - virt-manager
+          - libvirt
+          - yubikey-manager-qt
+          - zstd
+      # Todo reboot and enable libvirtd
+
+    - name: Setup Bash config
+      ansible.builtin.lineinfile:
+        path: "{{ ansible_user_dir }}/.bashrc"
+        regexp: "^export {{ item.param }}="
+        line: "export {{ item.param }}={{ item.value }}"
+      loop:
+        - param: HISTCONTROL
+          value: ignoreboth
+        - param: HISTFILESIZE
+          value: "-1"
+        - param: HISTSIZE
+          value: "5000"
+        - param: PS1
+          value: >-
+            '[\u@\h \w]\$ '
+
+    - name: Ensure local bin directory exists
+      ansible.builtin.file:
+        state: directory
+        path: "{{ ansible_user_dir }}/.local/bin"
+        mode: '0750'
+
+    - name: Link scripts
+      ansible.builtin.file:
+        state: link
+        src: "{{ item.src }}"
+        dest: "{{ ansible_user_dir }}/.local/bin/{{ item.path | basename }}"
+      with_community.general.filetree: scripts/
+
+    - name: Add Flatpak remote for Flathub
+      community.general.flatpak_remote:
+        name: flathub
+        method: "{{ item }}"
+        flatpakrepo_url: https://dl.flathub.org/repo/flathub.flatpakrepo
+      loop:
+        - system
+        - user
+
+    - name: Update Flatpak metadata
+      ansible.builtin.command: "flatpak update --{{ item }} --appstream"
+      changed_when: false
+      loop:
+        - system
+        - user
+
+    - name: Install system Flatpak apps
+      community.general.flatpak:
+        method: system
+        remote: flathub
+        name:
+          - org.gnome.SimpleScan
+          - org.libreoffice.LibreOffice
+          # Apparently has better codec support than pre-installed one.
+          # See https://fedoramagazine.org/how-i-customize-fedora-silverblue-and-fedora-kinoite/.
+          - org.mozilla.firefox
+          - org.videolan.VLC
+
+    - name: Install user Flatpak apps
+      community.general.flatpak:
+        method: user
+        remote: flathub
+        name:
+          - com.bitwarden.desktop
+          - com.brave.Browser
+          - org.gimp.GIMP
+          - org.gnome.gitlab.YaLTeR.VideoTrimmer
+          - org.inkscape.Inkscape
+          - org.localsend.localsend_app
+
+    - name: Copy flatpak-automatic service and timer
+      become: true
+      register: copy_flatpak_automatic
+      ansible.builtin.copy:
+        src: "{{ item.root }}/{{ item.path }}"
+        dest: "/etc/systemd/system/{{ item.path }}"
+        mode: "0600"
+      with_community.general.filetree: files/etc/systemd/system
+      when: item.path is match("flatpak-automatic\..+")
+
+    - name: Reload systemd
+      when: copy_flatpak_automatic.changed
+      become: true
+      ansible.builtin.systemd:
+        daemon_reload: true
+
+    - name: Enable flatpak-automatic.timer
+      become: true
+      ansible.builtin.systemd:
+        name: flatpak-automatic.timer
+        state: started
+        enabled: true
+
+    - name: Setup automatic rpm-ostree update config
+      become: true
+      register: rpm_ostree_update_config
+      ansible.builtin.copy:
+        src: "files/etc/rpm-ostreed.conf"
+        dest: "/etc/rpm-ostreed.conf"
+        mode: "0644"
+
+    - name: Reload systemd
+      when: rpm_ostree_update_config.changed
+      become: true
+      ansible.builtin.systemd:
+        daemon_reload: true
+
+    - name: Enable automatic rpm-ostree update timers
+      become: true
+      ansible.builtin.systemd:
+        name: "{{ item }}"
+        state: started
+        enabled: true
+      loop:
+        - rpm-ostree-countme.timer
+        - rpm-ostreed-automatic.timer
+
+    # - name: Configure GNOME
+    #   ansible.builtin.command: dconf load /
+    #   args:
+    #     stdin: |
+    #       [org/gnome/desktop/interface]
+    #       clock-show-weekday=true
+    #       color-scheme='prefer-dark'
+    #       enable-hot-corners=false
+    #       gtk-theme='Adwaita-dark'
+
+    #       [org/gnome/desktop/notifications]
+    #       show-banners=false
+
+    #       [org/gnome/desktop/privacy]
+    #       disable-camera=true
+    #       disable-microphone=true
+    #       old-files-age=7
+    #       remove-old-trash-files=true
+
+    #       [org/gnome/desktop/screensaver]
+    #       lock-enabled=false
+
+    #       [org/gnome/desktop/search-providers]
+    #       disabled=['org.gnome.Software.desktop', 'org.gnome.Terminal.desktop', 'org.gnome.Nautilus.desktop', 'firefox.desktop']
+
+    #       [org/gnome/desktop/session]
+    #       idle-delay=0
+
+    #       [org/gnome/desktop/wm/preferences]
+    #       focus-mode='sloppy'
+    #       num-workspaces=1
+
+    #       [org/gnome/mutter]
+    #       dynamic-workspaces=false
+
+    #       [org/gnome/nautilus/preferences]
+    #       default-folder-viewer='list-view'
+
+    #       [org/gnome/settings-daemon/plugins/power]
+    #       power-button-action='interactive'
+    #       sleep-inactive-ac-timeout=0
+
+    #       [org/gnome/system/location]
+    #       enabled=false
+
+    #       [org/gnome/shell]
+    #       favorite-apps=['org.mozilla.firefox.desktop', 'io.github.ungoogled_software.ungoogled_chromium.desktop', 'org.gnome.Nautilus.desktop', 'com.github.iwalton3.jellyfin-media-player.desktop']
+
+    #       [org/gnome/tweaks]
+    #       show-extensions-notice=false
+
+    #       [org/gtk/gtk4/settings/file-chooser]
+    #       sort-directories-first=true

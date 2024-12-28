@@ -1,0 +1,147 @@
+- name: Setup desktop before reboot
+  hosts: localhost
+
+  tasks:
+    - name: Check if Firefox is already removed
+      register: rpm_ostree_requested_base_removals
+      ansible.builtin.command: rpm-ostree status -J '$.deployments[0].requested-base-removals'
+      changed_when: false
+
+    - name: Remove pre-installed Firefox
+      when: '"firefox" not in rpm_ostree_requested_base_removals.stdout'
+      become: true
+      ansible.builtin.command: rpm-ostree override remove firefox-langpacks firefox
+      changed_when: true
+
+    - name: Install overlay packages
+      become: true
+      community.general.rpm_ostree_pkg:
+        name:
+          - distrobox
+          - gnome-tweaks
+          - htop
+          - nextcloud-client
+          - nextcloud-client-nautilus
+          - podman-compose
+          - screen
+          - virt-manager
+          - libvirt
+          - yubikey-manager-qt
+          - zstd
+      # Todo reboot and enable libvirtd
+
+    - name: Setup Bash config
+      ansible.builtin.lineinfile:
+        path: "{{ ansible_user_dir }}/.bashrc"
+        regexp: "^export {{ item.param }}="
+        line: "export {{ item.param }}={{ item.value }}"
+      loop:
+        - param: HISTCONTROL
+          value: ignoreboth
+        - param: HISTFILESIZE
+          value: "-1"
+        - param: HISTSIZE
+          value: "5000"
+        - param: PS1
+          value: >-
+            '[\u@\h \w]\$ '
+
+    - name: Ensure local bin directory exists
+      ansible.builtin.file:
+        state: directory
+        path: "{{ ansible_user_dir }}/.local/bin"
+        mode: '0750'
+
+    - name: Link scripts
+      ansible.builtin.file:
+        state: link
+        src: "{{ item.src }}"
+        dest: "{{ ansible_user_dir }}/.local/bin/{{ item.path | basename }}"
+      with_community.general.filetree: scripts/
+
+    - name: Add Flatpak remote for Flathub
+      community.general.flatpak_remote:
+        name: flathub
+        method: "{{ item }}"
+        flatpakrepo_url: https://dl.flathub.org/repo/flathub.flatpakrepo
+      loop:
+        - system
+        - user
+
+    - name: Update Flatpak metadata
+      ansible.builtin.command: "flatpak update --{{ item }} --appstream"
+      changed_when: false
+      loop:
+        - system
+        - user
+
+    - name: Install system Flatpak apps
+      community.general.flatpak:
+        method: system
+        remote: flathub
+        name:
+          - org.gnome.SimpleScan
+          - org.libreoffice.LibreOffice
+          # Apparently has better codec support than pre-installed one.
+          # See https://fedoramagazine.org/how-i-customize-fedora-silverblue-and-fedora-kinoite/.
+          - org.mozilla.firefox
+          - org.videolan.VLC
+
+    - name: Install user Flatpak apps
+      community.general.flatpak:
+        method: user
+        remote: flathub
+        name:
+          - com.bitwarden.desktop
+          - com.brave.Browser
+          - org.gimp.GIMP
+          - org.gnome.gitlab.YaLTeR.VideoTrimmer
+          - org.inkscape.Inkscape
+          - org.localsend.localsend_app
+
+    - name: Copy flatpak-automatic service and timer
+      become: true
+      register: copy_flatpak_automatic
+      ansible.builtin.copy:
+        src: "{{ item.root }}/{{ item.path }}"
+        dest: "/etc/systemd/system/{{ item.path }}"
+        mode: "0600"
+      with_community.general.filetree: files/etc/systemd/system
+      when: item.path is match("flatpak-automatic\..+")
+
+    - name: Reload systemd
+      when: copy_flatpak_automatic.changed
+      become: true
+      ansible.builtin.systemd:
+        daemon_reload: true
+
+    - name: Enable flatpak-automatic.timer
+      become: true
+      ansible.builtin.systemd:
+        name: flatpak-automatic.timer
+        state: started
+        enabled: true
+
+    - name: Setup automatic rpm-ostree update config
+      become: true
+      register: rpm_ostree_update_config
+      ansible.builtin.copy:
+        src: "files/etc/rpm-ostreed.conf"
+        dest: "/etc/rpm-ostreed.conf"
+        mode: "0644"
+
+    - name: Reload systemd
+      when: rpm_ostree_update_config.changed
+      become: true
+      ansible.builtin.systemd:
+        daemon_reload: true
+
+    - name: Enable automatic rpm-ostree update timers
+      become: true
+      ansible.builtin.systemd:
+        name: "{{ item }}"
+        state: started
+        enabled: true
+      loop:
+        - rpm-ostree-countme.timer
+        - rpm-ostreed-automatic.timer

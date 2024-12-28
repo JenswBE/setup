@@ -1,0 +1,34 @@
+- name: Setup Development distrobox (run inside)
+  hosts: localhost
+  vars_files:
+    - vars.public.yml
+
+  tasks:
+    - name: Confirm inside distrobox
+      ansible.builtin.pause:
+        prompt: |
+          Are you running inside the distrobox?
+
+          Press ENTER to confirm.
+
+    - name: Setup global git config
+      community.general.git_config:
+        scope: global
+        name: "{{ item.key }}"
+        value: "{{ item.value }}"
+      loop: "{{ git_values | dict2items }}"
+      vars:
+        git_values:
+          user.name: "{{ development_profiles[default_development_profile].git_name }}"
+          user.email: "{{ development_profiles[default_development_profile].git_email }}"
+          pull.ff: only
+          init.defaultBranch: main
+
+
+    - name: Setup development profiles
+      include_tasks: tasks/development-setup-profile.yml
+      vars:
+        profile_name: "{{ item.key }}"
+        git_name: "{{ item.value.git_name }}"
+        git_email: "{{ item.value.git_email }}"
+      loop: "{{ development_profiles | dict2items }}"

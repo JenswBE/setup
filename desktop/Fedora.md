@@ -3,50 +3,6 @@
 ## Setup
 
 ```bash
-# Configure bash
-tee -a ~/.bashrc <<EOF
-export HISTCONTROL='ignoreboth'
-export PS1='[\u@\h \w]\$ '
-EOF
-
-# Set hostname
-sudo hostnamectl hostname <HOSTNAME>
-
-# Automatic system updates
-sudo tee /etc/rpm-ostreed.conf <<EOF
-# Entries in this file show the compile time defaults.
-# You can change settings by editing this file.
-# For option meanings, see rpm-ostreed.conf(5).
-
-[Daemon]
-AutomaticUpdatePolicy=stage
-IdleExitTimeout=60
-EOF
-sudo systemctl daemon-reload
-sudo systemctl enable --now rpm-ostreed-automatic.timer
-sudo systemctl enable --now rpm-ostree-countme.timer
-
-# Use Firefox from Flathub (more codecs)
-sudo rpm-ostree override remove firefox-langpacks firefox
-sudo flatpak install --assumeyes --noninteractive flathub org.mozilla.firefox
-
-# Overlay packages
-sudo xargs rpm-ostree --idempotent install <<EOF
-distrobox
-gnome-tweaks
-htop
-nextcloud-client
-nextcloud-client-nautilus
-podman-compose
-screen
-virt-manager
-libvirt
-yubikey-manager-qt
-zstd
-EOF
-systemctl reboot
-sudo systemctl enable --now libvirtd
-
 # Install Android tools
 # Based on https://discussion.fedoraproject.org/t/how-to-use-adb-android-debugging-bridge-on-silverblue/2475
 wget https://dl.google.com/android/repository/platform-tools-latest-linux.zip

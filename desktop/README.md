@@ -27,69 +27,24 @@ When installing both Windows and Linux on a clean disk:
 
 ## Generic instructions
 
+```bash
+# Set hostname
+sudo hostnamectl hostname <HOSTNAME>
+
+# Install Ansible
+pipx install ansible-core
+pipx inject ansible-core $(cat requirements.txt | sed 's/\n/ /g' | sed 's/#.*//') # pipx on Debian is too old to support flag "-r"
+
+# Install collections
+ansible-galaxy collection install --force -r requirements.yml
+
+# Run Ansible
+ansible-playbook main.yml
+```
+
 ### Setup host
 
 ```bash
-# Setup tools
-sudo ln -fs "$(pwd)/lineinfile/lineinfile.py" /usr/local/bin/lineinfile
-
-# Setup scripts
-mkdir -p ~/.local/bin/
-ln -fs "$(realpath ../scripts/bash/git-grep-all.sh)" ~/.local/bin/git-grep-all
-
-# Configure bash
-lineinfile ~/.bashrc 'export HISTSIZE=' 'export HISTSIZE=5000'
-lineinfile ~/.bashrc 'export HISTFILESIZE=' 'export HISTFILESIZE=-1'
-
-# Based on https://flathub.org/setup
-if [ -n "$(flatpak remotes | grep -F flathub | grep -F filter)" ]; then flatpak remote-delete flathub; fi
-flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
-flatpak remote-add --user --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
-sudo xargs flatpak install flathub --assumeyes --noninteractive --or-update <<EOF
-org.gnome.SimpleScan
-org.libreoffice.LibreOffice
-org.videolan.VLC
-EOF
-xargs flatpak install --user flathub --assumeyes --noninteractive --or-update <<EOF
-com.bitwarden.desktop
-com.brave.Browser
-org.gimp.GIMP
-org.gnome.gitlab.YaLTeR.VideoTrimmer
-org.inkscape.Inkscape
-org.localsend.localsend_app
-EOF
-
-# Setup Flatpak auto-update
-sudo tee /etc/systemd/system/flatpak-automatic.service > /dev/null <<EOF
-[Unit]
-Description=flatpak Automatic Update
-Documentation=man:flatpak(1)
-Wants=network-online.target
-After=network-online.target
-
-[Service]
-Type=oneshot
-ExecStart=/usr/bin/flatpak update -y
-
-[Install]
-WantedBy=multi-user.target
-EOF
-sudo tee /etc/systemd/system/flatpak-automatic.timer > /dev/null <<EOF
-[Unit]
-Description=flatpak Automatic Update Trigger
-Documentation=man:flatpak(1)
-
-[Timer]
-OnBootSec=5m
-OnCalendar=0/6:00:00
-Persistent=true
-
-[Install]
-WantedBy=timers.target
-EOF
-sudo systemctl daemon-reload
-sudo systemctl enable --now flatpak-automatic.timer
-
 # Setup NFS share
 NFS_PATH=${HOME:?}/KuboMedia
 NFS_SYSTEMD_NAME=$(systemd-escape --path ${NFS_PATH:?})
@@ -250,33 +205,6 @@ EOF
 # See https://github.com/89luca89/distrobox/blob/main/docs/compatibility.md#containers-distros
 distrobox-create -Y -i quay.io/toolbx-images/debian-toolbox:12 --name debian-development --additional-flags "--env LC_ALL=C.UTF-8"
 distrobox-enter debian-development
-
-# Setup development dirs
-mkdir -p ~/Dev/{Personal,Interwego}
-
-# Configure git
-git config --global user.name "<NAME>"
-git config --global user.email "<EMAIL>"
-git config --global pull.ff only
-git config --global init.defaultBranch main
-tee ~/Dev/Interwego/.gitconfig_include > /dev/null <<EOF
-[user]
-email = EMAIL
-name = NAME
-EOF
-tee ~/.ssh/config > /dev/null <<EOF
-Host github-personal
-  HostName github.com
-  User git
-  IdentityFile ~/.ssh/personal
-  IdentitiesOnly yes
-
-Host github-interwego
-  HostName github.com
-  User git
-  IdentityFile ~/.ssh/interwego
-  IdentitiesOnly yes
-EOF
 
 # Setup VS Code
 # Based on https://code.visualstudio.com/docs/setup/linux.
