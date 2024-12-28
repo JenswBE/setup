@@ -53,15 +53,15 @@ services:
         <<: *default
 
       - name: Syncthing Eve
-        subtitle: Eve - Public
+        subtitle: Eve - Private
         logo: https://raw.githubusercontent.com/syncthing/syncthing/main/assets/logo-only.svg
-        url: "https://syncthing.eve.{{ general_domain_default }}"
+        url: "https://syncthing.eve.{{ general_domain_local }}"
         <<: *default
 
       - name: Syncthing Kubo
-        subtitle: Kubo - Public
+        subtitle: Kubo - Private
         logo: https://raw.githubusercontent.com/syncthing/syncthing/main/assets/logo-only.svg
-        url: "https://syncthing.kubo.{{ general_domain_default }}"
+        url: "https://syncthing.kubo.{{ general_domain_local }}"
         <<: *default
 
   - name: Tools

@@ -9,7 +9,8 @@ import ./configs/shared_snippets.txt
 	}
 }
 
-"*.#VAR:general_domain_local:VAR#" {
+"*.#VAR:general_domain_local:VAR#",
+"*.#VAR:ansible_hostname:VAR#.#VAR:general_domain_local:VAR#" {
 	import logging
 	import tls_acme_dns
 
@@ -37,6 +38,11 @@ import ./configs/shared_snippets.txt
 		@start host "start.#VAR:general_domain_local:VAR#"
 		handle @start {
 			import default_local_reverse_proxy "http://homer:8080"
+		}
+
+		@syncthing host "syncthing.#VAR:ansible_hostname:VAR#.#VAR:general_domain_local:VAR#"
+		handle @syncthing {
+			import default_local_reverse_proxy "http://syncthing:8384"
 		}
 
 		@uptime host "uptime.#VAR:general_domain_local:VAR#"

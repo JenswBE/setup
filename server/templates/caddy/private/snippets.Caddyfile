@@ -11,7 +11,8 @@
 			token "#VAR:app_caddy_desec_token:VAR#"
 		}
 		resolvers 9.9.9.9 149.112.112.112
-		propagation_delay 60s
+		propagation_delay 120s # Wait 2 minutes for propagation
+		propagation_timeout -1 # Don't validate after delay if records are actually propagated
 	}
 }
 

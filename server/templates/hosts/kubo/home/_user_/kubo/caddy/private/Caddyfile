@@ -19,7 +19,8 @@ import ./configs/shared_snippets.txt
 	}
 }
 
-"*.#VAR:general_domain_local:VAR#" {
+"*.#VAR:general_domain_local:VAR#",
+"*.#VAR:ansible_hostname:VAR#.#VAR:general_domain_local:VAR#" {
 	import logging
 	import tls_acme_dns
 
@@ -52,6 +53,11 @@ import ./configs/shared_snippets.txt
 		@prometheus host "prometheus.#VAR:general_domain_local:VAR#"
 		handle @prometheus {
 			import default_local_reverse_proxy "http://prometheus:9090"
+		}
+
+		@syncthing host "syncthing.#VAR:ansible_hostname:VAR#.#VAR:general_domain_local:VAR#"
+		handle @syncthing {
+			import default_local_reverse_proxy "http://syncthing:8384"
 		}
 
 		@tmm host "tmm.#VAR:general_domain_local:VAR#"

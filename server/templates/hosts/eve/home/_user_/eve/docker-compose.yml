@@ -904,7 +904,7 @@ services:
     container_name: syncthing
     hostname: "#VAR:ansible_hostname:VAR#"
     networks:
-      - caddy-public
+      - caddy-private
     ports:
       - "22000:22000"
       - "22000:22000/udp"
