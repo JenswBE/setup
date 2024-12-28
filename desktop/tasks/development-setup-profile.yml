@@ -3,9 +3,12 @@
 # git_name: ""
 # git_email: ""
 
-- name: "{{ profile_name }} - Derive facts"
+- name: "{{ profile_name }} - Derive fact profile_name_lowercase"
   ansible.builtin.set_fact:
     profile_name_lowercase: "{{ profile_name | lower }}"
+
+- name: "{{ profile_name }} - Derive fact ssh_key_path"
+  ansible.builtin.set_fact:
     ssh_key_path: "{{ ansible_user_dir }}/.ssh/{{ profile_name_lowercase }}"
 
 - name: "{{ profile_name }} - Ensure .ssh folder exists"

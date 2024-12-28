@@ -17,28 +17,6 @@ sudo systemctl restart systemd-udevd.service
 adb kill-server
 adb devices
 
-# Install Flameshot
-mkdir -p   ~/Documents/AppImages
-wget -O ~/Documents/AppImages/Flameshot.AppImage https://github.com/flameshot-org/flameshot/releases/download/v12.1.0/Flameshot-12.1.0.x86_64.AppImage
-chmod 755 ~/Documents/AppImages/Flameshot.AppImage
-cat > ~/.local/share/applications/flameshot-daemon.desktop <<EOF
-[Desktop Entry]
-Encoding=UTF-8
-Version=1.0
-Type=Application
-Terminal=false
-Exec=${HOME:?}/Documents/AppImages/Flameshot.AppImage
-Name=Flameshot Daemon
-EOF
-mkdir -p ~/.config/autostart/
-cp ~/.local/share/applications/flameshot-daemon.desktop ~/.config/autostart/
-# Workaround for https://github.com/flameshot-org/flameshot/issues/3365
-tee ~/Documents/AppImages/Flameshot.sh <<EOF
-#!/usr/bin/bash
-${HOME:?}/Documents/AppImages/Flameshot.AppImage gui
-EOF
-chmod 755 ~/Documents/AppImages/Flameshot.sh
-
 # Disable PipeWire HSP/HFP profile
 # Since I use the build-in mic of my computer, I want to always use A2DP instead of HSP/HFP.
 # Based on https://wiki.archlinux.org/title/bluetooth_headset#Disable_PipeWire_HSP/HFP_profile

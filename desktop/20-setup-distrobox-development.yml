@@ -26,7 +26,7 @@
 
 
     - name: Setup development profiles
-      include_tasks: tasks/development-setup-profile.yml
+      ansible.builtin.include_tasks: tasks/development-setup-profile.yml
       vars:
         profile_name: "{{ item.key }}"
         git_name: "{{ item.value.git_name }}"

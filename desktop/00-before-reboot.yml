@@ -145,3 +145,8 @@
       loop:
         - rpm-ostree-countme.timer
         - rpm-ostreed-automatic.timer
+
+    - name: Include additional tasks
+      ansible.builtin.include_tasks: "tasks/{{ item }}.yml"
+      loop:
+        - flameshot
