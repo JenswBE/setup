@@ -20,11 +20,6 @@ When installing both Windows and Linux on a clean disk:
 9. Create partition with preffered size and mount point `/`
 10. Mark root partition as `Encrypted`
 
-## Distro specific instructions
-
-- [Debian](Debian.md)
-- [Fedora](Fedora.md)
-
 ## Generic instructions
 
 ```bash
@@ -41,6 +36,11 @@ ansible-galaxy collection install --force -r requirements.yml
 # Run Ansible
 ansible-playbook main.yml
 ```
+
+## Distro specific instructions
+
+- [Debian](Debian.md)
+- [Fedora](Fedora.md)
 
 ### Setup host
 
@@ -66,40 +66,6 @@ WantedBy=multi-user.target
 EOF
 sudo systemctl daemon-reload
 sudo systemctl enable --now ${NFS_SYSTEMD_NAME:?}.mount
-
-# Setup Syncthing
-mkdir -p ~/.config/syncthing
-mkdir -p ~/Documents/Paperless
-mkdir -p ~/Documents/Wiki.js
-mkdir -p ~/Music/Syncthing
-mkdir -p ~/.config/containers/systemd/
-tee ~/.config/containers/systemd/syncthing.container > /dev/null <<EOF
-[Unit]
-Description=Syncthing
-After=local-fs.target
-After=network.target
-
-[Container]
-Image=docker.io/syncthing/syncthing:1
-HostName=$(hostname)
-Pull=always
-Timezone=local
-Volume=$(realpath ~/.config/syncthing):/var/syncthing:z
-Volume=$(realpath ~/Documents/Paperless):/data/paperless:z
-Volume=$(realpath ~/Documents/Wiki.js):/data/wikijs:z
-Volume=$(realpath ~/Music/Syncthing):/data/music:z
-PublishPort=127.0.0.1:8384:8384
-PublishPort=22000:22000
-Environment=TZ=$(timedatectl show | grep -F Timezone | cut -d'=' -f2)
-UserNS=keep-id
-Environment=PUID=$(id -u)
-Environment=PGID=$(id -g)
-
-[Install]
-# Start by default on boot
-WantedBy=multi-user.target default.target
-EOF
-systemctl --user daemon-reload
 
 # Default to XOrg instead of Wayland
 # Wayland doesn't work nicely with screensharing

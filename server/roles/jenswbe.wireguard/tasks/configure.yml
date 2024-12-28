@@ -10,7 +10,7 @@
 
 - name: Enable Wireguard on boot
   become: true
-  ansible.builtin.systemd:
+  ansible.builtin.systemd_service:
     name: "wg-quick@{{ interface_name }}"
     enabled: true
     state: started
@@ -18,6 +18,6 @@
 - name: Restart Wireguard interface if config was changed
   become: true
   when: wireguard_config.changed
-  ansible.builtin.systemd:
+  ansible.builtin.systemd_service:
     name: "wg-quick@{{ interface_name }}"
     state: restarted

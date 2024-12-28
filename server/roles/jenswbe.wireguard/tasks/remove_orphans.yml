@@ -14,7 +14,7 @@
 
 - name: Disable orphaned interfaces
   become: true
-  ansible.builtin.systemd:
+  ansible.builtin.systemd_service:
     name: "wg-quick@{{ item }}"
     enabled: false
     state: stopped

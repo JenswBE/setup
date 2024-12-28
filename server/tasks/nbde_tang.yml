@@ -26,11 +26,11 @@
 
     - name: Reload systemd daemon
       when: override_tang_port.changed
-      ansible.builtin.systemd:
+      ansible.builtin.systemd_service:
         daemon_reload: true
 
     - name: Enable Tang socket on boot
-      ansible.builtin.systemd:
+      ansible.builtin.systemd_service:
         name: tangd.socket
         enabled: true
         state: started

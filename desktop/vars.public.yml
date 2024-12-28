@@ -6,3 +6,11 @@ development_profiles:
   Interwego:
     git_name: Interwego
     git_email: 142310001+Interwego@users.noreply.github.com
+
+syncthing_dirs:
+  - host: "{{ ansible_user_dir }}/Documents/Paperless"
+    container: /data/paperless
+  - host: "{{ ansible_user_dir }}/Documents/Wiki.js"
+    container: /data/wikijs
+  - host: "{{ ansible_user_dir }}/Music/Syncthing"
+    container: /data/music

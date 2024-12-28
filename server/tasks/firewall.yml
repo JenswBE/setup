@@ -9,7 +9,7 @@
 
     - name: FirewallD - Ensure is enabled
       become: true
-      ansible.builtin.systemd:
+      ansible.builtin.systemd_service:
         name: firewalld
         state: started
         enabled: true
@@ -52,7 +52,7 @@
 
     - name: FirewallD - Reload
       become: true
-      ansible.builtin.systemd:
+      ansible.builtin.systemd_service:
         name: firewalld
         state: reloaded
 

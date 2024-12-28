@@ -1,0 +1,66 @@
+- name: Ensure config dir exists
+  ansible.builtin.file:
+    state: directory
+    path: "{{ ansible_user_dir }}/.config/syncthing"
+    mode: "0750"
+
+- name: Ensure systemd containers dir exists
+  ansible.builtin.file:
+    state: directory
+    path: "{{ ansible_user_dir }}/.config/containers/systemd"
+    mode: "0750"
+
+- name: Ensure Syncthing data dirs exist
+  ansible.builtin.file:
+    state: directory
+    path: "{{ item.host }}"
+    mode: "0750"
+  loop: "{{ syncthing_dirs }}"
+
+- name: Get current timezone
+  register: current_timezone
+  ansible.builtin.command: timedatectl show --property=Timezone --value
+  changed_when: false
+
+- name: Create Syncthing container file
+  register: syncthing_container_file
+  ansible.builtin.copy:
+    dest: "{{ ansible_user_dir }}/.config/containers/systemd/syncthing.container"
+    mode: "0644"
+    content: |
+      [Unit]
+      Description=Syncthing
+      After=local-fs.target
+      After=network.target
+
+      [Container]
+      Image=docker.io/syncthing/syncthing:1
+      HostName={{ ansible_hostname }}
+      Pull=always
+      Timezone=local
+      Volume={{ ansible_user_dir }}/.config/syncthing:/var/syncthing:z
+      {% for item in syncthing_dirs %}
+      Volume={{ item.host }}:{{ item.container }}:z
+      {% endfor %}
+      PublishPort=127.0.0.1:8384:8384
+      PublishPort=22000:22000
+      Environment=TZ={{ current_timezone.stdout | trim }}
+      UserNS=keep-id
+      Environment=PUID={{ ansible_real_user_id }}
+      Environment=PGID={{ ansible_real_group_id }}
+
+      [Install]
+      # Start by default on boot
+      WantedBy=multi-user.target default.target
+
+- name: Reload user systemd
+  when: syncthing_container_file.changed
+  ansible.builtin.systemd_service:
+    scope: user
+    daemon_reload: true
+
+- name: Ensure Syncthing is running
+  become: true
+  ansible.builtin.systemd_service:
+    name: syncthing.service
+    state: started

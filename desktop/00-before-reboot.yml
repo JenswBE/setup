@@ -1,5 +1,7 @@
 - name: Setup desktop before reboot
   hosts: localhost
+  vars_files:
+    - vars.public.yml
 
   tasks:
     - name: Check if Firefox is already removed
@@ -28,7 +30,6 @@
           - libvirt
           - yubikey-manager-qt
           - zstd
-      # Todo reboot and enable libvirtd
 
     - name: Setup Bash config
       ansible.builtin.lineinfile:
@@ -112,12 +113,12 @@
     - name: Reload systemd
       when: copy_flatpak_automatic.changed
       become: true
-      ansible.builtin.systemd:
+      ansible.builtin.systemd_service:
         daemon_reload: true
 
     - name: Enable flatpak-automatic.timer
       become: true
-      ansible.builtin.systemd:
+      ansible.builtin.systemd_service:
         name: flatpak-automatic.timer
         state: started
         enabled: true
@@ -133,12 +134,12 @@
     - name: Reload systemd
       when: rpm_ostree_update_config.changed
       become: true
-      ansible.builtin.systemd:
+      ansible.builtin.systemd_service:
         daemon_reload: true
 
     - name: Enable automatic rpm-ostree update timers
       become: true
-      ansible.builtin.systemd:
+      ansible.builtin.systemd_service:
         name: "{{ item }}"
         state: started
         enabled: true
@@ -147,6 +148,9 @@
         - rpm-ostreed-automatic.timer
 
     - name: Include additional tasks
-      ansible.builtin.include_tasks: "tasks/{{ item }}.yml"
+      ansible.builtin.include_tasks: "tasks/{{ task_name }}.yml"
+      loop_control:
+        loop_var: task_name
       loop:
         - flameshot
+        - syncthing

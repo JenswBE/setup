@@ -16,7 +16,7 @@
     msg: "{{ orphaned_bind_mounts['files'] | map(attribute='path') | map('basename') }}"
 
 - name: Disable orphaned bind mounts
-  ansible.builtin.systemd:
+  ansible.builtin.systemd_service:
     name: "{{ item }}"
     enabled: false
     state: stopped

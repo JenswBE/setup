@@ -78,12 +78,12 @@
     - name: Force systemd reload
       become: true
       when: add_var_media_mount.changed
-      ansible.builtin.systemd:
+      ansible.builtin.systemd_service:
         daemon_reload: true
 
     # - name: Enable /var/media mount
     #   become: true
-    #   ansible.builtin.systemd:
+    #   ansible.builtin.systemd_service:
     #     name: var-media.mount
     #     state: started
     #     enabled: true
