@@ -60,7 +60,8 @@
     daemon_reload: true
 
 - name: Ensure Syncthing is running
-  become: true
+  when: syncthing_container_file.changed
   ansible.builtin.systemd_service:
+    scope: user
     name: syncthing.service
     state: started

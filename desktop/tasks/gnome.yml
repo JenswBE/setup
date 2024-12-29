@@ -1,0 +1,31 @@
+# Expected variables
+# extra_dconf_files: [""]
+# keybindings: [] # See var gnome_keybindings
+
+- name: Configure GNOME - Common
+  ansible.builtin.command: dconf load /
+  args:
+    stdin: "{{ lookup('ansible.builtin.file', 'files/dconf/common.ini') }}"
+
+- name: Configure GNOME - Extra
+  ansible.builtin.command: dconf load /
+  args:
+    stdin: "{{ lookup('ansible.builtin.file', 'files/dconf/' + item + '.ini') }}"
+  loop: "{{ extra_dconf_files }}"
+
+- name: Configure GNOME - Keybindings
+  ansible.builtin.command: dconf load /
+  args:
+    stdin: |
+      [org/gnome/settings-daemon/plugins/media-keys]
+      custom-keybindings=[{% for k in keybindings %}'/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom{{ loop.index0 }}/'{% if not loop.last %},{% endif %}{% endfor %}]
+
+      {% for k in keybindings %}
+      [org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom{{ loop.index0 }}]
+      binding='{{ k.binding }}'
+      command='{{ k.command }}'
+      name='{{ k.name }}'
+      {% endfor %}
+
+      [org/gnome/shell/keybindings]
+      show-screenshot-ui=@as []

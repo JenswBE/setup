@@ -33,14 +33,15 @@ pipx inject ansible-core $(cat requirements.txt | sed 's/\n/ /g' | sed 's/#.*//'
 # Install collections
 ansible-galaxy collection install --force -r requirements.yml
 
-# Run Ansible
-ansible-playbook main.yml
+# Run Ansible - Part 1
+ansible-playbook 00-before-reboot.yml
+
+# Reboot system
+sudo reboot
+
+# Run Ansible - Part 2
+ansible-playbook 10-after-reboot.yml
 ```
-
-## Distro specific instructions
-
-- [Debian](Debian.md)
-- [Fedora](Fedora.md)
 
 ### Setup host
 
@@ -79,90 +80,6 @@ To add a second account in Nextcloud:
 1. Search and start application `Nextcloud Desktop`
 2. Click on dropdown left top with username
 3. Click `Add account`
-
-### GNOME
-
-```bash
-# Setup GNOME
-dconf load / <<EOF
-[org/gnome/desktop/interface]
-clock-show-weekday=true
-color-scheme='prefer-dark'
-gtk-theme='Adwaita-dark'
-show-battery-percentage=true
-
-[org/gnome/desktop/privacy]
-old-files-age=7
-remove-old-trash-files=true
-
-[org/gnome/desktop/search-providers]
-disabled=['org.gnome.Software.desktop', 'org.gnome.Terminal.desktop', 'org.gnome.Nautilus.desktop', 'firefox.desktop']
-enabled=['org.gnome.Characters.desktop']
-
-[org/gnome/desktop/wm/preferences]
-focus-mode='sloppy'
-num-workspaces=1
-
-[org/gnome/mutter]
-dynamic-workspaces=false
-
-[org/gnome/nautilus/preferences]
-default-folder-viewer='list-view'
-
-[org/gnome/settings-daemon/plugins/color]
-night-light-enabled=true
-
-[org/gnome/settings-daemon/plugins/media-keys]
-custom-keybindings=['/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom2/']
-
-[org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0]
-binding='Print'
-command='${HOME:?}/Documents/AppImages/Flameshot.sh'
-name='Flameshot'
-
-[org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1]
-binding='<Shift><Super>h'
-command='gnome-terminal --tab --profile Host'
-name='Terminal - Host'
-
-[org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom2]
-binding='<Shift><Super>f'
-command='gnome-terminal --tab --profile Development'
-name='Terminal - Development'
-
-[org/gnome/shell/keybindings]
-show-screenshot-ui=@as []
-
-[org/gnome/settings-daemon/plugins/power]
-sleep-inactive-ac-timeout=0
-
-[org/gnome/terminal/legacy/profiles:]
-list=['b1dcc9dd-5262-4d8d-a863-c897e6d979b9', '118048ea-b428-4d03-8a20-8795d1f518f6']
-
-[org/gnome/terminal/legacy/profiles:/:118048ea-b428-4d03-8a20-8795d1f518f6]
-custom-command='/usr/bin/distrobox-enter debian-development'
-preserve-working-directory='always'
-title='Development'
-title-mode='after'
-use-custom-command=true
-visible-name='Development'
-
-[org/gnome/terminal/legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9]
-background-color='rgb(0,0,0)'
-foreground-color='rgb(7,178,7)'
-preserve-working-directory='safe'
-title='Host'
-title-mode='after'
-use-theme-colors=false
-visible-name='Host'
-
-[org/gnome/tweaks]
-show-extensions-notice=false
-
-[org/gtk/gtk4/settings/file-chooser]
-sort-directories-first=true
-EOF
-```
 
 ### Development
 
@@ -265,3 +182,40 @@ sudo apt install python-serial
 # Add user to dialout group
 sudo usermod -a -G dialout <USERNAME>
 ```
+
+## Setup
+
+```bash
+# Install Android tools
+# Based on https://discussion.fedoraproject.org/t/how-to-use-adb-android-debugging-bridge-on-silverblue/2475
+wget https://dl.google.com/android/repository/platform-tools-latest-linux.zip
+unzip platform-tools-latest-linux.zip
+sudo cp -v platform-tools/adb platform-tools/fastboot platform-tools/mke2fs* /usr/local/bin
+rm -rf platform-tools*
+sudo wget -O /etc/udev/rules.d/51-android.rules 'https://raw.githubusercontent.com/M0Rf30/android-udev-rules/main/51-android.rules'
+sudo chmod a+r /etc/udev/rules.d/51-android.rules
+sudo groupadd adbusers
+sudo usermod -a -G adbusers $(whoami)
+sudo systemctl restart systemd-udevd.service
+adb kill-server
+adb devices
+
+# Disable PipeWire HSP/HFP profile
+# Since I use the build-in mic of my computer, I want to always use A2DP instead of HSP/HFP.
+# Based on https://wiki.archlinux.org/title/bluetooth_headset#Disable_PipeWire_HSP/HFP_profile
+sudo cp /usr/share/wireplumber/bluetooth.lua.d/50-bluez-config.lua /etc/wireplumber/bluetooth.lua.d/50-bluez-config.lua
+# Update following properties:
+#   - bluez_monitor.properties
+#     ["bluez5.headset-roles"] = "[ ]",
+#     ["bluez5.hfphsp-backend"] = "none",
+#   - bluez_monitor.rules => apply_properties
+#     ["bluez5.auto-connect"] = "[ a2dp_sink ]",
+#     ["bluez5.hw-volume"] = "[ a2dp_sink ]",
+nano /etc/wireplumber/bluetooth.lua.d/50-bluez-config.lua
+```
+
+### References
+
+- https://github.com/castrojo/ublue
+- https://github.com/ublue-os/ubuntu
+- https://castrojo.github.io/awesome-immutable/

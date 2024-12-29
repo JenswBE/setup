@@ -45,7 +45,7 @@
           value: "5000"
         - param: PS1
           value: >-
-            '[\u@\h \w]\$ '
+            '[\u@${CONTAINER_ID:-\h} \w]\$ '
 
     - name: Ensure local bin directory exists
       ansible.builtin.file:
@@ -153,4 +153,8 @@
         loop_var: task_name
       loop:
         - flameshot
+        - gnome
         - syncthing
+      vars:
+        extra_dconf_files: ["dark", "development", "virt-manager"]
+        keybindings: "{{ [gnome_keybindings.flameshot, gnome_keybindings.development] | flatten }}"

@@ -14,3 +14,16 @@ syncthing_dirs:
     container: /data/wikijs
   - host: "{{ ansible_user_dir }}/Music/Syncthing"
     container: /data/music
+
+gnome_keybindings:
+  flameshot:
+    - binding: Print
+      command: "{{ ansible_user_dir }}/Documents/AppImages/Flameshot.sh"
+      name: Flameshot
+  development:
+    - binding: <Shift><Super>h
+      command: /usr/bin/ptyxis --title "HOST - " --tab-with-profile=6575f23d52753c7261fd0a3a676ec340
+      name: Terminal - Host
+    - binding: <Shift><Super>f
+      command: /usr/bin/ptyxis --title "DEV - " --tab-with-profile=8d22cb99b1fa6453ea8704246770fed3
+      name: Terminal - Development
