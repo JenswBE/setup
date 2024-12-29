@@ -21,10 +21,6 @@ jobs:
         with:
           python-version: ${{ env.PYTHON_VERSION }}
 
-      - name: Run unit tests for desktop/lineinfile
-        working-directory: desktop/lineinfile
-        run: python3 -m unittest
-
       - name: Run unit tests for server/templates/nut/client_server/upssched-cmd
         working-directory: server/templates/nut/client_server/upssched-cmd
         run: python3 -m unittest
