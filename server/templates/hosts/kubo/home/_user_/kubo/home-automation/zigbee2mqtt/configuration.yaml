@@ -1,13 +1,7 @@
-permit_join: false
-
 homeassistant:
-  discovery_topic: homeassistant
-  status_topic: homeassistant/status
-  legacy_entity_attributes: false
-  legacy_triggers: false
+  enabled: true
 
 mqtt:
-  base_topic: zigbee2mqtt
   server: mqtt://ha-mosquitto
   user: zigbee2mqtt
   password: "{{ app_zigbee2mqtt_mqtt_password }}"
@@ -16,6 +10,7 @@ ota:
   disable_automatic_update_check: true
 
 serial:
+  adapter: zstack
   port: /dev/zigbee
 
 advanced:
@@ -24,16 +19,12 @@ advanced:
 devices:
   "0x84ba20fffe7321f6":
     friendly_name: button_bedroom_gwen
-    legacy: false
   "0xec1bbdfffe9f5aaa":
     friendly_name: button_bedroom_jens
-    legacy: false
   "0xec1bbdfffe9c3b0e":
     friendly_name: button_bedroom_living
-    legacy: false
   "0xec1bbdfffe239446":
     friendly_name: button_bedroom_bathroom
-    legacy: false
   "0xccccccfffebe8ff8":
     friendly_name: lamp_rgb
   "0x90ab96fffe15a1fb":
@@ -46,5 +37,4 @@ devices:
     friendly_name: socket_table
   "0x680ae2fffe25bde4":
     friendly_name: dimmer_living
-    legacy: false
     simulated_brightness: true

@@ -1,242 +1,239 @@
-- id: '1610805153006'
+- id: "1610805153006"
   alias: Emit "bedroom_press"
-  description: ''
+  description: ""
   trigger:
-  - platform: device
-    domain: mqtt
-    device_id: 84daca0877515e1487937f00c3c629af
-    type: action
-    subtype: 'on'
-    discovery_id: 0xec1bbdfffe9c3b0e action_on
-  - platform: device
-    domain: mqtt
-    device_id: 84daca0877515e1487937f00c3c629af
-    type: action
-    subtype: 'off'
-    discovery_id: 0xec1bbdfffe9c3b0e action_off
-  - platform: device
-    domain: mqtt
-    device_id: e9f53283d1984a568507db134a34f845
-    type: action
-    subtype: 'on'
-    discovery_id: 0xec1bbdfffe9f5aaa action_on
-  - platform: device
-    domain: mqtt
-    device_id: e9f53283d1984a568507db134a34f845
-    type: action
-    subtype: 'off'
-    discovery_id: 0xec1bbdfffe9f5aaa action_off
-  - platform: device
-    domain: mqtt
-    device_id: 62a7bb57424c92e3c3b7a59c1194c455
-    type: action
-    subtype: 'on'
-    discovery_id: 0xec1bbdfffe239446 action_on
-  - platform: device
-    domain: mqtt
-    device_id: 62a7bb57424c92e3c3b7a59c1194c455
-    type: action
-    subtype: 'off'
-    discovery_id: 0xec1bbdfffe239446 action_off
-  - platform: device
-    domain: mqtt
-    device_id: 71ccbf98f3f8a857019723e65b7981f5
-    type: action
-    subtype: 'on'
-    discovery_id: 0x84ba20fffe7321f6 action_on
-  - platform: device
-    domain: mqtt
-    device_id: 71ccbf98f3f8a857019723e65b7981f5
-    type: action
-    subtype: 'off'
-    discovery_id: 0x84ba20fffe7321f6 action_off
+    - platform: device
+      domain: mqtt
+      device_id: bba62f7b0f0de14b08653d1c403df6d0 # button_bedroom_living
+      type: action
+      subtype: "on"
+      discovery_id: 0xec1bbdfffe9c3b0e action_on
+    - platform: device
+      domain: mqtt
+      device_id: bba62f7b0f0de14b08653d1c403df6d0 # button_bedroom_living
+      type: action
+      subtype: "off"
+      discovery_id: 0xec1bbdfffe9c3b0e action_off
+    - platform: device
+      domain: mqtt
+      device_id: bfd0c7ba7dfb33f5b8a2fea8ba4dabcd # button_bedroom_jens
+      type: action
+      subtype: "on"
+      discovery_id: 0xec1bbdfffe9f5aaa action_on
+    - platform: device
+      domain: mqtt
+      device_id: bfd0c7ba7dfb33f5b8a2fea8ba4dabcd # button_bedroom_jens
+      type: action
+      subtype: "off"
+      discovery_id: 0xec1bbdfffe9f5aaa action_off
+    - platform: device
+      domain: mqtt
+      device_id: ee88c07b0b246610b6b742c5a1ce0288 # button_bedroom_bathroom
+      type: action
+      subtype: "on"
+      discovery_id: 0xec1bbdfffe239446 action_on
+    - platform: device
+      domain: mqtt
+      device_id: ee88c07b0b246610b6b742c5a1ce0288 # button_bedroom_bathroom
+      type: action
+      subtype: "off"
+      discovery_id: 0xec1bbdfffe239446 action_off
+    - platform: device
+      domain: mqtt
+      device_id: 51c24af00d62e8efc926da3339c88cfd # button_bedroom_gwen
+      type: action
+      subtype: "on"
+      discovery_id: 0x84ba20fffe7321f6 action_on
+    - platform: device
+      domain: mqtt
+      device_id: 51c24af00d62e8efc926da3339c88cfd # button_bedroom_gwen
+      type: action
+      subtype: "off"
+      discovery_id: 0x84ba20fffe7321f6 action_off
   condition: []
   action:
-  - event: bedroom_press
-    event_data: {}
+    - event: bedroom_press
+      event_data: {}
   mode: single
-- id: '1610805282213'
+- id: "1610805282213"
   alias: Emit "bedroom_long_press"
-  description: ''
+  description: ""
   trigger:
-  - platform: device
-    domain: mqtt
-    device_id: e9f53283d1984a568507db134a34f845
-    type: action
-    subtype: brightness_move_up
-    discovery_id: 0xec1bbdfffe9f5aaa action_brightness_move_up
-  - platform: device
-    domain: mqtt
-    device_id: e9f53283d1984a568507db134a34f845
-    type: action
-    subtype: brightness_move_down
-    discovery_id: 0xec1bbdfffe9f5aaa action_brightness_move_down
-  - platform: device
-    domain: mqtt
-    device_id: 62a7bb57424c92e3c3b7a59c1194c455
-    type: action
-    subtype: brightness_move_up
-    discovery_id: 0xec1bbdfffe239446 action_brightness_move_up
-  - platform: device
-    domain: mqtt
-    device_id: 62a7bb57424c92e3c3b7a59c1194c455
-    type: action
-    subtype: brightness_move_down
-    discovery_id: 0xec1bbdfffe239446 action_brightness_move_down
-  - platform: device
-    domain: mqtt
-    device_id: 71ccbf98f3f8a857019723e65b7981f5
-    type: action
-    subtype: brightness_move_up
-    discovery_id: 0x84ba20fffe7321f6 action_brightness_move_up
-  - platform: device
-    domain: mqtt
-    device_id: 71ccbf98f3f8a857019723e65b7981f5
-    type: action
-    subtype: brightness_move_down
-    discovery_id: 0x84ba20fffe7321f6 action_brightness_move_down
+    - platform: device
+      domain: mqtt
+      device_id: bfd0c7ba7dfb33f5b8a2fea8ba4dabcd # button_bedroom_jens
+      type: action
+      subtype: brightness_move_up
+      discovery_id: 0xec1bbdfffe9f5aaa action_brightness_move_up
+    - platform: device
+      domain: mqtt
+      device_id: bfd0c7ba7dfb33f5b8a2fea8ba4dabcd # button_bedroom_jens
+      type: action
+      subtype: brightness_move_down
+      discovery_id: 0xec1bbdfffe9f5aaa action_brightness_move_down
+    - platform: device
+      domain: mqtt
+      device_id: ee88c07b0b246610b6b742c5a1ce0288 # button_bedroom_bathroom
+      type: action
+      subtype: brightness_move_up
+      discovery_id: 0xec1bbdfffe239446 action_brightness_move_up
+    - platform: device
+      domain: mqtt
+      device_id: ee88c07b0b246610b6b742c5a1ce0288 # button_bedroom_bathroom
+      type: action
+      subtype: brightness_move_down
+      discovery_id: 0xec1bbdfffe239446 action_brightness_move_down
+    - platform: device
+      domain: mqtt
+      device_id: 51c24af00d62e8efc926da3339c88cfd # button_bedroom_gwen
+      type: action
+      subtype: brightness_move_up
+      discovery_id: 0x84ba20fffe7321f6 action_brightness_move_up
+    - platform: device
+      domain: mqtt
+      device_id: 51c24af00d62e8efc926da3339c88cfd # button_bedroom_gwen
+      type: action
+      subtype: brightness_move_down
+      discovery_id: 0x84ba20fffe7321f6 action_brightness_move_down
   condition: []
   action:
-  - event: bedroom_long_press
-    event_data: {}
+    - event: bedroom_long_press
+      event_data: {}
   mode: single
-- id: '1610805598171'
+- id: "1610805598171"
   alias: Bedroom light - Light
-  description: ''
+  description: ""
   trigger:
-  - platform: event
-    event_type: bedroom_press
+    - platform: event
+      event_type: bedroom_press
   condition:
-  - condition: device
-    type: is_off
-    device_id: 3a77735519124063c6dc9919671c7c47
-    entity_id: light.0x90ab96fffe15a1fb
-    domain: light
-  action:
-  - type: turn_on
-    device_id: 3a77735519124063c6dc9919671c7c47
-    entity_id: light.0x90ab96fffe15a1fb
-    domain: light
-    brightness_pct: 100
+    - condition: device
+      type: is_off
+      device_id: 4a6d6d8cd69fd1e9b20419fc70f27ccc # lamp_warm_white
+      entity_id: light.lamp_warm_white
+      domain: light
+  actions:
+    - action: light.turn_on
+      metadata: {}
+      data:
+        brightness_pct: 100
+      target:
+        entity_id: light.lamp_warm_white
   mode: single
-- id: '1610805627327'
+- id: "1610805627327"
   alias: Bedroom light - Dark
-  description: ''
-  trigger:
-  - platform: event
-    event_type: bedroom_long_press
-  condition:
-  - condition: device
-    type: is_off
-    device_id: 3a77735519124063c6dc9919671c7c47
-    entity_id: light.0x90ab96fffe15a1fb
-    domain: light
-  action:
-  - type: turn_on
-    device_id: 3a77735519124063c6dc9919671c7c47
-    entity_id: light.0x90ab96fffe15a1fb
-    domain: light
-    brightness_pct: 1
+  description: ""
   mode: single
-- id: '1610805673476'
+  trigger:
+    - platform: event
+      event_type: bedroom_long_press
+  condition:
+    - condition: device
+      type: is_off
+      device_id: 4a6d6d8cd69fd1e9b20419fc70f27ccc # lamp_warm_white
+      entity_id: light.lamp_warm_white
+      domain: light
+  actions:
+    - action: light.turn_on
+      metadata: {}
+      data:
+        brightness_pct: 1
+      target:
+        entity_id: light.lamp_warm_white
+- id: "1610805673476"
   alias: Bedroom light - Off
-  description: ''
+  description: ""
   trigger:
-  - platform: event
-    event_type: bedroom_press
-  - platform: event
-    event_type: bedroom_long_press
+    - platform: event
+      event_type: bedroom_press
+    - platform: event
+      event_type: bedroom_long_press
   condition:
-  - condition: device
-    type: is_on
-    device_id: 3a77735519124063c6dc9919671c7c47
-    entity_id: light.0x90ab96fffe15a1fb
-    domain: light
-  action:
-  - type: turn_off
-    device_id: 3a77735519124063c6dc9919671c7c47
-    entity_id: light.0x90ab96fffe15a1fb
-    domain: light
+    - condition: device
+      type: is_on
+      device_id: 4a6d6d8cd69fd1e9b20419fc70f27ccc # lamp_warm_white
+      entity_id: light.lamp_warm_white
+      domain: light
+  actions:
+    - action: light.turn_off
+      metadata: {}
+      data: {}
+      target:
+        entity_id: light.lamp_warm_white
   mode: single
-- id: '1610806089787'
+- id: "1610806089787"
   alias: Window lights - Toggle
-  description: ''
+  description: ""
   trigger:
-  - platform: device
-    domain: mqtt
-    device_id: 84daca0877515e1487937f00c3c629af
-    type: action
-    subtype: brightness_move_up
-    discovery_id: 0xec1bbdfffe9c3b0e action_brightness_move_up
-  - platform: device
-    domain: mqtt
-    device_id: 84daca0877515e1487937f00c3c629af
-    type: action
-    subtype: brightness_move_down
-    discovery_id: 0xec1bbdfffe9c3b0e action_brightness_move_down
-  - platform: device
-    domain: mqtt
-    device_id: 8201ed89f528eecb7479aa769ddccd16
-    type: action
-    subtype: brightness_step_up
-    discovery_id: 0x680ae2fffe25bde4 action_brightness_step_up
+    - platform: device
+      domain: mqtt
+      device_id: bba62f7b0f0de14b08653d1c403df6d0 # button_bedroom_living
+      type: action
+      subtype: brightness_move_up
+      discovery_id: 0xec1bbdfffe9c3b0e action_brightness_move_up
+    - platform: device
+      domain: mqtt
+      device_id: bba62f7b0f0de14b08653d1c403df6d0 # button_bedroom_living
+      type: action
+      subtype: brightness_move_down
+      discovery_id: 0xec1bbdfffe9c3b0e action_brightness_move_down
   condition: []
   action:
-  - service: switch.toggle
-    target:
-      entity_id: switch.socket_tv
-  - service: switch.toggle
-    target:
-      entity_id: switch.socket_table
+    - service: switch.toggle
+      target:
+        entity_id: switch.socket_tv
+    - service: switch.toggle
+      target:
+        entity_id: switch.socket_table
   mode: single
-- id: '1628189831484'
+- id: "1628189831484"
   alias: Reading light - Toggle
-  description: ''
+  description: ""
   trigger:
-  - platform: device
-    domain: mqtt
-    device_id: 8201ed89f528eecb7479aa769ddccd16
-    type: action
-    subtype: toggle
-    discovery_id: 0x680ae2fffe25bde4 action_toggle
+    - platform: device
+      domain: mqtt
+      device_id: 1614ac890a779222c208b972b618dd19 # dimmer_living
+      type: action
+      subtype: toggle
+      discovery_id: 0x680ae2fffe25bde4 action_toggle
   condition: []
   action:
-  - type: toggle
-    device_id: 3b2596c2b1cee52c3201b2cdc292453f
-    entity_id: light.lamp_rgb
-    domain: light
+    - type: toggle
+      device_id: 4437ab9a273c04f768b090557e2374c4 # lamp_rgb
+      entity_id: light.lamp_rgb
+      domain: light
   mode: single
-- id: '1628189968604'
+- id: "1628189968604"
   alias: Reading light - Increase brightness
-  description: ''
+  description: ""
   trigger:
-  - platform: device
-    domain: mqtt
-    device_id: 8201ed89f528eecb7479aa769ddccd16
-    type: action
-    subtype: brightness_move_up
-    discovery_id: 0x680ae2fffe25bde4 action_brightness_move_up
+    - platform: device
+      domain: mqtt
+      device_id: 1614ac890a779222c208b972b618dd19 # dimmer_living
+      type: action
+      subtype: brightness_move_up
+      discovery_id: 0x680ae2fffe25bde4 action_brightness_move_up
   condition: []
   action:
-  - device_id: 3b2596c2b1cee52c3201b2cdc292453f
-    domain: light
-    entity_id: light.lamp_rgb
-    type: brightness_increase
+    - device_id: 4437ab9a273c04f768b090557e2374c4 # lamp_rgb
+      domain: light
+      entity_id: light.lamp_rgb
+      type: brightness_increase
   mode: single
-- id: '1628190037149'
+- id: "1628190037149"
   alias: Reading light - Decrease brightness
-  description: ''
+  description: ""
   trigger:
-  - platform: device
-    domain: mqtt
-    device_id: 8201ed89f528eecb7479aa769ddccd16
-    type: action
-    subtype: brightness_move_down
-    discovery_id: 0x680ae2fffe25bde4 action_brightness_move_down
+    - platform: device
+      domain: mqtt
+      device_id: 1614ac890a779222c208b972b618dd19 # dimmer_living
+      type: action
+      subtype: brightness_move_down
+      discovery_id: 0x680ae2fffe25bde4 action_brightness_move_down
   condition: []
   action:
-  - device_id: 3b2596c2b1cee52c3201b2cdc292453f
-    domain: light
-    entity_id: light.lamp_rgb
-    type: brightness_decrease
+    - device_id: 4437ab9a273c04f768b090557e2374c4 # lamp_rgb
+      domain: light
+      entity_id: light.lamp_rgb
+      type: brightness_decrease
   mode: single
