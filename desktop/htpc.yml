@@ -3,6 +3,7 @@
 
   roles:
     - role: jenswbe.flathub
+      tags: ["flathub"]
       vars:
         user_flatpaks:
           - com.github.Eloston.UngoogledChromium
@@ -13,10 +14,12 @@
           - org.videolan.VLC
           - tv.kodi.Kodi
     - role: jenswbe.rpm_ostree_auto_update
+      tags: ["rpm_ostree"]
 
   tasks:
     - name: Disable Intel HDA power save (stops popping)
       become: true
+      tags: ["sound"]
       ansible.builtin.template:
         src: htpc/snd-hda-intel-disable-powersave.conf
         dest: /etc/modprobe.d/snd-hda-intel-disable-powersave.conf
@@ -25,6 +28,7 @@
         mode: "644"
 
     - name: Configure GNOME
+      tags: ["gnome"]
       ansible.builtin.command: dconf load /
       args:
         stdin: |
@@ -80,6 +84,7 @@
 
     - name: Add /var/media mount
       become: true
+      tags: ["media_mount"]
       register: add_var_media_mount
       ansible.builtin.template:
         src: htpc/var-media.mount
@@ -90,24 +95,28 @@
 
     - name: Force systemd reload
       become: true
+      tags: ["media_mount"]
       when: add_var_media_mount.changed
       ansible.builtin.systemd_service:
         daemon_reload: true
 
     # - name: Enable /var/media mount
     #   become: true
+    #   tags: ["media_mount"]
     #   ansible.builtin.systemd_service:
     #     name: var-media.mount
     #     state: started
     #     enabled: true
 
     - name: Ensure /var/media is available as bookmark in Nautilus
+      tags: ["media_mount"]
       ansible.builtin.lineinfile:
         path: "{{ ansible_user_dir }}/.config/gtk-3.0/bookmarks"
         regexp: "^file:///var/media"
         line: "file:///var/media Media"
 
     - name: Install overlay packages
+      tags: ["rpm_ostree"]
       become: true
       community.general.rpm_ostree_pkg:
         name:
@@ -115,5 +124,6 @@
           - input-remapper
 
     - name: Ensure Kodi has access to /var/media
-      ansible.builtin.command: flatpak override --user tv.kodi.Kodi --filesystem=home --filesystem=/var/media
+      tags: ["flathub"]
       changed_when: false
+      ansible.builtin.command: flatpak override --user tv.kodi.Kodi --filesystem=home --filesystem=/var/media

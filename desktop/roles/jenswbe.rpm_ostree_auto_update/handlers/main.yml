@@ -2,5 +2,5 @@
 - name: Reload rpm-ostreed
   become: true
   ansible.builtin.systemd_service:
-    name: rpm-ostreed-automatic.timer
+    name: rpm-ostreed.service
     state: reloaded
