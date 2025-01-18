@@ -1,9 +1,9 @@
-# Fedora Silverblue 37
+# Fedora Silverblue 41
 
 1. Enable SSH in Settings => System => Secure Shell
 2. Copy SSH ID: `ssh-copy-id htpc@rango.jensw.eu`
 3. Ensure required collections are installed: `ansible-galaxy collection install --force -r requirements.yml`
-4. Run ansible: `ansible-playbook main.yml`
+4. Run ansible: `ansible-playbook htpc.yml --limit rango`
 5. Execute following commands:
 
 ```bash

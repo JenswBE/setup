@@ -1,11 +1,24 @@
 - name: Setup Fedora Silverblue on an HTPC
   hosts: all
 
+  roles:
+    - role: jenswbe.flathub
+      vars:
+        user_flatpaks:
+          - com.github.Eloston.UngoogledChromium
+          - com.github.iwalton3.jellyfin-media-player
+          # Apparently has better codec support than pre-installed one.
+          # See https://fedoramagazine.org/how-i-customize-fedora-silverblue-and-fedora-kinoite/.
+          - org.mozilla.firefox
+          - org.videolan.VLC
+          - tv.kodi.Kodi
+    - role: jenswbe.rpm_ostree_auto_update
+
   tasks:
     - name: Disable Intel HDA power save (stops popping)
       become: true
-      ansible.builtin.copy:
-        src: snd-hda-intel-disable-powersave.conf
+      ansible.builtin.template:
+        src: htpc/snd-hda-intel-disable-powersave.conf
         dest: /etc/modprobe.d/snd-hda-intel-disable-powersave.conf
         owner: root
         group: root
@@ -68,8 +81,8 @@
     - name: Add /var/media mount
       become: true
       register: add_var_media_mount
-      ansible.builtin.copy:
-        src: var-media.mount
+      ansible.builtin.template:
+        src: htpc/var-media.mount
         dest: /etc/systemd/system/var-media.mount
         owner: root
         group: root
@@ -100,29 +113,6 @@
         name:
           - htop
           - input-remapper
-
-    - name: Add Flatpak remote for Flathub
-      community.general.flatpak_remote:
-        name: flathub-unfiltered
-        method: user
-        flatpakrepo_url: https://dl.flathub.org/repo/flathub.flatpakrepo
-
-    - name: Update Flatpak metadata
-      ansible.builtin.command: flatpak update --user --appstream
-      changed_when: false
-
-    - name: Install Flatpak apps
-      community.general.flatpak:
-        method: user
-        remote: flathub-unfiltered
-        name:
-          - com.github.Eloston.UngoogledChromium
-          - com.github.iwalton3.jellyfin-media-player
-          # Apparently has better codec support than pre-installed one.
-          # See https://fedoramagazine.org/how-i-customize-fedora-silverblue-and-fedora-kinoite/.
-          - org.mozilla.firefox
-          - org.videolan.VLC
-          - tv.kodi.Kodi
 
     - name: Ensure Kodi has access to /var/media
       ansible.builtin.command: flatpak override --user tv.kodi.Kodi --filesystem=home --filesystem=/var/media

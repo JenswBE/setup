@@ -1,0 +1,8 @@
+- name: Setup remote and install flatpaks
+  ansible.builtin.include_tasks: setup_and_install.yml
+  vars:
+    flatpak_method: "{{ item }}"
+  loop: "{{ ['system', 'user'] }}"
+
+- name: Setup automatic updates
+  ansible.builtin.include_tasks: auto_update.yml

@@ -1,0 +1,13 @@
+- name: "Add Flatpak remote for Flathub - Method {{ flatpak_method }}"
+  become: "{{ flatpak_method == 'system' }}"
+  community.general.flatpak_remote:
+    name: flathub
+    method: "{{ flatpak_method }}"
+    flatpakrepo_url: https://dl.flathub.org/repo/flathub.flatpakrepo
+
+- name: "Install Flatpak apps - Method {{ flatpak_method }}"
+  become: "{{ flatpak_method == 'system' }}"
+  community.general.flatpak:
+    method: "{{ flatpak_method }}"
+    remote: flathub
+    name: "{{ lookup('ansible.builtin.vars', flatpak_method + '_flatpaks') }}"

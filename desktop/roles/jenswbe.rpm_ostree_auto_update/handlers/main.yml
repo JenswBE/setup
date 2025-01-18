@@ -1,0 +1,6 @@
+# Based on https://docs.fedoraproject.org/en-US/iot/applying-updates-UG/
+- name: Reload rpm-ostreed
+  become: true
+  ansible.builtin.systemd_service:
+    name: rpm-ostreed-automatic.timer
+    state: reloaded
