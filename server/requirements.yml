@@ -16,4 +16,4 @@ collections:
     version: 2.24.0
 
   - name: community.general
-    version: 10.2.0
+    version: 10.3.0
