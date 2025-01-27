@@ -10,11 +10,13 @@ upstreams:
   groups:
     default:
       - https://dns.quad9.net/dns-query
-      - https://zero.dns0.eu/
+      - https://dns0.eu/
 
 customDNS:
   zone: |
     {{ app_blocky_zone | indent( width=4) }}
+
+connectIPVersion: v4
 
 blocking:
   blockType: zeroIP
