@@ -630,7 +630,7 @@ services:
   zabbix-db:
     <<: [*defaults, *healthcheck-postgres]
     # https://www.zabbix.com/documentation/current/en/manual/installation/requirements
-    image: docker.io/library/postgres:15-alpine
+    image: docker.io/library/postgres:17-alpine
     container_name: zabbix-db
     stop_grace_period: 1m
     networks:
