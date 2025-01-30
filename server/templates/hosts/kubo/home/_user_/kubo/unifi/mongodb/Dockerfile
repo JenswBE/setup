@@ -1,4 +1,4 @@
-FROM docker.io/library/mongo:7.0
+FROM docker.io/library/mongo:8.0
 
 # Unfortunately, the original Mongo image doesn't allow setting
 # an UID and GID. Therefore, adding file with correct
