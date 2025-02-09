@@ -13,7 +13,7 @@ collections:
     version: 5.1.2
 
   - name: community.crypto
-    version: 2.24.0
+    version: 2.25.0
 
   - name: community.general
     version: 10.3.0
