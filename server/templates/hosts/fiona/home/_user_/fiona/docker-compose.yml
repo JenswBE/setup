@@ -88,7 +88,7 @@ services:
   # =========================
   crowdsec:
     <<: *defaults
-    image: ghcr.io/crowdsecurity/crowdsec:v1.6.4-debian
+    image: ghcr.io/crowdsecurity/crowdsec:v1.6.5-debian
     container_name: crowdsec
     ports:
       - 127.0.0.1:9000:8080
