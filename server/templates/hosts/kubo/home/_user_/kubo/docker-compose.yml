@@ -299,7 +299,7 @@ services:
     <<: *defaults
     # Nextcloud currently only supports up to 10.6.
     # See https://docs.nextcloud.com/server/29/admin_manual/installation/system_requirements.html
-    image: docker.io/library/mariadb:10.6
+    image: docker.io/library/mariadb:11.7
     command: --transaction-isolation=READ-COMMITTED --log-bin=ROW --innodb-read-only-compressed=OFF
     container_name: nc-db
     networks:
