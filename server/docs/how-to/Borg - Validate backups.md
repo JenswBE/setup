@@ -28,6 +28,7 @@ Services which are backed up:
   - `github-backup` (GitHub Backup): All GitHub repo's
   - `graylog-mongodb` (MongoDB): DB data
   - `ha` (Home Assistant): Config files
+  - `immich-db` (Postgres): DB data for Immich
   - `nc-db` (MariaDB): DB data for Nextcloud
   - `nextcloud` (Nextcloud): User files and config
   - `plex` (Plex): Photo's and music
@@ -129,6 +130,10 @@ sudo docker run --rm -v ${APPDATA_DIR:?}/borgmatic/borgmatic/restore:/backup doc
 # Listed entries should be recent
 sudo docker exec borgmatic ls -ltc /mnt/borg/mnt/source/home-automation/home-assistant/config/
 ```
+
+### Immich
+
+COMPLETE_ME
 
 ### MariaDB
 

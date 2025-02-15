@@ -18,6 +18,10 @@ http:// {
 	authorize with policy_public_sun
 }
 
+"immich.#VAR:general_domain_default:VAR#" {
+	import default_public_reverse_proxy "http://immich:2283"
+}
+
 "jellyfin.#VAR:general_domain_default:VAR#" {
 	import default_public_reverse_proxy "http://jellyfin:8096"
 }

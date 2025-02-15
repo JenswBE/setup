@@ -33,6 +33,9 @@ app_graylog_admin_password: ""
 app_graylog_secret: ""
 app_graylog_server: "" # Target for rsyslog and Docker logs
 
+# Immich
+app_immich_db_pass_postgres: ""
+
 # Mosquitto (Home Assistant)
 # See https://mosquitto.org/documentation/authentication-methods/
 # Run locally with:

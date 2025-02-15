@@ -28,6 +28,12 @@ services:
   - name: Files and Media
     icon: fas fa-sync
     items:
+      - name: Immich
+        subtitle: Kubo - Public
+        logo: https://cdn.jsdelivr.net/gh/selfhst/icons/svg/immich.svg
+        url: "https://immich.{{ general_domain_default }}"
+        <<: *default
+
       - name: Jellyfin
         subtitle: Kubo - Public
         logo: https://raw.githubusercontent.com/jellyfin/jellyfin-ux/master/branding/SVG/icon-transparent.svg

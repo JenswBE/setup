@@ -57,6 +57,7 @@
     - docker-update-containers.timer
     - github-backup.timer
     - graylog-dump-mongodb.timer
+    - immich-dump-db.timer
     - nextcloud-cron.timer
     - nextcloud-db-add-missing-indices.timer
     - nextcloud-dump-db.timer

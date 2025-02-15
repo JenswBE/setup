@@ -1,0 +1,6 @@
+[Unit]
+Description=Dump Immich DB for backup
+OnFailure=unit-fail-mail@%n.service
+
+[Service]
+ExecStart={{ docker_path }} exec -t immich-db /bin/sh -c 'pg_dumpall --clean --if-exists --username=postgres | gzip > "/backup/immich.pg_dump"'
