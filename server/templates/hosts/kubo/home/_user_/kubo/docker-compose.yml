@@ -326,7 +326,7 @@ services:
   # =========================
   immich: # Set ML url in settings to http://immich-ml:3003
     <<: *defaults
-    image: ghcr.io/immich-app/immich-server:v1.126.1
+    image: ghcr.io/immich-app/immich-server:v1.127.0
     container_name: immich
     networks:
       - caddy-public
