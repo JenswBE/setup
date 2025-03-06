@@ -20,6 +20,13 @@
     state: stopped
   loop: "{{ orphaned_interfaces['files'] | map(attribute='path') | map('basename') | map('splitext') | map('first') }}"
 
+- name: Delete systemd drop-in
+  become: true
+  ansible.builtin.file:
+    path: /etc/systemd/system/wg-quick@{{ item }}.service.d
+    state: absent
+  loop: "{{ orphaned_interfaces['files'] | map(attribute='path') | map('basename') | map('splitext') | map('first') }}"
+
 - name: Delete orphaned interfaces
   become: true
   ansible.builtin.file:

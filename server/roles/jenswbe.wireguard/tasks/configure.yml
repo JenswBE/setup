@@ -8,6 +8,47 @@
     group: root
     mode: "600"
 
+- name: Ensure Wireguard drop-in directory exists
+  become: true
+  ansible.builtin.file:
+    owner: root
+    group: root
+    mode: "0755"
+    path: /etc/systemd/system/wg-quick@{{ interface_name }}.service.d
+    state: directory
+
+- name: Ensure Wireguard is restarted on failure
+  become: true
+  community.general.ini_file:
+    dest: /etc/systemd/system/wg-quick@{{ interface_name }}.service.d/10-restart_on_failure.conf
+    owner: root
+    group: root
+    mode: "0644"
+    section: Service
+    option: "{{ systemd_kv.option }}"
+    value: "{{ systemd_kv.value }}"
+    no_extra_spaces: true
+  loop:
+    - option: Restart
+      value: on-failure
+    - option: RestartSec
+      value: 5m
+  loop_control:
+    loop_var: systemd_kv
+
+- name: Ensure Wireguard is started after Docker
+  become: true
+  community.general.ini_file:
+    dest: /etc/systemd/system/wg-quick@{{ interface_name }}.service.d/10-start_before_docker.conf
+    owner: root
+    group: root
+    mode: "0644"
+    section: Unit
+    option: Before
+    value: docker.service
+    no_extra_spaces: true
+    # Systemd reload is not needed as this change only applies after a reboot anyway
+
 - name: Enable Wireguard on boot
   become: true
   ansible.builtin.systemd_service:
