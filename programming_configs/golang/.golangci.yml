@@ -1,19 +1,15 @@
-run:
-  timeout: 10m
-
+version: "2"
 linters:
-  enable-all: true
+  default: all
   disable:
     - cyclop
     - depguard
     - dupl
     - exhaustruct
     - funlen
-    - gci
     - gochecknoglobals
     - gocognit
     - godot
-    - gomnd
     - gosmopolitan
     - interfacebloat
     - ireturn # TODO: Investigate and decide if this linter needs to be enforced.
@@ -26,13 +22,33 @@ linters:
     - testpackage
     - varnamelen
     - wsl
-
-linters-settings:
-  gosec:
-    excludes:
-      # Generates too many false positives (e.g. conversion uint8 -> int)
-      - G115
-
-  paralleltest:
-    # Ignore missing calls to `t.Parallel()` and only report incorrect uses of it.
-    ignore-missing: true
+  settings:
+    gosec:
+      excludes:
+        # Generates too many false positives (e.g. conversion uint8 -> int)
+        - G115
+    paralleltest:
+      # Ignore missing calls to `t.Parallel()` and only report incorrect uses of it.
+      ignore-missing: true
+  exclusions:
+    generated: lax
+    presets:
+      - comments
+      - common-false-positives
+      - legacy
+      - std-error-handling
+    paths:
+      - third_party$
+      - builtin$
+      - examples$
+formatters:
+  enable:
+    - gofmt
+    - gofumpt
+    - goimports
+  exclusions:
+    generated: lax
+    paths:
+      - third_party$
+      - builtin$
+      - examples$
