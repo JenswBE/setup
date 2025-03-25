@@ -42,12 +42,11 @@ jobs:
         run: wget -O .golangci.yml https://raw.githubusercontent.com/JenswBE/setup/main/programming_configs/golang/.golangci.yml
 
       - name: golangci-lint
-        uses: golangci/golangci-lint-action@v6
+        uses: golangci/golangci-lint-action@v7
         with:
           working-directory: server/files/network-performance-file-generator
           version: latest
           args: >-
-            --timeout=5m
             --disable err113,noctx
 
       - name: Run unit tests
