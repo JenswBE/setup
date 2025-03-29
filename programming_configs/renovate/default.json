@@ -1,7 +1,6 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:base"],
-  "enabledManagers": ["html"],
+  "extends": ["config:recommended"],
   "html": {
     "enabled": true,
     "fileMatch": ["\\.(go)?html?$"]
