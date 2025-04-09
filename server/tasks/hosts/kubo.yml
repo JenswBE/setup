@@ -61,7 +61,6 @@
     - nextcloud-cron.timer
     - nextcloud-db-add-missing-indices.timer
     - nextcloud-dump-db.timer
-    - nextcloud-maps-scan-photos.timer
     - nextcloud-preview-generator.timer
     - nextcloud-update-apps.timer
     - unifi-dump-mongodb.timer
