@@ -1,6 +1,6 @@
-default_development_profile: Personal
+default_development_profile: JenswBE
 development_profiles:
-  Personal:
+  JenswBE:
     git_name: JenswBE
     git_email: 6514515+JenswBE@users.noreply.github.com
   Interwego:

@@ -214,6 +214,13 @@ sudo cp /usr/share/wireplumber/bluetooth.lua.d/50-bluez-config.lua /etc/wireplum
 nano /etc/wireplumber/bluetooth.lua.d/50-bluez-config.lua
 ```
 
+## SSH with Yubikey
+
+```bash
+set -u
+ssh-keygen -t ed25519-sk -O no-touch-required -f ~/.ssh/yubikey -C "Yubikey on ${HOSTNAME^}"
+```
+
 ### References
 
 - https://github.com/castrojo/ublue

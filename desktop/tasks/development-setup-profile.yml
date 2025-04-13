@@ -9,18 +9,21 @@
 
 - name: "{{ profile_name }} - Derive fact ssh_key_path"
   ansible.builtin.set_fact:
-    ssh_key_path: "{{ ansible_user_dir }}/.ssh/{{ profile_name_lowercase }}"
+    ssh_key_path: "{{ ansible_user_dir }}/.ssh/github_{{ profile_name_lowercase }}"
 
 - name: "{{ profile_name }} - Ensure .ssh folder exists"
   ansible.builtin.file:
     state: directory
     path: "{{ ansible_user_dir }}/.ssh"
-    mode: '0700'
+    mode: "0700"
 
+# GitHub doesn't support SSH FIDO2 with no-touch-required
 - name: "{{ profile_name }} - Create public/private key pair"
   register: create_ssh_key
   community.crypto.openssh_keypair:
     path: "{{ ssh_key_path }}"
+    type: ed25519
+    comment: "GitHub {{ profile_name }} on {{ ansible_hostname | capitalize }}"
     regenerate: never
     owner: "{{ ansible_real_user_id }}"
     group: "{{ ansible_real_group_id }}"
@@ -46,7 +49,7 @@
   ansible.builtin.file:
     state: directory
     path: "{{ ansible_user_dir }}/Dev/{{ profile_name }}"
-    mode: '0750'
+    mode: "0750"
 
 - name: "{{ profile_name }} - Configure gitconfig_include"
   ansible.builtin.copy:

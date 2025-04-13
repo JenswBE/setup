@@ -50,6 +50,15 @@
           value: >-
             '[\u@${CONTAINER_ID:-\h} \w]\$ '
 
+    - name: "Setup user SSH config"
+      community.general.ssh_config:
+        user: "{{ ansible_user_id }}"
+        host: "*"
+        identity_file: "~/.ssh/yubikey"
+        identities_only: true
+        other_options:
+          gssapiauthentication: "no"
+
     - name: Ensure local bin directory exists
       ansible.builtin.file:
         state: directory
