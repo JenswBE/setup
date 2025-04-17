@@ -38,3 +38,15 @@ devices:
   "0x680ae2fffe25bde4":
     friendly_name: dimmer_living
     simulated_brightness: true
+  '0x5c0272fffe38e917': # Duplicate of lamp_warm_white, to be disabled
+    friendly_name: '0x5c0272fffe38e917'
+  '0x8c8b48fffe22855c':
+    friendly_name: 'socket_1'
+  '0x8c8b48fffe22e8b8':
+    friendly_name: 'socket_2'
+  '0x8c8b48fffe0f3fbc':
+    friendly_name: 'socket_3'
+  '0x8c8b48fffe106222':
+    friendly_name: 'socket_4'
+  '0x8c8b48fffe22ae63':
+    friendly_name: 'socket_5'
