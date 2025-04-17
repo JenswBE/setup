@@ -15,7 +15,7 @@ APPENDIX="${2}"
 OTHER_EXT=("png" "mp4")
 
 # Rename JPEG accordingly to EXIF
-jhead -autorot -nf"${PREFIX}%Y-%m-%d_%H-%M-%S_%03i${APPENDIX}" *.jpg
+jhead -autorot -nf"${PREFIX}%Y-%m-%d_%H-%M-%S_%03i${APPENDIX}" *.jpg *.jpeg
 
 # Rename other files accordingly to modify date
 for ext in "${OTHER_EXT[@]}"; do
