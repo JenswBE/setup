@@ -97,12 +97,6 @@ services:
         url: "https://feed.{{ general_domain_local }}"
         <<: *default
 
-      - name: Monica
-        subtitle: Eve - Private
-        logo: https://cdn.jsdelivr.net/gh/selfhst/icons/svg/monica.svg
-        url: "https://crm.{{ general_domain_local }}"
-        <<: *default
-
       - name: Paperless
         subtitle: Eve - Private
         logo: https://raw.githubusercontent.com/paperless-ngx/paperless-ngx/dev/resources/logo/web/svg/square.svg
@@ -111,19 +105,19 @@ services:
 
       - name: Stirling PDF
         subtitle: Kubo - Private
-        logo: https://raw.githubusercontent.com/Frooodle/Stirling-PDF/main/docs/stirling-transparent.svg
+        logo: https://cdn.jsdelivr.net/gh/selfhst/icons/svg/stirling-pdf.svg
         url: "https://pdf.{{ general_domain_local }}"
         <<: *default
 
       - name: Vaultwarden
         subtitle: Eve - Public
-        logo: https://raw.githubusercontent.com/dani-garcia/vaultwarden/main/resources/vaultwarden-icon.svg
+        logo: https://cdn.jsdelivr.net/gh/selfhst/icons/svg/vaultwarden.svg
         url: "https://vault.{{ general_domain_default }}"
         <<: *default
 
       - name: Wiki.js
         subtitle: Eve - Private
-        logo: https://raw.githubusercontent.com/loganmarchione/homelab-svg-assets/main/assets/wikijs.svg
+        logo: https://cdn.jsdelivr.net/gh/selfhst/icons/svg/wiki-js.svg
         url: "https://wiki.{{ general_domain_local }}"
         <<: *default
 
@@ -134,6 +128,12 @@ services:
         subtitle: Kubo - Private
         logo: https://cdn.jsdelivr.net/gh/selfhst/icons/svg/home-assistant.svg
         url: "https://ha.{{ general_domain_local }}"
+        <<: *default
+
+      - name: HA - Zigbee2MQTT
+        subtitle: Kubo - Private
+        logo: https://cdn.jsdelivr.net/gh/selfhst/icons/svg/zigbee2mqtt.svg
+        url: "https://haha-zigbee2mqtt.{{ general_domain_local }}"
         <<: *default
 
       - name: PeaNUT

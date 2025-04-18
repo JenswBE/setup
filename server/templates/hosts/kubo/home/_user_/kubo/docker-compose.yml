@@ -125,6 +125,7 @@ services:
     image: ghcr.io/koenkk/zigbee2mqtt:latest
     container_name: ha-zigbee2mqtt
     networks:
+      - caddy-private
       - home-automation
     depends_on:
       ha-mosquitto:

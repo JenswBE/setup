@@ -40,6 +40,12 @@ import ./configs/shared_snippets.txt
 			import default_local_reverse_proxy "http://ha:8123"
 		}
 
+		@ha_zigbee2mqtt host "ha-zigbee2mqtt.#VAR:general_domain_local:VAR#"
+		handle @ha_zigbee2mqtt {
+			import default_local_reverse_proxy "http://ha-zigbee2mqtt:8080"
+			authorize with policy_local_infra
+		}
+
 		@logs host "logs.#VAR:general_domain_local:VAR#"
 		handle @logs {
 			import default_local_reverse_proxy "http://graylog:9000"
