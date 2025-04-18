@@ -10,8 +10,6 @@ Services which are backed up:
   - `kristofcoenen-directus` (Directus): Uploaded content
   - `kristofcoenen-directus-db` (Postgres): DB data
   - `miniflux-db` (Postgres): DB data
-  - `monica` (Monica): Uploaded content
-  - `monica-db` (MariaDB): DB data for Monica
   - `nc-db` (MariaDB): DB data for Nextcloud
   - `nextcloud` (Nextcloud): User files, config, calendars and addressbooks
   - `paperless` (Paperless-ngx): Files
@@ -140,16 +138,6 @@ COMPLETE_ME
 ```bash
 # Check backup date of all MariaDB dumps
 sudo docker exec borgmatic find /mnt/borg -name "*.sqldump" -exec echo {} \; -exec tail -n1 {} \; -exec echo Number of tables: \; -exec bash -c "grep -F 'CREATE TABLE' {} | wc -l" \;
-```
-
-### Monica
-
-```bash
-# List 3 newest files in live service.
-sudo docker exec monica ls -Alt /var/www/html/storage/app/public/photos | head -n 4
-
-# Compare against 3 newest files in backup
-sudo docker exec borgmatic ls -Alt /mnt/borg/mnt/source/monica/monica/data/app/public/photos | head -n 4
 ```
 
 ### Nextcloud

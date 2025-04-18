@@ -1,6 +1,0 @@
-[Unit]
-Description=Dump Monica DB for backup
-OnFailure=unit-fail-mail@%n.service
-
-[Service]
-ExecStart={{ docker_path }} exec monica-db bash -c "mariadb-dump --default-character-set=utf8mb4 --single-transaction -u root -p$${MARIADB_ROOT_PASSWORD} monica > /backup/monica.sqldump"

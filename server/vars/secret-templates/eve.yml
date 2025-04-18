@@ -65,11 +65,6 @@ app_miniflux_oidc_client_id: ""
 app_miniflux_oidc_client_secret: ""
 app_miniflux_db_pass: ""
 
-# Monica
-app_monica_app_key: "" # echo -n 'base64:'; openssl rand -base64 32
-app_monica_db_pass_root: ""
-app_monica_db_pass_monica: ""
-
 # Nextcloud
 app_nextcloud_db_pass_root: ""
 app_nextcloud_db_pass_nextcloud: ""

@@ -51,7 +51,6 @@
     - kristofcoenen-directus-dump-db.timer
     - miniflux-dump-db.timer
     - miniflux-reset-feed-errors.timer
-    - monica-dump-db.timer
     - nextcloud-calcardbackup.timer
     - nextcloud-cron.timer
     - nextcloud-db-add-missing-indices.timer

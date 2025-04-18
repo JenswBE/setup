@@ -173,56 +173,6 @@ services:
       POSTGRES_USER: "miniflux"
       POSTGRES_PASSWORD: "#VAR:app_miniflux_db_pass:VAR#"
 
-  # =========================
-  # =       MONICA CRM      =
-  # =========================
-  monica:
-    <<: *defaults
-    image: docker.io/library/monica:4
-    container_name: monica
-    networks:
-      - caddy-private
-      - monica
-    depends_on:
-      monica-db:
-        condition: service_healthy
-    volumes:
-      - "#VAR:general_path_appdata:VAR#/monica/monica/data:/var/www/html/storage"
-    environment:
-      TZ: "#VAR:general_timezone:VAR#"
-      APP_DISABLE_SIGNUP: "true"
-      APP_ENV: production
-      APP_KEY: "#VAR:app_monica_app_key:VAR#"
-      APP_URL: "https://crm.#VAR:general_domain_local:VAR#"
-      DB_CONNECTION: mysql
-      DB_HOST: monica-db
-      DB_USERNAME: monica
-      DB_PASSWORD: "#VAR:app_monica_db_pass_monica:VAR#"
-
-  monica-db:
-    <<: *defaults
-    # https://github.com/monicahq/monica/blob/main/docker-compose.yml
-    image: docker.io/library/mariadb:11
-    container_name: monica-db
-    networks:
-      - monica
-    volumes:
-      - "#VAR:general_path_appdata:VAR#/monica/mariadb/data:/var/lib/mysql"
-      - monica-db-dump:/backup
-    environment:
-      TZ: "#VAR:general_timezone:VAR#"
-      MARIADB_ROOT_PASSWORD: "#VAR:app_monica_db_pass_root:VAR#"
-      MARIADB_DATABASE: monica
-      MARIADB_USER: monica
-      MARIADB_PASSWORD: "#VAR:app_monica_db_pass_monica:VAR#"
-      MARIADB_AUTO_UPGRADE: "1"
-    healthcheck: # Based on https://mariadb.com/kb/en/using-healthcheck-sh/
-      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
-      start_period: 10s
-      interval: 10s
-      timeout: 5s
-      retries: 3
-
   # ====================================
   # =              WIKI.JS             =
   # = https://github.com/requarks/wiki =
@@ -956,8 +906,6 @@ services:
       - "#VAR:general_path_appdata:VAR#/kristofcoenen/directus/uploads:/mnt/source/kristofcoenen/directus/uploads:z"
       - "kristofcoenen-directus-db-dump:/mnt/source/kristofcoenen/directus/dbdump:ro"
       - "miniflux-db-dump:/mnt/source/miniflux/dbdump:ro"
-      - "#VAR:general_path_appdata:VAR#/monica/monica/data:/mnt/source/monica/monica/data:z"
-      - "monica-db-dump:/mnt/source/monica/dbdump:ro"
       - "nc-db-dump:/mnt/source/nextcloud/dbdump:ro"
       - "nc-calcardbackup:/mnt/source/nextcloud/calcardbackup:ro"
       - "#VAR:general_path_appdata:VAR#/nextcloud/nextcloud/data:/mnt/source/nextcloud/data:ro"
@@ -1010,7 +958,6 @@ volumes:
   keycloak-db-dump:
   kristofcoenen-directus-db-dump:
   miniflux-db-dump:
-  monica-db-dump:
   nc-calcardbackup:
   nc-db-dump:
   paperless-consume:
@@ -1047,9 +994,6 @@ networks:
 
   miniflux:
     name: miniflux
-
-  monica:
-    name: monica
 
   nextcloud:
     name: nextcloud

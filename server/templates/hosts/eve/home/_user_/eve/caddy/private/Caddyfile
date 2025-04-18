@@ -20,11 +20,6 @@ import ./configs/shared_snippets.txt
 		import handler_local_blocky
 		import handler_local_crowdsec
 
-		@crm host "crm.#VAR:general_domain_local:VAR#"
-		handle @crm {
-			import default_local_reverse_proxy "http://monica"
-		}
-
 		@docs host "docs.#VAR:general_domain_local:VAR#"
 		handle @docs {
 			import default_local_reverse_proxy "http://paperless:8000"
