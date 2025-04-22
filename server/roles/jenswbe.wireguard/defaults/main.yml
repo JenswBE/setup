@@ -5,6 +5,7 @@ wireguard_interfaces: {}
 #     listen_port: "" # E.g. 51820
 #     private_key: "" # Run "wg genkey" on server
 #     routing_table: "" # "auto" or a routing table number
+#     dns: [""] # List of DNS servers
 #     peers:
 #       - host: "" # Hostname to be added to /etc/hosts
 #         endpoint: "" # Address of the server. E.g. wireguard.example.com:51820

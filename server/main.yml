@@ -118,3 +118,9 @@
     - name: Include host specific tasks
       ansible.builtin.include_tasks: "tasks/hosts/{{ ansible_hostname }}.yml"
       tags: ["always"]
+
+  handlers:
+    - name: Update resolvconf
+      become: true
+      changed_when: true
+      ansible.builtin.command: /usr/sbin/resolvconf -u

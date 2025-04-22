@@ -6,16 +6,17 @@
         - wireguard
   tags: ["setup", "wireguard"]
 
-- name: Ensure correct DNS servers are set
+- name: Allow both loopback and external DNS servers
   become: true
-  ansible.builtin.blockinfile:
-    path: /etc/resolvconf/resolv.conf.d/head
-    marker: "# {mark} ANSIBLE MANAGED BLOCK - Custom DNS"
-    block: |
-      nameserver 127.0.0.1
-      nameserver {{ ip["fiona"] }}
-      nameserver {{ ip["kubo"] }}
+  ansible.builtin.copy:
+    dest: /etc/default/resolvconf
+    owner: root
+    group: root
+    mode: '0644'
+    content: |
+      TRUNCATE_NAMESERVER_LIST_AFTER_LOOPBACK_ADDRESS=no
   tags: ["setup", "dns"]
+  notify: Update resolvconf
 
 - name: Copy systemd system unit templates
   ansible.builtin.include_tasks: tasks/helpers/copy_templates_folder.yml

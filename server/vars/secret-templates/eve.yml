@@ -33,12 +33,6 @@ app_delic_ping_id: ""
 # Graylog
 app_graylog_server: "" # Target for rsyslog and Docker logs
 
-# IMAP Alerter
-app_imap_alerter_watch_host: "imap.soverin.net"
-app_imap_alerter_watch_port: "993"
-app_imap_alerter_watch_user: ""
-app_imap_alerter_watch_pass: ""
-
 # IMAP Save attachments
 app_isa_poll_imap_host: "imap.migadu.com"
 app_isa_poll_imap_user: ""
