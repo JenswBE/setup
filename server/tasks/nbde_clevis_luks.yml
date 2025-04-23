@@ -49,7 +49,7 @@
           sudo dd bs=512 count=4 if=/dev/random of=/etc/cryptsetup-keys.d/data.key iflag=fullblock
 
           # See for more info
-          https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/security_hardening/configuring-automated-unlocking-of-encrypted-volumes-using-policy-based-decryption_security-hardening#example_2_shared_secret_on_a_tang_server_and_a_tpm_device
+          https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/9/html/security_hardening/configuring-automated-unlocking-of-encrypted-volumes-using-policy-based-decryption_security-hardening#configuring-manual-enrollment-of-volumes-using-clevis_configuring-automated-unlocking-of-encrypted-volumes-using-policy-based-decryption  
           https://semanticlab.net/sysadmin/encryption/Network-bound-disk-encryption-in-ubuntu-20.04/
 
           PRESS ENTER TO CONFIRM

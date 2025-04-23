@@ -18,11 +18,16 @@
     - name: Override Tang port
       register: override_tang_port
       ansible.builtin.copy:
-        src: tangd.socket.override.conf
         dest: /etc/systemd/system/tangd.socket.d/override.conf
         owner: root
         group: root
         mode: "644"
+        content: |
+          [Socket]
+          # Remove existing port(s)
+          ListenStream=
+          # Assign new port
+          ListenStream=7500
 
     - name: Reload systemd daemon
       when: override_tang_port.changed
