@@ -19,16 +19,14 @@
   notify: Update resolvconf
 
 - name: Copy systemd system unit templates
-  ansible.builtin.include_tasks: tasks/helpers/copy_templates_folder.yml
+  ansible.builtin.include_role:
+    name: jenswbe.copy_dir
   vars:
-    templates_folder: "hosts/{{ ansible_hostname }}/etc/systemd/system"
-    destination_folder: "/etc/systemd/system"
-    destination_owner: root
-    destination_group: root
-    destination_mode_files: "644"
-    destination_mode_dirs: "755"
-    destination_delete_extra: false
-    privileged: true
+    jwcd_source_templates_dir: "templates/hosts/{{ ansible_hostname }}/etc/systemd/system"
+    jwcd_destination_dir: "/etc/systemd/system"
+    jwcd_privileged: true
+    jwcd_destination_mode_files: "644"
+    jwcd_destination_mode_dirs: "755"
   tags: ["systemd", "mail_on_failed_unit"]
 
 - name: Force systemd reload
@@ -74,14 +72,10 @@
   tags: ["docker"]
 
 - name: "Copy templates home/_user_/{{ ansible_hostname }}"
-  ansible.builtin.include_tasks: tasks/helpers/copy_templates_folder.yml
+  ansible.builtin.include_role:
+    name: jenswbe.copy_dir
   vars:
-    templates_folder: "hosts/{{ ansible_hostname }}/home/_user_/{{ ansible_hostname }}"
-    destination_folder: "{{ ansible_user_dir }}/{{ ansible_hostname }}"
-    destination_owner: "{{ ansible_real_user_id }}"
-    destination_group: "{{ ansible_real_group_id }}"
-    destination_mode_files: "600"
-    destination_mode_dirs: "700"
-    destination_delete_extra: true
-    privileged: false
+    jwcd_source_templates_dir: "templates/hosts/{{ ansible_hostname }}/home/_user_/{{ ansible_hostname }}"
+    jwcd_destination_dir: "{{ ansible_user_dir }}/{{ ansible_hostname }}"
+    jwcd_destination_delete_extra: true
   tags: ["docker"]

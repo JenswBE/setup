@@ -1,0 +1,36 @@
+- name: Create remote temporary dir
+  ansible.builtin.tempfile:
+    state: directory
+  register: remote_tmp_dir
+  changed_when: false
+  tags: ["always"]
+
+- name: Sync local temporary dir to remote temporary dir
+  ansible.posix.synchronize:
+    src: "{{ local_tmp_dir.path }}/"
+    dest: "{{ remote_tmp_dir.path }}"
+    archive: false
+    checksum: true
+    compress: true
+    recursive: true
+  tags: ["always"]
+
+- name: Sync remote temporary dir to final destination
+  become: true
+  # Not using "ansible.posix.synchronize" as it should run remotely without SSH
+  ansible.builtin.command: >
+    rsync --delay-updates --checksum --recursive --perms --owner --group
+    {% if jwcd_destination_delete_extra %}--delete-after{% endif %}
+    --chown={{ jwcd_destination_owner }}:{{ jwcd_destination_group }}
+    --chmod=D{{ jwcd_destination_mode_dirs }},F{{ jwcd_destination_mode_files }}
+    --out-format='%i %n%L' "{{ remote_tmp_dir.path }}/" "{{ jwcd_destination_dir }}"
+  register: rsync_output
+  tags: ["always"]
+
+- name: Delete remote temporary dir
+  become: true
+  ansible.builtin.file:
+    path: "{{ remote_tmp_dir.path }}"
+    state: absent
+  changed_when: false
+  tags: ["always"]

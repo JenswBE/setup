@@ -1,0 +1,53 @@
+argument_specs:
+  main:
+    short_description: Copy files and templates in an efficient way
+    options:
+
+      # === REQUIRED ===
+
+      jwcd_destination_dir:
+        type: "str"
+        required: true
+        description: Destination directory of the files
+
+      # === OPTIONAL ===
+
+      jwcd_source_files_dir:
+        type: "str"
+        required: false
+        description: Copy static files from this source directory
+
+      jwcd_source_templates_dir:
+        type: "str"
+        required: false
+        description: Render template from this source directory
+
+      jwcd_destination_owner:
+        type: "str"
+        required: false
+        description: Owner of the destination files
+
+      jwcd_destination_group:
+        type: "str"
+        required: false
+        description: Group of the destination files
+
+      jwcd_destination_mode_files:
+        type: "str"
+        required: false
+        description: Permissions of the destination files
+
+      jwcd_destination_mode_dirs:
+        type: "str"
+        required: false
+        description: Permissions of the destination directories
+
+      jwcd_destination_delete_extra:
+        type: "bool"
+        required: true
+        description: Delete extra files not in the source directories
+
+      jwcd_privileged:
+        type: "bool"
+        required: false
+        description: Privileged access is needed to write to the destination directory

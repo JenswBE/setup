@@ -14,16 +14,16 @@
         append: true
 
     - name: Copy NUT config
-      ansible.builtin.include_tasks: tasks/helpers/copy_templates_folder.yml
+      ansible.builtin.include_role:
+        name: jenswbe.copy_dir
       vars:
-        templates_folder: nut/client_only/etc
-        destination_folder: /etc/nut
-        destination_owner: root
-        destination_group: nut
-        destination_mode_files: "640"
-        destination_mode_dirs: "750"
-        destination_delete_extra: false
-        privileged: true
+        jwcd_source_templates_dir: templates/nut/client_only/etc
+        jwcd_destination_dir: /etc/nut
+        jwcd_privileged: true
+        jwcd_destination_mode_files: "640"
+        jwcd_destination_mode_dirs: "750"
+        jwcd_destination_owner: root
+        jwcd_destination_group: nut
 
     - name: Copy upssched-cmd
       ansible.builtin.template:

@@ -1,0 +1,8 @@
+jwcd_source_files_dir: ""
+jwcd_templates_files_dir: ""
+jwcd_destination_owner: "{{ jwcd_privileged | default(false) | ternary('root', ansible_real_user_id) }}"
+jwcd_destination_group: "{{ jwcd_privileged | default(false) | ternary('root', ansible_real_group_id) }}"
+jwcd_destination_mode_files: "600"
+jwcd_destination_mode_dirs: "700"
+jwcd_destination_delete_extra: false
+jwcd_privileged: false
