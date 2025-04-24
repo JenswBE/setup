@@ -1,4 +1,33 @@
 {
+  "[css]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[gotmpl]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[html]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[vue]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[yaml]": {
+    "editor.defaultFormatter": "redhat.vscode-yaml"
+  },
+  "ansible.lightspeed.enabled": false,
+  "ansible.lightspeed.suggestions.enabled": false,
   "diffEditor.ignoreTrimWhitespace": false,
   "editor.bracketPairColorization.enabled": true,
   "editor.fontFamily": "Cascadia Code",
@@ -7,9 +36,9 @@
   "emeraldwalk.runonsave": {
     "commands": [
       {
-        "match": "\\.go$",
+        "cmd": "if ! command -v tagalign &> /dev/null; then go install github.com/4meepo/tagalign/cmd/tagalign@latest; fi; tagalign  --fix --sort --strict ${fileDirname}",
         "isAsync": false,
-        "cmd": "if ! command -v tagalign &> /dev/null; then go install github.com/4meepo/tagalign/cmd/tagalign@latest; fi; tagalign  --fix --sort --strict ${fileDirname}"
+        "match": "\\.go$"
       }
     ]
   },
@@ -17,10 +46,16 @@
   "explorer.confirmDragAndDrop": false,
   "extensions.ignoreRecommendations": true,
   "files.associations": {
+    "*.build": "ini",
+    "*.container": "ini",
     "*.gohtml": "html",
-    "*.txt.jinja2": "jinja"
+    "*.network": "ini",
+    "*.txt.jinja2": "jinja",
+    "*.volume": "ini"
   },
   "files.insertFinalNewline": true,
+  "files.trimFinalNewlines": true,
+  "files.trimTrailingWhitespace": true,
   "git.autofetch": true,
   "git.confirmSync": false,
   "git.enableSmartCommit": true,
@@ -54,28 +89,28 @@
     "scm": {
       "graph": false
     },
-    "scmRepositoryInline": {
-      "graph": false
-    },
-    "scmRepository": {
-      "authors": true,
-      "graph": false
-    },
-    "scmGroupInline": {
-      "stash": true
-    },
     "scmGroup": {
       "compare": true,
       "openClose": true,
       "stash": true
     },
-    "scmItemInline": {},
+    "scmGroupInline": {
+      "stash": true
+    },
     "scmItem": {
       "clipboard": true,
       "compare": true,
       "history": true,
       "remote": false,
       "stash": true
+    },
+    "scmItemInline": {},
+    "scmRepository": {
+      "authors": true,
+      "graph": false
+    },
+    "scmRepositoryInline": {
+      "graph": false
     }
   },
   "go.buildTags": "e2e",
@@ -89,32 +124,5 @@
   "terminal.integrated.persistentSessionReviveProcess": "never",
   "terminal.integrated.sendKeybindingsToShell": true,
   "workbench.colorTheme": "Dracula Pro",
-  "workbench.startupEditor": "none",
-  "[css]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[gotmpl]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[html]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[json]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[javascript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[jsonc]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[typescript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[vue]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[yaml]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  }
+  "workbench.startupEditor": "none"
 }
