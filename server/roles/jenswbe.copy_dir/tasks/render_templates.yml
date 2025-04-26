@@ -17,4 +17,3 @@
     trim_blocks: false
   with_community.general.filetree: "{{ jwcd_source_templates_dir }}"
   changed_when: false
-  tags: ["always"]

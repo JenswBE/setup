@@ -3,7 +3,6 @@
     state: directory
   register: remote_tmp_dir
   changed_when: false
-  tags: ["always"]
 
 - name: Sync local temporary dir to remote temporary dir
   ansible.posix.synchronize:
@@ -13,9 +12,9 @@
     checksum: true
     compress: true
     recursive: true
-  tags: ["always"]
+  changed_when: false
 
-- name: Sync remote temporary dir to final destination
+- name: Sync remote temporary dir to final destination # noqa: command-instead-of-module
   become: true
   # Not using "ansible.posix.synchronize" as it should run remotely without SSH
   ansible.builtin.command: >
@@ -23,14 +22,12 @@
     {% if jwcd_destination_delete_extra %}--delete-after{% endif %}
     --chown={{ jwcd_destination_owner }}:{{ jwcd_destination_group }}
     --chmod=D{{ jwcd_destination_mode_dirs }},F{{ jwcd_destination_mode_files }}
-    --out-format='%i %n%L' "{{ remote_tmp_dir.path }}/" "{{ jwcd_destination_dir }}"
+    --out-format='[CHANGED] %i %n%L' "{{ remote_tmp_dir.path }}/" "{{ jwcd_destination_dir }}"
   register: rsync_output
-  tags: ["always"]
+  changed_when: "'[CHANGED]' in rsync_output.stdout"
 
 - name: Delete remote temporary dir
-  become: true
   ansible.builtin.file:
     path: "{{ remote_tmp_dir.path }}"
     state: absent
   changed_when: false
-  tags: ["always"]

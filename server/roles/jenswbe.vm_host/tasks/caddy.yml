@@ -1,0 +1,23 @@
+- name: Include copy_dir role
+  ansible.builtin.include_role:
+    name: jenswbe.copy_dir
+  vars:
+    jwcd_source_templates_dir: roles/jenswbe.vm_host/templates/caddy
+    jwcd_destination_dir: /etc/containers/systemd/caddy
+    jwcd_privileged: true
+    jwcd_destination_delete_extra: true
+
+- name: Reload systemd # Cannot notify from include_role
+  ansible.builtin.systemd_service:
+    daemon_reload: true
+
+- name: Allow HTTP(S) for Caddy
+  ansible.posix.firewalld:
+    service: "{{ item }}"
+    state: enabled
+    permanent: true
+    immediate: true
+    offline: true
+  loop:
+    - http
+    - https

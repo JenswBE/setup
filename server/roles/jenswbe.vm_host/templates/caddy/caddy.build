@@ -1,0 +1,7 @@
+[Unit]
+Description=Caddy
+
+[Build]
+ImageTag=localhost/caddy
+File={{ (jwcd_destination_dir, "caddy.Containerfile") | path_join }}
+Pull=always

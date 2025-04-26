@@ -1,72 +1,67 @@
-- name: Ensure rsync is installed
-  become: true
-  ansible.builtin.package:
-    name: rsync
-
-- name: Create local temporary dir
-  delegate_to: localhost
-  ansible.builtin.tempfile:
-    state: directory
-  register: local_tmp_dir
-  changed_when: false
+- name: Copy dir
+  become: false # Majority of the tasks must not run as root
   tags: ["always"]
+  block:
+    - name: Ensure rsync is installed
+      become: true
+      ansible.builtin.package:
+        name: rsync
 
-- name: Copy files dir to local temporary dir
-  when: jwcd_source_files_dir != ""
-  delegate_to: localhost
-  # Workaround for https://github.com/ansible-collections/ansible.posix/issues/395
-  ansible.builtin.command: "rsync --recursive {{ jwcd_source_files_dir }}/ {{ local_tmp_dir.path }}"
-  changed_when: false
-  tags: ["always"]
+    - name: Create local temporary dir
+      delegate_to: localhost
+      ansible.builtin.tempfile:
+        state: directory
+      register: local_tmp_dir
+      changed_when: false
 
+    - name: Copy files dir to local temporary dir # noqa: command-instead-of-module
+      when: jwcd_source_files_dir != ""
+      delegate_to: localhost
+      # Workaround for https://github.com/ansible-collections/ansible.posix/issues/395
+      ansible.builtin.command: "rsync --recursive {{ jwcd_source_files_dir }}/ {{ local_tmp_dir.path }}"
+      changed_when: false
 
-- name: Create template dir structure in local temporary dir
-  when: jwcd_source_templates_dir != ""
-  delegate_to: localhost
-  # Workaround for https://github.com/ansible-collections/ansible.posix/issues/395
-  ansible.builtin.command: >
-    rsync --recursive --include='*/' --include='*.jpg'  --include='*.png' --exclude='*' {{ jwcd_source_templates_dir }}/ {{ local_tmp_dir.path }}
-  changed_when: false
-  tags: ["always"]
+    - name: Create template dir structure in local temporary dir # noqa: command-instead-of-module
+      when: jwcd_source_templates_dir != ""
+      delegate_to: localhost
+      # Workaround for https://github.com/ansible-collections/ansible.posix/issues/395
+      ansible.builtin.command: >
+        rsync --recursive --include='*/' --include='*.jpg'  --include='*.png' --exclude='*' {{ jwcd_source_templates_dir }}/ {{ local_tmp_dir.path }}
+      changed_when: false
 
-- name: Render templates
-  when: jwcd_source_templates_dir != ""
-  ansible.builtin.include_tasks: render_templates.yml
-  tags: ["always"]
+    - name: Render templates
+      when: jwcd_source_templates_dir != ""
+      ansible.builtin.include_tasks: render_templates.yml
 
-- name: Sync local temporary dir to destination - Unprivileged
-  when: not jwcd_privileged
-  ansible.posix.synchronize:
-    src: "{{ local_tmp_dir.path }}/"
-    dest: "{{ jwcd_destination_dir }}"
-    archive: false
-    checksum: true
-    compress: false
-    group: true
-    owner: true
-    perms: true
-    recursive: true
-    rsync_opts:
-      - "--chown={{ jwcd_destination_owner }}:{{ jwcd_destination_group }}"
-      - "--chmod=D{{ jwcd_destination_mode_dirs }},F{{ jwcd_destination_mode_files }}"
-    delete: "{{ jwcd_destination_delete_extra }}"
-  register: rsync_output
-  tags: ["always"]
+    - name: Sync local temporary dir to destination - Unprivileged
+      when: not jwcd_privileged
+      ansible.posix.synchronize:
+        src: "{{ local_tmp_dir.path }}/"
+        dest: "{{ jwcd_destination_dir }}"
+        archive: false
+        checksum: true
+        compress: false
+        group: true
+        owner: true
+        perms: true
+        recursive: true
+        rsync_opts:
+          - "--chown={{ jwcd_destination_owner }}:{{ jwcd_destination_group }}"
+          - "--chmod=D{{ jwcd_destination_mode_dirs }},F{{ jwcd_destination_mode_files }}"
+        delete: "{{ jwcd_destination_delete_extra }}"
+      register: rsync_output
 
-- name: Sync local temporary dir to destination - Privileged
-  when: jwcd_privileged
-  ansible.builtin.include_tasks: sync_privileged.yml
-  tags: ["always"]
+    - name: Sync local temporary dir to destination - Privileged
+      when: jwcd_privileged
+      ansible.builtin.include_tasks: sync_privileged.yml
 
-- name: Show rsync logs
-  ansible.builtin.debug:
-    var: rsync_output.stdout_lines
-  tags: ["always"]
+    - name: Show rsync logs
+      ansible.builtin.debug:
+        var: rsync_output.stdout_lines
 
-- name: Delete local temporary dir
-  become: true
-  ansible.builtin.file:
-    path: "{{ local_tmp_dir.path }}"
-    state: absent
-  changed_when: false
-  tags: ["always"]
+    - name: Delete local temporary dir
+      delegate_to: localhost
+      ansible.builtin.file:
+        path: "{{ local_tmp_dir.path }}"
+        state: absent
+      changed_when: false

@@ -1,0 +1,60 @@
+- name: Cockpit - Install packages
+  ansible.builtin.package:
+    name:
+      - cockpit
+      - cockpit-machines
+      - cockpit-pcp
+      - cockpit-podman
+      - podman
+
+- name: Cockpit - Enable and start systemd units
+  ansible.builtin.systemd_service:
+    name: "{{ item }}"
+    state: started
+    enabled: true
+  loop:
+    - cockpit.socket
+    - pmlogger
+    - podman
+
+- name: Cockpit - Make proxy aware
+  ansible.builtin.copy:
+    dest: /etc/cockpit/cockpit.conf
+    owner: root
+    group: root
+    mode: "600"
+    content: |
+      [WebService]
+      Origins = https://cockpit.{{ ansible_hostname }}.{{ general_domain_local }} wss://cockpit.{{ ansible_hostname }}.{{ general_domain_local }}
+      ProtocolHeader = X-Forwarded-Proto
+  notify: Restart cockpit
+
+- name: Disable direct access to Cockpit # Must go through Caddy
+  ansible.posix.firewalld:
+    service: cockpit
+    state: disabled
+    permanent: true
+    immediate: true
+    offline: true
+
+- name: Ensure tangd.socket.d override directory exists
+  ansible.builtin.file:
+    owner: root
+    group: root
+    mode: "755"
+    path: /etc/systemd/system/cockpit.socket.d
+    state: directory
+
+- name: Cockpit - Only listen on localhost
+  ansible.builtin.copy:
+    dest: /etc/systemd/system/cockpit.socket.d/override.conf
+    owner: root
+    group: root
+    mode: "644"
+    content: |
+      [Socket]
+      # Remove existing port
+      ListenStream=
+      # Assign new port
+      ListenStream=127.0.0.1:9090
+  notify: Restart cockpit.socket

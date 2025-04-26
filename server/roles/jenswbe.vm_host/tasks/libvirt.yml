@@ -1,0 +1,41 @@
+- name: Libvirt - Install packages
+  ansible.builtin.package:
+    name:
+      - libvirt
+
+- name: Libvirt - Enable and start systemd unit
+  ansible.builtin.systemd_service:
+    name: libvirtd
+    state: started
+    enabled: true
+
+- name: Drop default network
+  community.libvirt.virt_net:
+    name: default
+    state: absent
+
+- name: Setup basic networks
+  ansible.builtin.include_tasks: libvirt_setup_network.yml
+  vars:
+    network_name: "{{ item }}"
+    network_template_path: "networks/{{ item }}.xml"
+  loop:
+    - host
+    - internet
+
+- name: Setup wireguard network
+  when: with_wireguard
+  ansible.builtin.include_tasks: libvirt_setup_network.yml
+  vars:
+    network_name: "{{ item }}"
+    network_template_path: "networks/wireguard.xml"
+
+- name: Setup Wireguard only filter
+  when: with_wireguard
+  ansible.builtin.template:
+    src: libvirt/networks/nwfilter-wireguard-only.xml
+    dest: /etc/libvirt/nwfilter/wireguard-only.xml
+    owner: root
+    group: root
+    mode: "600"
+  notify: Restart libvirtd

@@ -1,0 +1,23 @@
+- name: Setup server
+  hosts: cockpit
+  vars_files:
+    - public/domains.yml
+    - public/hostnames.yml
+
+  pre_tasks:
+    - name: Enrich hostnames
+      ansible.builtin.set_fact:
+        hostnames: "{{ hostnames | enrich_hostnames }}"
+
+    - name: Print hostnames result
+      ansible.builtin.debug:
+        var: hostnames
+
+    - name: Load public basic vars
+      ansible.builtin.include_vars: public/basics.yml
+
+    - name: Load secret basic vars
+      ansible.builtin.include_vars: secret/basics.yml
+
+  roles:
+    - role: jenswbe.vm_host
