@@ -13,3 +13,8 @@
       community.libvirt.virt_net:
         name: "{{ network_name }}"
         state: active
+
+    - name: "Autostart network - {{ network_name }}"
+      community.libvirt.virt_net:
+        name: "{{ network_name }}"
+        autostart: true
