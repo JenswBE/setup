@@ -9,6 +9,43 @@
     state: started
     enabled: true
 
+- name: Create bridge
+  community.general.nmcli:
+    type: bridge
+    conn_name: virbr200
+    stp: false
+    method4: auto
+    mac: "{{ ansible_facts[jwvm_bridge_member_interface]['macaddress'] }}"
+    state: present
+
+- name: Add ethernet to bridge
+  community.general.nmcli:
+    conn_name: "virbr200-{{ jwvm_bridge_member_interface }}"
+    type: ethernet
+    slave_type: bridge
+    master: virbr200
+    ifname: "{{ jwvm_bridge_member_interface }}"
+    state: present
+
+- name: Start bridge
+  community.general.nmcli:
+    conn_name: virbr200
+    state: up
+
+  # Workaround for bug https://github.com/ansible-collections/community.general/issues/9200
+- name: Check if ethernet is active
+  ansible.builtin.command: "nmcli con show --active {{ jwvm_bridge_member_interface }}"
+  register: nmcli_con_show
+  changed_when: false
+
+- name: Stop ethernet
+  when: jwvm_bridge_member_interface in nmcli_con_show.stdout
+  community.general.nmcli:
+    conn_name: "{{ jwvm_bridge_member_interface }}"
+    state: down
+  async: 30 # Connection will temporary drop
+  poll: 5
+
 - name: Drop default network
   community.libvirt.virt_net:
     name: default

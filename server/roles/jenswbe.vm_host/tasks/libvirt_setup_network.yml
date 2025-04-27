@@ -2,14 +2,14 @@
   become: true
   tags: ["setup", "libvirt"]
   block:
-    - name: Define network
+    - name: "Define network - {{ network_name }}"
       community.libvirt.virt_net:
         name: "{{ network_name }}"
         command: define
         xml: '{{ lookup("ansible.builtin.template", network_template_path) }}'
         autostart: true
 
-    - name: Activate network
+    - name: "Activate network - {{ network_name }}"
       community.libvirt.virt_net:
         name: "{{ network_name }}"
         state: active

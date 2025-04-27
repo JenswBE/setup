@@ -21,3 +21,5 @@
 
   roles:
     - role: jenswbe.vm_host
+      vars:
+        jwvm_bridge_member_interface: enp1s0
