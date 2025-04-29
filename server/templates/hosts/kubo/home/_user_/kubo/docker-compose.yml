@@ -327,7 +327,7 @@ services:
   # =========================
   immich: # Set ML url in settings to http://immich-ml:3003
     <<: *defaults
-    image: ghcr.io/immich-app/immich-server:v1.131.3
+    image: ghcr.io/immich-app/immich-server:v1.132.3
     container_name: immich
     networks:
       - caddy-public
@@ -360,7 +360,7 @@ services:
 
   immich-ml:
     <<: *defaults
-    image: ghcr.io/immich-app/immich-machine-learning:v1.131.2-openvino
+    image: ghcr.io/immich-app/immich-machine-learning:v1.132.3-openvino
     container_name: immich-ml
     networks:
       - immich
@@ -386,7 +386,7 @@ services:
 
   immich-redis:
     <<: *defaults
-    image: docker.io/redis:6.2-alpine@sha256:3211c33a618c457e5d241922c975dbc4f446d0bdb2dc75694f5573ef8e2d01fa
+    image: docker.io/valkey/valkey:8-bookworm
     container_name: immich-redis
     networks:
       - immich
@@ -397,7 +397,7 @@ services:
 
   immich-db:
     <<: *defaults
-    image: docker.io/tensorchord/pgvecto-rs:pg14-v0.2.0@sha256:739cdd626151ff1f796dc95a6591b55a714f341c737e27f045019ceabf8e8c52
+    image: docker.io/tensorchord/pgvecto-rs:pg14-v0.2.0
     container_name: immich-db
     networks:
       - immich
