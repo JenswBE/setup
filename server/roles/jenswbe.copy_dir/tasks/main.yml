@@ -59,6 +59,7 @@
       ansible.builtin.debug:
         var: rsync_output.stdout_lines
 
+  always:
     - name: Delete local temporary dir
       delegate_to: localhost
       ansible.builtin.file:

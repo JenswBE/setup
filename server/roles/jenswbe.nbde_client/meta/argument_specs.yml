@@ -1,0 +1,20 @@
+argument_specs:
+  main:
+    short_description: Setup a Tang server for NBDE
+    options:
+      # === REQUIRED ===
+      jwnc_clevis_device:
+        type: str
+        required: false
+        description: Device which should be unlocked by Clevis
+
+      jwnc_expected_binding:
+        type: str
+        required: false
+        description: Expected Tang binding in Clevis
+
+      # === OPTIONAL ===
+      jwnc_clevis_slot:
+        type: int
+        required: false
+        description: Slot number for Clevis

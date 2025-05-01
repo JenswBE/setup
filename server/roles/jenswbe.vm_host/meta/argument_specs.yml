@@ -5,6 +5,6 @@ argument_specs:
       # === REQUIRED ===
 
       jwvm_bridge_member_interface:
-        type: "str"
+        type: str
         required: true
         description: Name of interface to use as member for bridge "internet"

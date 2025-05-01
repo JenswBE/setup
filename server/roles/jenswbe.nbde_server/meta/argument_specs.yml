@@ -6,6 +6,6 @@ argument_specs:
 
       # === OPTIONAL ===
       jwns_server_port:
-        type: "int"
+        type: int
         required: false
         description: Port number for Tang server

@@ -1,6 +1,14 @@
 - name: VM host
   become: true
+  vars:
+    jwnc_supported_distros:
+      - Rocky
   block:
+    - name: Check if supported distro
+      ansible.builtin.fail:
+        msg: "{{ ansible_distribution }} is not a supported distro for this role. Supported distro's: {{ jwnc_supported_distros }}"
+      when: ansible_distribution not in jwnc_supported_distros
+
     - name: "Include tasks for {{ subtask }}"
       ansible.builtin.include_tasks: "{{ subtask | lower }}.yml"
       loop_control:

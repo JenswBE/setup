@@ -5,7 +5,7 @@
     state: present
 
 - name: AlmaLinux - Install NFS server
-  when: ansible_distribution == 'AlmaLinux'
+  when: ansible_distribution == 'Rocky'
   ansible.builtin.package:
     name: nfs-utils
     state: present

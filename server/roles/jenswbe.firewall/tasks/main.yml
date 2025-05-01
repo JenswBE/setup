@@ -1,6 +1,5 @@
 - name: Install, configure, and enable FirewallD
   become: true
-  tags: ["always"]
   block:
     - name: FirewallD - Ensure is installed
       ansible.builtin.package:
@@ -37,7 +36,6 @@
     - name: FirewallD - Show clear rules log
       ansible.builtin.debug:
         var: clear_rules.stdout_lines
-      tags: ["always"]
 
     - name: FirewallD - Create custom zones
       ansible.builtin.template:

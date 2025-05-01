@@ -1,0 +1,44 @@
+- name: Setup Clevis
+  become: true
+  vars:
+    jwnc_supported_distros:
+      - Rocky
+  block:
+    - name: Check if supported distro
+      ansible.builtin.fail:
+        msg: "{{ ansible_distribution }} is not a supported distro for this role. Supported distro's: {{ jwnc_supported_distros }}"
+      when: ansible_distribution not in jwnc_supported_distros
+
+    - name: Install Clevis
+      register: install_clevis
+      ansible.builtin.package:
+        name:
+          - clevis
+          - clevis-dracut
+          - clevis-luks
+
+    - name: Ensure networking is available during early boot
+      ansible.builtin.command: grubby --update-kernel=ALL --args="rd.neednet=1"
+      changed_when: false
+
+    - name: Get current bindings
+      ansible.builtin.command: clevis luks list -d {{ jwnc_clevis_device }} -s {{ jwnc_clevis_slot }}
+      register: clevis_pins
+      changed_when: false
+      failed_when: false # Command will return exit code 1 when the provided slot doesn't have a binding yet.
+
+    - name: Manual configuration of Clevis
+      when: jwnc_expected_binding not in clevis_pins.stdout
+      ansible.builtin.pause:
+        prompt: |
+          Tang binding doesn't match expected binding.
+            - Current: {{ clevis_pins.stdout }}
+            - Expected: {{ jwnc_expected_binding }}
+
+          # Bind a single Tang server
+          sudo clevis luks bind -d '{{ jwnc_clevis_device }}' -s {{ jwnc_clevis_slot }} {{ jwnc_expected_binding }}
+
+          # To verify the printed Tang key, run following on the Tang server(s) (not client!)
+          tang-show-keys 7500
+
+          PRESS ENTER TO CONFIRM

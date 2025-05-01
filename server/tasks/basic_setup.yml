@@ -24,14 +24,12 @@
     - name: Install general base packages
       ansible.builtin.package:
         state: present
-        name: "{{ item }}"
-      loop: "{{ packages_base_general }}"
+        name: "{{ packages_base_general }}"
 
     - name: "{{ ansible_os_family }} - Install family specific base packages"
       ansible.builtin.package:
         state: present
-        name: "{{ item }}"
-      loop: "{{ lookup('vars', 'packages_base_' ~ ansible_os_family_lowercase) }}"
+        name: "{{ lookup('vars', 'packages_base_' ~ ansible_os_family_lowercase) }}"
 
     - name: Create opt directories
       ansible.builtin.file:

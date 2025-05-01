@@ -1,4 +1,3 @@
----
 - hosts: jingles
   remote_user: jens
   become: yes
@@ -9,12 +8,10 @@
 
     - name: Install dependencies
       ansible.builtin.package:
-        state: present
-        name: "{{ item }}"
-      loop:
-        - espeak
-        - mpd
-        - mpc
+        name:
+          - espeak
+          - mpd
+          - mpc
 
     - name: Copy mpd config file
       ansible.builtin.copy:
