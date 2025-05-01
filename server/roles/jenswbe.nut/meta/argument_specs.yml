@@ -1,0 +1,14 @@
+argument_specs:
+  main:
+    short_description: Setup a Tang server for NBDE
+    options:
+      # === REQUIRED ===
+      jwnu_nut_type:
+        type: str
+        required: true
+        choices:
+          - client_only
+          - client_server
+        description: Type of NUT install
+
+      # === OPTIONAL ===

@@ -13,6 +13,8 @@
         state: directory
       register: local_tmp_dir
       changed_when: false
+      vars:
+        ansible_python_interpreter: "{{ ansible_playbook_python }}" # Ensures venv is used
 
     - name: Copy files dir to local temporary dir # noqa: command-instead-of-module
       when: jwcd_source_files_dir != ""
@@ -20,6 +22,8 @@
       # Workaround for https://github.com/ansible-collections/ansible.posix/issues/395
       ansible.builtin.command: "rsync --recursive {{ jwcd_source_files_dir }}/ {{ local_tmp_dir.path }}"
       changed_when: false
+      vars:
+        ansible_python_interpreter: "{{ ansible_playbook_python }}" # Ensures venv is used
 
     - name: Create template dir structure in local temporary dir # noqa: command-instead-of-module
       when: jwcd_source_templates_dir != ""
@@ -28,6 +32,8 @@
       ansible.builtin.command: >
         rsync --recursive --include='*/' --include='*.jpg'  --include='*.png' --exclude='*' {{ jwcd_source_templates_dir }}/ {{ local_tmp_dir.path }}
       changed_when: false
+      vars:
+        ansible_python_interpreter: "{{ ansible_playbook_python }}" # Ensures venv is used
 
     - name: Render templates
       when: jwcd_source_templates_dir != ""
@@ -66,3 +72,5 @@
         path: "{{ local_tmp_dir.path }}"
         state: absent
       changed_when: false
+      vars:
+        ansible_python_interpreter: "{{ ansible_playbook_python }}" # Ensures venv is used

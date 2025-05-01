@@ -1,13 +1,13 @@
 - name: Setup Clevis
   become: true
   vars:
-    jwnc_supported_distros:
+    role_supported_distros:
       - Rocky
   block:
     - name: Check if supported distro
       ansible.builtin.fail:
-        msg: "{{ ansible_distribution }} is not a supported distro for this role. Supported distro's: {{ jwnc_supported_distros }}"
-      when: ansible_distribution not in jwnc_supported_distros
+        msg: "{{ ansible_distribution }} is not a supported distro for this role. Supported distro's: {{ role_supported_distros }}"
+      when: ansible_distribution not in role_supported_distros
 
     - name: Install Clevis
       register: install_clevis
@@ -42,3 +42,8 @@
           tang-show-keys 7500
 
           PRESS ENTER TO CONFIRM
+
+    - name: Regenerate initramfs
+      when: jwnc_clevis_expected_binding not in clevis_bindings.stdout
+      ansible.builtin.command: dracut -fv --regenerate-all
+      changed_when: false

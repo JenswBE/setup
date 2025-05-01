@@ -21,8 +21,8 @@ jobs:
         with:
           python-version: ${{ env.PYTHON_VERSION }}
 
-      - name: Run unit tests for server/templates/nut/client_server/upssched-cmd
-        working-directory: server/templates/nut/client_server/upssched-cmd
+      - name: Run unit tests for server/roles/jenswbe.nut/files/upssched-cmd
+        working-directory: server/roles/jenswbe.nut/files/upssched-cmd
         run: python3 -m unittest
 
   golang-tests:

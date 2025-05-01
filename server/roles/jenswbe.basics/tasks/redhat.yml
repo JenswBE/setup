@@ -13,3 +13,8 @@
         option: excludepkgs
         value: "zabbix*"
         mode: "0644"
+
+    - name: RedHat - Install base packages
+      ansible.builtin.package:
+        name: "{{ jwba_base_packages_redhat }}"
+        state: present

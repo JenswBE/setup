@@ -17,3 +17,5 @@
     trim_blocks: false
   with_community.general.filetree: "{{ jwcd_source_templates_dir }}"
   changed_when: false
+  vars:
+    ansible_python_interpreter: "{{ ansible_playbook_python }}" # Ensures venv is used

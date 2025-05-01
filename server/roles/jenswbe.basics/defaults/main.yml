@@ -9,6 +9,9 @@ jwba_base_packages_debian:
   - btrfs-progs
   - console-data # Contains keymaps and fonts
 
+jwba_base_packages_redhat:
+  - usbutils # Provides lsusb
+
 # smtp-cli
 jwba_from_name: "{{ ansible_hostname }}"
 jwba_from_email: "host.{{ ansible_hostname }}@{{ general_domain_default }}"

@@ -1,0 +1,68 @@
+- name: Setup Network UPS Tools (NUT)
+  become: true
+  vars:
+    role_supported_distros:
+      - Rocky
+  block:
+    - name: Check if supported distro
+      ansible.builtin.fail:
+        msg: "{{ ansible_distribution }} is not a supported distro for this role. Supported distro's: {{ role_supported_distros }}"
+      when: ansible_distribution not in role_supported_distros
+
+    - name: Install NUT client
+      ansible.builtin.package:
+        state: present
+        name: nut-client
+
+    - name: Install NUT server
+      when: jwnu_nut_type == 'client_server'
+      ansible.builtin.package:
+        state: present
+        name: nut
+
+    - name: Add the user 'nut' to group 'smtp-cli'
+      ansible.builtin.user:
+        name: nut
+        groups: smtp-cli
+        append: true
+
+    - name: Copy NUT config
+      ansible.builtin.include_role:
+        name: jenswbe.copy_dir
+      vars:
+        jwcd_source_templates_dir: "roles/jenswbe.nut/templates/{{ jwnu_nut_type }}"
+        jwcd_destination_dir: /etc/ups
+        jwcd_privileged: true
+        jwcd_destination_mode_files: "640"
+        jwcd_destination_mode_dirs: "750"
+        jwcd_destination_owner: root
+        jwcd_destination_group: nut
+
+    - name: Copy upssched-cmd
+      ansible.builtin.copy:
+        src: files/upssched-cmd/cmd.py
+        dest: /usr/sbin/upssched-cmd
+        owner: root
+        group: nut
+        mode: "755"
+
+    - name: Force restart NUT client services
+      ansible.builtin.service:
+        name: "{{ item }}"
+        state: restarted
+      loop:
+        - nut-monitor
+
+    - name: Force restart NUT server services
+      when: jwnu_nut_type == 'client_server'
+      ansible.builtin.service:
+        name: nut-server
+        state: restarted
+
+    - name: Restart NUT driver - Start # Will automatically stop old driver if already running
+      when: jwnu_nut_type == 'client_server'
+      ansible.builtin.command: /usr/sbin/upsdrvctl start
+
+    - name: Test upssched-cmd (should receive email)
+      ansible.builtin.command: /usr/sbin/upssched-cmd test
+      changed_when: false

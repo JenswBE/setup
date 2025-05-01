@@ -29,3 +29,8 @@
     # Firewall config relies on services installed by earlier roles
     - role: jenswbe.firewall
       tags: ["firewall"]
+
+  tasks:
+    - name: Include host specific tasks
+      ansible.builtin.include_tasks: "tasks/hosts/{{ ansible_hostname }}.yml"
+      tags: ["always"]

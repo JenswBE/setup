@@ -1,47 +1,8 @@
-- name: Include NBDE Tang tasks
-  ansible.builtin.include_tasks: tasks/nbde_tang.yml
-  tags: ["setup", "tang"]
-
-# - name: Include NBDE Clevis LUKS tasks
-#   ansible.builtin.include_tasks: tasks/nbde_clevis_luks.yml
-#   tags: ["setup", "clevis"]
-
-- name: Include NUT server and client tasks
-  ansible.builtin.include_tasks: tasks/nut_client_server.yml
-  tags: ["setup", "nut"]
-
-- name: Copy systemd system unit templates
+- name: Include NUT role
   ansible.builtin.include_role:
-    name: jenswbe.copy_dir
+    name: jenswbe.nut
+    apply:
+      tags: ["nut"]
   vars:
-    jwcd_source_templates_dir: "templates/hosts/{{ ansible_hostname }}/etc/systemd/system"
-    jwcd_destination_dir: "/etc/systemd/system"
-    jwcd_privileged: true
-    jwcd_destination_mode_files: "644"
-    jwcd_destination_mode_dirs: "755"
-  tags: ["systemd", "mail_on_failed_unit"]
-
-- name: Force systemd reload
-  become: true
-  ansible.builtin.systemd_service:
-    daemon_reload: true
-  tags: ["systemd", "mail_on_failed_unit"]
-
-- name: Enable systemd timers
-  become: true
-  ansible.builtin.systemd_service:
-    name: "{{ item }}"
-    state: started
-    enabled: true
-  loop:
-    - docker-update-containers.timer
-  tags: ["systemd"]
-
-- name: "Copy templates home/_user_/{{ ansible_hostname }}"
-  ansible.builtin.include_role:
-    name: jenswbe.copy_dir
-  vars:
-    jwcd_source_templates_dir: "templates/hosts/{{ ansible_hostname }}/home/_user_/{{ ansible_hostname }}"
-    jwcd_destination_dir: "{{ ansible_user_dir }}/{{ ansible_hostname }}"
-    jwcd_destination_delete_extra: true
-  tags: ["docker"]
+    jwnu_nut_type: client_server
+  tags: ["always"]
