@@ -1,6 +1,6 @@
 # NBDE
 jwnc_clevis_device: /dev/sda3
-jwnc_expected_binding: tang '{"url":"http://kubo.{{ general_domain_local }}:7500"}'
+jwnc_clevis_expected_binding: tang '{"url":"http://kubo.{{ general_domain_local }}:7500"}'
 
 # Firewall
 jwfw_zones:

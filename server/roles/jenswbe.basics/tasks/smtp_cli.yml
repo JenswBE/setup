@@ -1,6 +1,5 @@
 - name: Setup mail on failed systemd unit
   become: true
-  tags: ["setup", "mail_on_failed_unit"]
   block:
     - name: Ensure group "smtp-cli" exists
       ansible.builtin.group:
@@ -16,13 +15,15 @@
         mode: "750"
 
     - name: Get latest release of smtp-cli
+      become: false
+      delegate_to: localhost
+      register: smtp_cli_latest
       community.general.github_release:
         user: JenswBE
         repo: smtp-cli
         action: latest_release
-      register: smtp_cli_latest
-      become: false
-      delegate_to: localhost
+      vars:
+        ansible_python_interpreter: "{{ ansible_playbook_python }}" # Ensures venv is used
 
     - name: Get latest smtp-cli binary
       ansible.builtin.get_url:
@@ -32,10 +33,18 @@
         group: smtp-cli
         mode: "755"
 
-    - name: Set smtp-cli config
+    - name: Create smtp-cli config
       ansible.builtin.template:
         src: smtp-cli.conf
         dest: /opt/smtp-cli/smtp-cli.conf
         owner: root
         group: smtp-cli
         mode: "440"
+
+    - name: Copy unit-fail-mail SystemD unit
+      ansible.builtin.copy:
+        src: "files/unit-fail-mail@.service"
+        dest: "/etc/systemd/system/unit-fail-mail@.service"
+        owner: root
+        group: root
+        mode: "644"

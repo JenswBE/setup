@@ -14,7 +14,11 @@
     - role: geerlingguy.security
       become: true
 
+    - role: jenswbe.basics
+      tags: ["basics"]
+
     - role: jenswbe.vm_host
+      tags: ["vm_host"]
 
     - role: jenswbe.nbde_server
       tags: ["nbde", "nbde_server"]

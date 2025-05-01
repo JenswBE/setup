@@ -1,0 +1,20 @@
+jwba_base_packages:
+  - htop
+  - iotop
+  - pv
+  - rsync
+  - vim
+
+jwba_base_packages_debian:
+  - btrfs-progs
+  - console-data # Contains keymaps and fonts
+
+# smtp-cli
+jwba_from_name: "{{ ansible_hostname }}"
+jwba_from_email: "host.{{ ansible_hostname }}@{{ general_domain_default }}"
+jwba_to_name: "Admin of {{ ansible_hostname }}"
+jwba_to_email: "{{ general_mail_admin }}@{{ general_domain_default }}"
+jwba_server_hostname: "{{ mailjet_host }}"
+jwba_server_port_starttls: "{{ mailjet_port_starttls }}"
+jwba_server_username: "{{ mailjet_username }}"
+jwba_server_password: "{{ mailjet_password }}"

@@ -32,6 +32,7 @@
         done
       args:
         executable: /bin/bash # If not forced, dash is used on Debian which doesn't correctly handle the regex filename matching
+      changed_when: "{{ 'Deleting' in clear_rules.stdout }}"
 
     - name: FirewallD - Show clear rules log
       ansible.builtin.debug:
