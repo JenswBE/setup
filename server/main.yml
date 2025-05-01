@@ -1,75 +1,14 @@
 - name: Setup server
   hosts: all
   vars:
-    supported_distros:
-      - AlmaLinux
+    playbook_name: main
+    playbook_supported_distros:
+      - Rocky
       - Debian
 
-    arch_map:
-      {
-        "i386": "i386",
-        "x86_64": "amd64",
-        "aarch64": "arm64",
-        "armv6l": "armv6",
-        "armv7l": "armv7",
-      }
-
   pre_tasks:
-    - name: Use of limit arg is mandatory # noqa: run-once[task]
-      ansible.builtin.fail:
-        msg: "You must use -l or --limit - when you really want to use all hosts, use -l 'all'"
-      when: ansible_limit is not defined
-      run_once: true
-      tags: ["always"]
-
-    - name: Check if supported distro
-      ansible.builtin.fail:
-        msg: "{{ ansible_distribution }} is not a supported distro for this playbook. Supported distro's: {{ supported_distros }}"
-      when: ansible_distribution not in supported_distros
-      tags: ["always"]
-
-    - name: Set lowercase versions of facts
-      ansible.builtin.set_fact:
-        ansible_os_family_lowercase: "{{ ansible_os_family | lower }}"
-      tags: ["always"]
-
-    - name: Set arch in Golang format
-      ansible.builtin.set_fact:
-        arch: "{{ arch_map[ansible_architecture] }}"
-      tags: ["always"]
-
-    - name: Load domain vars
-      ansible.builtin.include_vars: public/domains.yml
-      tags: ["always"]
-
-    - name: Load hostname vars
-      ansible.builtin.include_vars: public/hostnames.yml
-      tags: ["always"]
-
-    - name: Enrich hostnames
-      ansible.builtin.set_fact:
-        hostnames: "{{ hostnames | enrich_hostnames }}"
-      tags: ["always"]
-
-    - name: Print hostnames result
-      ansible.builtin.debug:
-        var: hostnames
-      tags: ["always"]
-
-    - name: Load public basic vars
-      ansible.builtin.include_vars: public/basics.yml
-      tags: ["always"]
-
-    - name: Load secret basic vars
-      ansible.builtin.include_vars: secret/basics.yml
-      tags: ["always"]
-
-    - name: Load public host specific vars
-      ansible.builtin.include_vars: "public/{{ ansible_hostname }}.yml"
-      tags: ["always"]
-
-    - name: Load secret host specific vars
-      ansible.builtin.include_vars: "secret/{{ ansible_hostname }}.yml"
+    - name: Include init tasks
+      ansible.builtin.include_tasks: "tasks/init.yml"
       tags: ["always"]
 
   roles:

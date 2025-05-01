@@ -11,6 +11,11 @@
   ansible.builtin.systemd_service:
     daemon_reload: true
 
+- name: Ensure caddy is started
+  ansible.builtin.systemd_service:
+    name: caddy
+    state: started
+
 - name: Allow HTTP(S) for Caddy
   ansible.posix.firewalld:
     service: "{{ item }}"

@@ -49,3 +49,18 @@ ansible-playbook main.yml --tags docker --limit <HOSTNAME>
 ## Service specific configuration
 
 See [instructions for configuring services](docs/how-to/Setup services.md)
+
+## VM server
+
+### Install Rocky
+
+- Software selection = Minimal
+- Installation Destination = Automatic + Encrypt my data
+- KDUMP = Disabled
+- User Creation = Add non-root user
+
+### Post-install
+
+1. Ensure system is up-to-date with `sudo dnf update`
+2. Add authorized SSH keys
+3. Run `ansible-playbook vm_host.yml -l HOSTNAME`

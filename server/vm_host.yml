@@ -1,25 +1,24 @@
 - name: Setup server
-  hosts: cockpit
-  vars_files:
-    - public/domains.yml
-    - public/hostnames.yml
+  hosts: all
+  vars:
+    playbook_name: vm_host
+    playbook_supported_distros:
+      - Rocky
 
   pre_tasks:
-    - name: Enrich hostnames
-      ansible.builtin.set_fact:
-        hostnames: "{{ hostnames | enrich_hostnames }}"
-
-    - name: Print hostnames result
-      ansible.builtin.debug:
-        var: hostnames
-
-    - name: Load public basic vars
-      ansible.builtin.include_vars: public/basics.yml
-
-    - name: Load secret basic vars
-      ansible.builtin.include_vars: secret/basics.yml
+    - name: Include init tasks
+      ansible.builtin.include_tasks: "tasks/init.yml"
+      tags: ["always"]
 
   roles:
+    - role: geerlingguy.security
+      become: true
+
     - role: jenswbe.vm_host
-      vars:
-        jwvm_bridge_member_interface: enp1s0
+
+    - role: jenswbe.nbde_server
+      tags: ["nbde"]
+
+    # Firewall config relies on services installed by earlier roles
+    - role: jenswbe.firewall
+      tags: ["firewall"]

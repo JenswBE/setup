@@ -1,6 +1,6 @@
 - name: Setup Tang
   become: true
-  tags: ["setup", "tang"]
+  tags: ["always"]
   block:
     - name: Install Tang
       ansible.builtin.package:
@@ -27,21 +27,18 @@
           # Remove existing port(s)
           ListenStream=
           # Assign new port
-          ListenStream=7500
+          ListenStream={{ jwns_server_port }}
+      notify:
+        - Reload systemd
+        - Restart tangd.socket
 
-    - name: Reload systemd daemon
-      when: override_tang_port.changed
-      ansible.builtin.systemd_service:
-        daemon_reload: true
+    - name: Allow Tangd to listen on provided port
+      community.general.seport:
+        ports: "{{ jwns_server_port }}"
+        proto: tcp
+        setype: tangd_port_t
 
     - name: Enable Tang socket on boot
       ansible.builtin.systemd_service:
         name: tangd.socket
         enabled: true
-        state: started
-
-    - name: Restart Tang socket on config change
-      when: override_tang_port.changed
-      ansible.builtin.service:
-        name: tangd.socket
-        state: restarted

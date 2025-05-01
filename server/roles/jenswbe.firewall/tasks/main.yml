@@ -1,6 +1,6 @@
 - name: Install, configure, and enable FirewallD
   become: true
-  tags: ["setup", "firewall"]
+  tags: ["always"]
   block:
     - name: FirewallD - Ensure is installed
       ansible.builtin.package:
@@ -48,7 +48,7 @@
         mode: "600"
       vars:
         zone: "{{ item }}"
-      loop: "{{ firewalld }}"
+      loop: "{{ jwfw_zones }}"
 
     - name: FirewallD - Reload
       become: true

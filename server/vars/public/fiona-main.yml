@@ -1,5 +1,9 @@
+# Roles
+jwvm_bridge_member_interface: enp2s0
+
 # Firewall
-jwfw_zones:
+# Ensure to update firewall on cloud provider!
+firewalld:
   - zone: public # Based on /usr/lib/firewalld/zones/public.xml
     interfaces: []
     source_networks: []
@@ -20,20 +24,17 @@ jwfw_zones:
     allowed_services:
       - ssh # 22/tcp
       - dns # 53/tcp and 53/udp for Blocky
-      - http # 80/tcp for Caddy
-      - https # 443/tcp for Caddy
-      - http3 # 443/udp (QUIC) for Caddy
+      - http # 80/tcp
+      - https # 443/tcp
+      - http3 # 443/udp (QUIC)
       - dhcpv6-client # 546/udp
-      # - nut # 3493/tcp for Network UPS Tools (NUT) server
-      # - zabbix-agent # 10050/tcp
+      - nut # 3493/tcp for Network UPS Tools (NUT) server
+      - zabbix-agent # 10050/tcp
     allowed_ports:
       - port: 7500 # Tang (https://github.com/latchset/tang)
         protos: [tcp]
     extra_strings: []
     extra_booleans: []
-
-# VM Host
-jwvm_bridge_member_interface: enp2s0
 
 # Security
 security_autoupdate_reboot_time: "03:00"

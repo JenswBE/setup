@@ -1,0 +1,12 @@
+argument_specs:
+  main:
+    short_description: Setup a Tang server for NBDE
+    options:
+      # === REQUIRED ===
+      jwfw_zones:
+        type: list
+        elements: dict
+        required: true
+        description: Firewall zones managed authoritively with Ansible (other zones are deleted)
+
+      # === OPTIONAL ===

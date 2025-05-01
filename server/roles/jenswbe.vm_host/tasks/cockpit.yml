@@ -37,7 +37,7 @@
     immediate: true
     offline: true
 
-- name: Ensure tangd.socket.d override directory exists
+- name: Ensure cockpit.socket.d override directory exists
   ansible.builtin.file:
     owner: root
     group: root

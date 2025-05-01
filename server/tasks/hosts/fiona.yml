@@ -2,9 +2,9 @@
   ansible.builtin.include_tasks: tasks/nbde_tang.yml
   tags: ["setup", "tang"]
 
-- name: Include NBDE Clevis LUKS tasks
-  ansible.builtin.include_tasks: tasks/nbde_clevis_luks.yml
-  tags: ["setup", "clevis"]
+# - name: Include NBDE Clevis LUKS tasks
+#   ansible.builtin.include_tasks: tasks/nbde_clevis_luks.yml
+#   tags: ["setup", "clevis"]
 
 - name: Include NUT server and client tasks
   ansible.builtin.include_tasks: tasks/nut_client_server.yml
