@@ -59,9 +59,22 @@
         name: nut-server
         state: restarted
 
-    - name: Restart NUT driver - Start # Will automatically stop old driver if already running
+    - name: Ensure nut-driver-enumerator ran
       when: jwnu_nut_type == 'client_server'
-      ansible.builtin.command: /usr/sbin/upsdrvctl start
+      ansible.builtin.service:
+        name: nut-server
+        state: restarted
+
+    - name: Restart driver
+      when: jwnu_nut_type == 'client_server'
+      ansible.builtin.service:
+        name: nut-driver@apc
+        state: restarted
+
+    - name: Enable NUT services on boot
+      ansible.builtin.service:
+        name: nut.target
+        enabled: true
 
     - name: Test upssched-cmd (should receive email)
       ansible.builtin.command: /usr/sbin/upssched-cmd test
