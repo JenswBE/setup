@@ -37,6 +37,7 @@
   ansible.builtin.command: "nmcli con show --active {{ jwvm_bridge_member_interface }}"
   register: nmcli_con_show
   changed_when: false
+  failed_when: false
 
 - name: Stop ethernet
   when: jwvm_bridge_member_interface in nmcli_con_show.stdout
@@ -45,6 +46,23 @@
     state: down
   async: 30 # Connection will temporary drop
   poll: 5
+
+- name: Disable ethernet on boot
+  community.general.nmcli:
+    conn_name: "{{ jwvm_bridge_member_interface }}"
+    state: absent
+
+- name: Ensure NetworkManager uses bridge instead of dracut configs
+  ansible.builtin.copy:
+    dest: "/etc/NetworkManager/conf.d/00-ignore-nm-initrd-generator.conf"
+    content: |
+      [device-{{ jwvm_bridge_member_interface }}]
+      match-device=interface-name:{{ jwvm_bridge_member_interface }}
+      keep-configuration=no
+      allowed-connections=except:origin:nm-initrd-generator
+    owner: root
+    group: root
+    mode: "644"
 
 - name: Drop default network
   community.libvirt.virt_net:
