@@ -26,6 +26,10 @@ When installing both Windows and Linux on a clean disk:
 # Set hostname
 sudo hostnamectl hostname <HOSTNAME>
 
+# Install pipx
+sudo rpm-ostree install pipx
+sudo reboot
+
 # Install Ansible
 pipx install ansible-core
 pipx inject ansible-core $(cat requirements.txt | sed 's/\n/ /g' | sed 's/#.*//') # pipx on Debian is too old to support flag "-r"
