@@ -31,6 +31,8 @@ sudo rpm-ostree install pipx
 sudo reboot
 
 # Install Ansible
+echo "export PIPX_HOME=/home/${USER:?}/.local/share/pipx" >> ~/.bashrc
+source ~/.bashrc
 pipx install ansible-core
 pipx inject ansible-core $(cat requirements.txt | sed 's/\n/ /g' | sed 's/#.*//') # pipx on Debian is too old to support flag "-r"
 
