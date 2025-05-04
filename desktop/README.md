@@ -31,22 +31,20 @@ sudo rpm-ostree install pipx
 sudo reboot
 
 # Install Ansible
-echo "export PIPX_HOME=/home/${USER:?}/.local/share/pipx" >> ~/.bashrc
-source ~/.bashrc
-pipx install ansible-core
-pipx inject ansible-core $(cat requirements.txt | sed 's/\n/ /g' | sed 's/#.*//') # pipx on Debian is too old to support flag "-r"
+pipx install --suffix='-host' ansible-core
+pipx inject -r requirements.txt ansible-core-host
 
 # Install collections
-ansible-galaxy collection install --force -r requirements.yml
+ansible-galaxy-host collection install --force -r requirements.yml
 
 # Run Ansible - Part 1
-ansible-playbook 00-before-reboot.yml
+ansible-playbook-host 00-before-reboot.yml
 
 # Reboot system
 sudo reboot
 
 # Run Ansible - Part 2
-ansible-playbook 10-after-reboot.yml
+ansible-playbook-host 10-after-reboot.yml
 ```
 
 ### Setup host
@@ -73,10 +71,6 @@ WantedBy=multi-user.target
 EOF
 sudo systemctl daemon-reload
 sudo systemctl enable --now ${NFS_SYSTEMD_NAME:?}.mount
-
-# Default to XOrg instead of Wayland
-# Wayland doesn't work nicely with screensharing
-sudo nano /etc/gdm/custom.conf # Add "DefaultSession=gnome-xorg.desktop" in section "daemon"
 ```
 
 ### Nextcloud
@@ -94,6 +88,17 @@ To add a second account in Nextcloud:
 # See https://github.com/89luca89/distrobox/blob/main/docs/compatibility.md#containers-distros
 distrobox-create -Y -i quay.io/toolbx-images/debian-toolbox:12 --name debian-development --additional-flags "--env LC_ALL=C.UTF-8"
 distrobox-enter debian-development
+
+###################################
+# BELOW STEPS RUN IN DISTROBOX!!! #
+###################################
+
+# Install pipx
+sudo apt install -y lsb-release
+DEBIAN_CODENAME=$(lsb_release --short --codename)
+sudo sh -c "echo 'deb http://deb.debian.org/debian ${DEBIAN_CODENAME:?}-backports main' > /etc/apt/sources.list.d/backports.list"
+sudo apt update
+sudo apt install -t ${DEBIAN_CODENAME:?}-backports pipx
 
 # Setup VS Code
 # Based on https://code.visualstudio.com/docs/setup/linux.
