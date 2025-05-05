@@ -3,13 +3,17 @@
   vars_files:
     - vars.public.yml
 
-  tasks:
-    - name: Confirm inside distrobox
-      ansible.builtin.pause:
-        prompt: |
-          Are you running inside the distrobox?
+  pre_tasks:
+    - name: Check if inside distrobox
+      when: not lookup('ansible.builtin.env', 'CONTAINER_ID')
+      ansible.builtin.fail:
+        msg: This playbook should only be executed inside distrobox (env var 'CONTAINER_ID' should exist)
 
-          Press ENTER to confirm.
+  tasks:
+    - name: Ensure common tools are installed
+      ansible.builtin.package:
+        name:
+          - dnsutils # Provides "dig"
 
     - name: Setup global git config
       community.general.git_config:

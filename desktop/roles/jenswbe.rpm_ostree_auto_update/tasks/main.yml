@@ -9,7 +9,7 @@
     group: root
     mode: "0644"
   notify:
-    - Reload rpm-ostreed
+    - Restart rpm-ostreed
 
 - name: Enable automatic rpm-ostree update timers
   become: true

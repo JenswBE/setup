@@ -58,6 +58,7 @@
         identities_only: true
         other_options:
           gssapiauthentication: "no"
+          hashknownhosts: "no"
 
     - name: Ensure local bin directory exists
       ansible.builtin.file:

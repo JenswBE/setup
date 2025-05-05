@@ -20,8 +20,11 @@
     - name: Disable Intel HDA power save (stops popping)
       become: true
       tags: ["sound"]
-      ansible.builtin.template:
-        src: htpc/snd-hda-intel-disable-powersave.conf
+      ansible.builtin.copy:
+        content: |
+          {{ ansible_managed | comment }}
+
+          options snd_hda_intel power_save=0
         dest: /etc/modprobe.d/snd-hda-intel-disable-powersave.conf
         owner: root
         group: root
@@ -86,8 +89,21 @@
       become: true
       tags: ["media_mount"]
       register: add_var_media_mount
-      ansible.builtin.template:
-        src: htpc/var-media.mount
+      ansible.builtin.copy:
+        content: |
+          {{ ansible_managed | comment }}
+
+          [Unit]
+          Description=Mount /var/media
+
+          [Mount]
+          What=kubo.jensw.eu:/data/media
+          Where=/var/media
+          Type=nfs
+          Options=noexec,nosuid,nofail,noatime
+
+          [Install]
+          WantedBy=multi-user.target
         dest: /etc/systemd/system/var-media.mount
         owner: root
         group: root

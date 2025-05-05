@@ -34,7 +34,7 @@
   ansible.builtin.pause:
     prompt: |
       Configure following public key on GitHub:
-      {{ lookup('ansible.builtin.file', ssh_key_path+'.pub') }}
+      {{ lookup('ansible.builtin.file', ssh_key_path + '.pub') }}
 
 - name: "{{ profile_name }} - Configure SSH"
   community.general.ssh_config:
