@@ -1,5 +1,6 @@
 jwba_base_packages:
   - htop
+  - iftop
   - iotop
   - pv
   - rsync
