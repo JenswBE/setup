@@ -1,6 +1,9 @@
+# NBDE
+jwnc_clevis_device: /dev/nvme0n1p3
+jwnc_clevis_expected_binding: tang '{"url":"http://{{ hostnames.private.fiona.ipv4 }}:7500"}'
+
 # Firewall
-# Ensure to update firewall on cloud provider!
-firewalld:
+jwfw_zones:
   - zone: public # Based on /usr/lib/firewalld/zones/public.xml
     interfaces: []
     source_networks: []

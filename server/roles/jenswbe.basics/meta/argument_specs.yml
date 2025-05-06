@@ -1,6 +1,6 @@
 argument_specs:
   main:
-    short_description: Setup a Tang server for NBDE
+    short_description: Basic setup
     options:
       # === REQUIRED ===
       jwnc_clevis_device:

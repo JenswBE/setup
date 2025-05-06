@@ -96,6 +96,7 @@ ${CMD_CODE_EXT_INSTALL:?} golang.go
 ${CMD_CODE_EXT_INSTALL:?} HashiCorp.terraform
 ${CMD_CODE_EXT_INSTALL:?} redhat.ansible # Also installs "redhat.vscode-yaml" as dependency
 ${CMD_CODE_EXT_INSTALL:?} redhat.vscode-xml
+${CMD_CODE_EXT_INSTALL:?} tintinweb.graphviz-interactive-preview
 
 # Install latest LTS release of NodeJS
 # following instructions at: https://github.com/nodesource/distributions

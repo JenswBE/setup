@@ -1,3 +1,10 @@
+- name: Include NBDE client role
+  ansible.builtin.include_role:
+    name: jenswbe.nbde_client
+    apply:
+      tags: ["nbde", "nbde_client"]
+  tags: ["nbde", "nbde_client"]
+
 - name: Include PowerTop tasks
   ansible.builtin.include_tasks: tasks/powertop.yml
   tags: ["setup", "powertop"]
@@ -9,14 +16,6 @@
       tags:
         - nfs
   tags: ["setup", "nfs"]
-
-- name: Include NBDE Tang tasks
-  ansible.builtin.include_tasks: tasks/nbde_tang.yml
-  tags: ["setup", "tang"]
-
-- name: Include NBDE Clevis LUKS tasks
-  ansible.builtin.include_tasks: tasks/nbde_clevis_luks.yml
-  tags: ["setup", "clevis"]
 
 - name: Include NUT client tasks
   ansible.builtin.include_tasks: tasks/nut_client_only.yml

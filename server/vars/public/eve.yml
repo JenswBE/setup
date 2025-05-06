@@ -1,6 +1,6 @@
 # Firewall
 # Ensure to update firewall on cloud provider!
-firewalld:
+jwfw_zones:
   - zone: public # Based on /usr/lib/firewalld/zones/public.xml
     interfaces: []
     source_networks: []
