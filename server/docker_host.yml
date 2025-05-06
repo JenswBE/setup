@@ -29,11 +29,13 @@
           log-opts:
             gelf-address: "udp://{{ app_graylog_server }}:12201"
 
-  tasks:
-    - name: Include basic setup tasks
-      ansible.builtin.include_tasks: tasks/basic_setup.yml
+    - role: jenswbe.basics
       tags: ["setup", "basics"]
 
+    - role: jenswbe.firewall
+      tags: ["firewall"]
+
+  tasks:
     - name: Include firewall tasks
       ansible.builtin.include_tasks: "tasks/firewall.yml"
       tags: ["setup", "firewall"]
@@ -41,10 +43,6 @@
     - name: Include CrowdSec tasks
       ansible.builtin.include_tasks: tasks/crowdsec.yml
       tags: ["setup", "crowdsec"]
-
-    - name: Include Mail on Failed Unit tasks
-      ansible.builtin.include_tasks: tasks/mail_on_failed_unit.yml
-      tags: ["setup", "mail_on_failed_unit"]
 
     - name: Include Zabbix agent tasks
       ansible.builtin.include_tasks: tasks/zabbix-agent.yml
