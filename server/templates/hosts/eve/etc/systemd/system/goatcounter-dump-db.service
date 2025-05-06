@@ -3,4 +3,4 @@ Description=Dump GoatCounter DB for backup
 OnFailure=unit-fail-mail@%n.service
 
 [Service]
-ExecStart={{ docker_path }} run --rm -v "{{ general_path_appdata }}/goatcounter/db:/data" alpine sh -c "apk add sqlite; sqlite3 /data/goatcounter.sqlite3 '.backup /data/goatcounter.backup.sqlite3'"
+ExecStart={{ docker_path }} run --rm --pull always -v "{{ general_path_appdata }}/goatcounter/db:/data" alpine sh -c "set -eu; apk add sqlite; sqlite3 /data/goatcounter.sqlite3 '.backup /data/goatcounter.backup.sqlite3'"
