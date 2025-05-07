@@ -232,7 +232,7 @@ services:
   # =========================
   syncthing:
     <<: *defaults
-    image: docker.io/syncthing/syncthing:1
+    image: docker.io/syncthing/syncthing:v2
     container_name: syncthing
     hostname: "#VAR:ansible_hostname:VAR#"
     networks:
