@@ -25,6 +25,8 @@
           - distrobox
           - gnome-tweaks
           - htop
+          - iftop
+          - iotop
           - nextcloud-client
           - nextcloud-client-nautilus
           - podman-compose
