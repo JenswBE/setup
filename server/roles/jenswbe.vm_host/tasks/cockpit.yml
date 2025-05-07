@@ -22,7 +22,7 @@
     dest: /etc/cockpit/cockpit.conf
     owner: root
     group: root
-    mode: "600"
+    mode: "644"
     content: |
       [WebService]
       Origins = https://cockpit.{{ ansible_hostname }}.{{ general_domain_local }} wss://cockpit.{{ ansible_hostname }}.{{ general_domain_local }}
