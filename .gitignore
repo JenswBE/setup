@@ -2,6 +2,7 @@ __pycache__
 .vault_password
 
 # Ansible
+**/.ansible
 collections/
 **/roles/**
 !**/roles/jenswbe.*/
