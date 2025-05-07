@@ -64,11 +64,11 @@
     - zabbix-dump-db.timer
   tags: ["systemd"]
 
-- name: "Copy templates home/_user_/{{ ansible_hostname }}"
+- name: "Copy templates home/_user_/deploy"
   ansible.builtin.include_role:
     name: jenswbe.copy_dir
   vars:
-    jwcd_source_templates_dir: "templates/hosts/{{ ansible_hostname }}/home/_user_/{{ ansible_hostname }}"
-    jwcd_destination_dir: "{{ ansible_user_dir }}/{{ ansible_hostname }}"
+    jwcd_source_templates_dir: "templates/hosts/{{ ansible_hostname }}/home/_user_/deploy"
+    jwcd_destination_dir: "{{ ansible_user_dir }}/deploy"
     jwcd_destination_delete_extra: true
   tags: ["docker"]

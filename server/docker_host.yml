@@ -1,7 +1,7 @@
 - name: Setup server
   hosts: all
   vars:
-    playbook_name: main
+    playbook_name: docker_host
     playbook_supported_distros:
       - Rocky
       - Debian
@@ -36,10 +36,6 @@
       tags: ["firewall"]
 
   tasks:
-    - name: Include firewall tasks
-      ansible.builtin.include_tasks: "tasks/firewall.yml"
-      tags: ["setup", "firewall"]
-
     - name: Include CrowdSec tasks
       ansible.builtin.include_tasks: tasks/crowdsec.yml
       tags: ["setup", "crowdsec"]
