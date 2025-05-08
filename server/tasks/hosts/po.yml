@@ -6,23 +6,6 @@
         - wireguard
   tags: ["setup", "wireguard"]
 
-- name: Copy systemd system unit templates
-  ansible.builtin.include_role:
-    name: jenswbe.copy_dir
-  vars:
-    jwcd_source_templates_dir: "templates/hosts/{{ ansible_hostname }}/etc/systemd/system"
-    jwcd_destination_dir: "/etc/systemd/system"
-    jwcd_privileged: true
-    jwcd_destination_mode_files: "644"
-    jwcd_destination_mode_dirs: "755"
-  tags: ["systemd", "mail_on_failed_unit"]
-
-- name: Force systemd reload
-  become: true
-  ansible.builtin.systemd_service:
-    daemon_reload: true
-  tags: ["systemd", "mail_on_failed_unit"]
-
 - name: Enable systemd timers and mounts
   become: true
   ansible.builtin.systemd_service:
@@ -32,12 +15,3 @@
   loop:
     - docker-update-containers.timer
   tags: ["systemd"]
-
-- name: "Copy templates home/_user_/deploy"
-  ansible.builtin.include_role:
-    name: jenswbe.copy_dir
-  vars:
-    jwcd_source_templates_dir: "templates/hosts/{{ ansible_hostname }}/home/_user_/deploy"
-    jwcd_destination_dir: "{{ ansible_user_dir }}/deploy"
-    jwcd_destination_delete_extra: true
-  tags: ["docker"]

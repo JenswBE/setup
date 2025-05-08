@@ -1,8 +1,8 @@
 - name: Setup server
-  hosts: all
+  hosts: docker_host
   vars:
-    playbook_name: docker_host
     playbook_supported_distros:
+      - AlmaLinux
       - Rocky
       - Debian
 
@@ -14,11 +14,11 @@
   roles:
     - role: geerlingguy.security
       become: true
-      tags: ["setup", "roles"]
+      tags: ["gsecurity"]
 
     - role: geerlingguy.docker
       become: true
-      tags: ["setup", "roles"]
+      tags: ["gdocker"]
       vars:
         docker_daemon_options:
           default-address-pools:
@@ -30,7 +30,7 @@
             gelf-address: "udp://{{ app_graylog_server }}:12201"
 
     - role: jenswbe.basics
-      tags: ["setup", "basics"]
+      tags: ["basics"]
 
     - role: jenswbe.firewall
       tags: ["firewall"]
@@ -38,15 +38,59 @@
   tasks:
     - name: Include CrowdSec tasks
       ansible.builtin.include_tasks: tasks/crowdsec.yml
-      tags: ["setup", "crowdsec"]
+      tags: ["crowdsec"]
 
     - name: Include Zabbix agent tasks
       ansible.builtin.include_tasks: tasks/zabbix-agent.yml
-      tags: ["setup", "zabbix"]
+      tags: ["zabbix"]
 
     - name: Include logging tasks
       ansible.builtin.include_tasks: tasks/logging.yml
-      tags: ["setup", "logging"]
+      tags: ["logging"]
+
+    - name: Copy systemd system unit templates
+      ansible.builtin.include_role:
+        name: jenswbe.copy_dir
+      vars:
+        jwcd_source_templates_dir: "templates/hosts/{{ ansible_hostname }}/etc/systemd/system"
+        jwcd_destination_dir: "/etc/systemd/system"
+        jwcd_privileged: true
+        jwcd_destination_mode_files: "644"
+        jwcd_destination_mode_dirs: "755"
+      tags: ["systemd"]
+
+    - name: Force systemd reload
+      become: true
+      ansible.builtin.systemd_service:
+        daemon_reload: true
+      tags: ["systemd"]
+
+    - name: Docker login to GHCR
+      become: true
+      changed_when: false
+      ansible.builtin.command:
+        cmd: "{{ docker_path }} login -u USERNAME -p {{ docker_ghcr_personal_access_token }} ghcr.io"
+      tags: ["docker"]
+
+    - name: "Copy templates home/_user_/deploy"
+      ansible.builtin.include_role:
+        name: jenswbe.copy_dir
+      vars:
+        jwcd_source_templates_dir: "templates/hosts/{{ ansible_hostname }}/home/_user_/deploy"
+        jwcd_destination_dir: "{{ ansible_user_dir }}/deploy"
+        jwcd_destination_delete_extra: true
+      tags: ["docker"]
+
+    - name: Restart blocky
+      when: "'blocky' in jwcd_copy_diff"
+      become: true
+      community.docker.docker_compose_v2:
+        project_src: "{{ ansible_user_dir }}/deploy"
+        services: [blocky]
+        state: restarted
+      retries: 3 # Restarting all DNS servers at once might break host lookup for GELF
+      delay: 10
+      tags: ["docker"]
 
     - name: Include host specific tasks
       ansible.builtin.include_tasks: "tasks/hosts/{{ ansible_hostname }}.yml"

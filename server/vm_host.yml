@@ -1,7 +1,6 @@
 - name: Setup server
-  hosts: all
+  hosts: vm_host
   vars:
-    playbook_name: vm_host
     playbook_supported_distros:
       - Rocky
 
@@ -13,6 +12,7 @@
   roles:
     - role: geerlingguy.security
       become: true
+      tags: ["gsecurity"]
 
     - role: jenswbe.basics
       tags: ["basics"]

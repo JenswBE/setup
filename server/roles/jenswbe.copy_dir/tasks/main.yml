@@ -65,6 +65,10 @@
       ansible.builtin.debug:
         var: rsync_output.stdout_lines
 
+    - name: Set output facts
+      ansible.builtin.set_fact:
+        jwcd_copy_diff: "{{ rsync_output.msg }}"
+
   always:
     - name: Delete local temporary dir
       delegate_to: localhost

@@ -1,21 +1,10 @@
 - name: Init tasks
   tags: ["always"]
   block:
-    - name: Use of limit arg is mandatory # noqa: run-once[task]
-      ansible.builtin.fail:
-        msg: "You must use -l or --limit - when you really want to use all hosts, use -l 'all'"
-      when: ansible_limit is not defined
-      run_once: true
-
     - name: Check if supported distro
       ansible.builtin.fail:
         msg: "{{ ansible_distribution }} is not a supported distro for this playbook. Supported distro's: {{ playbook_supported_distros }}"
       when: ansible_distribution not in playbook_supported_distros
-
-    - name: Check if allowed playbook
-      ansible.builtin.fail:
-        msg: "{{ playbook_name }} is not an allowed playbook for this host. Allowed playbooks: {{ allowed_playbooks }}"
-      when: playbook_name not in (allowed_playbooks | split(','))
 
     - name: Derive facts
       ansible.builtin.set_fact:
