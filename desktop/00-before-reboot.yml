@@ -1,12 +1,23 @@
 - name: Setup desktop before reboot
   hosts: localhost
   vars_files:
-    - vars.public.yml
+    - public.yml
+
+  pre_tasks:
+    - name: Load host specific vars
+      ansible.builtin.include_vars: "{{ ansible_hostname }}.yml"
 
   roles:
     - role: jenswbe.rpm_ostree_auto_update
 
   tasks:
+    - name: Increase LUKS passphrase tries
+      become: true
+      community.general.crypttab:
+        name: "{{ luks_dev_name_in_crypttab }}"
+        state: present
+        opts: discard,tries=10
+
     - name: Check if Firefox is already removed
       register: rpm_ostree_requested_base_removals
       ansible.builtin.command: rpm-ostree status -J '$.deployments[0].requested-base-removals'
