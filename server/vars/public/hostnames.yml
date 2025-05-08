@@ -6,6 +6,9 @@ hostnames:
     fiona:
       fqdn: "fiona.{{ general_domain_local }}"
       ipv6: false
+    fiona_main:
+      fqdn: "fiona-main.{{ general_domain_local }}"
+      ipv6: false
     hercules:
       fqdn: "hercules.{{ general_domain_local }}"
       ipv6: false
