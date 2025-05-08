@@ -1,5 +1,5 @@
 NUT_SERVERS:
-  - HOST: host.docker.internal
+  - HOST: "fiona.{{ general_domain_local }}"
     PORT: 3493
 WEB_HOST: 0.0.0.0
 WEB_PORT: 8080

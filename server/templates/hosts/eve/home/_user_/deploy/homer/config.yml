@@ -137,7 +137,7 @@ services:
         <<: *default
 
       - name: PeaNUT
-        subtitle: Fiona - Private
+        subtitle: Fiona Main - Private
         logo: https://raw.githubusercontent.com/Brandawg93/PeaNUT/main/src/app/icon.svg
         url: "https://ups.{{ general_domain_local }}"
         <<: *default
