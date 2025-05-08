@@ -3,4 +3,4 @@ Description=GitHub Backup
 OnFailure=unit-fail-mail@%n.service
 
 [Service]
-ExecStart={{ docker_path }} compose -f {{ ansible_user_dir }}/{{ ansible_hostname }}/docker-compose.yml up github-backup
+ExecStart={{ docker_path }} compose -f {{ ansible_user_dir }}/deploy/docker-compose.yml up github-backup

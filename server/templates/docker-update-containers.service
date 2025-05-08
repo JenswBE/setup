@@ -4,7 +4,7 @@ OnFailure=unit-fail-mail@%n.service
 
 [Service]
 TimeoutSec=15min
-WorkingDirectory={{ ansible_user_dir }}/{{ ansible_hostname }}
+WorkingDirectory={{ ansible_user_dir }}/deploy
 ExecStartPre={{ docker_path }} compose pull
 ExecStartPre={{ docker_path }} compose build --pull
 ExecStart={{ docker_path }} compose up -d
