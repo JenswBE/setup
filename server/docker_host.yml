@@ -79,7 +79,7 @@
         jwcd_source_templates_dir: "templates/hosts/{{ ansible_hostname }}/home/_user_/deploy"
         jwcd_destination_dir: "{{ ansible_user_dir }}/deploy"
         jwcd_destination_delete_extra: true
-      tags: ["docker"]
+      tags: ["blocky", "docker"]
 
     - name: Restart blocky
       when: "'blocky' in jwcd_copy_diff"
@@ -90,7 +90,7 @@
         state: restarted
       retries: 3 # Restarting all DNS servers at once might break host lookup for GELF
       delay: 10
-      tags: ["docker"]
+      tags: ["blocky", "docker"]
 
     - name: Include host specific tasks
       ansible.builtin.include_tasks: "tasks/hosts/{{ ansible_hostname }}.yml"
