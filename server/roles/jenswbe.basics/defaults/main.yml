@@ -10,7 +10,7 @@ jwba_base_packages_debian:
   - btrfs-progs
   - console-data # Contains keymaps and fonts
 
-jwba_base_packages_redhat:
+jwba_base_packages_rocky:
   - usbutils # Provides lsusb
 
 # smtp-cli

@@ -1,6 +1,5 @@
 - name: Setup powertop
   become: true
-  tags: ["setup", "powertop"]
   block:
     - name: Install powertop
       ansible.builtin.package:
@@ -8,16 +7,16 @@
         name: powertop
 
     - name: Setup powertop service file
-      ansible.builtin.template:
-        src: powertop.service
+      ansible.builtin.copy:
+        src: "files/powertop.service"
         dest: "/etc/systemd/system/powertop.service"
         owner: root
         group: root
         mode: "644"
+      notify: Reload systemd
 
-    - name: Force systemd reload
-      ansible.builtin.systemd_service:
-        daemon_reload: true
+    - name: Flush handlers
+      ansible.builtin.meta: flush_handlers
 
     - name: Enable automatic powertop tuning
       ansible.builtin.systemd_service:

@@ -1,0 +1,12 @@
+- name: RedHat specific basics
+  become: true
+  block:
+    - name: Rocky - Enable EPEL repo
+      ansible.builtin.package:
+        name: epel-release
+        state: present
+
+    - name: Rocky - Install base packages
+      ansible.builtin.package:
+        name: "{{ jwba_base_packages_rocky }}"
+        state: present

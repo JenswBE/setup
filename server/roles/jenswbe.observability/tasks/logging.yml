@@ -4,13 +4,11 @@
   block:
     - name: Debian - Install filebeat
       when: ansible_distribution == 'Debian'
-      register: filebeat_install
       ansible.builtin.apt:
         deb: "https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-8.14.3-{{ arch }}.deb"
 
-    - name: AlmaLinux - Install filebeat
-      when: ansible_distribution == 'AlmaLinux'
-      register: filebeat_install
+    - name: Rocky - Install filebeat
+      when: ansible_distribution == 'Rocky'
       ansible.builtin.dnf:
         name: "https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-8.14.3-{{ ansible_architecture }}.rpm"
         disable_gpg_check: true
@@ -23,16 +21,10 @@
         owner: root
         group: root
         mode: "600"
+      notify: Restart filebeat
 
-    - name: Enable and start filebeat if installed
-      when: filebeat_install.changed
+    - name: Ensure filebeat is started and enabled
       ansible.builtin.service:
         name: filebeat
         state: started
         enabled: true
-
-    - name: Restart filebeat if config was changed
-      when: filebeat_config.changed
-      ansible.builtin.service:
-        name: filebeat
-        state: restarted

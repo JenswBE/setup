@@ -33,10 +33,10 @@ pipx inject ansible-core $(cat requirements.txt | sed 's/\n/ /g' | sed 's/#.*//'
 ansible-galaxy role install --force -r requirements.yml
 ansible-galaxy collection install --force -r requirements.yml
 
-# Run complete setup for a host
-ansible-playbook docker_host.yml --limit <HOSTNAME>
+# Run complete setup
+ansible-playbook docker_host.yml
 
-# To only run Docker steps
+# To only run Docker steps for a specific host
 ansible-playbook docker_host.yml --tags docker --limit <HOSTNAME>
 
 # Available tags:

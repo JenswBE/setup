@@ -29,7 +29,7 @@ jwfw_zones:
       - http3 # 443/udp (QUIC) for Caddy
       - dhcpv6-client # 546/udp
       - nut # 3493/tcp for Network UPS Tools (NUT) server
-      # - zabbix-agent # 10050/tcp
+      - zabbix-agent # 10050/tcp
     allowed_ports:
       - port: 7500 # Tang (https://github.com/latchset/tang)
         protos: [tcp]

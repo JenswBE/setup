@@ -1,6 +1,6 @@
 argument_specs:
   main:
-    short_description: Basic setup
+    short_description: Setup observability (logging and metrics)
     options:
       # === REQUIRED ===
       ansible_distribution_lowercase: # Set by global init task
@@ -11,18 +11,14 @@ argument_specs:
           - rocky
         description: ansible_distribution as lowercase
 
-      jwnc_clevis_device:
+      jwob_graylog_server_hostname:
         type: str
-        required: false
-        description: Device which should be unlocked by Clevis
+        required: true
+        description: Hostname of the Graylog server
 
-      jwnc_clevis_expected_binding:
+      jwob_zabbix_server_hostname:
         type: str
-        required: false
-        description: Expected Tang binding in Clevis
+        required: true
+        description: Hostname of the Zabbix server
 
       # === OPTIONAL ===
-      jwnc_clevis_slot:
-        type: int
-        required: false
-        description: Slot number for Clevis

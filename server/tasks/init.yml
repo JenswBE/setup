@@ -8,6 +8,7 @@
 
     - name: Derive facts
       ansible.builtin.set_fact:
+        ansible_distribution_lowercase: "{{ ansible_distribution | lower }}"
         ansible_os_family_lowercase: "{{ ansible_os_family | lower }}"
         arch_map:
           i386: "i386"

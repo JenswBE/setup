@@ -1,0 +1,5 @@
+- name: Include tasks for logging
+  ansible.builtin.include_tasks: logging.yml
+
+- name: Include tasks for zabbix
+  ansible.builtin.include_tasks: zabbix-agent.yml

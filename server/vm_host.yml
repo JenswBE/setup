@@ -26,9 +26,15 @@
     - role: jenswbe.nbde_client
       tags: ["nbde", "nbde_client"]
 
+    - role: jenswbe.observability
+      tags: ["observability"]
+
     # Firewall config relies on services installed by earlier roles
     - role: jenswbe.firewall
       tags: ["firewall"]
+
+    - role: jenswbe.powertop
+      tags: ["powertop"]
 
   tasks:
     - name: Include host specific tasks

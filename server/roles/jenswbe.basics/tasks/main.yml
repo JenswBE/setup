@@ -1,8 +1,8 @@
 - name: Include basic tasks
   ansible.builtin.include_tasks: basics.yml
 
-- name: "Include basic tasks for {{ ansible_os_family }}"
-  ansible.builtin.include_tasks: "{{ ansible_os_family_lowercase }}.yml"
+- name: "Include basic tasks for {{ ansible_distribution }}"
+  ansible.builtin.include_tasks: "{{ ansible_distribution_lowercase }}.yml"
 
 - name: Include tasks for smtp-cli
   ansible.builtin.include_tasks: smtp_cli.yml

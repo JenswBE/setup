@@ -1,6 +1,6 @@
 argument_specs:
   main:
-    short_description: Setup a Tang server for NBDE
+    short_description: Setup a NUT client and/or server
     options:
       # === REQUIRED ===
       jwnu_nut_type:

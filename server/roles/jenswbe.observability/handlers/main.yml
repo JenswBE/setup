@@ -1,0 +1,11 @@
+- name: Restart filebeat
+  become: true
+  ansible.builtin.service:
+    name: filebeat
+    state: restarted
+
+- name: Restart Zabbix agent
+  become: true
+  ansible.builtin.service:
+    name: zabbix-agent2
+    state: restarted

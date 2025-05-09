@@ -35,19 +35,11 @@
     - role: jenswbe.firewall
       tags: ["firewall"]
 
+    - role: jenswbe.powertop
+      when: "'homelab' in group_names"
+      tags: ["powertop"]
+
   tasks:
-    - name: Include CrowdSec tasks
-      ansible.builtin.include_tasks: tasks/crowdsec.yml
-      tags: ["crowdsec"]
-
-    - name: Include Zabbix agent tasks
-      ansible.builtin.include_tasks: tasks/zabbix-agent.yml
-      tags: ["zabbix"]
-
-    - name: Include logging tasks
-      ansible.builtin.include_tasks: tasks/logging.yml
-      tags: ["logging"]
-
     - name: Copy systemd system unit templates
       ansible.builtin.include_role:
         name: jenswbe.copy_dir

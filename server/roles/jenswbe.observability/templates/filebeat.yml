@@ -12,5 +12,5 @@ filebeat.inputs:
 
 output.logstash:
   enabled: true
-  hosts: ["{{ app_graylog_server }}:5044"]
+  hosts: ["{{ jwob_graylog_server_hostname }}:5044"]
   slow_start: true

@@ -5,10 +5,6 @@
       tags: ["nbde", "nbde_client"]
   tags: ["nbde", "nbde_client"]
 
-- name: Include PowerTop tasks
-  ansible.builtin.include_tasks: tasks/powertop.yml
-  tags: ["setup", "powertop"]
-
 - name: Include NFS server role
   ansible.builtin.include_role:
     name: jenswbe.nfs_server
