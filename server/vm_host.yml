@@ -29,12 +29,15 @@
     - role: jenswbe.observability
       tags: ["observability"]
 
+    - role: jenswbe.crowdsec
+      tags: ["crowdsec"]
+
     # Firewall config relies on services installed by earlier roles
     - role: jenswbe.firewall
       tags: ["firewall"]
 
-    - role: jenswbe.powertop
-      tags: ["powertop"]
+    - role: jenswbe.powersavings
+      tags: ["powersavings"]
 
   tasks:
     - name: Include host specific tasks

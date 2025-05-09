@@ -35,9 +35,9 @@
     - role: jenswbe.firewall
       tags: ["firewall"]
 
-    - role: jenswbe.powertop
+    - role: jenswbe.powersavings
       when: "'homelab' in group_names"
-      tags: ["powertop"]
+      tags: ["powersavings"]
 
   tasks:
     - name: Copy systemd system unit templates
