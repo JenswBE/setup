@@ -83,36 +83,6 @@ services:
     environment:
       TZ: "#VAR:general_timezone:VAR#"
 
-  # =========================
-  # =        CROWDSEC       =
-  # =========================
-  crowdsec:
-    <<: *defaults
-    image: ghcr.io/crowdsecurity/crowdsec:v1.6.8-debian
-    container_name: crowdsec
-    ports:
-      - 127.0.0.1:9000:8080
-    networks:
-      - caddy
-    environment:
-      TZ: "#VAR:general_timezone:VAR#"
-      COLLECTIONS: >-
-        crowdsecurity/caddy
-        crowdsecurity/http-cve
-        crowdsecurity/linux
-      PARSERS: >-
-        crowdsecurity/nextcloud-whitelist
-      GID: "#VAR:ansible_real_group_id:VAR#"
-      BOUNCER_KEY_firewall: "#VAR:app_crowdsec_bouncer_firewall_key:VAR#"
-    volumes:
-      # Config
-      - ./crowdsec/acquis.yaml:/etc/crowdsec/acquis.yaml
-      - crowdsec-db:/var/lib/crowdsec/data/
-      - crowdsec-config:/etc/crowdsec/
-      # Logs
-      - /var/log/journal:/var/log/host:ro # SSHD logs for Debian
-      - caddy-access-logs:/var/log/caddy:ro
-
 #################################################################
 #                            NETWORKS                           #
 #################################################################
@@ -127,5 +97,3 @@ volumes:
   caddy-access-logs:
   caddy-config:
   caddy-data:
-  crowdsec-config:
-  crowdsec-db:

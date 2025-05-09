@@ -1,0 +1,6 @@
+api:
+  server:
+    listen_uri: "127.0.0.1:9000"
+
+prometheus:
+  enabled: false

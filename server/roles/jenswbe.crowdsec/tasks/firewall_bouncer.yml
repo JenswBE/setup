@@ -1,0 +1,21 @@
+- name: CrowdSec - Add bouncer
+  ansible.builtin.command: "cscli bouncers add firewall --key {{ jwcs_bouncer_firewall_key }}"
+  register: add_bouncer
+  changed_when: "'API key for' in add_bouncer.stdout"
+  failed_when: "add_bouncer.rc > 0 and 'bouncer firewall already exists' not in add_bouncer.stderr"
+
+- name: CrowdSec - Set local config for NFTables bouncer
+  register: crowdsec_nftables_bouncer
+  ansible.builtin.template:
+    src: firewall_bouncer.yml
+    dest: /etc/crowdsec/bouncers/crowdsec-firewall-bouncer.yaml.local
+    owner: root
+    group: root
+    mode: "600"
+  notify: Restart crowdsec-firewall-bouncer
+
+- name: CrowdSec - Ensure crowdsec-firewall-bouncer is running and enabled
+  ansible.builtin.service:
+    name: crowdsec-firewall-bouncer
+    state: started
+    enabled: true

@@ -1,4 +1,5 @@
 jwba_base_packages:
+  - bash-completion
   - htop
   - iftop
   - iotop

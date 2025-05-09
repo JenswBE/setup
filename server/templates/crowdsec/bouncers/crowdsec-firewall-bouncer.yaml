@@ -1,2 +1,0 @@
-api_url: http://127.0.0.1:9000/
-api_key: "{{ app_crowdsec_bouncer_firewall_key }}"

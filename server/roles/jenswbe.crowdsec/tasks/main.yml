@@ -1,0 +1,146 @@
+- name: CrowdSec
+  become: true
+  block:
+    - name: CrowdSec - Setup repo
+      ansible.builtin.include_tasks: "{{ ansible_distribution | lower }}.yml"
+
+    - name: CrowdSec - Install
+      ansible.builtin.package:
+        update_cache: true
+        state: present
+        name:
+          - crowdsec
+          - crowdsec-firewall-bouncer-nftables
+
+    # Follow-up steps will fail if config is invalid.
+    # Putting it early allows correcting it in a follow-up run.
+    - name: CrowdSec - Set local config
+      ansible.builtin.template:
+        src: config.yml
+        dest: /etc/crowdsec/config.yaml.local
+        owner: root
+        group: root
+        mode: "600"
+      notify: Restart crowdsec
+
+    - name: CrowdSec - Set local_api_credentials config
+      ansible.builtin.template:
+        src: local_api_credentials.yml
+        dest: /etc/crowdsec/local_api_credentials.yaml.local
+        owner: root
+        group: root
+        mode: "600"
+      notify: Restart crowdsec
+
+    # Update / upgrade Hub
+    - name: CrowdSec - Update Hub
+      ansible.builtin.command:
+        cmd: cscli hub update
+      changed_when: false
+
+    - name: CrowdSec - Upgrade Hub
+      ansible.builtin.command:
+        cmd: cscli hub upgrade
+      register: hub_upgrade_result
+      changed_when: false
+
+    # Collections
+    - name: CrowdSec - Install collections
+      ansible.builtin.command:
+        cmd: "cscli collections install {{ item }}"
+      with_items: "{{ cs_collections_list }}"
+      register: collections_install_result
+      changed_when: "'Nothing to do' not in collections_install_result.stdout"
+      when: cs_collections_list | length > 0
+
+    - name: CrowdSec - Remove collections
+      ansible.builtin.command:
+        cmd: "cscli collections remove {{ item }}"
+      with_items: "{{ cs_collections_remove_list }}"
+      register: collections_remove_result
+      changed_when: "'systemctl reload crowdsec' in collections_remove_result.stderr"
+      when: cs_collections_remove_list | length > 0
+
+    # Scenarios
+    - name: CrowdSec - Install scenarios
+      ansible.builtin.command:
+        cmd: "cscli scenarios install {{ item }}"
+      with_items: "{{ cs_scenarios_list }}"
+      register: scenarios_install_result
+      changed_when: "'overwrite' not in scenarios_install_result.stderr"
+      when: cs_scenarios_list | length > 0
+
+    - name: CrowdSec - Remove scenarios
+      ansible.builtin.command:
+        cmd: "cscli scenarios remove {{ item }}"
+      with_items: "{{ cs_scenarios_remove_list }}"
+      register: scenarios_remove_result
+      changed_when: "'systemctl reload crowdsec' in scenarios_remove_result.stderr"
+      when: cs_scenarios_remove_list | length > 0
+
+    # Parsers
+    - name: CrowdSec - Install parsers
+      ansible.builtin.command:
+        cmd: "cscli parsers install {{ item }}"
+      with_items: "{{ cs_parsers_list }}"
+      register: parsers_install_result
+      changed_when: "'overwrite' not in parsers_install_result.stderr"
+      when: cs_parsers_list | length > 0
+
+    - name: CrowdSec - Remove parsers
+      ansible.builtin.command:
+        cmd: "cscli parsers remove {{ item }}"
+      with_items: "{{ cs_parsers_remove_list }}"
+      register: parsers_remove_result
+      changed_when: "'systemctl reload crowdsec' in parsers_remove_result.stderr"
+      when: cs_parsers_remove_list | length > 0
+
+    # Postoverflows
+    - name: CrowdSec - Install postoverflows
+      ansible.builtin.command:
+        cmd: "cscli postoverflows install {{ item }}"
+      with_items: "{{ cs_postoverflows_list }}"
+      register: postoverflows_install_result
+      changed_when: "'overwrite' not in postoverflows_install_result.stderr"
+      when: cs_postoverflows_list | length > 0
+
+    - name: CrowdSec - Remove postoverflows
+      ansible.builtin.command:
+        cmd: "cscli postoverflows remove {{ item }}"
+      with_items: "{{ cs_postoverflows_remove_list }}"
+      register: postoverflows_remove_result
+      changed_when: "'systemctl reload crowdsec' in postoverflows_remove_result.stderr"
+      when: cs_postoverflows_remove_list | length > 0
+
+    # Config files
+
+    # - name: CrowdSec - Enable/disable the Prometheus endpoint
+    #   ansible.builtin.replace:
+    #     path: "/etc/crowdsec/config.yaml"
+    #     after: "prometheus:"
+    #     regexp: 'enabled:.*$'
+    #     replace: "{{ cs_prometheus_endpoint }}"
+    #     backup: true
+
+
+    # - name: CrowdSec - Add jounalctl ssh to acquis.yaml
+    #   ansible.builtin.blockinfile:
+    #     path: /etc/crowdsec/acquis.yaml
+    #     insertafter: EOF
+    #     block: "{{ cs_acquis_addon }}"
+    #     backup: true
+
+    - name: CrowdSec - cscli bash completion
+      ansible.builtin.shell: "set -o pipefail && cscli completion bash | tee /etc/bash_completion.d/cscli"
+      register: bash_completion_result
+      changed_when: "'# bash completion for' not in bash_completion_result.stdout"
+      failed_when: "'Error' in bash_completion_result.stderr"
+
+    - name: CrowdSec - Ensure service is running and enabled
+      ansible.builtin.service:
+        name: crowdsec
+        state: started
+        enabled: true
+
+    - name: CrowdSec - Include firewall bouncer tasks
+      ansible.builtin.include_tasks: firewall_bouncer.yml

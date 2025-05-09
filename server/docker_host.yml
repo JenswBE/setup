@@ -32,6 +32,9 @@
     - role: jenswbe.basics
       tags: ["basics"]
 
+    - role: jenswbe.crowdsec
+      tags: ["crowdsec"]
+
     - role: jenswbe.firewall
       tags: ["firewall"]
 

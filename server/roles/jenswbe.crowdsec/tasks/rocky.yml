@@ -1,0 +1,13 @@
+- name: CrowdSec - Start nftables services
+  service:
+    name: nftables
+    state: started
+    enabled: true
+
+- name: CrowdSec - Add repository
+  template:
+    src: templates/yum.repo
+    dest: /etc/yum.repos.d/crowdsec_crowdsec.repo
+    owner: root
+    group: root
+    mode: 0644

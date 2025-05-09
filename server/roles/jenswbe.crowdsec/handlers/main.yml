@@ -1,0 +1,11 @@
+- name: Restart crowdsec
+  become: true
+  ansible.builtin.service:
+    name: crowdsec
+    state: restarted
+
+- name: Restart crowdsec-firewall-bouncer
+  become: true
+  ansible.builtin.service:
+    name: crowdsec-firewall-bouncer
+    state: restarted

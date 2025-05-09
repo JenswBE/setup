@@ -623,37 +623,6 @@ services:
       POSTGRES_PASSWORD: "#VAR:app_keycloak_db_pass:VAR#"
 
   # =========================
-  # =        CROWDSEC       =
-  # =========================
-  crowdsec:
-    <<: *defaults
-    image: ghcr.io/crowdsecurity/crowdsec:v1.6.8-debian
-    container_name: crowdsec
-    ports:
-      - 127.0.0.1:9000:8080
-    networks:
-      - caddy-private
-    environment:
-      TZ: "#VAR:general_timezone:VAR#"
-      COLLECTIONS: >-
-        crowdsecurity/caddy
-        crowdsecurity/http-cve
-        crowdsecurity/linux
-      PARSERS: >-
-        crowdsecurity/nextcloud-whitelist
-      GID: "#VAR:ansible_real_group_id:VAR#"
-      BOUNCER_KEY_firewall: "#VAR:app_crowdsec_bouncer_firewall_key:VAR#"
-    volumes:
-      # Config
-      - ./crowdsec/acquis.yaml:/etc/crowdsec/acquis.yaml
-      - ./crowdsec/postoverflows:/etc/crowdsec/postoverflows
-      - crowdsec-db:/var/lib/crowdsec/data/
-      - crowdsec-config:/etc/crowdsec/
-      # Logs
-      - /var/log/journal:/var/log/host:ro # SSHD logs for Debian
-      - caddy-public-access-logs:/var/log/caddy:ro
-
-  # =========================
   # =      VAULTWARDEN      =
   # =========================
   vaultwarden:
@@ -952,8 +921,6 @@ volumes:
   caddy-public-access-logs:
   caddy-public-config:
   caddy-public-data:
-  crowdsec-config:
-  crowdsec-db:
   isa-output:
   keycloak-db-dump:
   kristofcoenen-directus-db-dump:

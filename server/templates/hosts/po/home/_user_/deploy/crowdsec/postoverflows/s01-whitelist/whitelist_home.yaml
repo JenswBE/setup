@@ -1,6 +1,0 @@
-name: jenswbe/whitelist_home
-description: Whitelist the IP of my home
-whitelist:
-  reason: dont ban home ip
-  expression:
-    - evt.Overflow.Alert.Source.IP in LookupHost('heimdall.{{ general_domain_default }}')
