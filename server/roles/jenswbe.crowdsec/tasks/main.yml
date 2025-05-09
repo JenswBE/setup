@@ -15,8 +15,8 @@
     # Follow-up steps will fail if config is invalid.
     # Putting it early allows correcting it in a follow-up run.
     - name: CrowdSec - Set local config
-      ansible.builtin.template:
-        src: config.yml
+      ansible.builtin.copy:
+        src: files/config.yml
         dest: /etc/crowdsec/config.yaml.local
         owner: root
         group: root
@@ -24,13 +24,34 @@
       notify: Restart crowdsec
 
     - name: CrowdSec - Set local_api_credentials config
-      ansible.builtin.template:
-        src: local_api_credentials.yml
+      ansible.builtin.copy:
+        src: files/local_api_credentials.yml
         dest: /etc/crowdsec/local_api_credentials.yaml.local
         owner: root
         group: root
         mode: "600"
       notify: Restart crowdsec
+
+    - name: CrowdSec - Sync acquis files
+      ansible.builtin.include_role:
+        name: jenswbe.copy_dir
+      vars:
+        jwcd_source_files_dir: "roles/jenswbe.crowdsec/files/acquis.d"
+        jwcd_destination_dir: "/etc/crowdsec/acquis.d"
+        jwcd_privileged: true
+        jwcd_destination_mode_files: "600"
+        jwcd_destination_mode_dirs: "755"
+        jwcd_destination_delete_extra: true
+
+    - name: CrowdSec - Sync postoverflows
+      ansible.builtin.include_role:
+        name: jenswbe.copy_dir
+      vars:
+        jwcd_source_templates_dir: "roles/jenswbe.crowdsec/templates/postoverflows"
+        jwcd_destination_dir: "/etc/crowdsec/postoverflows"
+        jwcd_privileged: true
+        jwcd_destination_mode_files: "600"
+        jwcd_destination_mode_dirs: "755"
 
     # Update / upgrade Hub
     - name: CrowdSec - Update Hub
@@ -67,7 +88,7 @@
         cmd: "cscli scenarios install {{ item }}"
       with_items: "{{ cs_scenarios_list }}"
       register: scenarios_install_result
-      changed_when: "'overwrite' not in scenarios_install_result.stderr"
+      changed_when: "'Nothing to do' not in scenarios_install_result.stdout"
       when: cs_scenarios_list | length > 0
 
     - name: CrowdSec - Remove scenarios
@@ -84,7 +105,7 @@
         cmd: "cscli parsers install {{ item }}"
       with_items: "{{ cs_parsers_list }}"
       register: parsers_install_result
-      changed_when: "'overwrite' not in parsers_install_result.stderr"
+      changed_when: "'Nothing to do' not in parsers_install_result.stdout"
       when: cs_parsers_list | length > 0
 
     - name: CrowdSec - Remove parsers
@@ -101,7 +122,7 @@
         cmd: "cscli postoverflows install {{ item }}"
       with_items: "{{ cs_postoverflows_list }}"
       register: postoverflows_install_result
-      changed_when: "'overwrite' not in postoverflows_install_result.stderr"
+      changed_when: "'Nothing to do' not in postoverflows_install_result.stdout"
       when: cs_postoverflows_list | length > 0
 
     - name: CrowdSec - Remove postoverflows
@@ -111,24 +132,6 @@
       register: postoverflows_remove_result
       changed_when: "'systemctl reload crowdsec' in postoverflows_remove_result.stderr"
       when: cs_postoverflows_remove_list | length > 0
-
-    # Config files
-
-    # - name: CrowdSec - Enable/disable the Prometheus endpoint
-    #   ansible.builtin.replace:
-    #     path: "/etc/crowdsec/config.yaml"
-    #     after: "prometheus:"
-    #     regexp: 'enabled:.*$'
-    #     replace: "{{ cs_prometheus_endpoint }}"
-    #     backup: true
-
-
-    # - name: CrowdSec - Add jounalctl ssh to acquis.yaml
-    #   ansible.builtin.blockinfile:
-    #     path: /etc/crowdsec/acquis.yaml
-    #     insertafter: EOF
-    #     block: "{{ cs_acquis_addon }}"
-    #     backup: true
 
     - name: CrowdSec - cscli bash completion
       ansible.builtin.shell: "set -o pipefail && cscli completion bash | tee /etc/bash_completion.d/cscli"
@@ -141,6 +144,11 @@
         name: crowdsec
         state: started
         enabled: true
+
+    - name: CrowdSec - Reload crowdsec (consider making conditional)
+      ansible.builtin.service:
+        name: crowdsec
+        state: reloaded
 
     - name: CrowdSec - Include firewall bouncer tasks
       ansible.builtin.include_tasks: firewall_bouncer.yml

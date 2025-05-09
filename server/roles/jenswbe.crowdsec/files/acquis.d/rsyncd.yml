@@ -1,0 +1,6 @@
+# # Rsyncd SSHD logs
+# source: docker
+# container_name:
+#   - rsyncd
+# labels:
+#   type: syslog

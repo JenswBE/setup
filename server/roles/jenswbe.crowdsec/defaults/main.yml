@@ -1,45 +1,20 @@
 cs_collections_list:
   - crowdsecurity/caddy
   - crowdsecurity/http-cve
-  - crowdsecurity/linux
+  - crowdsecurity/linux # Includes "crowdsecurity/sshd"
 
 cs_collections_remove_list: []
 
 cs_scenarios_list: []
-  # - crowdsecurity/apache_log4j2_cve-2021-44228
-  # - crowdsecurity/http-cve-2021-42013
 
 cs_scenarios_remove_list: []
 
 cs_parsers_list:
-  # - crowdsecurity/docker-logs
-  # - crowdsecurity/apache2-logs
-  # - crowdsecurity/whitelists
+  - crowdsecurity/whitelists
   - crowdsecurity/nextcloud-whitelist
 
 cs_parsers_remove_list: []
 
 cs_postoverflows_list: []
-  # - crowdsecurity/cdn-whitelist
-  # - crowdsecurity/seo-bots-whitelist
 
 cs_postoverflows_remove_list: []
-
-cs_prometheus_endpoint: "enabled: true"
-
-cs_acquis_addon: |
-      ---
-      source: journalctl
-      journalctl_filter:
-        - "_SYSTEMD_UNIT=ssh.service"
-      labels:
-        type: journald"
-      ---
-
-cs_parsers_mywhitelists_ip: |
-  - "142.250.74.142" # Google IPV4 as a test
-  - "2a00:1450:400f:800::200e" Google IPV6 as a test
-
-cs_parsers_mywhitelists_cidr: |
-  - "192.168.0.0/16"
-  - "10.0.0.0/8"
