@@ -1,5 +1,0 @@
-{
-  "type": "http",
-  "name": "GitHub: Spellebel",
-  "url": "https://{{ general_domain_spellebel }}"
-}

@@ -40,12 +40,6 @@ import ./configs/shared_snippets.txt
 			import default_local_reverse_proxy "http://syncthing:8384"
 		}
 
-		@uptime host "uptime.#VAR:general_domain_local:VAR#"
-		handle @uptime {
-			import default_local_reverse_proxy "http://uptime-kuma:3001"
-			authorize with policy_local_infra
-		}
-
 		@wiki host "wiki.#VAR:general_domain_local:VAR#"
 		handle @wiki {
 			import default_local_reverse_proxy "http://wikijs:3000"

@@ -26,7 +26,6 @@ VPS
 - Dump Nextcloud DB (`templates/hosts/eve/etc/systemd/system/nextcloud-dump-db.timer`)
 - Dump Paperless-ngx DB (`templates/hosts/eve/etc/systemd/system/paperless-dump-db.timer`)
 - Dump Tuinfeest Directus DB (`templates/hosts/eve/etc/systemd/system/tuinfeest-directus-dump-db.timer`)
-- Dump Uptime Kuma DB (`templates/hosts/eve/etc/systemd/system/uptime-kuma-dump-db.timer`)
 - Dump Vaultwarden DB (`templates/hosts/eve/etc/systemd/system/vaultwarden-dump-db.timer`)
 - Dump Wiki.js DB (`templates/hosts/eve/etc/systemd/system/wikijs-dump-db.timer`)
 - Dump WTech Directus DB (`templates/hosts/eve/etc/systemd/system/wtech-directus-dump-db.timer`)

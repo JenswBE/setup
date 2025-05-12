@@ -539,41 +539,6 @@ services:
       TZ: "#VAR:general_timezone:VAR#"
 
   # =========================
-  # =         UPTIME        =
-  # =========================
-  uptime-kuma:
-    <<: *defaults
-    image: docker.io/louislam/uptime-kuma:1
-    container_name: uptime-kuma
-    volumes:
-      - "#VAR:general_path_appdata:VAR#/uptime-kuma/data:/app/data"
-    networks:
-      - caddy-private
-      - uptime-kuma
-    environment:
-      TZ: "#VAR:general_timezone:VAR#"
-
-  autokuma:
-    <<: *defaults
-    image: ghcr.io/bigboot/autokuma:latest
-    container_name: autokuma
-    depends_on:
-      uptime-kuma:
-        condition: service_started
-    networks:
-      - uptime-kuma
-    volumes:
-      - "./autokuma:/static_monitors:ro,z"
-    environment:
-      TZ: "#VAR:general_timezone:VAR#"
-      AUTOKUMA__KUMA__URL: http://uptime-kuma:3001
-      AUTOKUMA__DOCKER__ENABLED: "false"
-      AUTOKUMA__STATIC_MONITORS: /static_monitors
-      AUTOKUMA__DEFAULT_SETTINGS: |-
-        http.max_retries: 1
-        *.notification_id_list: { "1": true }
-
-  # =========================
   # =          AUTH         =
   # =========================
   keycloak:
@@ -884,7 +849,6 @@ services:
       - "paperless-export:/mnt/source/paperless/export:ro"
       - "#VAR:general_path_appdata:VAR#/tuinfeest/directus/uploads:/mnt/source/tuinfeest/directus/uploads:z"
       - "tuinfeest-directus-db-dump:/mnt/source/tuinfeest/directus/dbdump:ro"
-      - "#VAR:general_path_appdata:VAR#/uptime-kuma/data:/mnt/source/uptime-kuma/data:ro"
       - "#VAR:general_path_appdata:VAR#/vaultwarden/data:/mnt/source/vaultwarden/data:ro"
       - "wikijs-backup:/mnt/source/wikijs/backup:ro"
       - "wikijs-db-dump:/mnt/source/wikijs/dbdump:ro"
@@ -970,10 +934,6 @@ networks:
 
   tuinfeest-directus:
     name: tuinfeest-directus
-
-  uptime-kuma:
-    name: uptime-kuma
-    internal: true
 
   wikijs:
     name: wikijs

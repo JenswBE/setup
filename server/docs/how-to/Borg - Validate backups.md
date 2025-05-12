@@ -16,7 +16,6 @@ Services which are backed up:
   - `paperless-db` (Postgres): DB data
   - `tuinfeest-directus` (Directus): Uploaded content
   - `tuinfeest-directus-db` (Postgres): DB data
-  - `uptime-kuma` (Uptime Kuma): SQLite DB
   - `vaultwarden` (Vaultwarden): SQLite DB and data
   - `wikijs` (Wiki.js): Data (human readable backup format like Markdown)
   - `wikijs-db` (Postgres): DB data
@@ -222,17 +221,6 @@ sudo docker exec borgmatic cp /mnt/borg/mnt/source/unifi/mongodb/unifi_stat/unif
 # Validate if backup contains recent data.
 sudo docker run --rm -v ${APPDATA_DIR:?}/borgmatic/borgmatic/restore:/backup docker.io/library/mongo sh -c "bsondump /backup/unifi_event.bson | jq --slurp '.' | jq '.[].datetime.\"\$date\".\"\$numberLong\"' | sort -r | head -n1 | cut -c2-11 | sed '1s/^/@/' | date -f-"
 sudo docker run --rm -v ${APPDATA_DIR:?}/borgmatic/borgmatic/restore:/backup docker.io/library/mongo sh -c "bsondump /backup/unifi_stat_5min.bson | jq --slurp '.' | jq '.[].datetime.\"\$date\".\"\$numberLong\"' | sort -r | head -n1 | cut -c2-11 | sed '1s/^/@/' | date -f-"
-```
-
-### Uptime Kuma
-
-```bash
-# Copy DB to restore point
-sudo docker exec borgmatic cp /mnt/borg/mnt/source/uptime-kuma/data/kuma.backup.db /mnt/restore/kuma.sqlite3
-
-# Validate if backup contains recent heartbeats.
-# The accuracy of this check depens on frequency of the heartbeats.
-sudo docker run --pull always --rm -v ${APPDATA_DIR:?}/borgmatic/borgmatic/restore:/backup alpine sh -c 'apk add sqlite; sqlite3 --table /backup/kuma.sqlite3 "SELECT * FROM heartbeat ORDER BY time DESC LIMIT 3;"'
 ```
 
 ### Vaultwarden

@@ -41,7 +41,6 @@
     - nextcloud-update-apps.timer
     - paperless-dump-db.timer
     - tuinfeest-directus-dump-db.timer
-    - uptime-kuma-dump-db.timer
     - vaultwarden-dump-db.timer
     - wikijs-dump-db.timer
     - wtech-directus-dump-db.timer

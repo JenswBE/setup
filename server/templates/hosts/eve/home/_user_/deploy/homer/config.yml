@@ -169,16 +169,22 @@ services:
         url: "https://auth.{{ general_domain_default }}"
         <<: *default
 
-      - name: Uptime Kuma
-        subtitle: Eve - Private
-        logo: https://raw.githubusercontent.com/louislam/uptime-kuma/master/public/icon.svg
-        url: "https://uptime.{{ general_domain_local }}"
-        <<: *default
-
       - name: Zabbix
         subtitle: Kubo - Private
         logo: https://raw.githubusercontent.com/loganmarchione/homelab-svg-assets/main/assets/zabbix.svg
         url: "https://zabbix.{{ general_domain_local }}"
+        <<: *default
+
+      - name: UptimeRobot
+        subtitle: External
+        logo: https://uptimerobot.com/assets/images/uptimerobot-logo.svg
+        url: "https://dashboard.uptimerobot.com/monitors"
+        <<: *default
+
+      - name: URIports
+        subtitle: External
+        logo: "https://www.uriports.com/apple-touch-icon.png"
+        url: https://app.uriports.com/
         <<: *default
 
   - name: Analytics

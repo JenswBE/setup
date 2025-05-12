@@ -1,6 +1,0 @@
-[Unit]
-Description=Dump Uptime Kuma DB for backup
-OnFailure=unit-fail-mail@%n.service
-
-[Service]
-ExecStart={{ docker_path }} run --rm --pull always -v "{{ general_path_appdata }}/uptime-kuma/data:/data" alpine sh -c "set -eu; apk add sqlite; sqlite3 /data/kuma.db '.backup /data/kuma.backup.db'"

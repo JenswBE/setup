@@ -1,5 +1,0 @@
-{
-  "type": "http",
-  "name": "GitHub: Klokracing",
-  "url": "https://{{ general_domain_klokracing }}"
-}

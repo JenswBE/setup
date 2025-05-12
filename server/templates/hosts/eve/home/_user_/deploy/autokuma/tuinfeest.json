@@ -1,5 +1,0 @@
-{
-  "type": "http",
-  "name": "GitHub: Tuinfeest",
-  "url": "https://{{ general_domain_tuinfeest }}"
-}

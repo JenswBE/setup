@@ -1,5 +1,0 @@
-{
-  "type": "http",
-  "name": "Po: Bjoetiek",
-  "url": "https://{{ general_domain_bjoetiek }}"
-}
