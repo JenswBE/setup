@@ -3,7 +3,7 @@
   register: wireguard_config
   ansible.builtin.template:
     src: "wireguard.conf.j2"
-    dest: "/etc/wireguard/{{ interface_name }}.conf"
+    dest: "/etc/wireguard/{{ wg_config.name }}.conf"
     owner: root
     group: root
     mode: "600"
@@ -14,13 +14,13 @@
     owner: root
     group: root
     mode: "0755"
-    path: /etc/systemd/system/wg-quick@{{ interface_name }}.service.d
+    path: /etc/systemd/system/wg-quick@{{ wg_config.name }}.service.d
     state: directory
 
 - name: Ensure Wireguard is restarted on failure
   become: true
   community.general.ini_file:
-    dest: /etc/systemd/system/wg-quick@{{ interface_name }}.service.d/10-restart_on_failure.conf
+    dest: /etc/systemd/system/wg-quick@{{ wg_config.name }}.service.d/10-restart_on_failure.conf
     owner: root
     group: root
     mode: "0644"
@@ -39,7 +39,7 @@
 - name: Ensure Wireguard is started after Docker
   become: true
   community.general.ini_file:
-    dest: /etc/systemd/system/wg-quick@{{ interface_name }}.service.d/10-start_before_docker.conf
+    dest: /etc/systemd/system/wg-quick@{{ wg_config.name }}.service.d/10-start_before_docker.conf
     owner: root
     group: root
     mode: "0644"
@@ -52,13 +52,14 @@
 - name: Enable Wireguard on boot
   become: true
   ansible.builtin.systemd_service:
-    name: "wg-quick@{{ interface_name }}"
+    name: "wg-quick@{{ wg_config.name }}"
     enabled: true
     state: started
 
-- name: Restart Wireguard interface if config was changed
+# Cannot use a handler as the interface name is dynamic
+- name: Restart Wireguard interface if config was changed # noqa: no-handler
   become: true
   when: wireguard_config.changed
   ansible.builtin.systemd_service:
-    name: "wg-quick@{{ interface_name }}"
+    name: "wg-quick@{{ wg_config.name }}"
     state: restarted

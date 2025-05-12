@@ -5,7 +5,7 @@
     file_type: file
     contains: jenswbe.wireguard
     read_whole_file: true
-    excludes: "{{ wireguard_interfaces | list | product(['.conf']) | map('join') | list }}"
+    excludes: "{{ jwwg_wireguard_interfaces | map(attribute='name') | list | product(['.conf']) | map('join') | list }}"
   register: orphaned_interfaces
 
 - name: Print orphaned interfaces to delete

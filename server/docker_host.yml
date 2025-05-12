@@ -12,6 +12,13 @@
       tags: ["always"]
 
   roles:
+    - role: jenswbe.basics
+      tags: ["basics"]
+
+    - role: jenswbe.wireguard # Docker requires Wireguard for GELF logging transport
+      when: "'homelab' not in group_names"
+      tags: ["wireguard"]
+
     - role: geerlingguy.security
       become: true
       tags: ["gsecurity"]
@@ -27,10 +34,7 @@
           icc: false
           log-driver: gelf
           log-opts:
-            gelf-address: "udp://{{ app_graylog_server }}:12201"
-
-    - role: jenswbe.basics
-      tags: ["basics"]
+            gelf-address: "udp://{{ jwob_graylog_server_hostname }}:12201"
 
     - role: jenswbe.crowdsec
       tags: ["crowdsec"]

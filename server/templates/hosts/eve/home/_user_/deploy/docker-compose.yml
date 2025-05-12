@@ -768,7 +768,7 @@ services:
     volumes:
       - ./netperf/prometheus-blackbox-exporter.yml:/config.yml
     ports:
-      - "#VAR:wireguard_interfaces.wg0.ip_addresses[0]:VAR#:9115:9115"
+      - "#VAR:jwwg_wireguard_interfaces[0].ip_addresses[0]:VAR#:9115:9115"
 
   netperf-file-generator:
     <<: *defaults
@@ -777,7 +777,7 @@ services:
     environment:
       TZ: "#VAR:general_timezone:VAR#"
     ports:
-      - "#VAR:wireguard_interfaces.wg0.ip_addresses[0]:VAR#:9116:8080"
+      - "#VAR:jwwg_wireguard_interfaces[0].ip_addresses[0]:VAR#:9116:8080"
     healthcheck:
       test: ["CMD", "/network-performance-file-generator", "--healthcheck"]
 

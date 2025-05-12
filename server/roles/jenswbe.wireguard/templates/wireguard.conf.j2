@@ -7,8 +7,8 @@ Address = {{ address }}
 {% endfor %}
 PrivateKey = {{ wg_config.private_key }}
 ListenPort = {{ wg_config.listen_port }}
-{% if wg_config.dns %}
-DNS = {{ wg_config.dns | join(',') }}
+{% if wg_config.dns_servers %}
+DNS = {{ wg_config.dns_servers | join(',') }}
 {% endif %}
 Table = {{ wg_config.routing_table }}
 

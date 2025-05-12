@@ -1,0 +1,77 @@
+# jwwg_wireguard_interfaces:
+#   - name: wg0
+#     ip_addresses: [""] # E.g. 10.0.0.1
+#     listen_port: "" # E.g. 51820
+#     private_key: "" # Run "wg genkey" on server
+#     routing_table: "" # "auto" or a routing table number
+#     dns: [""] # List of DNS servers
+#     peers:
+#       - host: "" # Hostname to be added to /etc/hosts
+#         endpoint: "" # Address of the server. E.g. wireguard.example.com:51820
+#         public_key: "" # Run "wg pubkey" on client
+#         psk: "" # Run "wg genpsk" on server
+#         allowed_ips: [""] # E.g. 10.0.0.2/32
+
+argument_specs:
+  main:
+    short_description: Configure Wireguard
+    options:
+      # === REQUIRED ===
+      jwwg_wireguard_interfaces:
+        description: List of Wireguard interfaces to configure
+        required: true
+        type: list
+        elements: "dict"
+        options:
+          name:
+            type: str
+            required: true
+            description: Name of the interface
+          ip_addresses:
+            type: list
+            elements: str
+            required: true
+            description: IP addresses to assign to the interface, e.g. 10.0.0.1
+          listen_port:
+            type: int
+            required: true
+            description: E.g. 51820
+          private_key:
+            type: str
+            required: true
+            description: Run "wg genkey" on server
+          routing_table:
+            type: str
+            required: false
+            default: auto
+          dns_servers:
+            type: list
+            elements: str
+            required: false
+            description: List of DNS servers to use when connected
+          peers:
+            required: true
+            type: list
+            elements: dict
+            options:
+              host:
+                type: str
+                required: true
+                description: Hostname to be added to /etc/hosts
+              endpoint:
+                type: str
+                required: false
+                description: Address of the server. E.g. wireguard.example.com:51820
+              public_key:
+                type: str
+                required: true
+                description: Run "wg pubkey" on client
+              psk:
+                type: str
+                required: false
+                description: Run "wg genpsk" on server
+              allowed_ips:
+                type: list
+                elements: str
+                required: true
+                description: E.g. 10.0.0.2/32

@@ -3,13 +3,13 @@
 app_caddy_desec_token: ""
 
 # CrowdSec
-app_crowdsec_bouncer_firewall_key: "" # Alphanumeric string
+jwcs_bouncer_firewall_key: "" # Alphanumeric string
 
 # Graylog
-app_graylog_server: "" # Target for rsyslog and Docker logs
+jwob_graylog_server_hostname: "" # Target for rsyslog and Docker logs
 
 # Wireguard
-wireguard_interfaces:
+jwwg_wireguard_interfaces:
   wg0:
     ip_addresses: [""] # E.g. 10.0.0.1
     listen_port: "" # E.g. 51820
@@ -23,4 +23,4 @@ wireguard_interfaces:
         allowed_ips: [""] # E.g. 10.0.0.2/32
 
 # Zabbix
-app_zabbix_agent_server: "" # Incoming connections will be accepted only from the hosts listed here.
+jwob_zabbix_server_hostname: "" # Incoming connections will be accepted only from the hosts listed here.
