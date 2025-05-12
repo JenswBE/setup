@@ -106,6 +106,12 @@ ${CMD_CODE_EXT_INSTALL:?} tintinweb.graphviz-interactive-preview
 sudo npm i -g prettier prettier-plugin-go-template
 ```
 
+## Post-setup
+
+### Syncthing
+
+Visit <http://localhost:8384/> and connect hosts and folders.
+
 ### Nextcloud
 
 To add a second account in Nextcloud:
@@ -163,7 +169,7 @@ sudo systemctl enable --now ${NFS_SYSTEMD_NAME:?}.mount
 - [Citrix](./docs/citrix.md)
 - [Drivers](./docs/drivers.md)
 
-### References
+## References
 
 - https://github.com/castrojo/ublue
 - https://github.com/ublue-os/ubuntu
