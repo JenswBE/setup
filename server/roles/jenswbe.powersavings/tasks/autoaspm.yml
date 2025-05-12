@@ -1,0 +1,32 @@
+- name: Setup AutoASPM
+  become: true
+  block:
+    - name: Install dependencies
+      ansible.builtin.package:
+        state: present
+        name: pciutils # Provides "lspci"
+
+    - name: Download AutoASPM
+      ansible.builtin.get_url:
+        url: https://raw.githubusercontent.com/notthebee/AutoASPM/e3bbeb5a96a2fb24188a7e6be649e057ff1968c5/autoaspm.py
+        dest: /usr/sbin/autoaspm.py
+        checksum: "sha256:38e43aecc4cb4cefd4ed2b6c3c48275a027f39ac6b95cc1c0d9f989b327ef478"
+        mode: "755"
+
+    - name: Setup AutoASPM service file
+      ansible.builtin.copy:
+        src: "files/autoaspm.service"
+        dest: "/etc/systemd/system/autoaspm.service"
+        owner: root
+        group: root
+        mode: "644"
+      notify: Reload systemd
+
+    - name: Flush handlers
+      ansible.builtin.meta: flush_handlers
+
+    - name: Enable running AutoASPM at boot
+      ansible.builtin.systemd_service:
+        name: autoaspm
+        state: started
+        enabled: true

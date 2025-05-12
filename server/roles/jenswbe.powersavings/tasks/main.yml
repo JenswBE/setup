@@ -1,25 +1,5 @@
-- name: Setup powertop
-  become: true
-  block:
-    - name: Install powertop
-      ansible.builtin.package:
-        state: present
-        name: powertop
+- name: Include tasks for Powertop
+  ansible.builtin.include_tasks: powertop.yml
 
-    - name: Setup powertop service file
-      ansible.builtin.copy:
-        src: "files/powertop.service"
-        dest: "/etc/systemd/system/powertop.service"
-        owner: root
-        group: root
-        mode: "644"
-      notify: Reload systemd
-
-    - name: Flush handlers
-      ansible.builtin.meta: flush_handlers
-
-    - name: Enable automatic powertop tuning
-      ansible.builtin.systemd_service:
-        name: powertop
-        state: started
-        enabled: true
+- name: Include tasks for AutoASPM
+  ansible.builtin.include_tasks: autoaspm.yml
