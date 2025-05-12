@@ -14,8 +14,8 @@ http:// {
 }
 
 import default_redirect "www.#VAR:general_domain_bjoetiek:VAR#" "#VAR:general_domain_bjoetiek:VAR#"
-import default_redirect "#VAR:general_domain_gwendv:VAR#" "www.instagram.com/gwendolyndevocht/"
-import default_redirect "www.#VAR:general_domain_gwendv:VAR#" "www.instagram.com/gwendolyndevocht/"
+import default_redirect "#VAR:general_domain_gwendv:VAR#" "www.instagram.com/gwendolyndevocht"
+import default_redirect "www.#VAR:general_domain_gwendv:VAR#" "www.instagram.com/gwendolyndevocht"
 import default_redirect "www.#VAR:general_domain_interwego:VAR#" "#VAR:general_domain_interwego:VAR#"
 import default_redirect "#VAR:general_domain_interwego_be:VAR#" "#VAR:general_domain_interwego:VAR#"
 import default_redirect "www.#VAR:general_domain_interwego_be:VAR#" "#VAR:general_domain_interwego:VAR#"
