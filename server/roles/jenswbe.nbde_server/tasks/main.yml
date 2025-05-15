@@ -1,14 +1,6 @@
 - name: Setup Tang
   become: true
-  vars:
-    role_supported_distros:
-      - Rocky
   block:
-    - name: Check if supported distro
-      ansible.builtin.fail:
-        msg: "{{ ansible_distribution }} is not a supported distro for this role. Supported distro's: {{ role_supported_distros }}"
-      when: ansible_distribution not in role_supported_distros
-
     - name: Install Tang
       ansible.builtin.package:
         name: tang

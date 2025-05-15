@@ -3,6 +3,13 @@ argument_specs:
     short_description: Setup a Tang server for NBDE
     options:
       # === REQUIRED ===
+      ansible_distribution:
+        type: str
+        required: true
+        choices: # Others exist, but these are supported in the role
+          - Rocky
+        description: Name of the Linux distribution
+
       jwnc_clevis_device:
         type: str
         required: false

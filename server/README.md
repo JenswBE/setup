@@ -4,18 +4,43 @@
 
 - App data: `<CATEGORY>/<SERVICE>/<FOLDER>` E.g. `nextcloud/mariadb/data`
 
-## Basic setup
-
-Download the latest version of [Debian](https://www.debian.org/distrib/netinst) and install. Next, run following steps:
+## User setup for VPS
 
 ```bash
-# Update system
-sudo apt update
-sudo apt dist-upgrade -y
-sudo reboot
+# Login as root to VPS
+ssh root@...
 
-# Add SSH key on local machine
-ssh-copy-id <USERNAME>@<FQDN>
+# Create personal admin user
+PERS_USER=""
+adduser --groups wheel ${PERS_USER:?}
+passwd ${PERS_USER:?}
+
+# Impersonate new user (ensures sudo works correctly)
+sudo -iu ${PERS_USER:?}
+
+# Lock the root account
+sudo passwd -l root
+```
+
+## Basic setup
+
+Download the latest version of [Debian](https://www.debian.org/distrib/netinst)
+or [Rocky](https://rockylinux.org/download) and install. Next, run following steps:
+
+```bash
+# Set authorized SSH keys
+mkdir -p ~/.ssh
+vi ~/.ssh/authorized_keys
+
+# Update system for Debian
+sudo apt-get update
+sudo apt-get dist-upgrade -y
+
+# Update system for Rocky
+sudo dnf upgrade -y
+
+# Reboot to enable latest kernel
+sudo reboot
 ```
 
 ## Run playbook

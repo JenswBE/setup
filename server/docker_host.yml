@@ -2,7 +2,6 @@
   hosts: docker_host
   vars:
     playbook_supported_distros:
-      - AlmaLinux
       - Rocky
       - Debian
 
@@ -38,6 +37,10 @@
 
     - role: jenswbe.crowdsec
       tags: ["crowdsec"]
+
+    - role: jenswbe.observability
+      when: "'homelab' not in group_names"
+      tags: ["observability"]
 
     - role: jenswbe.firewall
       tags: ["firewall"]

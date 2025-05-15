@@ -4,7 +4,7 @@
     name: nfs-kernel-server
     state: present
 
-- name: AlmaLinux - Install NFS server
+- name: Rocky - Install NFS server
   when: ansible_distribution == 'Rocky'
   ansible.builtin.package:
     name: nfs-utils

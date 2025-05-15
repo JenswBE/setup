@@ -1,6 +1,6 @@
 argument_specs:
   main:
-    short_description: Setup a VM host
+    short_description: Setup a NFS server
     options:
       # === REQUIRED ===
       ansible_distribution:
@@ -10,7 +10,4 @@ argument_specs:
           - Rocky
         description: Name of the Linux distribution
 
-      jwvm_bridge_member_interface:
-        type: str
-        required: true
-        description: Name of interface to use as member for bridge "internet"
+      # === OPTIONAL ===
