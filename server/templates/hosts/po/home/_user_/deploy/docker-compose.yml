@@ -92,7 +92,7 @@ services:
     environment:
       TZ: "#VAR:general_timezone:VAR#"
     volumes:
-      - rsyncd-ssh-host-keys:/etc/ssh/keys
+      - rsyncd-ssh-host-keys:/etc/ssh/keys # Update server/files/po/rsyncd-public-keys.txt when redeploying
       - website-assets:/data/assets
       - website-bjoetiek:/data/bjoetiek
       - website-email-username-generator:/data/email-username-generator
