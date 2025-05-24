@@ -327,7 +327,7 @@ services:
   # =========================
   immich: # Set ML url in settings to http://immich-ml:3003
     <<: *defaults
-    image: ghcr.io/immich-app/immich-server:v1.132.3
+    image: ghcr.io/immich-app/immich-server:v1.133.1
     container_name: immich
     networks:
       - caddy-public
@@ -360,7 +360,7 @@ services:
 
   immich-ml:
     <<: *defaults
-    image: ghcr.io/immich-app/immich-machine-learning:v1.132.3-openvino
+    image: ghcr.io/immich-app/immich-machine-learning:v1.133.1-openvino
     container_name: immich-ml
     networks:
       - immich
@@ -397,7 +397,7 @@ services:
 
   immich-db:
     <<: *defaults
-    image: docker.io/tensorchord/pgvecto-rs:pg14-v0.2.0
+    image: ghcr.io/immich-app/postgres:14-vectorchord0.3.0-pgvectors0.2.0
     container_name: immich-db
     networks:
       - immich
@@ -410,24 +410,6 @@ services:
     volumes:
       - "#VAR:general_path_appdata:VAR#/immich/postgresql/data:/var/lib/postgresql/data"
       - "immich-db-dump:/backup"
-    healthcheck:
-      test: >-
-        pg_isready --dbname="$${POSTGRES_DB}" --username="$${POSTGRES_USER}" || exit 1;
-        Chksum="$$(psql --dbname="$${POSTGRES_DB}" --username="$${POSTGRES_USER}" --tuples-only --no-align
-        --command='SELECT COALESCE(SUM(checksum_failures), 0) FROM pg_stat_database')";
-        echo "checksum failure count is $$Chksum";
-        [ "$$Chksum" = '0' ] || exit 1
-      interval: 5m
-      start_interval: 30s
-      start_period: 5m
-    command: >-
-      postgres
-      -c shared_preload_libraries=vectors.so
-      -c 'search_path="$$user", public, vectors'
-      -c logging_collector=on
-      -c max_wal_size=2GB
-      -c shared_buffers=512MB
-      -c wal_compression=on
 
   # =========================
   # =        TORRENT        =
