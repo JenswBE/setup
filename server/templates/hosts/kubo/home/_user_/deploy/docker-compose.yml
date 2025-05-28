@@ -360,7 +360,7 @@ services:
 
   immich-ml:
     <<: *defaults
-    image: ghcr.io/immich-app/immich-machine-learning:v1.133.1-openvino
+    image: ghcr.io/immich-app/immich-machine-learning:v1.134.0-openvino
     container_name: immich-ml
     networks:
       - immich
