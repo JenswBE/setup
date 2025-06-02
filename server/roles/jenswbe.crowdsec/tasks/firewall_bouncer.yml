@@ -19,3 +19,5 @@
     name: crowdsec-firewall-bouncer
     state: started
     enabled: true
+  retries: 3 # Might fail first time if Crowdsec is still starting
+  delay: 10 # seconds

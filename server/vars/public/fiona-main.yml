@@ -32,6 +32,3 @@ jwfw_zones:
         protos: [tcp]
     extra_strings: []
     extra_booleans: []
-
-# Security
-security_autoupdate_reboot_time: "03:00"

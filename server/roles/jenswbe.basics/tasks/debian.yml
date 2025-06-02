@@ -1,6 +1,11 @@
 - name: Debian specific basics
   become: true
   block:
+    - name: Debian - Update all installed packages
+      ansible.builtin.apt:
+        update_cache: yes
+        upgrade: dist
+
     - name: Debian - Install base packages
       ansible.builtin.package:
         name: "{{ jwba_base_packages_debian }}"
