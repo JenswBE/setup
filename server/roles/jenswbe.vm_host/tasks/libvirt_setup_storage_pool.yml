@@ -1,0 +1,33 @@
+- name: "Ensure storage pool dir exists - {{ pool_name }}"
+  ansible.builtin.file:
+    state: directory
+    path: "{{ pool_path }}"
+    mode: "0700"
+
+- name: "Define storage pool - {{ pool_name }}"
+  community.libvirt.virt_pool:
+    state: present
+    name: "{{ pool_name }}"
+    xml: |
+      <pool type='dir'>
+        <name>{{ pool_name }}</name>
+        <target>
+          <path>{{ pool_path }}</path>
+          <permissions>
+            <mode>0711</mode>
+            <owner>0</owner>
+            <group>0</group>
+            <label>system_u:object_r:virt_image_t:s0</label>
+          </permissions>
+        </target>
+      </pool>
+
+- name: "Activate storage pool - {{ pool_name }}"
+  community.libvirt.virt_pool:
+    state: active
+    name: "{{ pool_name }}"
+
+- name: "Autostart storage pool at boot - {{ pool_name }}"
+  community.libvirt.virt_pool:
+    autostart: true
+    name: "{{ pool_name }}"

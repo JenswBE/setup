@@ -9,6 +9,15 @@
     state: started
     enabled: true
 
+# Rocky reserves 75GB for the root partition.
+# Everything else is assigned to the home partition.
+# Therefore, on larger disks, it is better to put VM disks on the home pool instead of the default pool.
+- name: Setup storage pool in home
+  ansible.builtin.include_tasks: libvirt_setup_storage_pool.yml
+  vars:
+    pool_name: home
+    pool_path: "/home/libvirt/images"
+
 - name: Create bridge
   community.general.nmcli:
     type: bridge
