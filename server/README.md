@@ -4,19 +4,31 @@
 
 - App data: `<CATEGORY>/<SERVICE>/<FOLDER>` E.g. `nextcloud/mariadb/data`
 
-## User setup for VPS
+## User setup for VPS / VM
 
 ```bash
 # Login as root to VPS
+# You might have to set "PermitRootLogin yes" in /etc/ssh/sshd_config and restart ssh(d) service
 ssh root@...
 
-# Create personal admin user
+# Rocky - Create personal admin user
 PERS_USER=""
 adduser --groups wheel ${PERS_USER:?}
 passwd ${PERS_USER:?}
 
+# Debian - Create personal admin user
+PERS_USER=""
+adduser ${PERS_USER:?}
+apt-get install -y sudo
+usermod -aG sudo ${PERS_USER:?}
+
 # Impersonate new user (ensures sudo works correctly)
 sudo -iu ${PERS_USER:?}
+
+# Setup SSH keys
+mkdir -p ~/.ssh
+chmod 700 ~/.ssh
+editor ~/.ssh/authorized_keys
 
 # Lock the root account
 sudo passwd -l root
