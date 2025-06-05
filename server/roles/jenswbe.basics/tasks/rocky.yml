@@ -1,11 +1,6 @@
 - name: RedHat specific basics
   become: true
   block:
-    - name: Rocky - Update all installed packages
-      ansible.builtin.dnf:
-        name: "*"
-        state: latest
-
     - name: Rocky - Enable EPEL repo
       ansible.builtin.package:
         name: epel-release
