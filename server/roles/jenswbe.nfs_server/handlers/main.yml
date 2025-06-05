@@ -1,4 +1,0 @@
-- name: Re-export NFS
-  become: true
-  changed_when: true
-  ansible.builtin.command: /usr/sbin/exportfs -rav

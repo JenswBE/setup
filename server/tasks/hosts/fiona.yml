@@ -1,8 +1,6 @@
 - name: Include NUT role
-  ansible.builtin.include_role:
+  ansible.builtin.import_role:
     name: jenswbe.nut
-    apply:
-      tags: ["nut"]
+  tags: ["nut"]
   vars:
     jwnu_nut_type: client_server
-  tags: ["always"]

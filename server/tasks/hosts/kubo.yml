@@ -5,14 +5,6 @@
       tags: ["nbde", "nbde_client"]
   tags: ["nbde", "nbde_client"]
 
-- name: Include NFS server role
-  ansible.builtin.include_role:
-    name: jenswbe.nfs_server
-    apply:
-      tags:
-        - nfs
-  tags: ["setup", "nfs"]
-
 - name: Include NUT client tasks
   ansible.builtin.include_tasks: tasks/nut_client_only.yml
   tags: ["setup", "nut"]
