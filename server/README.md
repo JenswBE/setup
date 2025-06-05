@@ -96,6 +96,10 @@ ansible-playbook docker_host.yml
 ansible-playbook docker_host.yml --tags docker --limit <HOSTNAME>
 ```
 
+## Special purpose VM's
+
+- Home Assistant: https://www.home-assistant.io/installation/alternative/
+
 ## Service specific configuration
 
 See [instructions for configuring services](docs/how-to/Setup services.md)
