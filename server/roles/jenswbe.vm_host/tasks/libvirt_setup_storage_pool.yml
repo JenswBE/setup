@@ -2,7 +2,7 @@
   ansible.builtin.file:
     state: directory
     path: "{{ pool_path }}"
-    mode: "0700"
+    mode: "0711"
 
 - name: "Define storage pool - {{ pool_name }}"
   community.libvirt.virt_pool:

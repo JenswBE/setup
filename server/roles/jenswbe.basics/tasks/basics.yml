@@ -29,3 +29,8 @@
       ansible.posix.sysctl:
         name: vm.swappiness
         value: "10"
+
+    - name: Install common base packages
+      ansible.builtin.package:
+        name: "{{ jwba_base_packages }}"
+        state: present
