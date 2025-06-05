@@ -19,7 +19,13 @@ Download latest version from <https://www.debian.org/distrib/netinst>
    - KDUMP = Disabled
    - User Creation = Add non-root user
 
-### VPS / VM
+### VM clone
+
+```bash
+clone-vm <FROM> <TO>
+```
+
+### VPS / VM from ISO
 
 ```bash
 # Login as root to VPS
