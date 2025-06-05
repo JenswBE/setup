@@ -1,4 +1,4 @@
-- name: Setup server
+- name: Init
   hosts: docker_host
   vars:
     playbook_supported_distros:
@@ -14,10 +14,28 @@
     - role: jenswbe.basics
       tags: ["basics"]
 
+- name: Setup Homelab
+  hosts: docker_host:&homelab
+  gather_facts: false
+  roles:
+    - role: jenswbe.powersavings
+      when: "'homelab' in group_names"
+      tags: ["powersavings"]
+
+- name: Setup VPS
+  hosts: docker_host:&vps
+  gather_facts: false
+  roles:
     - role: jenswbe.wireguard # Docker requires Wireguard for GELF logging transport
-      when: "'homelab' not in group_names"
       tags: ["wireguard"]
 
+    - role: jenswbe.observability
+      tags: ["observability"]
+
+- name: Setup other roles and tasks
+  hosts: docker_host
+  gather_facts: false
+  roles:
     - role: geerlingguy.security
       become: true
       tags: ["gsecurity"]
@@ -38,16 +56,8 @@
     - role: jenswbe.crowdsec
       tags: ["crowdsec"]
 
-    - role: jenswbe.observability
-      when: "'homelab' not in group_names"
-      tags: ["observability"]
-
     - role: jenswbe.firewall
       tags: ["firewall"]
-
-    - role: jenswbe.powersavings
-      when: "'homelab' in group_names"
-      tags: ["powersavings"]
 
   tasks:
     - name: Copy systemd system unit templates
