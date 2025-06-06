@@ -34,12 +34,12 @@ ssh root@...
 
 # Rocky - Create personal admin user
 PERS_USER=""
-adduser --groups wheel ${PERS_USER:?}
+adduser --groups wheel --comment "" ${PERS_USER:?}
 passwd ${PERS_USER:?}
 
 # Debian - Create personal admin user
 PERS_USER=""
-adduser ${PERS_USER:?}
+adduser --comment "" ${PERS_USER:?}
 apt-get install -y sudo
 usermod -aG sudo ${PERS_USER:?}
 
@@ -61,12 +61,12 @@ mkdir -p ~/.ssh
 chmod 700 ~/.ssh
 vi ~/.ssh/authorized_keys
 
+# Rocky - Update system
+sudo dnf upgrade -y
+
 # Update system for Debian
 sudo apt-get update
 sudo apt-get dist-upgrade -y
-
-# Update system for Rocky
-sudo dnf upgrade -y
 
 # Reboot to enable latest kernel
 sudo reboot
