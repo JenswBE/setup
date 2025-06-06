@@ -1,14 +1,3 @@
-- name: Include NBDE client role
-  ansible.builtin.include_role:
-    name: jenswbe.nbde_client
-    apply:
-      tags: ["nbde", "nbde_client"]
-  tags: ["nbde", "nbde_client"]
-
-- name: Include NUT client tasks
-  ansible.builtin.include_tasks: tasks/nut_client_only.yml
-  tags: ["setup", "nut"]
-
 - name: Enable systemd mounts and timers
   become: true
   ansible.builtin.systemd_service:
@@ -20,8 +9,6 @@
     - data-bulk.mount
     - data-important.mount
     # Timers
-    - btrfs-scrub-bulk.timer
-    - btrfs-scrub-important.timer
     - docker-update-containers.timer
     - github-backup.timer
     - graylog-dump-mongodb.timer

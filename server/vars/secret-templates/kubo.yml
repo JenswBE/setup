@@ -19,10 +19,6 @@ app_caddy_desec_token: ""
 # CrowdSec
 jwcs_bouncer_firewall_key: "" # Alphanumeric string
 
-# GitHub Backup
-# See https://github.com/JenswBE/github-backup
-app_github_backup_pat: ""
-
 # Grafana
 app_grafana_oauth2_base_url: ""
 app_grafana_oauth2_client_id: ""
@@ -52,13 +48,6 @@ app_nextcloud_db_pass_nextcloud: ""
 app_transmission_wireguard_private_key: ""
 app_transmission_wireguard_addresses: "" # E.g. 10.1.2.3/32
 
-# Unifi Network Application
-app_unifi_mongodb_user: ""
-app_unifi_mongodb_password: ""
-
 # Zabbix
 app_zabbix_db_pass: ""
 jwob_zabbix_server_hostname: "" # Incoming connections will be accepted only from the hosts listed here.
-
-# Zigbee2MQTT
-app_zigbee2mqtt_mqtt_password: ""

@@ -1,9 +1,0 @@
-[Unit]
-Description=Scrub important BTRFS subvolume every 1st of the month
-
-[Timer]
-OnCalendar=*-*-01 06:00:00
-Persistent=true
-
-[Install]
-WantedBy=timers.target

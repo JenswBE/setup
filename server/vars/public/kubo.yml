@@ -77,18 +77,3 @@ jwvm_bridge_member_interface: enp3s0
 # Nextcloud
 app_nextcloud_apps_disable: "firstrunwizard,dashboard,weather_status"
 app_nextcloud_apps_install: "previewgenerator"
-
-# NFS
-nfs_exports:
-  - name: media
-    source_path: /data/bulk/media
-    depends_on: data-bulk.mount
-    allowed_ips:
-      - "{{ hostnames.private.hercules.ipv4 }}"
-      - "{{ hostnames.private.rango.ipv4 }}"
-  - name: photos
-    source_path: /data/important/Photos
-    depends_on: data-important.mount
-    allowed_ips:
-      - "{{ hostnames.private.hercules.ipv4 }}"
-      - "{{ hostnames.private.rango.ipv4 }}"

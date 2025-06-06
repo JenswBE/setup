@@ -450,22 +450,6 @@ services:
       SERVER_CITIES: Brussels
       DOT_PROVIDERS: quad9
 
-  # ==========================
-  # =      DNS - BLOCKY      =
-  # ==========================
-  blocky:
-    <<: *defaults
-    image: ghcr.io/0xerr0r/blocky:latest
-    container_name: blocky
-    user: "#VAR:ansible_real_user_id:VAR#:#VAR:ansible_real_group_id:VAR#"
-    networks:
-      - caddy-private
-    ports:
-      - "53:53/tcp" # DNS TCP
-      - "53:53/udp" # DNS UDP
-    volumes:
-      - ./blocky/config.txt:/app/config.yml:ro
-
   # =========================
   # =       PDF tools       =
   # =========================
@@ -480,60 +464,6 @@ services:
       DOCKER_ENABLE_SECURITY: "false"
     volumes:
       - "#VAR:general_path_appdata:VAR#/stirling-pdf/configs:/configs"
-
-  # ===========================
-  # =    UNIFI NETWORK APP    =
-  # ===========================
-  unifi-network-app:
-    <<: *defaults
-    image: lscr.io/linuxserver/unifi-network-application:latest
-    container_name: unifi-network-app
-    environment:
-      TZ: "#VAR:general_timezone:VAR#"
-      PUID: "1000"
-      PGID: "1000"
-      MEM_LIMIT: "1024"
-      MEM_STARTUP: "1024"
-      MONGO_HOST: unifi-mongodb
-      MONGO_PORT: "27017"
-      MONGO_USER: "#VAR:app_unifi_mongodb_user:VAR#"
-      MONGO_PASS: "#VAR:app_unifi_mongodb_password:VAR#"
-      MONGO_DBNAME: unifi
-    volumes:
-      - "#VAR:general_path_appdata:VAR#/unifi/network-app/config:/config"
-    ports:
-      - "10001:10001/udp" # Required for AP discovery
-      - "8080:8080" # Required for device communication
-    networks:
-      - caddy-private
-      - unifi
-    depends_on:
-      unifi-mongodb:
-        condition: service_healthy
-    deploy:
-      resources:
-        limits:
-          cpus: "2"
-          memory: 2G
-
-  unifi-mongodb: # NOTE: MongoDB 5.0+ requires AVX!
-    <<: [*defaults, *healthcheck-mongo]
-    # "Version 8.1 and newer supports up to MongoDB 7.0."
-    # See release notes at https://www.ui.com/download/releases/network-server
-    build: ./unifi/mongodb
-    container_name: unifi-mongodb
-    environment:
-      TZ: "#VAR:general_timezone:VAR#"
-    networks:
-      - unifi
-    volumes:
-      - "#VAR:general_path_appdata:VAR#/unifi/mongodb/data:/data/db"
-      - unifi-mongodb-dump:/backup
-    deploy:
-      resources:
-        limits:
-          cpus: "2"
-          memory: 2G
 
   # =========================
   # =       MONITORING      =
@@ -811,17 +741,6 @@ services:
   # =========================
   # =         BACKUP        =
   # =========================
-  github-backup:
-    <<: *defaults
-    image: docker.io/jenswbe/github-backup:latest
-    container_name: github-backup
-    restart: "no" # Will be called by systemd timer
-    volumes:
-      - ./github-backup/config.yml:/config.yml
-      - github-backup:/backup
-    environment:
-      - "TZ=#VAR:general_timezone:VAR#"
-
   borgmatic:
     <<: *defaults
     image: ghcr.io/borgmatic-collective/borgmatic:1.9
@@ -899,9 +818,6 @@ networks:
   prometheus:
     name: prometheus
 
-  unifi:
-    name: unifi
-
   zabbix:
     name: zabbix
 
@@ -914,13 +830,9 @@ volumes:
   caddy-public-access-logs:
   caddy-public-config:
   caddy-public-data:
-  github-backup:
   graylog-mongodb-dump:
   ha-mosquitto-data:
   immich-model-cache:
   immich-db-dump:
   nc-db-dump:
-  scrutiny-influxdb:
-  scrutiny-sqlite:
-  unifi-mongodb-dump:
   zabbix-db-dump:
