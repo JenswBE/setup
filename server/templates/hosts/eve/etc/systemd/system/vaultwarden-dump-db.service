@@ -3,4 +3,6 @@ Description=Dump Vaultwarden DB for backup
 OnFailure=unit-fail-mail@%n.service
 
 [Service]
-ExecStart={{ docker_path }} run --rm --pull always -v "{{ general_path_appdata }}/vaultwarden/data:/data" alpine sh -c "set -eu; apk add sqlite; sqlite3 /data/db.sqlite3 '.backup /data/db.backup.sqlite3'"
+# --dns: We don't reference internal resources and musl libc doesn't use fallback DNS servers.
+#        So, it's safer to use a public DNS resolver by default.
+ExecStart={{ docker_path }} run --rm --pull always --dns 9.9.9.9 -v "{{ general_path_appdata }}/vaultwarden/data:/data" alpine sh -c "set -eu; apk add sqlite; sqlite3 /data/db.sqlite3 '.backup /data/db.backup.sqlite3'"
