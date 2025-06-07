@@ -102,4 +102,4 @@ ansible-playbook docker_host.yml --tags docker --limit <HOSTNAME>
 
 ## Service specific configuration
 
-See [instructions for configuring services](docs/how-to/Setup services.md)
+See [instructions for configuring services](./docs/how-to/General%20-%20Setup%20services.md)

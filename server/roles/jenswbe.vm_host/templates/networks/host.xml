@@ -4,5 +4,5 @@
     <bridge name="virbr100" stp="on" delay="0" />
     <mac address="52:54:00:e4:38:d4" />
     <domain name="host" />
-    <ip address="192.168.100.1" netmask="255.255.255.0"></ip>
+    <ip address="10.0.100.1" netmask="255.255.255.0"></ip>
 </network>

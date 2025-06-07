@@ -20,6 +20,16 @@ import ./configs/shared_snippets.txt
 		import handler_local_blocky
 		import handler_local_crowdsec
 
+		@ha host "ha.#VAR:general_domain_local:VAR#"
+		handle @ha {
+			import default_local_reverse_proxy "http://kubo-haos.virbr-host.jensw.eu:8123"
+		}
+
+		@truenas host "truenas.#VAR:general_domain_local:VAR#"
+		handle @truenas {
+			import default_local_reverse_proxy "http://kubo-storage.virbr-host.jensw.eu"
+		}
+
 		@unifi host "unifi.#VAR:general_domain_local:VAR#"
 		handle @unifi {
 			import default_local_reverse_proxy_with_insecure_upstream "https://unifi-network-app:8443"

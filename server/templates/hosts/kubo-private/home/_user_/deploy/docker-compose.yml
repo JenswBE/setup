@@ -44,8 +44,11 @@ services:
     <<: *defaults
     build: ./caddy
     container_name: caddy
+    ports:
+      - 127.0.0.1:2080:80
+      - 127.0.0.1:2443:443
     networks:
-      caddy:
+      - caddy
     volumes:
       - ./caddy/Caddyfile:/etc/caddy/Caddyfile:ro
       - ./caddy/configs:/etc/caddy/configs:ro

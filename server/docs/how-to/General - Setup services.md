@@ -23,6 +23,21 @@ GC_USER=$REPLACE_ME
 docker compose run --rm goatcounter db create site -createdb -vhost=${GC_HOST} -user.email=${GC_USER}
 ```
 
+### Home Assistant
+
+To setup a reverse proxy:
+
+1. Setup reverse proxy and point to HA
+2. Install add-on `File editor`
+3. Edit file `configuration.yml`
+```yaml
+http:
+  # server_host: 127.0.0.1
+  use_x_forwarded_for: true
+  trusted_proxies: IP_OF_THE_REVERSE_PROXY
+```
+4. Restart HA
+
 ### Keycloak
 
 ```bash
