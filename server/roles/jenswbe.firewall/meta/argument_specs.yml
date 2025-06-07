@@ -16,5 +16,60 @@ argument_specs:
         elements: dict
         required: true
         description: Firewall zones managed authoritively with Ansible (other zones are deleted)
+        options:
+          zone:
+            description: Name of the zone
+            type: str
+            required: true
+          interfaces:
+            description: Interfaces to include in the zone
+            type: list
+            elements: str
+            required: true
+          source_networks:
+            description: Source networks to include in the zone
+            type: list
+            elements: str
+            required: true
+          allowed_services:
+            description: List of services to allow in the zone
+            type: list
+            elements: str
+            required: true
+          allowed_ports:
+            description: List of custom ports to allow in the zone
+            type: list
+            elements: dict
+            required: true
+            options:
+              port:
+                description: Port number
+                type: int
+                required: true
+              protos:
+                description: Allowed protocol(s) for the port
+                type: list
+                elements: str
+                required: true
+                choices:
+                  - tcp
+                  - udp
+          extra_strings:
+            description: Custom key/value strings for the zone
+            type: list
+            elements: dict
+            required: true
+            options:
+              key:
+                type: str
+                required: true
+              value:
+                type: str
+                required: true
+          extra_booleans:
+            description: Custom boolean flags for the zone
+            type: list
+            elements: str
+            required: true
 
-      # === OPTIONAL ===
+  # === OPTIONAL ===
