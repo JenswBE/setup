@@ -1,0 +1,55 @@
+#VAR:ansible_managed | comment:VAR#
+
+#################################################################
+#                            DEFAULTS                           #
+#################################################################
+
+x-defaults: &defaults
+  x-dummy: ""
+  # Putting the anchor in this file ensures it's a valid YAML file for Renovate Bot
+  #VAR:lookup('ansible.builtin.file', 'files/docker-compose-defaults.yml',) | indent(width=2):VAR#
+
+#################################################################
+#                            SERVICES                           #
+#################################################################
+services:
+  # =========================
+  # =         PROXY         =
+  # =========================
+  # Having 2 reverse proxies (1 on host network and 1 on bridge network)
+  # allows to have the real client IP's available inside the bridged
+  # Caddy instance (using PROXY protocol). In case you would only have
+  # a single reverse proxy on the host network, you would loose all the convenience
+  # of using Docker networks.
+  nginx:
+    <<: *defaults
+    image: docker.io/library/nginx:alpine
+    container_name: nginx
+    network_mode: host
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/nginx.conf:ro
+
+  caddy:
+    <<: *defaults
+    build: ./caddy
+    container_name: caddy
+    ports:
+      - 127.0.0.1:2080:80
+      - 127.0.0.1:2443:443
+      - 127.0.0.1:28883:8883
+    volumes:
+      - ./caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./caddy/configs:/etc/caddy/configs:ro
+      - caddy-access-logs:/access_logs
+      - caddy-config:/config
+      - caddy-data:/data
+    environment:
+      TZ: "#VAR:general_timezone:VAR#"
+
+#################################################################
+#                            VOLUMES                            #
+#################################################################
+volumes:
+  caddy-access-logs:
+  caddy-config:
+  caddy-data:

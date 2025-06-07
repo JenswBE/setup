@@ -1,3 +1,6 @@
+# CrowdSec
+jwcs_bouncer_firewall_key: "" # Alphanumeric string
+
 # Immich
 app_immich_db_pass_postgres: ""
 

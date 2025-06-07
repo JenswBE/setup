@@ -1,0 +1,9 @@
+- name: Enable systemd mounts and timers
+  become: true
+  ansible.builtin.systemd_service:
+    name: "{{ item }}"
+    state: started
+    enabled: true
+  loop:
+    - docker-update-containers.timer
+  tags: ["systemd"]
