@@ -1,0 +1,59 @@
+- name: Setup automatic updates for Rocky
+  become: true
+  block:
+    - name: Install dnf-automatic
+      ansible.builtin.package:
+        name: dnf-automatic
+        state: present
+
+    - name: Configure dnf-automatic
+      ansible.builtin.lineinfile:
+        dest: /etc/dnf/automatic.conf
+        regexp: "^apply_updates = .+"
+        line: "apply_updates = yes"
+
+    - name: Configure dnf-automatic
+      ansible.builtin.lineinfile:
+        path: /etc/dnf/automatic.conf
+        regexp: "^{{ item.param }} ="
+        line: "{{ item.param }} = {{ item.value }}"
+      loop:
+        - param: apply_updates
+          value: "yes"
+        - param: reboot
+          value: when-needed
+
+    - name: Ensure dnf-automatic.timer drop-in directory exists
+      become: true
+      ansible.builtin.file:
+        owner: root
+        group: root
+        mode: "0755"
+        path: /etc/systemd/system/dnf-automatic.timer.d
+        state: directory
+
+    - name: Set time for dnf-automatic.timer
+      become: true
+      community.general.ini_file:
+        dest: /etc/systemd/system/dnf-automatic.timer.d/10-set_time.conf
+        owner: root
+        group: root
+        mode: "0644"
+        section: Timer
+        option: "{{ systemd_kv.option }}"
+        value: "{{ systemd_kv.value }}"
+        no_extra_spaces: true
+      loop:
+        - option: OnCalendar
+          value: "*-*-* {{ jwau_autoupdate_reboot_time }}"
+        - option: RandomizedDelaySec
+          value: 10m
+      loop_control:
+        loop_var: systemd_kv
+      notify: Reload systemd
+
+    - name: Enable and start dnf-automatic.timer
+      ansible.builtin.systemd_service:
+        name: dnf-automatic.timer
+        state: started
+        enabled: true

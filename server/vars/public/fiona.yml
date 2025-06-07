@@ -40,4 +40,4 @@ jwfw_zones:
 jwvm_bridge_member_interface: enp2s0
 
 # Security
-security_autoupdate_reboot_time: "03:00"
+jwau_autoupdate_reboot_time: "03:00"

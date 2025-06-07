@@ -14,6 +14,9 @@
     - role: jenswbe.basics
       tags: ["basics"]
 
+    - role: jenswbe.automatic_updates
+      tags: ["automatic_updates"]
+
 - name: Setup Homelab
   hosts: docker_host:&homelab
   gather_facts: false

@@ -65,8 +65,7 @@ http_security_headers_static_without_reporting:
     screen-wake-lock=(), sync-xhr=(), usb=(), web-share=(), xr-spatial-tracking=()
 
 # Security
-security_autoupdate_reboot_time: "05:00"
-security_autoupdate_reboot: true
+security_autoupdate_enabled: false # Handled by role "jenswbe.automatic_updates"
 security_fail2ban_enabled: false # Handled by CrowdSec
 
 # Zabbix

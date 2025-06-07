@@ -1,0 +1,15 @@
+Unattended-Upgrade::Automatic-Reboot "true";
+Unattended-Upgrade::Automatic-Reboot-Time "{{ jwau_autoupdate_reboot_time }}";
+
+Unattended-Upgrade::Origins-Pattern {
+    // Debian security repositories
+    "origin=Debian,codename=${distro_codename},label=Debian-Security";
+    "origin=Debian,codename=${distro_codename}-security,label=Debian-Security";
+
+    // Ubuntu security repository
+    "origin=Ubuntu,archive=${distro_codename}-security"
+
+    // Ubuntu ESM repositories
+    "origin=${distro_id}ESMApps,archive=${distro_codename}-apps-security";
+    "origin=${distro_id}ESM,archive=${distro_codename}-infra-security";
+}

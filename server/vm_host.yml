@@ -17,6 +17,9 @@
     - role: jenswbe.basics
       tags: ["basics"]
 
+    - role: jenswbe.automatic_updates
+      tags: ["automatic_updates"]
+
     - role: jenswbe.vm_host
       tags: ["vm_host"]
 
