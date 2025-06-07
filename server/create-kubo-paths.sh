@@ -4,7 +4,6 @@ cp "tasks/hosts/kubo.yml" "tasks/hosts/kubo-$1.yml"
 
 touch "vars/public/kubo-$1.yml"
 touch "vars/secret-templates/kubo-$1.yml"
-touch "vars/secret/kubo-$1.yml"
 
 mkdir -p "templates/hosts/kubo-$1/etc/systemd/system"
 cp -r "templates/hosts/kubo/etc/systemd/system/crowdsec-firewall-bouncer.service.d" "templates/hosts/kubo-$1/etc/systemd/system/"

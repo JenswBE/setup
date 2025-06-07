@@ -1,0 +1,13 @@
+[Unit]
+OnFailure=unit-fail-mail@%n.service
+After=network-online.target
+Wants=network-online.target
+
+[Mount]
+What=kubo-storage.jensw.eu:/mnt/main/bulk
+Where=/data/bulk
+Type=nfs
+Options=auto
+
+[Install]
+WantedBy=multi-user.target

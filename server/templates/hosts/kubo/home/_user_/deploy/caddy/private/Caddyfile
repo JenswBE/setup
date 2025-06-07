@@ -55,11 +55,6 @@ import ./configs/shared_snippets.txt
 			import default_local_reverse_proxy "http://syncthing:8384"
 		}
 
-		@tmm host "tmm.#VAR:general_domain_local:VAR#"
-		handle @tmm {
-			import default_local_reverse_proxy "http://tmm:4000"
-		}
-
 		@torrent_system host "torrent-system.#VAR:general_domain_local:VAR#"
 		handle @torrent_system {
 			basic_auth {

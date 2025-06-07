@@ -1,0 +1,224 @@
+#VAR:ansible_managed | comment:VAR#
+
+#################################################################
+#                            DEFAULTS                           #
+#################################################################
+
+x-defaults: &defaults
+  x-dummy: ""
+  # Putting the anchor in this file ensures it's a valid YAML file for Renovate Bot
+  #VAR:lookup('ansible.builtin.file', 'files/docker-compose-defaults.yml',) | indent(width=2):VAR#
+
+#################################################################
+#                            SERVICES                           #
+#################################################################
+services:
+  # =========================
+  # =        JELLYFIN       =
+  # =========================
+  jellyfin:
+    <<: *defaults
+    image: docker.io/jellyfin/jellyfin:latest
+    container_name: jellyfin
+    user: "#VAR:ansible_real_user_id:VAR#:#VAR:ansible_real_group_id:VAR#"
+    # # See https://jellyfin.org/docs/general/administration/hardware-acceleration/intel#configure-with-linux-virtualization
+    # group_add: # By id as these may not exist within the container. Needed to provide permissions to the QSV/VA-API Devices
+    #   - "105" # Group "render"
+    #   - "44" # Group "video"
+    # devices:
+    #   - /dev/dri/renderD128:/dev/dri/renderD128 # Intel Quick Sync Video (QSV)
+    ports:
+      - "#VAR:hostnames.virbr_nointernet.kubo_media.ipv4:VAR#:8096:8096"
+    volumes:
+      - "/data/bulk/media:/media"
+      - "/data/important/Photos:/Photos"
+      - "#VAR:general_path_appdata:VAR#/jellyfin/config:/config"
+      - "#VAR:general_path_appdata:VAR#/jellyfin/cache:/cache"
+    deploy:
+      resources:
+        limits:
+          cpus: "4"
+          memory: 4G
+
+  # =========================
+  # =   TINY MEDIA MANAGER  =
+  # =========================
+  tmm:
+    <<: *defaults
+    image: docker.io/tinymediamanager/tinymediamanager:latest
+    container_name: tmm
+    ports:
+      - "#VAR:hostnames.virbr_nointernet.kubo_media.ipv4:VAR#:4000:4000"
+    volumes:
+      - "/data/bulk/media:/media"
+      - "#VAR:general_path_appdata:VAR#/tmm/data:/data"
+    environment:
+      TZ: "#VAR:general_timezone:VAR#"
+      USER_ID: "#VAR:ansible_real_user_id:VAR#"
+      GROUP_ID: "#VAR:ansible_real_group_id:VAR#"
+      LC_TIME: C.UTF-8
+    deploy:
+      resources:
+        limits:
+          cpus: "2"
+          memory: 2G
+
+  # =========================
+  # =       NEXTCLOUD       =
+  # =========================
+  nextcloud:
+    <<: *defaults
+    build: ./nextcloud
+    container_name: nextcloud
+    hostname: nextcloud
+    networks:
+      - nextcloud
+    ports:
+      - "#VAR:hostnames.virbr_nointernet.kubo_media.ipv4:VAR#:8082:3000"
+    depends_on:
+      nc-db:
+        condition: service_healthy
+    volumes:
+      - "#VAR:general_path_appdata:VAR#/nextcloud/nextcloud/config:/var/www/html"
+      - "#VAR:general_path_appdata:VAR#/nextcloud/nextcloud/data:/var/www/html/data"
+    environment:
+      TZ: "#VAR:general_timezone:VAR#"
+      MYSQL_DATABASE: "nextcloud"
+      MYSQL_USER: "nextcloud"
+      MYSQL_PASSWORD: "#VAR:app_nextcloud_db_pass_nextcloud:VAR#"
+      MYSQL_HOST: "nc-db"
+    deploy:
+      resources:
+        limits:
+          cpus: "4"
+          memory: 4G
+
+  nc-db:
+    <<: *defaults
+    # Nextcloud currently only supports up to 10.6.
+    # See https://docs.nextcloud.com/server/29/admin_manual/installation/system_requirements.html
+    image: docker.io/library/mariadb:10.6
+    command: --transaction-isolation=READ-COMMITTED --log-bin=ROW --innodb-read-only-compressed=OFF
+    container_name: nc-db
+    networks:
+      - nextcloud
+    volumes:
+      - "#VAR:general_path_appdata:VAR#/nextcloud/mariadb/data:/var/lib/mysql"
+      - nc-db-dump:/backup
+    environment:
+      TZ: "#VAR:general_timezone:VAR#"
+      MARIADB_ROOT_PASSWORD: "#VAR:app_nextcloud_db_pass_root:VAR#"
+      MARIADB_PASSWORD: "#VAR:app_nextcloud_db_pass_nextcloud:VAR#"
+      MARIADB_DATABASE: "nextcloud"
+      MARIADB_USER: "nextcloud"
+      MARIADB_AUTO_UPGRADE: "1"
+    healthcheck: # Based on https://mariadb.com/kb/en/using-healthcheck-sh/
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      start_period: 10s
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  # =========================
+  # =        IMMICH         =
+  # =========================
+  immich: # Set ML url in settings to http://immich-ml:3003
+    <<: *defaults
+    image: ghcr.io/immich-app/immich-server:v1.134.0
+    container_name: immich
+    networks:
+      - immich
+    environment:
+      TZ: "#VAR:general_timezone:VAR#"
+      DB_HOSTNAME: immich-db
+      DB_PASSWORD: "#VAR:app_immich_db_pass_postgres:VAR#"
+      REDIS_HOSTNAME: immich-redis
+      IMMICH_TELEMETRY_INCLUDE: all
+    volumes:
+      - "#VAR:general_path_appdata:VAR#/immich/immich/upload:/usr/src/app/upload"
+      - /etc/localtime:/etc/localtime:ro
+    depends_on:
+      immich-redis:
+        condition: service_healthy
+      immich-db:
+        condition: service_healthy
+    healthcheck:
+      disable: false
+    ports:
+      - "#VAR:hostnames.virbr_nointernet.kubo_media.ipv4:VAR#:2283:2283"
+    deploy:
+      resources:
+        limits:
+          cpus: "4"
+          memory: 2G
+
+  immich-ml:
+    <<: *defaults
+    image: ghcr.io/immich-app/immich-machine-learning:v1.134.0-openvino
+    container_name: immich-ml
+    networks:
+      - immich
+    environment:
+      TZ: "#VAR:general_timezone:VAR#"
+      DB_HOSTNAME: immich-db
+      DB_PASSWORD: "#VAR:app_immich_db_pass_postgres:VAR#"
+      REDIS_HOSTNAME: immich-redis
+    volumes:
+      - immich-model-cache:/cache
+      - /dev/bus/usb:/dev/bus/usb # For hardware-accelerated machine learning
+    # device_cgroup_rules: # For hardware-accelerated machine learning
+    #   - "c 189:* rmw"
+    # devices:
+    #   - /dev/dri:/dev/dri
+    healthcheck:
+      disable: false
+    deploy:
+      resources:
+        limits:
+          cpus: "4"
+          memory: 4G
+
+  immich-redis:
+    <<: *defaults
+    image: docker.io/valkey/valkey:8-bookworm
+    container_name: immich-redis
+    networks:
+      - immich
+    environment:
+      TZ: "#VAR:general_timezone:VAR#"
+    healthcheck:
+      test: redis-cli ping || exit 1
+
+  immich-db:
+    <<: *defaults
+    image: ghcr.io/immich-app/postgres:14-vectorchord0.3.0-pgvectors0.2.0
+    container_name: immich-db
+    networks:
+      - immich
+    environment:
+      TZ: "#VAR:general_timezone:VAR#"
+      POSTGRES_DB: immich
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: "#VAR:app_immich_db_pass_postgres:VAR#"
+      POSTGRES_INITDB_ARGS: "--data-checksums"
+    volumes:
+      - "#VAR:general_path_appdata:VAR#/immich/postgresql/data:/var/lib/postgresql/data"
+      - "immich-db-dump:/backup"
+
+#################################################################
+#                            NETWORKS                           #
+#################################################################
+networks:
+  immich:
+    name: immich
+
+  nextcloud:
+    name: nextcloud
+
+#################################################################
+#                            VOLUMES                            #
+#################################################################
+volumes:
+  immich-db-dump:
+  immich-model-cache:
+  nc-db-dump:

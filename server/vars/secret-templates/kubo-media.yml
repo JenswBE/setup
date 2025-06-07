@@ -1,0 +1,6 @@
+# Immich
+app_immich_db_pass_postgres: ""
+
+# Nextcloud
+app_nextcloud_db_pass_root: ""
+app_nextcloud_db_pass_nextcloud: ""

@@ -5,10 +5,3 @@
       ansible.builtin.package:
         name: "{{ jwba_base_packages_debian }}"
         state: present
-
-    - name: Debian - Ensure LUKS prompt uses correct keymap # Based on https://askubuntu.com/a/1071945
-      ansible.builtin.lineinfile:
-        path: /etc/initramfs-tools/initramfs.conf
-        regexp: "^#?KEYMAP="
-        line: "KEYMAP=Y"
-      notify: Update initramfs

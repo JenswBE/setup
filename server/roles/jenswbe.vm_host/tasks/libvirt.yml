@@ -82,11 +82,15 @@
 - name: Setup basic networks
   ansible.builtin.include_tasks: libvirt_setup_network.yml
   vars:
-    network_name: "{{ item }}"
-    network_template_path: "networks/{{ item }}.xml"
+    network_name: "{{ item.name }}"
+    network_template_path: "networks/{{ item.prefix }}_{{ item.name }}.xml"
   loop:
-    - host
-    - internet
+    - name: nointernet
+      prefix: "100"
+    - name: lan
+      prefix: "200"
+    - name: nat
+      prefix: "210"
 
 - name: Setup wireguard network
   when: with_wireguard

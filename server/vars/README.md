@@ -12,6 +12,14 @@ cd -
 ln -snf "${SECRETS_DIR:?}/vars/server" secret
 ```
 
+## Generate random alphanumeric string
+
+Based on https://unix.stackexchange.com/a/230676
+
+```bash
+tr -dc A-Za-z0-9 </dev/random | head -c 32; echo
+```
+
 ## Generate Treafik basic auth credentials
 
 ```bash

@@ -3,31 +3,31 @@ hostnames:
     eve:
       fqdn: "eve.{{ general_domain_local }}"
       ipv6: false
-    fiona:
-      fqdn: "fiona.{{ general_domain_local }}"
-      ipv6: false
     fiona_main:
       fqdn: "fiona-main.{{ general_domain_local }}"
       ipv6: false
-    hercules:
-      fqdn: "hercules.{{ general_domain_local }}"
+    kubo_observability:
+      fqdn: "kubo-observability.{{ general_domain_local }}"
       ipv6: false
-    kubo:
+    kubo_private:
       fqdn: "kubo-private.{{ general_domain_local }}"
       ipv6: false
     po:
       fqdn: "po.{{ general_domain_local }}"
       ipv6: false
-    rango:
-      fqdn: "rango.{{ general_domain_local }}"
-      ipv6: false
+
   public:
     eve:
       fqdn: "eve.{{ general_domain_default }}"
       ipv6: false
-    kubo:
-      fqdn: "kubo.{{ general_domain_local }}"
-      ipv6: false
     po:
       fqdn: "po.{{ general_domain_default }}"
       ipv6: true
+
+  virbr_nointernet:
+    kubo_media:
+      fqdn: "kubo-media.virbr-nointernet.{{ general_domain_local }}"
+      ipv6: false
+    kubo_private:
+      fqdn: "kubo-private.virbr-nointernet.{{ general_domain_local }}"
+      ipv6: false

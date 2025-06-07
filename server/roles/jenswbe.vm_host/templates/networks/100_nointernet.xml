@@ -1,8 +1,7 @@
 <network>
-    <name>host</name>
+    <name>nointernet</name>
     <uuid>de08cb4b-6505-4799-967c-a8a16bf09b53</uuid>
     <bridge name="virbr100" stp="on" delay="0" />
     <mac address="52:54:00:e4:38:d4" />
-    <domain name="host" />
     <ip address="10.0.100.1" netmask="255.255.255.0"></ip>
 </network>

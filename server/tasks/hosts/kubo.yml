@@ -10,14 +10,6 @@
     - data-important.mount
     # Timers
     - docker-update-containers.timer
-    - github-backup.timer
     - graylog-dump-mongodb.timer
-    - immich-dump-db.timer
-    - nextcloud-cron.timer
-    - nextcloud-db-add-missing-indices.timer
-    - nextcloud-dump-db.timer
-    - nextcloud-preview-generator.timer
-    - nextcloud-update-apps.timer
-    - unifi-dump-mongodb.timer
     - zabbix-dump-db.timer
   tags: ["systemd"]
