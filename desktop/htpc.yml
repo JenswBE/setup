@@ -97,7 +97,7 @@
           Description=Mount /var/media
 
           [Mount]
-          What=kubo.jensw.eu:/data/media
+          What=truenas-direct.jensw.eu:/mnt/main/bulk
           Where=/var/media
           Type=nfs
           Options=noexec,nosuid,nofail,noatime

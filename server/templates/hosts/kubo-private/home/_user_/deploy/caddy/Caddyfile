@@ -22,17 +22,17 @@ import ./configs/shared_snippets.txt
 
 		@ha host "ha.#VAR:general_domain_local:VAR#"
 		handle @ha {
-			import default_local_reverse_proxy "http://kubo-haos.virbr-nointernet.jensw.eu:8123"
+			import default_local_reverse_proxy "http://kubo-haos.virbr-nointernet.{{ general_domain_local }}:8123"
 		}
 
 		@tmm host "tmm.#VAR:general_domain_local:VAR#"
 		handle @tmm {
-			import default_local_reverse_proxy "http://kubo-media.virbr-nointernet.jensw.eu:4000"
+			import default_local_reverse_proxy "http://kubo-media.virbr-nointernet.{{ general_domain_local }}:4000"
 		}
 
 		@truenas host "truenas.#VAR:general_domain_local:VAR#"
 		handle @truenas {
-			import default_local_reverse_proxy "http://kubo-storage.virbr-nointernet.jensw.eu"
+			import default_local_reverse_proxy "http://kubo-storage.virbr-nointernet.{{ general_domain_local }}"
 		}
 
 		@unifi host "unifi.#VAR:general_domain_local:VAR#"

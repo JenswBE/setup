@@ -19,15 +19,15 @@ http:// {
 }
 
 "immich.#VAR:general_domain_default:VAR#" {
-	import default_public_reverse_proxy "http://kubo-media.virbr-nointernet.jensw.eu:2283"
+	import default_public_reverse_proxy "http://kubo-media.virbr-nointernet.{{ general_domain_local }}:2283"
 }
 
 "jellyfin.#VAR:general_domain_default:VAR#" {
-	import default_public_reverse_proxy "http://kubo-media.virbr-nointernet.jensw.eu:8096"
+	import default_public_reverse_proxy "http://kubo-media.virbr-nointernet.{{ general_domain_local }}:8096"
 }
 
 "nextcloud-media.#VAR:general_domain_default:VAR#" {
-	import default_public_reverse_proxy "http://kubo-media.virbr-nointernet.jensw.eu"
+	import default_public_reverse_proxy "http://kubo-media.virbr-nointernet.{{ general_domain_local }}"
 	redir /.well-known/carddav /remote.php/dav 301
 	redir /.well-known/caldav /remote.php/dav 301
 	redir /.well-known/webfinger /index.php/.well-known/webfinger 301

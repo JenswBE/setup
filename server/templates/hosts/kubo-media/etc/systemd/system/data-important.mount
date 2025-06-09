@@ -4,7 +4,7 @@ After=network-online.target
 Wants=network-online.target
 
 [Mount]
-What=kubo-storage.jensw.eu:/mnt/main/important
+What=truenas-direct.{{ general_domain_local }}:/mnt/main/important
 Where=/data/important
 Type=nfs
 Options=auto
