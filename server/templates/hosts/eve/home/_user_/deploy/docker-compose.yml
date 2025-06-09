@@ -160,7 +160,7 @@ services:
   miniflux-db:
     <<: [*defaults, *healthcheck-postgres]
     # See https://github.com/miniflux/v2/blob/main/contrib/docker-compose/basic.yml
-    image: docker.io/library/postgres:13-alpine
+    image: docker.io/library/postgres:17-alpine
     container_name: miniflux-db
     networks:
       - miniflux
@@ -211,7 +211,7 @@ services:
     <<: [*defaults, *healthcheck-postgres]
     # Wiki.js supports PostgreSQL 9.5 or later and recommends latest version
     # https://docs.requarks.io/install/requirements
-    image: docker.io/library/postgres:16-alpine
+    image: docker.io/library/postgres:17-alpine
     container_name: wikijs-db
     networks:
       - wikijs
@@ -326,7 +326,7 @@ services:
     # Directus supports the LTS versions of PostgreSQL
     #   - https://docs.directus.io/self-hosted/docker-guide.html#supported-databases
     #   - https://endoflife.date/postgresql (from official docs)
-    image: docker.io/library/postgres:16
+    image: docker.io/library/postgres:17
     container_name: bjoetiek-directus-db
     networks:
       - bjoetiek-directus
@@ -386,7 +386,7 @@ services:
     # Directus supports the LTS versions of PostgreSQL
     #   - https://docs.directus.io/self-hosted/docker-guide.html#supported-databases
     #   - https://endoflife.date/postgresql (from official docs)
-    image: docker.io/library/postgres:16
+    image: docker.io/library/postgres:17
     container_name: kristofcoenen-directus-db
     networks:
       - kristofcoenen-directus
@@ -446,7 +446,7 @@ services:
     # Directus supports the LTS versions of PostgreSQL
     #   - https://docs.directus.io/self-hosted/docker-guide.html#supported-databases
     #   - https://endoflife.date/postgresql (from official docs)
-    image: docker.io/library/postgres:16
+    image: docker.io/library/postgres:17
     container_name: tuinfeest-directus-db
     networks:
       - tuinfeest-directus
@@ -506,7 +506,7 @@ services:
     # Directus supports the LTS versions of PostgreSQL
     #   - https://docs.directus.io/self-hosted/docker-guide.html#supported-databases
     #   - https://endoflife.date/postgresql (from official docs)
-    image: docker.io/library/postgres:16
+    image: docker.io/library/postgres:17
     container_name: wtech-directus-db
     networks:
       - wtech-directus
@@ -574,7 +574,7 @@ services:
   keycloak-db:
     <<: [*defaults, *healthcheck-postgres]
     # https://www.keycloak.org/server/db
-    image: docker.io/library/postgres:16-alpine
+    image: docker.io/library/postgres:17-alpine
     container_name: keycloak-db
     networks:
       - keycloak
@@ -693,7 +693,7 @@ services:
     container_name: paperless-db
     # See https://github.com/paperless-ngx/paperless-ngx/blob/main/docker/compose/docker-compose.postgres-tika.yml
     # for recommended version.
-    image: docker.io/library/postgres:16
+    image: docker.io/library/postgres:17
     networks:
       - paperless
     volumes:
