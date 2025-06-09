@@ -17,6 +17,7 @@ jwfw_zones:
     source_networks: [local_ipv4, local_ipv6]
     allowed_services:
       - ssh # 22/tcp
+      - dns # 53/tcp and 53/udp for Blocky
       - http # 80/tcp
       - https # 443/tcp
       - http3 # 443/udp (QUIC)
