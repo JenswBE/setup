@@ -26,9 +26,6 @@ Services which are backed up:
   - `graylog-mongodb` (MongoDB): DB data
   - `ha` (Home Assistant): Config files
   - `immich-db` (Postgres): DB data for Immich
-  - `nc-db` (MariaDB): DB data for Nextcloud
-  - `nextcloud` (Nextcloud): User files and config
-  - `plex` (Plex): Photo's and music
   - `unifi-mongodb` (MongoDB): DB data
   - `zabbix-db` (Postgres): DB data
 

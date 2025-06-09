@@ -19,17 +19,9 @@ http:// {
 }
 
 "immich.#VAR:general_domain_default:VAR#" {
-	import default_public_reverse_proxy "http://kubo-media.virbr-nointernet.{{ general_domain_local }}:2283"
+	import default_public_reverse_proxy "http://kubo-media.virbr-nointernet.#VAR:general_domain_local:VAR#:2283"
 }
 
 "jellyfin.#VAR:general_domain_default:VAR#" {
-	import default_public_reverse_proxy "http://kubo-media.virbr-nointernet.{{ general_domain_local }}:8096"
-}
-
-"nextcloud-media.#VAR:general_domain_default:VAR#" {
-	import default_public_reverse_proxy "http://kubo-media.virbr-nointernet.{{ general_domain_local }}"
-	redir /.well-known/carddav /remote.php/dav 301
-	redir /.well-known/caldav /remote.php/dav 301
-	redir /.well-known/webfinger /index.php/.well-known/webfinger 301
-	redir /.well-known/nodeinfo /index.php/.well-known/nodeinfo 301
+	import default_public_reverse_proxy "http://kubo-media.virbr-nointernet.#VAR:general_domain_local:VAR#:8096"
 }

@@ -64,62 +64,6 @@ services:
           memory: 2G
 
   # =========================
-  # =       NEXTCLOUD       =
-  # =========================
-  nextcloud:
-    <<: *defaults
-    build: ./nextcloud
-    container_name: nextcloud
-    hostname: nextcloud
-    networks:
-      - nextcloud
-    ports:
-      - "#VAR:hostnames.virbr_nointernet.kubo_media.ipv4:VAR#:8082:3000"
-    depends_on:
-      nc-db:
-        condition: service_healthy
-    volumes:
-      - "#VAR:general_path_appdata:VAR#/nextcloud/nextcloud/config:/var/www/html"
-      - "#VAR:general_path_appdata:VAR#/nextcloud/nextcloud/data:/var/www/html/data"
-    environment:
-      TZ: "#VAR:general_timezone:VAR#"
-      MYSQL_DATABASE: "nextcloud"
-      MYSQL_USER: "nextcloud"
-      MYSQL_PASSWORD: "#VAR:app_nextcloud_db_pass_nextcloud:VAR#"
-      MYSQL_HOST: "nc-db"
-    deploy:
-      resources:
-        limits:
-          cpus: "4"
-          memory: 4G
-
-  nc-db:
-    <<: *defaults
-    # Nextcloud currently only supports up to 10.6.
-    # See https://docs.nextcloud.com/server/29/admin_manual/installation/system_requirements.html
-    image: docker.io/library/mariadb:10.6
-    command: --transaction-isolation=READ-COMMITTED --log-bin=ROW --innodb-read-only-compressed=OFF
-    container_name: nc-db
-    networks:
-      - nextcloud
-    volumes:
-      - "#VAR:general_path_appdata:VAR#/nextcloud/mariadb/data:/var/lib/mysql"
-      - nc-db-dump:/backup
-    environment:
-      TZ: "#VAR:general_timezone:VAR#"
-      MARIADB_ROOT_PASSWORD: "#VAR:app_nextcloud_db_pass_root:VAR#"
-      MARIADB_PASSWORD: "#VAR:app_nextcloud_db_pass_nextcloud:VAR#"
-      MARIADB_DATABASE: "nextcloud"
-      MARIADB_USER: "nextcloud"
-      MARIADB_AUTO_UPGRADE: "1"
-    healthcheck: # Based on https://mariadb.com/kb/en/using-healthcheck-sh/
-      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
-      start_period: 10s
-      interval: 10s
-      timeout: 5s
-      retries: 3
-
-  # =========================
   # =        IMMICH         =
   # =========================
   immich: # Set ML url in settings to http://immich-ml:3003
@@ -212,13 +156,9 @@ networks:
   immich:
     name: immich
 
-  nextcloud:
-    name: nextcloud
-
 #################################################################
 #                            VOLUMES                            #
 #################################################################
 volumes:
   immich-db-dump:
   immich-model-cache:
-  nc-db-dump:

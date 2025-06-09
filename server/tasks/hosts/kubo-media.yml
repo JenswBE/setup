@@ -18,9 +18,4 @@
     # Timers
     - docker-update-containers.timer
     - immich-dump-db.timer
-    - nextcloud-cron.timer
-    - nextcloud-db-add-missing-indices.timer
-    - nextcloud-dump-db.timer
-    - nextcloud-preview-generator.timer
-    - nextcloud-update-apps.timer
-  # tags: ["systemd"]
+  tags: ["systemd"]

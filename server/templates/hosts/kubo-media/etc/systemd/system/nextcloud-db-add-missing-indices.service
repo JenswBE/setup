@@ -1,6 +1,0 @@
-[Unit]
-Description=Add missing indexes in DB for Nextcloud
-OnFailure=unit-fail-mail@%n.service
-
-[Service]
-ExecStart={{ docker_path }} exec --user www-data nextcloud php occ db:add-missing-indices
