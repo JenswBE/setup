@@ -34,3 +34,11 @@
       ansible.builtin.package:
         name: "{{ jwba_base_packages }}"
         state: present
+
+    - name: Set HISTCONTROL
+      ansible.builtin.template:
+        src: histcontrol.sh
+        dest: /etc/profile.d/histcontrol.sh
+        owner: root
+        group: root
+        mode: "644"
