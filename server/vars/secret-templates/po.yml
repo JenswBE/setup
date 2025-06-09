@@ -5,9 +5,6 @@ app_caddy_desec_token: ""
 # CrowdSec
 jwcs_bouncer_firewall_key: "" # Alphanumeric string
 
-# Graylog
-jwob_graylog_server_hostname: "" # Target for rsyslog and Docker logs
-
 # Wireguard
 jwwg_wireguard_interfaces:
   wg0:
@@ -21,6 +18,3 @@ jwwg_wireguard_interfaces:
         public_key: "" # Run "wg pubkey" on client
         psk: "" # Run "wg genpsk" on server
         allowed_ips: [""] # E.g. 10.0.0.2/32
-
-# Zabbix
-jwob_zabbix_server_hostname: "" # Incoming connections will be accepted only from the hosts listed here.

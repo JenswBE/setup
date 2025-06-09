@@ -30,9 +30,6 @@ jwcs_bouncer_firewall_key: "" # Alphanumeric string
 # https://github.com/JenswBE/dead-link-checker
 app_delic_ping_id: ""
 
-# Graylog
-jwob_graylog_server_hostname: "" # Target for rsyslog and Docker logs
-
 # IMAP Save attachments
 app_isa_poll_imap_host: "imap.migadu.com"
 app_isa_poll_imap_user: ""
@@ -101,6 +98,3 @@ app_wtech_directus_admin_password: ""
 app_wtech_directus_github_token: ""
 app_wtech_directus_key: "" # cat /proc/sys/kernel/random/uuid
 app_wtech_directus_secret: "" # openssl rand -hex 32
-
-# Zabbix
-jwob_zabbix_server_hostname: "" # Incoming connections will be accepted only from the hosts listed here.

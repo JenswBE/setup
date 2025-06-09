@@ -1,0 +1,42 @@
+import ./configs/shared_snippets.txt
+
+# Global
+{
+	import ./configs/shared_global.txt
+
+	security {
+		import ./configs/shared_security.txt
+	}
+}
+
+"*.#VAR:general_domain_local:VAR#",
+"*.#VAR:ansible_hostname:VAR#.#VAR:general_domain_local:VAR#" {
+	import logging
+	import tls_acme_dns
+
+	route {
+		import allow_local_only
+
+		import handler_local_crowdsec
+
+		@grafana host "grafana.#VAR:general_domain_local:VAR#"
+		handle @grafana {
+			import default_local_reverse_proxy "http://grafana:3000"
+		}
+
+		@logs host "logs.#VAR:general_domain_local:VAR#"
+		handle @logs {
+			import default_local_reverse_proxy "http://graylog:9000"
+		}
+
+		@prometheus host "prometheus.#VAR:general_domain_local:VAR#"
+		handle @prometheus {
+			import default_local_reverse_proxy "http://prometheus:9090"
+		}
+
+		@zabbix host "zabbix.#VAR:general_domain_local:VAR#"
+		handle @zabbix {
+			import default_local_reverse_proxy "http://zabbix-web:8080"
+		}
+	}
+}

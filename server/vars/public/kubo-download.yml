@@ -1,19 +1,9 @@
-# NBDE
-jwnc_clevis_device: /dev/nvme0n1p3
-jwnc_clevis_expected_binding: tang '{"url":"http://fiona.{{ general_domain_local }}:7500"}'
-
 # Firewall
 jwfw_zones:
   - zone: public # Based on /usr/lib/firewalld/zones/public.xml
     interfaces: []
     source_networks: []
-    allowed_services:
-      - ssh # 22/tcp
-      - http # 80/tcp
-      - https # 443/tcp
-      - http3 # 443/udp (QUIC)
-      - syncthing # 21027/udp, 22000/tcp and 22000/udp
-      - dhcpv6-client # 546/udp
+    allowed_services: []
     allowed_ports: []
     extra_strings:
       - key: short
@@ -31,12 +21,12 @@ jwfw_zones:
       - https # 443/tcp
       - http3 # 443/udp (QUIC)
       - dhcpv6-client # 546/udp
-      - syncthing # 21027/udp, 22000/tcp and 22000/udp
-    allowed_ports:
-      - port: 7500 # Tang (https://github.com/latchset/tang)
-        protos: [tcp]
+    allowed_ports: []
     extra_strings: []
     extra_booleans: []
 
-# VM Host
-jwvm_bridge_member_interface: enp3s0
+# Network config
+jwnetconf_interfaces:
+  - name: enp7s0
+    type: static
+    cidr_address: "{{ hostnames.virbr_nointernet.kubo_download.ipv4 }}/24"

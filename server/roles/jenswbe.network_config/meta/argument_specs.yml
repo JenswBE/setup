@@ -1,6 +1,6 @@
 argument_specs:
   main:
-    short_description: Setup a Tang server for NBDE
+    short_description: Setup network config
     options:
       # === REQUIRED ===
       ansible_distribution:

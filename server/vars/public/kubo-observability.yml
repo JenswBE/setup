@@ -1,19 +1,9 @@
-# NBDE
-jwnc_clevis_device: /dev/nvme0n1p3
-jwnc_clevis_expected_binding: tang '{"url":"http://fiona.{{ general_domain_local }}:7500"}'
-
 # Firewall
 jwfw_zones:
   - zone: public # Based on /usr/lib/firewalld/zones/public.xml
     interfaces: []
     source_networks: []
-    allowed_services:
-      - ssh # 22/tcp
-      - http # 80/tcp
-      - https # 443/tcp
-      - http3 # 443/udp (QUIC)
-      - syncthing # 21027/udp, 22000/tcp and 22000/udp
-      - dhcpv6-client # 546/udp
+    allowed_services: []
     allowed_ports: []
     extra_strings:
       - key: short
@@ -31,12 +21,16 @@ jwfw_zones:
       - https # 443/tcp
       - http3 # 443/udp (QUIC)
       - dhcpv6-client # 546/udp
-      - syncthing # 21027/udp, 22000/tcp and 22000/udp
     allowed_ports:
-      - port: 7500 # Tang (https://github.com/latchset/tang)
+      - port: 1514 # Graylog - Syslog
+        protos: [tcp, udp]
+      - port: 5044 # Graylog - Beats
         protos: [tcp]
+      - port: 12201 # Graylog - GELF
+        protos: [tcp, udp]
     extra_strings: []
     extra_booleans: []
 
-# VM Host
-jwvm_bridge_member_interface: enp3s0
+# Observability
+jwob_graylog_server_hostname: "127.0.0.1" # Target for rsyslog and Docker logs
+jwob_zabbix_server_hostname: "172.16.0.0/12" # Default Docker subnet - Incoming connections will be accepted only from the hosts listed here.

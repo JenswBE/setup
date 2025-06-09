@@ -1,0 +1,20 @@
+- name: Install NFS client
+  become: true
+  ansible.builtin.package:
+    state: present
+    name: nfs-common
+  tags: ["systemd"] # Needed by data-*.mount
+
+- name: Enable systemd mounts and timers
+  become: true
+  ansible.builtin.systemd_service:
+    name: "{{ item }}"
+    state: started
+    enabled: true
+  loop:
+    # Mounts
+    - data-bulk.mount
+    - data-important.mount
+    # Timers
+    - docker-update-containers.timer
+  tags: ["systemd"]

@@ -1,3 +1,7 @@
+# Observability
+jwob_graylog_server_hostname: "kubo-observability.{{ general_domain_local }}" # Target for rsyslog and Docker logs
+jwob_zabbix_server_hostname: "kubo-observability.{{ general_domain_local }}" # Incoming connections will be accepted only from the hosts listed here.
+
 # General
 general_mail_admin: admin
 general_path_appdata: "/opt/appdata"
@@ -6,9 +10,6 @@ general_user: jens
 
 # Docker
 docker_path: /usr/bin/docker # Used by systemd units
-
-# Firewall
-firewall_ssh_port: 22
 
 # HTTP headers
 # Based on https://owasp.org/www-project-secure-headers/#div-bestpractices
@@ -67,15 +68,3 @@ http_security_headers_static_without_reporting:
 # Security
 security_autoupdate_enabled: false # Handled by role "jenswbe.automatic_updates"
 security_fail2ban_enabled: false # Handled by CrowdSec
-
-# Zabbix
-zabbix:
-  server:
-    version: "7.0"
-  client:
-    amd64:
-      version: "7.0"
-      debian_suffix: ""
-    arm64:
-      version: "7.0"
-      debian_suffix: "-arm64"
