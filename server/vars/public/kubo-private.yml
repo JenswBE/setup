@@ -26,3 +26,9 @@ jwfw_zones:
         protos: [tcp]
     extra_strings: []
     extra_booleans: []
+
+# Network config
+jwnetconf_interfaces:
+  - name: enp7s0
+    type: static
+    cidr_address: "{{ hostnames.virbr_nointernet.kubo_private.ipv4 }}/24"

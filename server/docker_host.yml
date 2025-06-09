@@ -21,8 +21,10 @@
   hosts: docker_host:&homelab
   gather_facts: false
   roles:
+    - role: jenswbe.network_config
+      tags: ["network_config"]
+
     - role: jenswbe.powersavings
-      when: "'homelab' in group_names"
       tags: ["powersavings"]
 
 - name: Setup VPS

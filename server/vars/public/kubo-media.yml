@@ -25,6 +25,12 @@ jwfw_zones:
     extra_strings: []
     extra_booleans: []
 
+# Network config
+jwnetconf_interfaces:
+  - name: enp7s0
+    type: static
+    cidr_address: "{{ hostnames.virbr_nointernet.kubo_media.ipv4 }}/24"
+
 # Nextcloud
 app_nextcloud_apps_disable: "firstrunwizard,dashboard,weather_status"
 app_nextcloud_apps_install: "previewgenerator"

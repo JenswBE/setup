@@ -28,3 +28,9 @@ jwfw_zones:
     allowed_ports: []
     extra_strings: []
     extra_booleans: []
+
+# Network config
+jwnetconf_interfaces:
+  - name: enp7s0
+    type: static
+    cidr_address: "{{ hostnames.virbr_nointernet.kubo_public.ipv4 }}/24"

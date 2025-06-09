@@ -1,0 +1,31 @@
+- name: Setup network interfaces
+  become: true
+  block:
+    - name: Create interface files
+      become: true
+      ansible.builtin.template:
+        src: interface.conf
+        dest: "/etc/network/interfaces.d/{{ item.name }}.conf"
+        owner: root
+        group: root
+        mode: "0644"
+      loop: "{{ jwnetconf_interfaces }}"
+      notify: Restart networking
+
+    - name: Find orphaned interfaces
+      become: true
+      ansible.builtin.find:
+        paths: /etc/network/interfaces.d/
+        file_type: file
+        contains: jenswbe.network_config
+        read_whole_file: true
+        excludes: "{{ jwnetconf_interfaces | map(attribute='name') | list | product(['.conf']) | map('join') | list }}"
+      register: orphaned_interfaces
+
+    - name: Remove orphaned interfaces
+      become: true
+      ansible.builtin.file:
+        name: "{{ item }}"
+        state: absent
+      loop: "{{ orphaned_interfaces['files'] | map(attribute='path') }}"
+      notify: Restart networking

@@ -31,3 +31,6 @@ hostnames:
     kubo_private:
       fqdn: "kubo-private.virbr-nointernet.{{ general_domain_local }}"
       ipv6: false
+    kubo_public:
+      fqdn: "kubo-public.virbr-nointernet.{{ general_domain_local }}"
+      ipv6: false
