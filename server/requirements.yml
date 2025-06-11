@@ -25,4 +25,4 @@ collections:
     version: ">=1.0.0,<2.0.0"
 
   - name: community.zabbix
-    version: ">=3.0.0,<4.0.0"
+    version: ">=4.0.0,<4.1.0"
