@@ -7,3 +7,10 @@
   loop:
     - docker-update-containers.timer
   tags: ["systemd"]
+
+- name: Ensure systemd-resolved uses stub mode
+  ansible.builtin.file:
+    state: link
+    src: ../run/systemd/resolve/stub-resolv.conf
+    dest: /etc/resolv.conf
+    force: true

@@ -10,8 +10,9 @@ class FilterModule(object):
         return {
             'enrich_hostnames': self.enrich_hostnames,
             'to_caddy_header_values': self.to_caddy_header_values,
+            'group_names_to_zabbix_templates': self.group_names_to_zabbix_templates,
         }
-    
+
     def enrich_hostnames(self, input):
         result = {}
         for ip_type, hostnames in input.items():
@@ -23,7 +24,7 @@ class FilterModule(object):
                     host_result["ipv4"] = socket.gethostbyname(fqdn)
                 except Exception as e:
                     raise AnsibleError(f"Failed to lookup IPv4 for FQDN '{fqdn}': {to_native(e)}")
-                
+
                 if data["ipv6"]:
                     try:
                         (_, _, _, _, sockaddr) = socket.getaddrinfo(fqdn, None, socket.AF_INET6)[0]
@@ -32,12 +33,12 @@ class FilterModule(object):
                         raise AnsibleError(f"Failed to lookup IPv6 for FQDN '{fqdn}': {to_native(e)}")
                 else:
                     del(data["ipv6"]) # Ensures an error is thrown when trying to use "ipv6" in templates
-                
+
                 type_result[hostname] = host_result
             result[ip_type] = type_result
         return result
 
-    
+
     def remove_newlines(self, input):
         return input.replace("\\n", "")
 
@@ -51,3 +52,17 @@ class FilterModule(object):
                 raise AnsibleError(f"Param action is missing or has an unsupported value")
         header_list = [f"{prefix_sign}{header} `{self.remove_newlines(value)}`" for header, value in dict(headers).items()]
         return "\n".join(header_list)
+
+    def group_names_to_zabbix_templates(self, group_names):
+        # Settings
+        templates = ["Linux by Zabbix agent"] # Default templates
+        mapping = {
+            "docker_host": ["Docker by Zabbix agent 2"],
+            "zabbix_server": ["Zabbix server health"],
+        }
+
+        # Add templates
+        for group_name, group_templates in mapping.items():
+            if group_name in group_names:
+                templates.extend(group_templates)
+        return templates

@@ -34,9 +34,6 @@
     - role: jenswbe.wireguard # Docker requires Wireguard for GELF logging transport
       tags: ["wireguard"]
 
-    - role: jenswbe.observability
-      tags: ["observability"]
-
 - name: Setup other roles and tasks
   hosts: docker_host
   gather_facts: false
@@ -60,6 +57,9 @@
 
     - role: jenswbe.crowdsec
       tags: ["crowdsec"]
+
+    - role: jenswbe.observability
+      tags: ["observability"]
 
     - role: jenswbe.firewall
       tags: ["firewall"]

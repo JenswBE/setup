@@ -1,0 +1,27 @@
+# Basic auth creds
+ansible_user: ""
+ansible_httpapi_pass: ""
+
+# Extra hosts
+zabbix_extra_hosts:
+  - host_name: ""
+    host_groups: ["Firewalls"]
+    interfaces:
+      - type: agent
+        useip: 1
+        ip: ""
+        main: 1
+      - type: snmp
+        useip: 1
+        ip: ""
+        main: 1
+        details:
+          version: 2
+          community: ""
+    tls_accept: 2
+    tls_connect: 2
+    tls_psk_identity: ""
+    tls_psk: ""
+    link_templates:
+      - FreeBSD by Zabbix agent
+      - PFSense by SNMP

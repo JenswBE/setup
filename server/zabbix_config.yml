@@ -1,0 +1,93 @@
+- name: Configure Zabbix
+  hosts: localhost
+  gather_facts: false
+  vars_files:
+    - public/domains.yml
+    - secret/basics.yml # For email settings
+    - secret/zabbix.yml
+  tasks:
+    - name: Set public Zabbix vars
+      ansible.builtin.set_fact:
+        ansible_host: "zabbix.{{ general_domain_local }}"
+        ansible_network_os: community.zabbix.zabbix
+        ansible_connection: httpapi
+        ansible_httpapi_port: 443
+        ansible_httpapi_use_ssl: true
+        ansible_httpapi_validate_certs: true
+        ansible_zabbix_url_path: ""
+      tags: ["always"]
+
+    - name: Upsert hosts from inventory
+      community.zabbix.zabbix_host:
+        state: present
+        host_name: "{{ item.key }}"
+        host_groups: ["Linux servers"]
+        status: enabled
+        monitored_by: zabbix_server
+        interfaces:
+          - type: agent
+            dns: "{{ item.key }}.jensw.eu"
+            main: 1
+        link_templates: "{{ item.value.group_names | group_names_to_zabbix_templates }}"
+      when: "item.key != 'localhost'"
+      loop: "{{ hostvars | dict2items }}"
+      tags: ["inventory"]
+
+    # NOTE: Providing "tls_psk" makes it non-idempotent (always marked as changed)
+    - name: Upsert extra hosts
+      community.zabbix.zabbix_host:
+        state: present
+        host_name: "{{ item.host_name }}"
+        host_groups: "{{ item.host_groups }}"
+        status: enabled
+        monitored_by: zabbix_server
+        interfaces: "{{ item.interfaces }}"
+        tls_accept: "{{ item.tls_accept }}"
+        tls_connect: "{{ item.tls_connect }}"
+        tls_psk_identity: "{{ item.tls_psk_identity }}"
+        tls_psk: "{{ item.tls_psk }}"
+        link_templates: "{{ item.link_templates }}"
+      loop: "{{ zabbix_extra_hosts }}"
+      tags: ["extra"]
+
+    - name: Setup media type for HTML emails
+      community.zabbix.zabbix_mediatype:
+        state: present
+        name: "Email (HTML)"
+        type: "email"
+        smtp_server: "{{ mailjet_host }}"
+        smtp_server_port: "{{ mailjet_port_ssl }}"
+        smtp_email: "zabbix@{{ general_domain_default }}"
+        smtp_security: "SSL/TLS"
+        smtp_authentication: true
+        username: "{{ mailjet_username }}"
+        password: "{{ mailjet_password }}"
+      tags: ["alerts"]
+
+    - name: Set user media
+      community.zabbix.zabbix_user:
+        username: "{{ ansible_user }}"
+        passwd: "{{ ansible_httpapi_pass }}"
+        name: Zabbix
+        surname: Administrator
+        usrgrps:
+          - Internal
+          - Zabbix administrators
+        lang: en_GB
+        theme: dark-theme
+        autologin: true
+        refresh: "30"
+        rows_per_page: "50"
+        user_medias:
+          - mediatype: "Email (HTML)"
+            active: true
+            sendto: ["admin@{{ general_domain_default }}"]
+            period: 1-7,00:00-24:00
+            severity:
+              not_classified: true
+              information: false
+              warning: true
+              average: true
+              high: true
+              disaster: true
+      tags: ["alerts"]
