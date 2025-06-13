@@ -7,7 +7,8 @@ Wants=network-online.target
 What=truenas-direct.{{ general_domain_local }}:/mnt/main/bulk
 Where=/data/bulk
 Type=nfs
-Options=auto
+Options=defaults,retry=infinity
+TimeoutSec=infinity
 
 [Install]
 WantedBy=multi-user.target

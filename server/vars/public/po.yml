@@ -18,7 +18,10 @@ jwfw_zones:
       - key: short
         value: Public
       - key: description
-        value: For use in public areas. You do not trust the other computers on networks to not harm your computer. Only selected incoming connections are accepted.
+        value: >-
+          For use in public areas.
+          You do not trust the other computers on networks to not harm your computer.
+          Only selected incoming connections are accepted.
     extra_booleans: [forward]
 
   - zone: wireguard

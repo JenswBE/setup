@@ -3,8 +3,8 @@ hostnames:
     eve:
       fqdn: "eve.{{ general_domain_local }}"
       ipv6: false
-    fiona_main:
-      fqdn: "fiona-main.{{ general_domain_local }}"
+    fiona_private:
+      fqdn: "fiona-private.{{ general_domain_local }}"
       ipv6: false
     kubo_observability:
       fqdn: "kubo-observability.{{ general_domain_local }}"

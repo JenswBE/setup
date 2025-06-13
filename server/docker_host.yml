@@ -51,12 +51,14 @@
             - base: "172.16.0.0/12"
               size: 24 # Default is /16
           icc: false
-          log-driver: gelf
-          log-opts:
-            gelf-address: "udp://{{ jwob_graylog_server_hostname }}:12201"
 
     - role: jenswbe.crowdsec
       tags: ["crowdsec"]
+
+    - role: community.zabbix.zabbix_agent
+      zabbix_agent2: true
+      zabbix_agent_server: "{{ zabbix_server_hostname }}"
+      tags: ["observability"]
 
     - role: jenswbe.observability
       tags: ["observability"]

@@ -29,6 +29,11 @@
     - role: jenswbe.nbde_client
       tags: ["nbde", "nbde_client"]
 
+    - role: community.zabbix.zabbix_agent
+      zabbix_agent2: true
+      zabbix_agent_server: "{{ zabbix_server_hostname }}"
+      tags: ["observability", "zabbix"]
+
     - role: jenswbe.observability
       tags: ["observability"]
 

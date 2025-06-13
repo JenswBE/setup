@@ -179,7 +179,7 @@ services:
   # =========================
   zabbix-web:
     <<: *defaults
-    image: "docker.io/zabbix/zabbix-web-nginx-pgsql:alpine-#VAR:zabbix.server.version:VAR#-latest"
+    image: "docker.io/zabbix/zabbix-web-nginx-pgsql:alpine-#VAR:zabbix_server_version:VAR#-latest"
     container_name: zabbix-web
     volumes:
       - /etc/localtime:/etc/localtime:ro
@@ -227,7 +227,7 @@ services:
 
   zabbix-server:
     <<: [*defaults, *extra-hosts-docker-host]
-    image: "docker.io/zabbix/zabbix-server-pgsql:alpine-#VAR:zabbix.server.version:VAR#-latest"
+    image: "docker.io/zabbix/zabbix-server-pgsql:alpine-#VAR:zabbix_server_version:VAR#-latest"
     container_name: zabbix-server
     environment:
       TZ: "#VAR:general_timezone:VAR#"

@@ -16,9 +16,4 @@ argument_specs:
         required: true
         description: Hostname of the Graylog server
 
-      jwob_zabbix_server_hostname:
-        type: str
-        required: true
-        description: Hostname of the Zabbix server
-
       # === OPTIONAL ===

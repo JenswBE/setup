@@ -16,3 +16,7 @@ argument_specs:
         description: Name of interface to use as member for bridge "internet"
 
       # === OPTIONAL ===
+      jwvm_start_vms_after_nfs:
+        type: list
+        elements: str
+        description: List of VM names to start once NFS is available

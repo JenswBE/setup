@@ -1,1 +1,1 @@
-with_wireguard: false
+jwvm_start_vms_after_nfs: []

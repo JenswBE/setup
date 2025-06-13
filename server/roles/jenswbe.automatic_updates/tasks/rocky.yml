@@ -34,22 +34,15 @@
 
     - name: Set time for dnf-automatic.timer
       become: true
-      community.general.ini_file:
+      ansible.builtin.copy:
         dest: /etc/systemd/system/dnf-automatic.timer.d/10-set_time.conf
         owner: root
         group: root
         mode: "0644"
-        section: Timer
-        option: "{{ systemd_kv.option }}"
-        value: "{{ systemd_kv.value }}"
-        no_extra_spaces: true
-      loop:
-        - option: OnCalendar
-          value: "*-*-* {{ jwau_autoupdate_reboot_time }}"
-        - option: RandomizedDelaySec
-          value: 10m
-      loop_control:
-        loop_var: systemd_kv
+        content: |
+          [Timer]
+          OnCalendar=*-*-* {{ jwau_autoupdate_reboot_time }}
+          RandomizedDelaySec=10m
       notify: Reload systemd
 
     - name: Enable and start dnf-automatic.timer

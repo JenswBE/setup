@@ -19,34 +19,26 @@
 
 - name: Ensure Wireguard is restarted on failure
   become: true
-  community.general.ini_file:
+  ansible.builtin.copy:
     dest: /etc/systemd/system/wg-quick@{{ wg_config.name }}.service.d/10-restart_on_failure.conf
     owner: root
     group: root
     mode: "0644"
-    section: Service
-    option: "{{ systemd_kv.option }}"
-    value: "{{ systemd_kv.value }}"
-    no_extra_spaces: true
-  loop:
-    - option: Restart
-      value: on-failure
-    - option: RestartSec
-      value: 5m
-  loop_control:
-    loop_var: systemd_kv
+    content: |
+      [Service]
+      Restart=on-failure
+      RestartSec=5m
 
 - name: Ensure Wireguard is started after Docker
   become: true
-  community.general.ini_file:
+  ansible.builtin.copy:
     dest: /etc/systemd/system/wg-quick@{{ wg_config.name }}.service.d/10-start_before_docker.conf
     owner: root
     group: root
     mode: "0644"
-    section: Unit
-    option: Before
-    value: docker.service
-    no_extra_spaces: true
+    content: |
+      [Unit]
+      Before=docker.service
     # Systemd reload is not needed as this change only applies after a reboot anyway
 
   # Without, resolvconf returns "Failed to set DNS configuration: Could not activate remote peer."

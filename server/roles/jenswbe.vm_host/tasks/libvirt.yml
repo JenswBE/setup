@@ -92,29 +92,31 @@
     - name: nat
       prefix: "210"
 
-- name: Setup wireguard network
-  when: with_wireguard
-  ansible.builtin.include_tasks: libvirt_setup_network.yml
-  vars:
-    network_name: "{{ item }}"
-    network_template_path: "networks/wireguard.xml"
-
-- name: Setup Wireguard only filter
-  when: with_wireguard
-  ansible.builtin.template:
-    src: libvirt/networks/nwfilter-wireguard-only.xml
-    dest: /etc/libvirt/nwfilter/wireguard-only.xml
-    owner: root
-    group: root
-    mode: "600"
-  notify: Restart libvirtd
-
-- name: Copy clone-vm script
+- name: Copy helper scripts
   ansible.builtin.copy:
-    src: files/clone-vm.sh
-    dest: /usr/local/sbin/clone-vm
+    src: "files/{{ item }}.sh"
+    dest: /usr/local/sbin/{{ item }}
     owner: root
     group: root
     mode: "700"
-  tags:
-    - clone
+  loop:
+    - clone-vm
+    - start-vm-after-nfs
+
+- name: Copy start-vm-after-nfs@.service
+  ansible.builtin.template:
+    src: start-vm-after-nfs@.service
+    dest: /etc/systemd/system/start-vm-after-nfs@.service
+    owner: root
+    group: root
+    mode: "644"
+  notify: Reload systemd
+
+- name: Flush handlers
+  ansible.builtin.meta: flush_handlers
+
+- name: Enable start-vm-after-nfs@.service
+  ansible.builtin.systemd_service:
+    name: "start-vm-after-nfs@{{ item }}"
+    enabled: true
+  loop: "{{ jwvm_start_vms_after_nfs }}"

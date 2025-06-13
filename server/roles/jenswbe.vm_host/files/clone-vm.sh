@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Managed by Terraform at server/roles/jenswbe.vm_host/files/clone-vm.sh
+# Managed by Ansible at server/roles/jenswbe.vm_host/files/clone-vm.sh
 
 # Bash strict mode (http://redsymbol.net/articles/unofficial-bash-strict-mode/)
 set -euo pipefail

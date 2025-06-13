@@ -1,7 +1,0 @@
-zabbix_agent_version:
-  amd64:
-    version: "7.0"
-    debian_suffix: ""
-  arm64:
-    version: "7.0"
-    debian_suffix: "-arm64"

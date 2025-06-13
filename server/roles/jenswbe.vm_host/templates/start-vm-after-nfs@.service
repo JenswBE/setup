@@ -1,0 +1,13 @@
+# Managed by Ansible at server/roles/jenswbe.vm_host/files/start-vm-after-nfs@.service
+
+[Unit]
+Description=Start VM after NFS is available
+After=network.target
+OnFailure=unit-fail-mail@%n.service
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/bash /usr/local/sbin/start-vm-after-nfs truenas-direct.{{ general_domain_local }} %I
+
+[Install]
+WantedBy=multi-user.target
