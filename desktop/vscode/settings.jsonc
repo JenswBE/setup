@@ -52,7 +52,10 @@
     "*.build": "ini",
     "*.container": "ini",
     "*.gohtml": "html",
+    "*.mount": "ini",
     "*.network": "ini",
+    "*.service": "ini",
+    "*.timer": "ini",
     "*.txt.jinja2": "jinja",
     "*.volume": "ini"
   },
