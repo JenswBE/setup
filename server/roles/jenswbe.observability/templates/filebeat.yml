@@ -8,8 +8,15 @@ fields:
 
 filebeat.inputs:
   - type: journald
+    enabled: true
     id: everything
-  - type: container
+
+  - type: filestream
+    enabled: true
+    id: docker
+    prospector.scanner.symlinks: true
+    parsers:
+      - container: ~
     paths:
       - "/var/lib/docker/containers/*/*.log"
 
