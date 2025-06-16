@@ -30,6 +30,11 @@ import ./configs/shared_snippets.txt
 			import default_local_reverse_proxy "http://miniflux:8080"
 		}
 
+		@pdf host "pdf.#VAR:general_domain_local:VAR#"
+		handle @pdf {
+			import default_local_reverse_proxy "http://stirling-pdf:8080"
+		}
+
 		@start host "start.#VAR:general_domain_local:VAR#"
 		handle @start {
 			import default_local_reverse_proxy "http://homer:8080"

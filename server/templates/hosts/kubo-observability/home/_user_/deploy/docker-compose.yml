@@ -131,7 +131,7 @@ services:
       resources:
         limits:
           cpus: "4"
-          memory: 4G
+          memory: 8G
 
   graylog-elasticsearch:
     <<: [*defaults, *healthcheck-elasticsearch]
@@ -173,6 +173,11 @@ services:
     volumes:
       - "#VAR:general_path_appdata:VAR#/graylog/mongodb/data:/data/db"
       - graylog-mongodb-dump:/backup
+    deploy:
+      resources:
+        limits:
+          cpus: "2"
+          memory: 1G
 
   # =========================
   # =         ZABBIX        =
@@ -285,6 +290,11 @@ services:
       POSTGRES_DB: "zabbix"
       POSTGRES_USER: "zabbix"
       POSTGRES_PASSWORD: "#VAR:app_zabbix_db_pass:VAR#"
+    deploy:
+      resources:
+        limits:
+          cpus: "2"
+          memory: 1G
 
   # =========================
   # =       PROMETHEUS      =

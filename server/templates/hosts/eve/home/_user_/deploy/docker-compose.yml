@@ -756,6 +756,19 @@ services:
           memory: 6G
 
   # =========================
+  # =       PDF tools       =
+  # =========================
+  stirling-pdf:
+    <<: *defaults
+    image: ghcr.io/stirling-tools/stirling-pdf:latest-ultra-lite
+    container_name: stirling-pdf
+    networks:
+      - caddy-private
+    environment:
+      TZ: "#VAR:general_timezone:VAR#"
+      DOCKER_ENABLE_SECURITY: "false"
+
+  # =========================
   # =  NETWORK PERFORMANCE  =
   # =========================
   netperf-blackbox-exporter:

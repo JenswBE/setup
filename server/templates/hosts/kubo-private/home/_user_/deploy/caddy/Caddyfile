@@ -10,6 +10,7 @@ import ./configs/shared_snippets.txt
 }
 
 "*.#VAR:general_domain_local:VAR#",
+"*.kubo.#VAR:general_domain_local:VAR#", # Needed for Syncthing
 "*.#VAR:ansible_hostname:VAR#.#VAR:general_domain_local:VAR#" {
 	import logging
 	import tls_acme_dns
@@ -23,6 +24,11 @@ import ./configs/shared_snippets.txt
 		@ha host "ha.#VAR:general_domain_local:VAR#"
 		handle @ha {
 			import default_local_reverse_proxy "http://kubo-haos.virbr-nointernet.#VAR:general_domain_local:VAR#:8123"
+		}
+
+		@syncthing host "syncthing.kubo.#VAR:general_domain_local:VAR#" # Consider renaming to syncthing.kubo-media
+		handle @syncthing {
+			import default_local_reverse_proxy "http://kubo-media.virbr-nointernet.#VAR:general_domain_local:VAR#:8384"
 		}
 
 		@tmm host "tmm.#VAR:general_domain_local:VAR#"

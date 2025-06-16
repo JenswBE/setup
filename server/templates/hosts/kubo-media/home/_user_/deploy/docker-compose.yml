@@ -14,56 +14,6 @@ x-defaults: &defaults
 #################################################################
 services:
   # =========================
-  # =        JELLYFIN       =
-  # =========================
-  jellyfin:
-    <<: *defaults
-    image: docker.io/jellyfin/jellyfin:latest
-    container_name: jellyfin
-    user: "#VAR:ansible_real_user_id:VAR#:#VAR:ansible_real_group_id:VAR#"
-    # # See https://jellyfin.org/docs/general/administration/hardware-acceleration/intel#configure-with-linux-virtualization
-    # group_add: # By id as these may not exist within the container. Needed to provide permissions to the QSV/VA-API Devices
-    #   - "105" # Group "render"
-    #   - "44" # Group "video"
-    # devices:
-    #   - /dev/dri/renderD128:/dev/dri/renderD128 # Intel Quick Sync Video (QSV)
-    ports:
-      - "#VAR:hostnames.virbr_nointernet.kubo_media.ipv4:VAR#:8096:8096"
-    volumes:
-      - "/data/bulk/media:/media"
-      - "/data/important/Photos:/Photos"
-      - "#VAR:general_path_appdata:VAR#/jellyfin/config:/config"
-      - "#VAR:general_path_appdata:VAR#/jellyfin/cache:/cache"
-    deploy:
-      resources:
-        limits:
-          cpus: "4"
-          memory: 4G
-
-  # =========================
-  # =   TINY MEDIA MANAGER  =
-  # =========================
-  tmm:
-    <<: *defaults
-    image: docker.io/tinymediamanager/tinymediamanager:latest
-    container_name: tmm
-    ports:
-      - "#VAR:hostnames.virbr_nointernet.kubo_media.ipv4:VAR#:4000:4000"
-    volumes:
-      - "/data/bulk/media:/media"
-      - "#VAR:general_path_appdata:VAR#/tmm/data:/data"
-    environment:
-      TZ: "#VAR:general_timezone:VAR#"
-      USER_ID: "#VAR:ansible_real_user_id:VAR#"
-      GROUP_ID: "#VAR:ansible_real_group_id:VAR#"
-      LC_TIME: C.UTF-8
-    deploy:
-      resources:
-        limits:
-          cpus: "2"
-          memory: 2G
-
-  # =========================
   # =        IMMICH         =
   # =========================
   immich: # Set ML url in settings to http://immich-ml:3003
@@ -148,6 +98,76 @@ services:
     volumes:
       - "#VAR:general_path_appdata:VAR#/immich/postgresql/data:/var/lib/postgresql/data"
       - "immich-db-dump:/backup"
+
+  # =========================
+  # =        JELLYFIN       =
+  # =========================
+  jellyfin:
+    <<: *defaults
+    image: docker.io/jellyfin/jellyfin:latest
+    container_name: jellyfin
+    user: "#VAR:ansible_real_user_id:VAR#:#VAR:ansible_real_group_id:VAR#"
+    # # See https://jellyfin.org/docs/general/administration/hardware-acceleration/intel#configure-with-linux-virtualization
+    # group_add: # By id as these may not exist within the container. Needed to provide permissions to the QSV/VA-API Devices
+    #   - "105" # Group "render"
+    #   - "44" # Group "video"
+    # devices:
+    #   - /dev/dri/renderD128:/dev/dri/renderD128 # Intel Quick Sync Video (QSV)
+    ports:
+      - "#VAR:hostnames.virbr_nointernet.kubo_media.ipv4:VAR#:8096:8096"
+    volumes:
+      - "/data/bulk/media:/media"
+      - "/data/important/Photos:/Photos"
+      - "#VAR:general_path_appdata:VAR#/jellyfin/config:/config"
+      - "#VAR:general_path_appdata:VAR#/jellyfin/cache:/cache"
+    deploy:
+      resources:
+        limits:
+          cpus: "4"
+          memory: 4G
+
+  # =========================
+  # =       SYNCTHING       =
+  # =========================
+  syncthing:
+    <<: *defaults
+    image: docker.io/syncthing/syncthing:1
+    container_name: syncthing
+    hostname: "#VAR:ansible_hostname:VAR#"
+    ports:
+      - "#VAR:hostnames.virbr_nointernet.kubo_media.ipv4:VAR#:8384:8384"
+      - "22000:22000"
+      - "22000:22000/udp"
+    volumes:
+      - "#VAR:general_path_appdata:VAR#/syncthing/config:/var/syncthing"
+      - "/data/bulk/media/Music:/data/music"
+    environment:
+      TZ: "#VAR:general_timezone:VAR#"
+      PUID: "#VAR:ansible_real_user_id:VAR#"
+      PGID: "#VAR:ansible_real_user_id:VAR#"
+
+  # =========================
+  # =   TINY MEDIA MANAGER  =
+  # =========================
+  tmm:
+    <<: *defaults
+    image: docker.io/tinymediamanager/tinymediamanager:latest
+    container_name: tmm
+    ports:
+      - "#VAR:hostnames.virbr_nointernet.kubo_media.ipv4:VAR#:4000:4000"
+    volumes:
+      - "/data/bulk/media:/media"
+      - "#VAR:general_path_appdata:VAR#/tmm/data:/data"
+    environment:
+      TZ: "#VAR:general_timezone:VAR#"
+      USER_ID: "#VAR:ansible_real_user_id:VAR#"
+      GROUP_ID: "#VAR:ansible_real_group_id:VAR#"
+      LC_TIME: C.UTF-8
+    deploy:
+      resources:
+        limits:
+          cpus: "2"
+          memory: 2G
 
 #################################################################
 #                            NETWORKS                           #
