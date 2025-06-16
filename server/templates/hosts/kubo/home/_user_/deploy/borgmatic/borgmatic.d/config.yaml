@@ -5,9 +5,12 @@ source_directories:
 # Repositories
 repositories:
   - label: remote
-    path: "{{ app_borgmatic_ssh_user }}@{{ app_borgmatic_ssh_host }}:{{ app_borgmatic_remote_folder }}"
+    path: "ssh://{{ app_borgmatic_ssh_user }}@{{ app_borgmatic_ssh_host }}/./{{ app_borgmatic_remote_folder }}"
+    encryption: repokey-blake2
+    append_only: true
 
 # General
+verbosity: 1 # Info
 compression: lz4
 archive_name_format: "backup-{now}"
 ssh_command: "ssh -i /root/.ssh/BorgHost -p {{ app_borgmatic_ssh_port }}"
@@ -29,12 +32,6 @@ checks:
     frequency: 2 weeks
 check_last: 3
 
-# Hooks
-before_backup:
-  - "echo $(date): Borgmatic - Backup started"
-after_backup:
-  - "echo $(date): Borgmatic - Send ping to Healthchecks.io"
-  - "wget https://hc-ping.com/{{ app_borgmatic_ping_id }} -T 10 -t 5 -O /dev/null"
-  - "echo $(date): Borgmatic - Backup finished"
-on_error:
-  - "echo $(date): Borgmatic - Backup failed"
+# Monitoring
+healthchecks:
+  ping_url: "https://hc-ping.com/{{ app_borgmatic_ping_id }}"
