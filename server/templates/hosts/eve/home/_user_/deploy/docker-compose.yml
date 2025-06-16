@@ -840,7 +840,7 @@ services:
 
   borgmatic:
     <<: *defaults
-    image: ghcr.io/borgmatic-collective/borgmatic:1.9
+    image: ghcr.io/borgmatic-collective/borgmatic:2.0
     container_name: borgmatic
     cap_add:
       - SYS_ADMIN # Required for borg mount
