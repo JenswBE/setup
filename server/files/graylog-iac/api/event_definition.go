@@ -127,6 +127,7 @@ func eventDefinitionFromModel(m models.EventDefinition) EventDefinition {
 				}},
 			}
 		}
+		a.FieldSpec = fieldSpecs
 	}
 
 	return a

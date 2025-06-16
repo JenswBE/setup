@@ -19,13 +19,6 @@ import (
 func expectedEventDefinitions(inventoryPath string) ([]models.EventDefinition, error) {
 	defs := []models.EventDefinition{
 		{
-			Title:                   "Bjoetiek errors",
-			Query:                   `source:eve AND container_name:bjoetiek-frontend AND error AND NOT "No config file found, expecting configuration through ENV variables"`,
-			ExecuteEvery:            5 * time.Minute,
-			NotificationGracePeriod: 5 * time.Minute,
-			SearchWithin:            5 * time.Minute,
-		},
-		{
 			Title:       "Deprecated",
 			Description: "Deprecation message found in logs",
 			Query: strings.Join([]string{
@@ -39,9 +32,11 @@ func expectedEventDefinitions(inventoryPath string) ([]models.EventDefinition, e
 				`AND NOT "node --trace-deprecation"`,
 				"AND NOT \"`orderBy(..., expr)` is deprecated. Use `orderBy(..., 'asc')` or `orderBy(..., (ob) => ...)` instead\"",
 				`AND NOT "pam_env(sshd:session): deprecated reading of user environment enabled"`,
+				`AND NOT "pkg_resources is deprecated as an API"`, // Zabbix Web
 				`AND NOT "Remote repository paths without ssh:// or rclone"`,
 				`AND NOT "systemd-udev-settle.service is deprecated. Please fix"`,
-				`AND NOT "The collStats command is deprecated."`, // MongoDB
+				`AND NOT "The collStats command is deprecated."`,                                             // MongoDB
+				`AND NOT "transport.publish_address was printed as [ip:port] instead of [hostname/ip:port]"`, // ElasticSearch by Graylog
 			}, " "),
 			ExecuteEvery:            24 * time.Hour,
 			NotificationGracePeriod: time.Hour,
