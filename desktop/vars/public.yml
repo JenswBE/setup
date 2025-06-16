@@ -16,10 +16,10 @@ syncthing_dirs:
     container: /data/music
 
 gnome_keybindings:
-  flameshot:
+  screenshot:
     - binding: Print
-      command: "{{ ansible_user_dir }}/Documents/AppImages/Flameshot.sh"
-      name: Flameshot
+      command: "flatpak run be.alexandervanhee.gradia --screenshot"
+      name: Gradia
   development:
     - binding: <Shift><Super>h
       command: /usr/bin/ptyxis --title "HOST - " --tab-with-profile=6575f23d52753c7261fd0a3a676ec340

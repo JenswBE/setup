@@ -119,6 +119,7 @@
         method: user
         remote: flathub
         name:
+          - be.alexandervanhee.gradia
           - com.bitwarden.desktop
           - com.brave.Browser
           - org.gimp.GIMP
@@ -131,9 +132,8 @@
       loop_control:
         loop_var: task_name
       loop:
-        - flameshot
         - gnome
         - syncthing
       vars:
         extra_dconf_files: ["dark", "development", "virt-manager"]
-        keybindings: "{{ [gnome_keybindings.flameshot, gnome_keybindings.development] | flatten }}"
+        keybindings: "{{ [gnome_keybindings.screenshot, gnome_keybindings.development] | flatten }}"
