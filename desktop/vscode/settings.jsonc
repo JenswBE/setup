@@ -59,11 +59,13 @@
     "*.txt.jinja2": "jinja",
     "*.volume": "ini"
   },
+  "files.enableTrash": false,
   "files.insertFinalNewline": true,
   "files.trimFinalNewlines": true,
   "files.trimTrailingWhitespace": true,
   "git.autofetch": true,
   "git.confirmSync": false,
+  "git.discardUntrackedChangesToTrash": false,
   "git.enableSmartCommit": true,
   "gitlens.codeLens.enabled": false,
   "gitlens.hovers.currentLine.over": "line",
@@ -129,8 +131,8 @@
   "telemetry.telemetryLevel": "off",
   "terminal.integrated.allowChords": false,
   "terminal.integrated.persistentSessionReviveProcess": "never",
+  "terminal.integrated.scrollback": 100000,
   "terminal.integrated.sendKeybindingsToShell": true,
   "workbench.colorTheme": "Dracula Pro",
-  "workbench.startupEditor": "none",
-  "terminal.integrated.scrollback": 100000
+  "workbench.startupEditor": "none"
 }
