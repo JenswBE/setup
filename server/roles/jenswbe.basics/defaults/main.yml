@@ -5,6 +5,7 @@ jwba_base_packages:
   - iotop
   - pv
   - rsync
+  - tmux
   - vim
 
 jwba_base_packages_debian:
