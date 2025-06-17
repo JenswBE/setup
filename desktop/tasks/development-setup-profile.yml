@@ -17,12 +17,26 @@
     path: "{{ ansible_user_dir }}/.ssh"
     mode: "0700"
 
+- name: Check SSH key already exists
+  ansible.builtin.stat:
+    path: "{{ ssh_key_path }}"
+  register: check_ssh_key_exists
+
+- name: Ask for SSH key passphrase
+  when: not check_ssh_key_exists.stat.exists
+  register: ssh_key_passphrase
+  ansible.builtin.pause:
+    prompt: "Enter SSH key passphrase: "
+    echo: no
+
 # GitHub doesn't support SSH FIDO2 with no-touch-required
 - name: "{{ profile_name }} - Create public/private key pair"
   register: create_ssh_key
+  when: not check_ssh_key_exists.stat.exists
   community.crypto.openssh_keypair:
     path: "{{ ssh_key_path }}"
     type: ed25519
+    passphrase: "{{ ssh_key_passphrase.user_input | trim }}"
     comment: "GitHub {{ profile_name }} on {{ ansible_hostname | capitalize }}"
     regenerate: never
     owner: "{{ ansible_real_user_id }}"
