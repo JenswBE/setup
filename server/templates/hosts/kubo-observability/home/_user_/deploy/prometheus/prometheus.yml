@@ -7,18 +7,18 @@ scrape_configs:
     scheme: https
     static_configs:
       - targets:
-          - "blocky.eve.{{ general_domain_local }}"
-          - "blocky.fiona.{{ general_domain_local }}"
-          - "blocky.kubo.{{ general_domain_local }}"
+          - "blocky.eve.#VAR: general_domain_local :VAR#"
+          - "blocky.fiona.#VAR: general_domain_local :VAR#"
+          - "blocky.kubo.#VAR: general_domain_local :VAR#"
 
   - job_name: crowdsec
     scheme: https
     static_configs:
       - targets:
-          - "crowdsec.eve.{{ general_domain_local }}"
-          - "crowdsec.fiona.{{ general_domain_local }}"
-          - "crowdsec.kubo.{{ general_domain_local }}"
-          - "crowdsec.po.{{ general_domain_local }}"
+          - "crowdsec.eve.#VAR: general_domain_local :VAR#"
+          - "crowdsec.fiona.#VAR: general_domain_local :VAR#"
+          - "crowdsec.kubo.#VAR: general_domain_local :VAR#"
+          - "crowdsec.po.#VAR: general_domain_local :VAR#"
 
   - job_name: netperf-home-download
     scrape_interval: 5m
@@ -27,7 +27,7 @@ scrape_configs:
       module: [http_2xx]
     static_configs:
       - targets:
-          - "http://eve.{{ general_domain_local }}:9116"
+          - "http://eve.#VAR: general_domain_local :VAR#:9116"
     relabel_configs:
       - source_labels: [__address__]
         target_label: __param_target
@@ -43,14 +43,14 @@ scrape_configs:
       module: [http_2xx]
     static_configs:
       - targets:
-          - "http://kubo-private.{{ general_domain_local }}:9116"
+          - "http://kubo-private.#VAR: general_domain_local :VAR#:9116"
     relabel_configs:
       - source_labels: [__address__]
         target_label: __param_target
       - source_labels: [__param_target]
         target_label: instance
       - target_label: __address__
-        replacement: "eve.{{ general_domain_local }}:9115"
+        replacement: "eve.#VAR: general_domain_local :VAR#:9115"
 
   - job_name: netperf-dns-eve-from-kubo
     scrape_interval: 1m
@@ -59,7 +59,7 @@ scrape_configs:
       module: [http_for_dns]
     static_configs:
       - targets:
-          - http://eve.{{ general_domain_default }}
+          - http://eve.#VAR: general_domain_default :VAR#
     relabel_configs:
       - source_labels: [__address__]
         target_label: __param_target
@@ -75,16 +75,16 @@ scrape_configs:
       module: [http_for_dns]
     static_configs:
       - targets:
-          - http://kubo.{{ general_domain_default }}
+          - http://kubo.#VAR: general_domain_default :VAR#
     relabel_configs:
       - source_labels: [__address__]
         target_label: __param_target
       - source_labels: [__param_target]
         target_label: instance
       - target_label: __address__
-        replacement: "eve.{{ general_domain_local }}:9115"
+        replacement: "eve.#VAR: general_domain_local :VAR#:9115"
 
   - job_name: opendtu
     metrics_path: /api/prometheus/metrics
     static_configs:
-      - targets: ["opendtu.{{ general_domain_local }}"]
+      - targets: ["opendtu.#VAR: general_domain_local :VAR#"]

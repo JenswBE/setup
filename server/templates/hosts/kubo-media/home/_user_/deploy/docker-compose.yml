@@ -1,4 +1,4 @@
-#VAR:ansible_managed | comment:VAR#
+#VAR: ansible_managed | comment :VAR#
 
 #################################################################
 #                            DEFAULTS                           #
@@ -7,7 +7,7 @@
 x-defaults: &defaults
   x-dummy: ""
   # Putting the anchor in this file ensures it's a valid YAML file for Renovate Bot
-  #VAR:lookup('ansible.builtin.file', 'files/docker-compose-defaults.yml',) | indent(width=2):VAR#
+  #VAR: lookup('ansible.builtin.file', 'files/docker-compose-defaults.yml',) | indent(width=2) :VAR#
 
 #################################################################
 #                            SERVICES                           #
@@ -23,13 +23,13 @@ services:
     networks:
       - immich
     environment:
-      TZ: "#VAR:general_timezone:VAR#"
+      TZ: "#VAR: general_timezone :VAR#"
       DB_HOSTNAME: immich-db
-      DB_PASSWORD: "#VAR:app_immich_db_pass_postgres:VAR#"
+      DB_PASSWORD: "#VAR: app_immich_db_pass_postgres :VAR#"
       REDIS_HOSTNAME: immich-redis
       IMMICH_TELEMETRY_INCLUDE: all
     volumes:
-      - "#VAR:general_path_appdata:VAR#/immich/immich/upload:/usr/src/app/upload"
+      - "#VAR: general_path_appdata :VAR#/immich/immich/upload:/usr/src/app/upload"
       - /etc/localtime:/etc/localtime:ro
     depends_on:
       immich-redis:
@@ -39,7 +39,7 @@ services:
     healthcheck:
       disable: false
     ports:
-      - "#VAR:hostnames.virbr_nointernet.kubo_media.ipv4:VAR#:2283:2283"
+      - "#VAR: hostnames.virbr_nointernet.kubo_media.ipv4 :VAR#:2283:2283"
     deploy:
       resources:
         limits:
@@ -53,9 +53,9 @@ services:
     networks:
       - immich
     environment:
-      TZ: "#VAR:general_timezone:VAR#"
+      TZ: "#VAR: general_timezone :VAR#"
       DB_HOSTNAME: immich-db
-      DB_PASSWORD: "#VAR:app_immich_db_pass_postgres:VAR#"
+      DB_PASSWORD: "#VAR: app_immich_db_pass_postgres :VAR#"
       REDIS_HOSTNAME: immich-redis
     volumes:
       - immich-model-cache:/cache
@@ -79,7 +79,7 @@ services:
     networks:
       - immich
     environment:
-      TZ: "#VAR:general_timezone:VAR#"
+      TZ: "#VAR: general_timezone :VAR#"
     healthcheck:
       test: redis-cli ping || exit 1
 
@@ -90,13 +90,13 @@ services:
     networks:
       - immich
     environment:
-      TZ: "#VAR:general_timezone:VAR#"
+      TZ: "#VAR: general_timezone :VAR#"
       POSTGRES_DB: immich
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: "#VAR:app_immich_db_pass_postgres:VAR#"
+      POSTGRES_PASSWORD: "#VAR: app_immich_db_pass_postgres :VAR#"
       POSTGRES_INITDB_ARGS: "--data-checksums"
     volumes:
-      - "#VAR:general_path_appdata:VAR#/immich/postgresql/data:/var/lib/postgresql/data"
+      - "#VAR: general_path_appdata :VAR#/immich/postgresql/data:/var/lib/postgresql/data"
       - "immich-db-dump:/backup"
 
   # =========================
@@ -106,7 +106,7 @@ services:
     <<: *defaults
     image: docker.io/jellyfin/jellyfin:latest
     container_name: jellyfin
-    user: "#VAR:ansible_real_user_id:VAR#:#VAR:ansible_real_group_id:VAR#"
+    user: "#VAR: ansible_real_user_id :VAR#:#VAR: ansible_real_group_id :VAR#"
     # # See https://jellyfin.org/docs/general/administration/hardware-acceleration/intel#configure-with-linux-virtualization
     # group_add: # By id as these may not exist within the container. Needed to provide permissions to the QSV/VA-API Devices
     #   - "105" # Group "render"
@@ -114,12 +114,12 @@ services:
     # devices:
     #   - /dev/dri/renderD128:/dev/dri/renderD128 # Intel Quick Sync Video (QSV)
     ports:
-      - "#VAR:hostnames.virbr_nointernet.kubo_media.ipv4:VAR#:8096:8096"
+      - "#VAR: hostnames.virbr_nointernet.kubo_media.ipv4 :VAR#:8096:8096"
     volumes:
       - "/data/bulk/media:/media"
       - "/data/important/Photos:/Photos"
-      - "#VAR:general_path_appdata:VAR#/jellyfin/config:/config"
-      - "#VAR:general_path_appdata:VAR#/jellyfin/cache:/cache"
+      - "#VAR: general_path_appdata :VAR#/jellyfin/config:/config"
+      - "#VAR: general_path_appdata :VAR#/jellyfin/cache:/cache"
     deploy:
       resources:
         limits:
@@ -133,18 +133,18 @@ services:
     <<: *defaults
     image: docker.io/syncthing/syncthing:1
     container_name: syncthing
-    hostname: "#VAR:ansible_hostname:VAR#"
+    hostname: "#VAR: ansible_hostname :VAR#"
     ports:
-      - "#VAR:hostnames.virbr_nointernet.kubo_media.ipv4:VAR#:8384:8384"
+      - "#VAR: hostnames.virbr_nointernet.kubo_media.ipv4 :VAR#:8384:8384"
       - "22000:22000"
       - "22000:22000/udp"
     volumes:
-      - "#VAR:general_path_appdata:VAR#/syncthing/config:/var/syncthing"
+      - "#VAR: general_path_appdata :VAR#/syncthing/config:/var/syncthing"
       - "/data/bulk/media/Music:/data/music"
     environment:
-      TZ: "#VAR:general_timezone:VAR#"
-      PUID: "#VAR:ansible_real_user_id:VAR#"
-      PGID: "#VAR:ansible_real_user_id:VAR#"
+      TZ: "#VAR: general_timezone :VAR#"
+      PUID: "#VAR: ansible_real_user_id :VAR#"
+      PGID: "#VAR: ansible_real_user_id :VAR#"
 
   # =========================
   # =   TINY MEDIA MANAGER  =
@@ -154,20 +154,59 @@ services:
     image: docker.io/tinymediamanager/tinymediamanager:latest
     container_name: tmm
     ports:
-      - "#VAR:hostnames.virbr_nointernet.kubo_media.ipv4:VAR#:4000:4000"
+      - "#VAR: hostnames.virbr_nointernet.kubo_media.ipv4 :VAR#:4000:4000"
     volumes:
       - "/data/bulk/media:/media"
-      - "#VAR:general_path_appdata:VAR#/tmm/data:/data"
+      - "#VAR: general_path_appdata :VAR#/tmm/data:/data"
     environment:
-      TZ: "#VAR:general_timezone:VAR#"
-      USER_ID: "#VAR:ansible_real_user_id:VAR#"
-      GROUP_ID: "#VAR:ansible_real_group_id:VAR#"
+      TZ: "#VAR: general_timezone :VAR#"
+      USER_ID: "#VAR: ansible_real_user_id :VAR#"
+      GROUP_ID: "#VAR: ansible_real_group_id :VAR#"
       LC_TIME: C.UTF-8
     deploy:
       resources:
         limits:
           cpus: "2"
           memory: 2G
+
+  # =========================
+  # =         BACKUP        =
+  # =========================
+  borgmatic:
+    <<: *defaults
+    build: ./borgmatic
+    container_name: borgmatic
+    cap_add:
+      - SYS_ADMIN # Required for borg mount
+    volumes:
+      # Backup locations
+      # - "#VAR: general_path_appdata :VAR#/home-automation/home-assistant/config:/mnt/source/home-automation/home-assistant/config:ro"
+      - "#VAR: general_path_appdata :VAR#/immich/immich/upload:/mnt/source/immich/upload"
+      - "immich-db-dump:/mnt/source/immich/dbdump:ro"
+      - "/data/important/Photos:/mnt/source/plex/photos:ro"
+      - "/data/bulk/media/Music:/mnt/source/plex/music:ro"
+      - "/data/important/restore-borgmatic:/mnt/restore"
+      # Config and cache
+      - "./borgmatic/borgmatic.d/config.yaml:/etc/borgmatic.d/config.yaml"
+      - "./borgmatic/ssh/BorgHost:/root/.ssh/BorgHost"
+      - "./borgmatic/ssh/known_hosts:/root/.ssh/known_hosts"
+      - "#VAR: general_path_appdata :VAR#/borgmatic/borgmatic/config:/root/.config/borg"
+      - "#VAR: general_path_appdata :VAR#/borgmatic/borgmatic/cache:/root/.cache/borg"
+      # - "#VAR: general_path_appdata :VAR#/borgmatic/borgmatic/restore:/mnt/restore"
+    devices:
+      - "/dev/fuse:/dev/fuse" # Required for borg mount
+    environment:
+      TZ: "#VAR: general_timezone :VAR#"
+      # BACKUP_CRON: "0 3 * * *"
+      BACKUP_CRON: "0 0 0 1 *"
+      BORG_PASSPHRASE: "#VAR: app_borgmatic_borg_passphrase :VAR#"
+      BORG_HOSTNAME_IS_UNIQUE: "yes" # Automatically removes stale locks
+      BORG_HOST_ID: "#VAR: ansible_hostname :VAR#"
+    deploy:
+      resources:
+        limits:
+          cpus: "4"
+          memory: 4G
 
 #################################################################
 #                            NETWORKS                           #

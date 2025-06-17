@@ -1,7 +1,7 @@
 # ===== SECURITY =====
 
 (default_authorization) {
-	crypto key verify "#VAR:app_caddy_security_jwt_secret:VAR#"
+	crypto key verify "#VAR: app_caddy_security_jwt_secret :VAR#"
 	allow roles {args[0]}
 }
 
@@ -15,8 +15,8 @@
 
 (secure_headers) {
 	header {
-		#VAR:http_security_headers.default | to_caddy_header_values("default"):VAR#
-		#VAR:http_security_headers.enforce | to_caddy_header_values("replace"):VAR#
+		#VAR: http_security_headers.default | to_caddy_header_values("default") :VAR#
+		#VAR: http_security_headers.enforce | to_caddy_header_values("replace") :VAR#
 		defer
 	}
 }
@@ -33,14 +33,14 @@
 (default_static_site_with_reporting) {
 	import default_static_site {args[0]}
 	header {
-		#VAR:http_security_headers_static_with_reporting | to_caddy_header_values("replace"):VAR#
+		#VAR: http_security_headers_static_with_reporting | to_caddy_header_values("replace") :VAR#
 	}
 }
 
 (default_static_site_without_reporting) {
 	import default_static_site {args[0]}
 	header {
-		#VAR:http_security_headers_static_without_reporting | to_caddy_header_values("replace"):VAR#
+		#VAR: http_security_headers_static_without_reporting | to_caddy_header_values("replace") :VAR#
 	}
 }
 

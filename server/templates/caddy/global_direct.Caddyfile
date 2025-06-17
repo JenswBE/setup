@@ -1,4 +1,4 @@
-email "#VAR:general_mail_admin:VAR#@#VAR:general_domain_default:VAR#"
+email "#VAR: general_mail_admin :VAR#@#VAR: general_domain_default :VAR#"
 
 order authenticate before respond
 order authorize before basicauth

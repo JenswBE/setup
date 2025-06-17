@@ -1,7 +1,7 @@
 (default_authorization_public) {
 	authorization policy policy_public_{args[0]} {
 		import default_authorization {args[0]}
-		set auth url "https://portal.#VAR:general_domain_default:VAR#/"
+		set auth url "https://portal.#VAR: general_domain_default :VAR#/"
 	}
 }
 

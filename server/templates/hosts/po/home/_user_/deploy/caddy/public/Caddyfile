@@ -13,67 +13,67 @@ import ./configs/shared_snippets.txt
 http:// {
 }
 
-import default_redirect "www.#VAR:general_domain_bjoetiek:VAR#" "#VAR:general_domain_bjoetiek:VAR#"
-import default_redirect "#VAR:general_domain_gwendv:VAR#" "www.instagram.com/gwendolyndevocht"
-import default_redirect "www.#VAR:general_domain_gwendv:VAR#" "www.instagram.com/gwendolyndevocht"
-import default_redirect "www.#VAR:general_domain_interwego:VAR#" "#VAR:general_domain_interwego:VAR#"
-import default_redirect "#VAR:general_domain_interwego_be:VAR#" "#VAR:general_domain_interwego:VAR#"
-import default_redirect "www.#VAR:general_domain_interwego_be:VAR#" "#VAR:general_domain_interwego:VAR#"
-import default_redirect "#VAR:general_domain_interwego_eu:VAR#" "#VAR:general_domain_interwego:VAR#"
-import default_redirect "www.#VAR:general_domain_interwego_eu:VAR#" "#VAR:general_domain_interwego:VAR#"
-import default_redirect "#VAR:general_domain_interwego_nl:VAR#" "#VAR:general_domain_interwego:VAR#"
-import default_redirect "www.#VAR:general_domain_interwego_nl:VAR#" "#VAR:general_domain_interwego:VAR#"
-import default_redirect "#VAR:general_domain_local:VAR#" "#VAR:general_domain_default:VAR#"
-import default_redirect "www.#VAR:general_domain_local:VAR#" "#VAR:general_domain_default:VAR#"
-import default_redirect "www.#VAR:general_domain_wtech:VAR#" "#VAR:general_domain_wtech:VAR#"
+import default_redirect "www.#VAR: general_domain_bjoetiek :VAR#" "#VAR: general_domain_bjoetiek :VAR#"
+import default_redirect "#VAR: general_domain_gwendv :VAR#" "www.instagram.com/gwendolyndevocht"
+import default_redirect "www.#VAR: general_domain_gwendv :VAR#" "www.instagram.com/gwendolyndevocht"
+import default_redirect "www.#VAR: general_domain_interwego :VAR#" "#VAR: general_domain_interwego :VAR#"
+import default_redirect "#VAR: general_domain_interwego_be :VAR#" "#VAR: general_domain_interwego :VAR#"
+import default_redirect "www.#VAR: general_domain_interwego_be :VAR#" "#VAR: general_domain_interwego :VAR#"
+import default_redirect "#VAR: general_domain_interwego_eu :VAR#" "#VAR: general_domain_interwego :VAR#"
+import default_redirect "www.#VAR: general_domain_interwego_eu :VAR#" "#VAR: general_domain_interwego :VAR#"
+import default_redirect "#VAR: general_domain_interwego_nl :VAR#" "#VAR: general_domain_interwego :VAR#"
+import default_redirect "www.#VAR: general_domain_interwego_nl :VAR#" "#VAR: general_domain_interwego :VAR#"
+import default_redirect "#VAR: general_domain_local :VAR#" "#VAR: general_domain_default :VAR#"
+import default_redirect "www.#VAR: general_domain_local :VAR#" "#VAR: general_domain_default :VAR#"
+import default_redirect "www.#VAR: general_domain_wtech :VAR#" "#VAR: general_domain_wtech :VAR#"
 
-"assets.#VAR:general_domain_default:VAR#" {
+"assets.#VAR: general_domain_default :VAR#" {
 	import default_static_site_without_reporting "/public/assets"
 	authorize with policy_public_infra
 	header {
-		#VAR:caddy_extra_headers.assets | to_caddy_header_values("replace"):VAR#
+		#VAR: caddy_extra_headers.assets | to_caddy_header_values("replace") :VAR#
 	}
 }
 
-"ext.#VAR:general_domain_default:VAR#" {
+"ext.#VAR: general_domain_default :VAR#" {
 	import default_static_site_without_reporting "/public/email-username-generator"
 	header {
-		#VAR:caddy_extra_headers.email_username_generator | to_caddy_header_values("replace"):VAR#
+		#VAR: caddy_extra_headers.email_username_generator | to_caddy_header_values("replace") :VAR#
 	}
 }
 
-"hetvleermuizenkind.#VAR:general_domain_default:VAR#" {
+"hetvleermuizenkind.#VAR: general_domain_default :VAR#" {
 	import default_static_site_without_reporting "/public/hetvleermuizenkind"
 	header {
-		#VAR:caddy_extra_headers.hetvleermuizenkind | to_caddy_header_values("replace"):VAR#
+		#VAR: caddy_extra_headers.hetvleermuizenkind | to_caddy_header_values("replace") :VAR#
 	}
 }
 
-"stamboom.#VAR:general_domain_default:VAR#" {
+"stamboom.#VAR: general_domain_default :VAR#" {
 	import default_static_site_without_reporting "/public/family-trees"
 	authorize with policy_public_family
 	header {
-		#VAR:caddy_extra_headers.family_trees | to_caddy_header_values("replace"):VAR#
+		#VAR: caddy_extra_headers.family_trees | to_caddy_header_values("replace") :VAR#
 	}
 }
 
-"#VAR:general_domain_bjoetiek:VAR#" {
+"#VAR: general_domain_bjoetiek :VAR#" {
 	import default_static_site_without_reporting "/public/bjoetiek"
 	header {
-		#VAR:caddy_extra_headers.bjoetiek | to_caddy_header_values("replace"):VAR#
+		#VAR: caddy_extra_headers.bjoetiek | to_caddy_header_values("replace") :VAR#
 	}
 }
 
-"#VAR:general_domain_interwego:VAR#" {
+"#VAR: general_domain_interwego :VAR#" {
 	import default_static_site_with_reporting "/public/interwego"
 	header {
-		#VAR:caddy_extra_headers.interwego | to_caddy_header_values("replace"):VAR#
+		#VAR: caddy_extra_headers.interwego | to_caddy_header_values("replace") :VAR#
 	}
 }
 
-"#VAR:general_domain_wtech:VAR#" {
+"#VAR: general_domain_wtech :VAR#" {
 	import default_static_site_with_reporting "/public/wtech"
 	header {
-		#VAR:caddy_extra_headers.wtech | to_caddy_header_values("replace"):VAR#
+		#VAR: caddy_extra_headers.wtech | to_caddy_header_values("replace") :VAR#
 	}
 }

@@ -10,23 +10,23 @@ import ./configs/shared_snippets.txt
 		oauth identity provider keycloak {
 			driver generic
 			realm keycloak
-			client_id "#VAR:app_caddy_security_oidc_client_id:VAR#"
-			client_secret "#VAR:app_caddy_security_oidc_client_secret:VAR#"
+			client_id "#VAR: app_caddy_security_oidc_client_id :VAR#"
+			client_secret "#VAR: app_caddy_security_oidc_client_secret :VAR#"
 			scopes openid email profile
-			metadata_url "#VAR:app_caddy_security_oidc_issuer_url:VAR#/.well-known/openid-configuration"
+			metadata_url "#VAR: app_caddy_security_oidc_issuer_url :VAR#/.well-known/openid-configuration"
 			delay_start 20 # Delay 20s to allow Keycloak to start
 		}
 
 		authentication portal portal_public {
 			crypto default token lifetime 604800 # 7 days (60 * 60 * 24 * 7)
-			crypto key sign-verify "#VAR:app_caddy_security_jwt_secret:VAR#"
+			crypto key sign-verify "#VAR: app_caddy_security_jwt_secret :VAR#"
 			enable identity provider keycloak
-			cookie domain "#VAR:general_domain_default:VAR#"
+			cookie domain "#VAR: general_domain_default :VAR#"
 		}
 	}
 }
 
-"portal.#VAR:general_domain_default:VAR#" {
+"portal.#VAR: general_domain_default :VAR#" {
 	import logging
 	authenticate with portal_public
 }
@@ -35,28 +35,28 @@ import ./configs/shared_snippets.txt
 http:// {
 }
 
-"auth.#VAR:general_domain_default:VAR#" {
+"auth.#VAR: general_domain_default :VAR#" {
 	import default_public_reverse_proxy "http://keycloak:8080"
 }
 
-"beheer.#VAR:general_domain_bjoetiek:VAR#" {
+"beheer.#VAR: general_domain_bjoetiek :VAR#" {
 	import default_public_reverse_proxy "http://bjoetiek-directus:8055"
 }
 
-"beheer.#VAR:general_domain_kristofcoenen:VAR#" {
+"beheer.#VAR: general_domain_kristofcoenen :VAR#" {
 	import default_public_reverse_proxy "http://kristofcoenen-directus:8055"
 }
 
-"beheer.#VAR:general_domain_tuinfeest:VAR#" {
+"beheer.#VAR: general_domain_tuinfeest :VAR#" {
 	import default_public_reverse_proxy "http://tuinfeest-directus:8055"
 }
 
-"beheer.#VAR:general_domain_wtech:VAR#" {
+"beheer.#VAR: general_domain_wtech :VAR#" {
 	import default_public_reverse_proxy "http://wtech-directus:8055"
 }
 
-"nextcloud.#VAR:general_domain_default:VAR#",
-"bestanden.#VAR:general_domain_tuinfeest:VAR#" {
+"nextcloud.#VAR: general_domain_default :VAR#",
+"bestanden.#VAR: general_domain_tuinfeest :VAR#" {
 	import default_public_reverse_proxy "http://nextcloud"
 	redir /.well-known/carddav /remote.php/dav 301
 	redir /.well-known/caldav /remote.php/dav 301
@@ -64,38 +64,38 @@ http:// {
 	redir /.well-known/nodeinfo /index.php/.well-known/nodeinfo 301
 }
 
-"stats.#VAR:general_domain_default:VAR#" {
+"stats.#VAR: general_domain_default :VAR#" {
 	import default_public_reverse_proxy "http://goatcounter"
 }
 
-"stats-spellebel.#VAR:general_domain_default:VAR#" {
+"stats-spellebel.#VAR: general_domain_default :VAR#" {
 	import default_public_reverse_proxy "http://goatcounter"
 }
 
-"stats.#VAR:general_domain_bjoetiek:VAR#" {
+"stats.#VAR: general_domain_bjoetiek :VAR#" {
 	import default_public_reverse_proxy "http://goatcounter"
 }
 
-"stats.#VAR:general_domain_interwego:VAR#" {
+"stats.#VAR: general_domain_interwego :VAR#" {
 	import default_public_reverse_proxy "http://goatcounter"
 }
 
-"stats.#VAR:general_domain_klokracing:VAR#" {
+"stats.#VAR: general_domain_klokracing :VAR#" {
 	import default_public_reverse_proxy "http://goatcounter"
 }
 
-"stats.#VAR:general_domain_kristofcoenen:VAR#" {
+"stats.#VAR: general_domain_kristofcoenen :VAR#" {
 	import default_public_reverse_proxy "http://goatcounter"
 }
 
-"stats.#VAR:general_domain_tuinfeest:VAR#" {
+"stats.#VAR: general_domain_tuinfeest :VAR#" {
 	import default_public_reverse_proxy "http://goatcounter"
 }
 
-"stats.#VAR:general_domain_wtech:VAR#" {
+"stats.#VAR: general_domain_wtech :VAR#" {
 	import default_public_reverse_proxy "http://goatcounter"
 }
 
-"vault.#VAR:general_domain_default:VAR#" {
+"vault.#VAR: general_domain_default :VAR#" {
 	import default_public_reverse_proxy "http://vaultwarden"
 }

@@ -5,14 +5,14 @@ verbose: False
 cron: "0 13 * * *"
 
 health_check:
-  url: "https://hc-ping.com/{{ app_delic_ping_id }}"
+  url: "https://hc-ping.com/#VAR: app_delic_ping_id :VAR#"
 
 notifiers:
   - name: email_technical_en
-    url: "smtp://{{ mailjet_username }}:{{ mailjet_password }}@{{ mailjet_host }}:{{ mailjet_port_starttls }}/?from=delic@{{ general_domain_default }}&to={{ general_mail_admin }}@{{ general_domain_default }}&usehtml=true&Encryption=ExplicitTLS&subject=Broken%20links%20found"
+    url: "smtp://#VAR: mailjet_username :VAR#:#VAR: mailjet_password :VAR#@#VAR: mailjet_host :VAR#:#VAR: mailjet_port_starttls :VAR#/?from=delic@#VAR: general_domain_default :VAR#&to=#VAR: general_mail_admin :VAR#@#VAR: general_domain_default :VAR#&usehtml=true&Encryption=ExplicitTLS&subject=Broken%20links%20found"
     template_name: technical_en
   - name: email_simple_nl
-    url: "smtp://{{ mailjet_username }}:{{ mailjet_password }}@{{ mailjet_host }}:{{ mailjet_port_starttls }}/?from=delic@{{ general_domain_default }}&to={{ general_mail_admin }}@{{ general_domain_default }}&usehtml=true&Encryption=ExplicitTLS&subject=Defecte%20links%20gevonden"
+    url: "smtp://#VAR: mailjet_username :VAR#:#VAR: mailjet_password :VAR#@#VAR: mailjet_host :VAR#:#VAR: mailjet_port_starttls :VAR#/?from=delic@#VAR: general_domain_default :VAR#&to=#VAR: general_mail_admin :VAR#@#VAR: general_domain_default :VAR#&usehtml=true&Encryption=ExplicitTLS&subject=Defecte%20links%20gevonden"
     template_name: simple_nl
 
 ignored_links:

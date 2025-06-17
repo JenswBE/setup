@@ -1,4 +1,4 @@
-#VAR:ansible_managed | comment:VAR#
+#VAR: ansible_managed | comment :VAR#
 
 #################################################################
 #                            DEFAULTS                           #
@@ -7,7 +7,7 @@
 x-defaults: &defaults
   x-dummy: ""
   # Putting the anchor in this file ensures it's a valid YAML file for Renovate Bot
-  #VAR:lookup('ansible.builtin.file', 'files/docker-compose-defaults.yml',) | indent(width=2):VAR#
+  #VAR: lookup('ansible.builtin.file', 'files/docker-compose-defaults.yml',) | indent(width=2) :VAR#
 
 #################################################################
 #                            SERVICES                           #
@@ -44,7 +44,7 @@ services:
       - caddy-config:/config
       - caddy-data:/data
     environment:
-      TZ: "#VAR:general_timezone:VAR#"
+      TZ: "#VAR: general_timezone :VAR#"
 
 #################################################################
 #                            VOLUMES                            #

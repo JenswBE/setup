@@ -1,1 +1,1 @@
-{{ lookup('ansible.builtin.template', 'prometheus-blackbox-exporter.yml') }}
+#VAR: lookup('ansible.builtin.template', 'prometheus-blackbox-exporter.yml') :VAR#

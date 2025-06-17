@@ -1,4 +1,4 @@
-#VAR:ansible_managed | comment:VAR#
+#VAR: ansible_managed | comment :VAR#
 
 #################################################################
 #                            DEFAULTS                           #
@@ -7,7 +7,7 @@
 x-defaults: &defaults
   x-dummy: ""
   # Putting the anchor in this file ensures it's a valid YAML file for Renovate Bot
-  #VAR:lookup('ansible.builtin.file', 'files/docker-compose-defaults.yml',) | indent(width=2):VAR#
+  #VAR: lookup('ansible.builtin.file', 'files/docker-compose-defaults.yml',) | indent(width=2) :VAR#
 
 x-healthcheck-postgres: &healthcheck-postgres
   healthcheck:
@@ -56,15 +56,15 @@ services:
       - caddy-public-config:/config
       - caddy-public-data:/data
     environment:
-      TZ: "#VAR:general_timezone:VAR#"
+      TZ: "#VAR: general_timezone :VAR#"
 
   caddy-private:
     <<: *defaults
     build: ./caddy
     container_name: caddy-private
     ports:
-      - "#VAR:hostnames.private.eve.ipv4:VAR#:80:80"
-      - "#VAR:hostnames.private.eve.ipv4:VAR#:443:443"
+      - "#VAR: hostnames.private.eve.ipv4 :VAR#:80:80"
+      - "#VAR: hostnames.private.eve.ipv4 :VAR#:443:443"
     networks:
       caddy-private:
     volumes:
@@ -73,7 +73,7 @@ services:
       - caddy-private-config:/config
       - caddy-private-data:/data
     environment:
-      TZ: "#VAR:general_timezone:VAR#"
+      TZ: "#VAR: general_timezone :VAR#"
 
   # =========================
   # =       NEXTCLOUD       =
@@ -90,13 +90,13 @@ services:
       nc-db:
         condition: service_healthy
     volumes:
-      - "#VAR:general_path_appdata:VAR#/nextcloud/nextcloud/config:/var/www/html"
-      - "#VAR:general_path_appdata:VAR#/nextcloud/nextcloud/data:/var/www/html/data"
+      - "#VAR: general_path_appdata :VAR#/nextcloud/nextcloud/config:/var/www/html"
+      - "#VAR: general_path_appdata :VAR#/nextcloud/nextcloud/data:/var/www/html/data"
     environment:
-      TZ: "#VAR:general_timezone:VAR#"
+      TZ: "#VAR: general_timezone :VAR#"
       MYSQL_DATABASE: nextcloud
       MYSQL_USER: nextcloud
-      MYSQL_PASSWORD: "#VAR:app_nextcloud_db_pass_nextcloud:VAR#"
+      MYSQL_PASSWORD: "#VAR: app_nextcloud_db_pass_nextcloud :VAR#"
       MYSQL_HOST: nc-db
     deploy:
       resources:
@@ -115,12 +115,12 @@ services:
       - nextcloud
       - backup-nc-db
     volumes:
-      - "#VAR:general_path_appdata:VAR#/nextcloud/mariadb/data:/var/lib/mysql"
+      - "#VAR: general_path_appdata :VAR#/nextcloud/mariadb/data:/var/lib/mysql"
       - nc-db-dump:/backup
     environment:
-      TZ: "#VAR:general_timezone:VAR#"
-      MARIADB_ROOT_PASSWORD: "#VAR:app_nextcloud_db_pass_root:VAR#"
-      MARIADB_PASSWORD: "#VAR:app_nextcloud_db_pass_nextcloud:VAR#"
+      TZ: "#VAR: general_timezone :VAR#"
+      MARIADB_ROOT_PASSWORD: "#VAR: app_nextcloud_db_pass_root :VAR#"
+      MARIADB_PASSWORD: "#VAR: app_nextcloud_db_pass_nextcloud :VAR#"
       MARIADB_DATABASE: nextcloud
       MARIADB_USER: nextcloud
       MARIADB_AUTO_UPGRADE: "1"
@@ -145,17 +145,17 @@ services:
       miniflux-db:
         condition: service_healthy
     environment:
-      TZ: "#VAR:general_timezone:VAR#"
-      DATABASE_URL: "postgres://miniflux:#VAR:app_miniflux_db_pass:VAR#@miniflux-db/miniflux?sslmode=disable"
+      TZ: "#VAR: general_timezone :VAR#"
+      DATABASE_URL: "postgres://miniflux:#VAR: app_miniflux_db_pass :VAR#@miniflux-db/miniflux?sslmode=disable"
       RUN_MIGRATIONS: "1"
       CREATE_ADMIN: "1"
-      ADMIN_USERNAME: "#VAR:app_miniflux_admin_user:VAR#"
-      ADMIN_PASSWORD: "#VAR:app_miniflux_admin_pass:VAR#"
+      ADMIN_USERNAME: "#VAR: app_miniflux_admin_user :VAR#"
+      ADMIN_PASSWORD: "#VAR: app_miniflux_admin_pass :VAR#"
       OAUTH2_PROVIDER: "oidc"
-      OAUTH2_OIDC_DISCOVERY_ENDPOINT: "#VAR:app_miniflux_oidc_url:VAR#"
-      OAUTH2_CLIENT_ID: "#VAR:app_miniflux_oidc_client_id:VAR#"
-      OAUTH2_CLIENT_SECRET: "#VAR:app_miniflux_oidc_client_secret:VAR#"
-      OAUTH2_REDIRECT_URL: "https://feed.#VAR:general_domain_local:VAR#/oauth2/oidc/callback"
+      OAUTH2_OIDC_DISCOVERY_ENDPOINT: "#VAR: app_miniflux_oidc_url :VAR#"
+      OAUTH2_CLIENT_ID: "#VAR: app_miniflux_oidc_client_id :VAR#"
+      OAUTH2_CLIENT_SECRET: "#VAR: app_miniflux_oidc_client_secret :VAR#"
+      OAUTH2_REDIRECT_URL: "https://feed.#VAR: general_domain_local :VAR#/oauth2/oidc/callback"
 
   miniflux-db:
     <<: [*defaults, *healthcheck-postgres]
@@ -165,13 +165,13 @@ services:
     networks:
       - miniflux
     volumes:
-      - "#VAR:general_path_appdata:VAR#/miniflux/db:/var/lib/postgresql/data"
+      - "#VAR: general_path_appdata :VAR#/miniflux/db:/var/lib/postgresql/data"
       - "miniflux-db-dump:/backup"
     environment:
-      TZ: "#VAR:general_timezone:VAR#"
+      TZ: "#VAR: general_timezone :VAR#"
       POSTGRES_DB: "miniflux"
       POSTGRES_USER: "miniflux"
-      POSTGRES_PASSWORD: "#VAR:app_miniflux_db_pass:VAR#"
+      POSTGRES_PASSWORD: "#VAR: app_miniflux_db_pass :VAR#"
 
   # ====================================
   # =              WIKI.JS             =
@@ -188,18 +188,18 @@ services:
       wikijs-db:
         condition: service_healthy
     volumes:
-      - "#VAR:general_path_appdata:VAR#/wikijs/wikijs/config:/config"
-      - "#VAR:general_path_appdata:VAR#/wikijs/wikijs/data:/data"
+      - "#VAR: general_path_appdata :VAR#/wikijs/wikijs/config:/config"
+      - "#VAR: general_path_appdata :VAR#/wikijs/wikijs/data:/data"
       - wikijs-backup:/backup
     environment:
-      TZ: "#VAR:general_timezone:VAR#"
-      PUID: "#VAR:ansible_real_user_id:VAR#"
-      PGID: "#VAR:ansible_real_user_id:VAR#"
+      TZ: "#VAR: general_timezone :VAR#"
+      PUID: "#VAR: ansible_real_user_id :VAR#"
+      PGID: "#VAR: ansible_real_user_id :VAR#"
       DB_TYPE: postgres
       DB_HOST: wikijs-db
       DB_PORT: 5432
       DB_USER: wikijs
-      DB_PASS: "#VAR:app_wikijs_db_pass:VAR#"
+      DB_PASS: "#VAR: app_wikijs_db_pass :VAR#"
       DB_NAME: wikijs
     deploy:
       resources:
@@ -216,13 +216,13 @@ services:
     networks:
       - wikijs
     volumes:
-      - "#VAR:general_path_appdata:VAR#/wikijs/postgres/data:/var/lib/postgresql/data"
+      - "#VAR: general_path_appdata :VAR#/wikijs/postgres/data:/var/lib/postgresql/data"
       - wikijs-db-dump:/backup
     environment:
-      TZ: "#VAR:general_timezone:VAR#"
+      TZ: "#VAR: general_timezone :VAR#"
       POSTGRES_DB: wikijs
       POSTGRES_USER: wikijs
-      POSTGRES_PASSWORD: "#VAR:app_wikijs_db_pass:VAR#"
+      POSTGRES_PASSWORD: "#VAR: app_wikijs_db_pass :VAR#"
 
   # =========================
   # = IMAP SAVE ATTACHMENTS =
@@ -235,20 +235,20 @@ services:
       - ./isa/fetchmailrc:/config/.fetchmailrc
       - isa-output:/output
     environment:
-      TZ: "#VAR:general_timezone:VAR#"
+      TZ: "#VAR: general_timezone :VAR#"
       CRON_SCHEDULE: "*/15 * * * *"
 
   isa-rclone:
     <<: *defaults
     image: docker.io/rclone/rclone:latest
     container_name: isa-rclone
-    command: "move /data/ nextcloud:#VAR:app_isa_rclone_dav_path:VAR# --delete-empty-src-dirs --verbose"
+    command: "move /data/ nextcloud:#VAR: app_isa_rclone_dav_path :VAR# --delete-empty-src-dirs --verbose"
     restart: "no" # Will be called by systemd timer
     volumes:
       - ./isa/rclone:/config/rclone
       - isa-output:/data
     environment:
-      TZ: "#VAR:general_timezone:VAR#"
+      TZ: "#VAR: general_timezone :VAR#"
 
   # ==========================
   # =      DNS - BLOCKY      =
@@ -257,7 +257,7 @@ services:
     <<: *defaults
     image: ghcr.io/0xerr0r/blocky:latest
     container_name: blocky
-    user: "#VAR:ansible_real_user_id:VAR#:#VAR:ansible_real_group_id:VAR#"
+    user: "#VAR: ansible_real_user_id :VAR#:#VAR: ansible_real_group_id :VAR#"
     networks:
       - caddy-private
     ports:
@@ -277,7 +277,7 @@ services:
     volumes:
       - "./delic/config.yml:/config.yml:ro,z"
     environment:
-      TZ: "#VAR:general_timezone:VAR#"
+      TZ: "#VAR: general_timezone :VAR#"
 
   # ===========================================================================
   # =   BJOETIEK Y                                                            =
@@ -295,31 +295,31 @@ services:
     environment:
       # See https://docs.directus.io/self-hosted/config-options#general
       # LOG_LEVEL: "trace"
-      TZ: "#VAR:general_timezone:VAR#"
-      KEY: "#VAR:app_bjoetiek_directus_key:VAR#"
-      SECRET: "#VAR:app_bjoetiek_directus_secret:VAR#"
+      TZ: "#VAR: general_timezone :VAR#"
+      KEY: "#VAR: app_bjoetiek_directus_key :VAR#"
+      SECRET: "#VAR: app_bjoetiek_directus_secret :VAR#"
       DB_CLIENT: pg
       DB_HOST: bjoetiek-directus-db
       DB_PORT: "5432"
       DB_DATABASE: directus
       DB_USER: directus
       DB_PASSWORD: directus
-      ADMIN_EMAIL: "#VAR:app_bjoetiek_directus_admin_email:VAR#"
-      ADMIN_PASSWORD: "#VAR:app_bjoetiek_directus_admin_password:VAR#"
-      PUBLIC_URL: "https://beheer.#VAR:general_domain_bjoetiek:VAR#"
-      EMAIL_FROM: "beheer@#VAR:general_domain_bjoetiek:VAR#"
+      ADMIN_EMAIL: "#VAR: app_bjoetiek_directus_admin_email :VAR#"
+      ADMIN_PASSWORD: "#VAR: app_bjoetiek_directus_admin_password :VAR#"
+      PUBLIC_URL: "https://beheer.#VAR: general_domain_bjoetiek :VAR#"
+      EMAIL_FROM: "beheer@#VAR: general_domain_bjoetiek :VAR#"
       EMAIL_TRANSPORT: smtp
-      EMAIL_SMTP_HOST: "#VAR:mailjet_host:VAR#"
-      EMAIL_SMTP_PORT: "#VAR:mailjet_port_starttls:VAR#"
-      EMAIL_SMTP_USER: "#VAR:mailjet_username:VAR#"
-      EMAIL_SMTP_PASSWORD: "#VAR:mailjet_password:VAR#"
+      EMAIL_SMTP_HOST: "#VAR: mailjet_host :VAR#"
+      EMAIL_SMTP_PORT: "#VAR: mailjet_port_starttls :VAR#"
+      EMAIL_SMTP_USER: "#VAR: mailjet_username :VAR#"
+      EMAIL_SMTP_PASSWORD: "#VAR: mailjet_password :VAR#"
       FLOWS_ENV_ALLOW_LIST: "FLOWS_ENV_GITHUB_TOKEN"
-      FLOWS_ENV_GITHUB_TOKEN: "#VAR:app_bjoetiek_directus_github_token:VAR#"
+      FLOWS_ENV_GITHUB_TOKEN: "#VAR: app_bjoetiek_directus_github_token :VAR#"
     networks:
       - caddy-public
       - bjoetiek-directus
     volumes:
-      - "#VAR:general_path_appdata:VAR#/bjoetiek/directus/uploads:/directus/uploads:z"
+      - "#VAR: general_path_appdata :VAR#/bjoetiek/directus/uploads:/directus/uploads:z"
 
   bjoetiek-directus-db:
     <<: [*defaults, *healthcheck-postgres]
@@ -331,10 +331,10 @@ services:
     networks:
       - bjoetiek-directus
     volumes:
-      - "#VAR:general_path_appdata:VAR#/bjoetiek/directus/db:/var/lib/postgresql/data"
+      - "#VAR: general_path_appdata :VAR#/bjoetiek/directus/db:/var/lib/postgresql/data"
       - bjoetiek-directus-db-dump:/backup
     environment:
-      TZ: "#VAR:general_timezone:VAR#"
+      TZ: "#VAR: general_timezone :VAR#"
       POSTGRES_DB: directus
       POSTGRES_USER: directus
       POSTGRES_PASSWORD: directus
@@ -355,31 +355,31 @@ services:
     environment:
       # See https://docs.directus.io/self-hosted/config-options#general
       # LOG_LEVEL: "trace"
-      TZ: "#VAR:general_timezone:VAR#"
-      KEY: "#VAR:app_kristofcoenen_directus_key:VAR#"
-      SECRET: "#VAR:app_kristofcoenen_directus_secret:VAR#"
+      TZ: "#VAR: general_timezone :VAR#"
+      KEY: "#VAR: app_kristofcoenen_directus_key :VAR#"
+      SECRET: "#VAR: app_kristofcoenen_directus_secret :VAR#"
       DB_CLIENT: pg
       DB_HOST: kristofcoenen-directus-db
       DB_PORT: "5432"
       DB_DATABASE: directus
       DB_USER: directus
       DB_PASSWORD: directus
-      ADMIN_EMAIL: "#VAR:app_kristofcoenen_directus_admin_email:VAR#"
-      ADMIN_PASSWORD: "#VAR:app_kristofcoenen_directus_admin_password:VAR#"
-      PUBLIC_URL: "https://beheer.#VAR:general_domain_kristofcoenen:VAR#"
-      EMAIL_FROM: "beheer@#VAR:general_domain_kristofcoenen:VAR#"
+      ADMIN_EMAIL: "#VAR: app_kristofcoenen_directus_admin_email :VAR#"
+      ADMIN_PASSWORD: "#VAR: app_kristofcoenen_directus_admin_password :VAR#"
+      PUBLIC_URL: "https://beheer.#VAR: general_domain_kristofcoenen :VAR#"
+      EMAIL_FROM: "beheer@#VAR: general_domain_kristofcoenen :VAR#"
       EMAIL_TRANSPORT: smtp
-      EMAIL_SMTP_HOST: "#VAR:mailjet_host:VAR#"
-      EMAIL_SMTP_PORT: "#VAR:mailjet_port_starttls:VAR#"
-      EMAIL_SMTP_USER: "#VAR:mailjet_username:VAR#"
-      EMAIL_SMTP_PASSWORD: "#VAR:mailjet_password:VAR#"
+      EMAIL_SMTP_HOST: "#VAR: mailjet_host :VAR#"
+      EMAIL_SMTP_PORT: "#VAR: mailjet_port_starttls :VAR#"
+      EMAIL_SMTP_USER: "#VAR: mailjet_username :VAR#"
+      EMAIL_SMTP_PASSWORD: "#VAR: mailjet_password :VAR#"
       FLOWS_ENV_ALLOW_LIST: "FLOWS_ENV_GITHUB_TOKEN"
-      FLOWS_ENV_GITHUB_TOKEN: "#VAR:app_kristofcoenen_directus_github_token:VAR#"
+      FLOWS_ENV_GITHUB_TOKEN: "#VAR: app_kristofcoenen_directus_github_token :VAR#"
     networks:
       - caddy-public
       - kristofcoenen-directus
     volumes:
-      - "#VAR:general_path_appdata:VAR#/kristofcoenen/directus/uploads:/directus/uploads:z"
+      - "#VAR: general_path_appdata :VAR#/kristofcoenen/directus/uploads:/directus/uploads:z"
 
   kristofcoenen-directus-db:
     <<: [*defaults, *healthcheck-postgres]
@@ -391,10 +391,10 @@ services:
     networks:
       - kristofcoenen-directus
     volumes:
-      - "#VAR:general_path_appdata:VAR#/kristofcoenen/directus/db:/var/lib/postgresql/data"
+      - "#VAR: general_path_appdata :VAR#/kristofcoenen/directus/db:/var/lib/postgresql/data"
       - kristofcoenen-directus-db-dump:/backup
     environment:
-      TZ: "#VAR:general_timezone:VAR#"
+      TZ: "#VAR: general_timezone :VAR#"
       POSTGRES_DB: directus
       POSTGRES_USER: directus
       POSTGRES_PASSWORD: directus
@@ -415,31 +415,31 @@ services:
     environment:
       # See https://docs.directus.io/self-hosted/config-options#general
       # LOG_LEVEL: "trace"
-      TZ: "#VAR:general_timezone:VAR#"
-      KEY: "#VAR:app_tuinfeest_directus_key:VAR#"
-      SECRET: "#VAR:app_tuinfeest_directus_secret:VAR#"
+      TZ: "#VAR: general_timezone :VAR#"
+      KEY: "#VAR: app_tuinfeest_directus_key :VAR#"
+      SECRET: "#VAR: app_tuinfeest_directus_secret :VAR#"
       DB_CLIENT: pg
       DB_HOST: tuinfeest-directus-db
       DB_PORT: "5432"
       DB_DATABASE: directus
       DB_USER: directus
       DB_PASSWORD: directus
-      ADMIN_EMAIL: "#VAR:app_tuinfeest_directus_admin_email:VAR#"
-      ADMIN_PASSWORD: "#VAR:app_tuinfeest_directus_admin_password:VAR#"
-      PUBLIC_URL: "https://beheer.#VAR:general_domain_tuinfeest:VAR#"
-      EMAIL_FROM: "beheer@#VAR:general_domain_tuinfeest:VAR#"
+      ADMIN_EMAIL: "#VAR: app_tuinfeest_directus_admin_email :VAR#"
+      ADMIN_PASSWORD: "#VAR: app_tuinfeest_directus_admin_password :VAR#"
+      PUBLIC_URL: "https://beheer.#VAR: general_domain_tuinfeest :VAR#"
+      EMAIL_FROM: "beheer@#VAR: general_domain_tuinfeest :VAR#"
       EMAIL_TRANSPORT: smtp
-      EMAIL_SMTP_HOST: "#VAR:mailjet_host:VAR#"
-      EMAIL_SMTP_PORT: "#VAR:mailjet_port_starttls:VAR#"
-      EMAIL_SMTP_USER: "#VAR:mailjet_tuinfeest_username:VAR#"
-      EMAIL_SMTP_PASSWORD: "#VAR:mailjet_tuinfeest_password:VAR#"
+      EMAIL_SMTP_HOST: "#VAR: mailjet_host :VAR#"
+      EMAIL_SMTP_PORT: "#VAR: mailjet_port_starttls :VAR#"
+      EMAIL_SMTP_USER: "#VAR: mailjet_tuinfeest_username :VAR#"
+      EMAIL_SMTP_PASSWORD: "#VAR: mailjet_tuinfeest_password :VAR#"
       FLOWS_ENV_ALLOW_LIST: "FLOWS_ENV_GITHUB_TOKEN"
-      FLOWS_ENV_GITHUB_TOKEN: "#VAR:app_tuinfeest_directus_github_token:VAR#"
+      FLOWS_ENV_GITHUB_TOKEN: "#VAR: app_tuinfeest_directus_github_token :VAR#"
     networks:
       - caddy-public
       - tuinfeest-directus
     volumes:
-      - "#VAR:general_path_appdata:VAR#/tuinfeest/directus/uploads:/directus/uploads:z"
+      - "#VAR: general_path_appdata :VAR#/tuinfeest/directus/uploads:/directus/uploads:z"
 
   tuinfeest-directus-db:
     <<: [*defaults, *healthcheck-postgres]
@@ -451,10 +451,10 @@ services:
     networks:
       - tuinfeest-directus
     volumes:
-      - "#VAR:general_path_appdata:VAR#/tuinfeest/directus/db:/var/lib/postgresql/data"
+      - "#VAR: general_path_appdata :VAR#/tuinfeest/directus/db:/var/lib/postgresql/data"
       - tuinfeest-directus-db-dump:/backup
     environment:
-      TZ: "#VAR:general_timezone:VAR#"
+      TZ: "#VAR: general_timezone :VAR#"
       POSTGRES_DB: directus
       POSTGRES_USER: directus
       POSTGRES_PASSWORD: directus
@@ -475,31 +475,31 @@ services:
     environment:
       # See https://docs.directus.io/self-hosted/config-options#general
       # LOG_LEVEL: "trace"
-      TZ: "#VAR:general_timezone:VAR#"
-      KEY: "#VAR:app_wtech_directus_key:VAR#"
-      SECRET: "#VAR:app_wtech_directus_secret:VAR#"
+      TZ: "#VAR: general_timezone :VAR#"
+      KEY: "#VAR: app_wtech_directus_key :VAR#"
+      SECRET: "#VAR: app_wtech_directus_secret :VAR#"
       DB_CLIENT: pg
       DB_HOST: wtech-directus-db
       DB_PORT: "5432"
       DB_DATABASE: directus
       DB_USER: directus
       DB_PASSWORD: directus
-      ADMIN_EMAIL: "#VAR:app_wtech_directus_admin_email:VAR#"
-      ADMIN_PASSWORD: "#VAR:app_wtech_directus_admin_password:VAR#"
-      PUBLIC_URL: "https://beheer.#VAR:general_domain_wtech:VAR#"
-      EMAIL_FROM: "beheer@#VAR:general_domain_wtech:VAR#"
+      ADMIN_EMAIL: "#VAR: app_wtech_directus_admin_email :VAR#"
+      ADMIN_PASSWORD: "#VAR: app_wtech_directus_admin_password :VAR#"
+      PUBLIC_URL: "https://beheer.#VAR: general_domain_wtech :VAR#"
+      EMAIL_FROM: "beheer@#VAR: general_domain_wtech :VAR#"
       EMAIL_TRANSPORT: smtp
-      EMAIL_SMTP_HOST: "#VAR:mailjet_host:VAR#"
-      EMAIL_SMTP_PORT: "#VAR:mailjet_port_starttls:VAR#"
-      EMAIL_SMTP_USER: "#VAR:mailjet_username:VAR#"
-      EMAIL_SMTP_PASSWORD: "#VAR:mailjet_password:VAR#"
+      EMAIL_SMTP_HOST: "#VAR: mailjet_host :VAR#"
+      EMAIL_SMTP_PORT: "#VAR: mailjet_port_starttls :VAR#"
+      EMAIL_SMTP_USER: "#VAR: mailjet_username :VAR#"
+      EMAIL_SMTP_PASSWORD: "#VAR: mailjet_password :VAR#"
       FLOWS_ENV_ALLOW_LIST: "FLOWS_ENV_GITHUB_TOKEN"
-      FLOWS_ENV_GITHUB_TOKEN: "#VAR:app_wtech_directus_github_token:VAR#"
+      FLOWS_ENV_GITHUB_TOKEN: "#VAR: app_wtech_directus_github_token :VAR#"
     networks:
       - caddy-public
       - wtech-directus
     volumes:
-      - "#VAR:general_path_appdata:VAR#/wtech/directus/uploads:/directus/uploads:z"
+      - "#VAR: general_path_appdata :VAR#/wtech/directus/uploads:/directus/uploads:z"
 
   wtech-directus-db:
     <<: [*defaults, *healthcheck-postgres]
@@ -511,10 +511,10 @@ services:
     networks:
       - wtech-directus
     volumes:
-      - "#VAR:general_path_appdata:VAR#/wtech/directus/db:/var/lib/postgresql/data"
+      - "#VAR: general_path_appdata :VAR#/wtech/directus/db:/var/lib/postgresql/data"
       - wtech-directus-db-dump:/backup
     environment:
-      TZ: "#VAR:general_timezone:VAR#"
+      TZ: "#VAR: general_timezone :VAR#"
       POSTGRES_DB: directus
       POSTGRES_USER: directus
       POSTGRES_PASSWORD: directus
@@ -527,16 +527,16 @@ services:
     build:
       context: goatcounter
       args:
-        - "arch=#VAR:app_goatcounter_arch:VAR#"
-        - "version=#VAR:app_goatcounter_version:VAR#"
+        - "arch=#VAR: app_goatcounter_arch :VAR#"
+        - "version=#VAR: app_goatcounter_version :VAR#"
     container_name: goatcounter
-    user: "#VAR:ansible_real_user_id:VAR#"
+    user: "#VAR: ansible_real_user_id :VAR#"
     networks:
       - caddy-public
     volumes:
-      - "#VAR:general_path_appdata:VAR#/goatcounter/db:/db"
+      - "#VAR: general_path_appdata :VAR#/goatcounter/db:/db"
     environment:
-      TZ: "#VAR:general_timezone:VAR#"
+      TZ: "#VAR: general_timezone :VAR#"
 
   # =========================
   # =          AUTH         =
@@ -552,13 +552,13 @@ services:
       - keycloak
       - caddy-public
     environment:
-      TZ: "#VAR:general_timezone:VAR#"
+      TZ: "#VAR: general_timezone :VAR#"
       KC_DB_URL_HOST: keycloak-db
       KC_DB_URL_DATABASE: keycloak
       KC_DB_USERNAME: keycloak
-      KC_DB_PASSWORD: "#VAR:app_keycloak_db_pass:VAR#"
+      KC_DB_PASSWORD: "#VAR: app_keycloak_db_pass :VAR#"
       KC_DB_SCHEMA: public
-      KC_HOSTNAME: "auth.#VAR:general_domain_default:VAR#"
+      KC_HOSTNAME: "auth.#VAR: general_domain_default :VAR#"
       KC_HOSTNAME_STRICT: "false" # Hostnames validated by Caddy
       KC_PROXY_HEADERS: xforwarded
       KC_HTTP_ENABLED: "true"
@@ -579,13 +579,13 @@ services:
     networks:
       - keycloak
     volumes:
-      - "#VAR:general_path_appdata:VAR#/keycloak/postgres/data:/var/lib/postgresql/data"
+      - "#VAR: general_path_appdata :VAR#/keycloak/postgres/data:/var/lib/postgresql/data"
       - keycloak-db-dump:/backup
     environment:
-      TZ: "#VAR:general_timezone:VAR#"
+      TZ: "#VAR: general_timezone :VAR#"
       POSTGRES_DB: keycloak
       POSTGRES_USER: keycloak
-      POSTGRES_PASSWORD: "#VAR:app_keycloak_db_pass:VAR#"
+      POSTGRES_PASSWORD: "#VAR: app_keycloak_db_pass :VAR#"
 
   # =========================
   # =      VAULTWARDEN      =
@@ -597,19 +597,19 @@ services:
     networks:
       - caddy-public
     environment:
-      TZ: "#VAR:general_timezone:VAR#"
-      DOMAIN: "https://vault.#VAR:general_domain_default:VAR#"
+      TZ: "#VAR: general_timezone :VAR#"
+      DOMAIN: "https://vault.#VAR: general_domain_default :VAR#"
       PASSWORD_HINTS_ALLOWED: "false"
       SIGNUPS_ALLOWED: "false"
-      SMTP_HOST: "#VAR:mailjet_host:VAR#"
-      SMTP_PORT: "#VAR:mailjet_port_starttls:VAR#"
+      SMTP_HOST: "#VAR: mailjet_host :VAR#"
+      SMTP_PORT: "#VAR: mailjet_port_starttls :VAR#"
       SMTP_SECURITY: starttls
-      SMTP_USERNAME: "#VAR:mailjet_username:VAR#"
-      SMTP_PASSWORD: "#VAR:mailjet_password:VAR#"
-      SMTP_FROM: "vaultwarden@#VAR:general_domain_default:VAR#"
+      SMTP_USERNAME: "#VAR: mailjet_username :VAR#"
+      SMTP_PASSWORD: "#VAR: mailjet_password :VAR#"
+      SMTP_FROM: "vaultwarden@#VAR: general_domain_default :VAR#"
       SMTP_FROM_NAME: Vaultwarden
     volumes:
-      - "#VAR:general_path_appdata:VAR#/vaultwarden/data:/data"
+      - "#VAR: general_path_appdata :VAR#/vaultwarden/data:/data"
 
   # =========================
   # =         HOMER         =
@@ -618,14 +618,14 @@ services:
     <<: *defaults
     image: docker.io/b4bz/homer:latest
     container_name: homer
-    user: "#VAR:ansible_real_user_id:VAR#"
+    user: "#VAR: ansible_real_user_id :VAR#"
     networks:
       - caddy-private
     volumes:
       - "./homer/config.yml:/www/assets/config.yml:ro"
       - "./homer/logos:/www/assets/logos:ro"
     environment:
-      - "TZ=#VAR:general_timezone:VAR#"
+      - "TZ=#VAR: general_timezone :VAR#"
 
   # =========================
   # =       PAPERLESS       =
@@ -653,15 +653,15 @@ services:
       timeout: 10s
       retries: 5
     volumes:
-      - "#VAR:general_path_appdata:VAR#/paperless/data:/usr/src/paperless/data" # Docker container data
-      - "#VAR:general_path_appdata:VAR#/paperless/docs:/usr/src/paperless/media" # Documents
+      - "#VAR: general_path_appdata :VAR#/paperless/data:/usr/src/paperless/data" # Docker container data
+      - "#VAR: general_path_appdata :VAR#/paperless/docs:/usr/src/paperless/media" # Documents
       - "paperless-export:/usr/src/paperless/export" # Backup
       - "paperless-consume:/usr/src/paperless/consume" # Watch folder
     environment:
-      TZ: "#VAR:general_timezone:VAR#"
-      USERMAP_UID: "#VAR:ansible_real_user_id:VAR#"
-      USERMAP_GID: "#VAR:ansible_real_group_id:VAR#"
-      PAPERLESS_TIME_ZONE: "#VAR:general_timezone:VAR#"
+      TZ: "#VAR: general_timezone :VAR#"
+      USERMAP_UID: "#VAR: ansible_real_user_id :VAR#"
+      USERMAP_GID: "#VAR: ansible_real_group_id :VAR#"
+      PAPERLESS_TIME_ZONE: "#VAR: general_timezone :VAR#"
       PAPERLESS_OCR_LANGUAGE: nld+eng
       PAPERLESS_OCR_LANGUAGES: eng nld
       # See:
@@ -675,9 +675,9 @@ services:
       PAPERLESS_ENABLE_UPDATE_CHECK: "false"
       PAPERLESS_REDIS: redis://paperless-redis:6379
       PAPERLESS_DBHOST: paperless-db
-      PAPERLESS_SECRET_KEY: "#VAR:app_paperless_secret_key:VAR#"
+      PAPERLESS_SECRET_KEY: "#VAR: app_paperless_secret_key :VAR#"
       PAPERLESS_FILENAME_FORMAT: "{created_year}.{created_month}.{created_day} - {correspondent} - {title}"
-      PAPERLESS_URL: "https://docs.#VAR:general_domain_local:VAR#"
+      PAPERLESS_URL: "https://docs.#VAR: general_domain_local :VAR#"
       PAPERLESS_TASK_WORKERS: "2"
       PAPERLESS_TIKA_ENABLED: "1"
       PAPERLESS_TIKA_GOTENBERG_ENDPOINT: http://paperless-gotenberg:3000
@@ -685,7 +685,7 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "#VAR:ansible_processor_nproc:VAR#"
+          cpus: "#VAR: ansible_processor_nproc :VAR#"
           memory: 6G
 
   paperless-db:
@@ -697,10 +697,10 @@ services:
     networks:
       - paperless
     volumes:
-      - "#VAR:general_path_appdata:VAR#/paperless/db:/var/lib/postgresql/data"
+      - "#VAR: general_path_appdata :VAR#/paperless/db:/var/lib/postgresql/data"
       - paperless-db-dump:/backup
     environment:
-      TZ: "#VAR:general_timezone:VAR#"
+      TZ: "#VAR: general_timezone :VAR#"
       POSTGRES_DB: paperless
       POSTGRES_USER: paperless
       POSTGRES_PASSWORD: paperless
@@ -716,7 +716,7 @@ services:
     volumes:
       - paperless-redis-data:/data
     environment:
-      TZ: "#VAR:general_timezone:VAR#"
+      TZ: "#VAR: general_timezone :VAR#"
       REDIS_ARGS: "--save 60 10"
 
   paperless-gotenberg:
@@ -734,11 +734,11 @@ services:
       - "--chromium-disable-javascript=true"
       - "--chromium-allow-list=file:///tmp/.*"
     environment:
-      TZ: "#VAR:general_timezone:VAR#"
+      TZ: "#VAR: general_timezone :VAR#"
     deploy:
       resources:
         limits:
-          cpus: "#VAR:ansible_processor_nproc:VAR#"
+          cpus: "#VAR: ansible_processor_nproc :VAR#"
           memory: 6G
 
   paperless-tika:
@@ -748,11 +748,11 @@ services:
     networks:
       - paperless
     environment:
-      TZ: "#VAR:general_timezone:VAR#"
+      TZ: "#VAR: general_timezone :VAR#"
     deploy:
       resources:
         limits:
-          cpus: "#VAR:ansible_processor_nproc:VAR#"
+          cpus: "#VAR: ansible_processor_nproc :VAR#"
           memory: 6G
 
   # =========================
@@ -765,7 +765,7 @@ services:
     networks:
       - caddy-private
     environment:
-      TZ: "#VAR:general_timezone:VAR#"
+      TZ: "#VAR: general_timezone :VAR#"
       DOCKER_ENABLE_SECURITY: "false"
 
   # =========================
@@ -777,20 +777,20 @@ services:
     container_name: netperf-blackbox-exporter
     command: --config.file=/config.yml
     environment:
-      TZ: "#VAR:general_timezone:VAR#"
+      TZ: "#VAR: general_timezone :VAR#"
     volumes:
       - ./netperf/prometheus-blackbox-exporter.yml:/config.yml
     ports:
-      - "#VAR:jwwg_wireguard_interfaces[0].ip_addresses[0]:VAR#:9115:9115"
+      - "#VAR: jwwg_wireguard_interfaces[0].ip_addresses[0] :VAR#:9115:9115"
 
   netperf-file-generator:
     <<: *defaults
     build: ./netperf/file-generator
     container_name: netperf-file-generator
     environment:
-      TZ: "#VAR:general_timezone:VAR#"
+      TZ: "#VAR: general_timezone :VAR#"
     ports:
-      - "#VAR:jwwg_wireguard_interfaces[0].ip_addresses[0]:VAR#:9116:8080"
+      - "#VAR: jwwg_wireguard_interfaces[0].ip_addresses[0] :VAR#:9116:8080"
     healthcheck:
       test: ["CMD", "/network-performance-file-generator", "--healthcheck"]
 
@@ -801,20 +801,20 @@ services:
     <<: *defaults
     image: docker.io/syncthing/syncthing:1
     container_name: syncthing
-    hostname: "#VAR:ansible_hostname:VAR#"
+    hostname: "#VAR: ansible_hostname :VAR#"
     networks:
       - caddy-private
     ports:
       - "22000:22000"
       - "22000:22000/udp"
     volumes:
-      - "#VAR:general_path_appdata:VAR#/syncthing/config:/var/syncthing"
-      - "#VAR:general_path_appdata:VAR#/paperless/docs/documents/originals:/data/paperless"
+      - "#VAR: general_path_appdata :VAR#/syncthing/config:/var/syncthing"
+      - "#VAR: general_path_appdata :VAR#/paperless/docs/documents/originals:/data/paperless"
       - "wikijs-backup:/data/wikijs"
     environment:
-      TZ: "#VAR:general_timezone:VAR#"
-      PUID: "#VAR:ansible_real_user_id:VAR#"
-      PGID: "#VAR:ansible_real_user_id:VAR#"
+      TZ: "#VAR: general_timezone :VAR#"
+      PUID: "#VAR: ansible_real_user_id :VAR#"
+      PGID: "#VAR: ansible_real_user_id :VAR#"
 
   # =========================
   # =         BACKUP        =
@@ -832,10 +832,10 @@ services:
         condition: service_healthy
     volumes:
       - "./nextcloud/calcardbackup/mariadb-client.cnf:/etc/my.cnf.d/mariadb-client.cnf:ro"
-      - "#VAR:general_path_appdata:VAR#/nextcloud/nextcloud/config/config:/nextcloud/config:ro"
+      - "#VAR: general_path_appdata :VAR#/nextcloud/nextcloud/config/config:/nextcloud/config:ro"
       - nc-calcardbackup:/backup
     environment:
-      TZ: "#VAR:general_timezone:VAR#"
+      TZ: "#VAR: general_timezone :VAR#"
       CRON_TIME: "#" # Disable cron
 
   borgmatic:
@@ -846,46 +846,46 @@ services:
       - SYS_ADMIN # Required for borg mount
     volumes:
       # Backup locations
-      - "#VAR:general_path_appdata:VAR#/bjoetiek/directus/uploads:/mnt/source/bjoetiek/directus/uploads:z"
+      - "#VAR: general_path_appdata :VAR#/bjoetiek/directus/uploads:/mnt/source/bjoetiek/directus/uploads:z"
       - "bjoetiek-directus-db-dump:/mnt/source/bjoetiek/directus/dbdump:ro"
-      - "#VAR:general_path_appdata:VAR#/goatcounter/db:/mnt/source/goatcounter/db:ro"
+      - "#VAR: general_path_appdata :VAR#/goatcounter/db:/mnt/source/goatcounter/db:ro"
       - "keycloak-db-dump:/mnt/source/keycloak/dbdump:ro"
-      - "#VAR:general_path_appdata:VAR#/kristofcoenen/directus/uploads:/mnt/source/kristofcoenen/directus/uploads:z"
+      - "#VAR: general_path_appdata :VAR#/kristofcoenen/directus/uploads:/mnt/source/kristofcoenen/directus/uploads:z"
       - "kristofcoenen-directus-db-dump:/mnt/source/kristofcoenen/directus/dbdump:ro"
       - "miniflux-db-dump:/mnt/source/miniflux/dbdump:ro"
       - "nc-db-dump:/mnt/source/nextcloud/dbdump:ro"
       - "nc-calcardbackup:/mnt/source/nextcloud/calcardbackup:ro"
-      - "#VAR:general_path_appdata:VAR#/nextcloud/nextcloud/data:/mnt/source/nextcloud/data:ro"
-      - "#VAR:general_path_appdata:VAR#/nextcloud/nextcloud/config:/mnt/source/nextcloud/config:ro"
-      - "#VAR:general_path_appdata:VAR#/paperless/docs:/mnt/source/paperless/docs:ro"
+      - "#VAR: general_path_appdata :VAR#/nextcloud/nextcloud/data:/mnt/source/nextcloud/data:ro"
+      - "#VAR: general_path_appdata :VAR#/nextcloud/nextcloud/config:/mnt/source/nextcloud/config:ro"
+      - "#VAR: general_path_appdata :VAR#/paperless/docs:/mnt/source/paperless/docs:ro"
       - "paperless-db-dump:/mnt/source/paperless/dbdump:ro"
       - "paperless-export:/mnt/source/paperless/export:ro"
-      - "#VAR:general_path_appdata:VAR#/tuinfeest/directus/uploads:/mnt/source/tuinfeest/directus/uploads:z"
+      - "#VAR: general_path_appdata :VAR#/tuinfeest/directus/uploads:/mnt/source/tuinfeest/directus/uploads:z"
       - "tuinfeest-directus-db-dump:/mnt/source/tuinfeest/directus/dbdump:ro"
-      - "#VAR:general_path_appdata:VAR#/vaultwarden/data:/mnt/source/vaultwarden/data:ro"
+      - "#VAR: general_path_appdata :VAR#/vaultwarden/data:/mnt/source/vaultwarden/data:ro"
       - "wikijs-backup:/mnt/source/wikijs/backup:ro"
       - "wikijs-db-dump:/mnt/source/wikijs/dbdump:ro"
-      - "#VAR:general_path_appdata:VAR#/wtech/directus/uploads:/mnt/source/wtech/directus/uploads:z"
+      - "#VAR: general_path_appdata :VAR#/wtech/directus/uploads:/mnt/source/wtech/directus/uploads:z"
       - "wtech-directus-db-dump:/mnt/source/wtech/directus/dbdump:ro"
       # Config and cache
       - "./borgmatic/borgmatic.d/config.yaml:/etc/borgmatic.d/config.yaml"
       - "./borgmatic/ssh/BorgHost:/root/.ssh/BorgHost"
       - "./borgmatic/ssh/known_hosts:/root/.ssh/known_hosts"
-      - "#VAR:general_path_appdata:VAR#/borgmatic/borgmatic/config:/root/.config/borg"
-      - "#VAR:general_path_appdata:VAR#/borgmatic/borgmatic/cache:/root/.cache/borg"
-      - "#VAR:general_path_appdata:VAR#/borgmatic/borgmatic/restore:/mnt/restore"
+      - "#VAR: general_path_appdata :VAR#/borgmatic/borgmatic/config:/root/.config/borg"
+      - "#VAR: general_path_appdata :VAR#/borgmatic/borgmatic/cache:/root/.cache/borg"
+      - "#VAR: general_path_appdata :VAR#/borgmatic/borgmatic/restore:/mnt/restore"
     devices:
       - "/dev/fuse:/dev/fuse" # Required for borg mount
     environment:
-      TZ: "#VAR:general_timezone:VAR#"
+      TZ: "#VAR: general_timezone :VAR#"
       BACKUP_CRON: "0 3 * * *"
-      BORG_PASSPHRASE: "#VAR:app_borgmatic_borg_passphrase:VAR#"
+      BORG_PASSPHRASE: "#VAR: app_borgmatic_borg_passphrase :VAR#"
       BORG_HOSTNAME_IS_UNIQUE: "yes" # Automatically removes stale locks
-      BORG_HOST_ID: "#VAR:ansible_hostname:VAR#"
+      BORG_HOST_ID: "#VAR: ansible_hostname :VAR#"
     deploy:
       resources:
         limits:
-          cpus: "#VAR:ansible_processor_nproc:VAR#"
+          cpus: "#VAR: ansible_processor_nproc :VAR#"
           memory: 6G
 
 # #################################################################

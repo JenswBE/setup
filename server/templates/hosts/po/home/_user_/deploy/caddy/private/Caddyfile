@@ -9,8 +9,8 @@ import ./configs/shared_snippets.txt
 	}
 }
 
-"*.#VAR:general_domain_local:VAR#",
-"*.#VAR:ansible_hostname:VAR#.#VAR:general_domain_local:VAR#" {
+"*.#VAR: general_domain_local :VAR#",
+"*.#VAR: ansible_hostname :VAR#.#VAR: general_domain_local :VAR#" {
 	import logging
 	import tls_acme_dns
 

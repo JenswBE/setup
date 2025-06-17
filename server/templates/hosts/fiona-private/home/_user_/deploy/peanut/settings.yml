@@ -1,5 +1,5 @@
 NUT_SERVERS:
-  - HOST: "fiona.{{ general_domain_local }}"
+  - HOST: "fiona.#VAR: general_domain_local :VAR#"
     PORT: 3493
 WEB_HOST: 0.0.0.0
 WEB_PORT: 8080

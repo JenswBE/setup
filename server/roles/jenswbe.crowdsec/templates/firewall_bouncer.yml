@@ -1,2 +1,2 @@
 api_url: http://127.0.0.1:9000/
-api_key: "{{ jwcs_bouncer_firewall_key }}"
+api_key: "#VAR: jwcs_bouncer_firewall_key :VAR#"

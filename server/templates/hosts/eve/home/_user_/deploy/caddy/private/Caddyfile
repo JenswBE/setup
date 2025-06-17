@@ -9,8 +9,8 @@ import ./configs/shared_snippets.txt
 	}
 }
 
-"*.#VAR:general_domain_local:VAR#",
-"*.#VAR:ansible_hostname:VAR#.#VAR:general_domain_local:VAR#" {
+"*.#VAR: general_domain_local :VAR#",
+"*.#VAR: ansible_hostname :VAR#.#VAR: general_domain_local :VAR#" {
 	import logging
 	import tls_acme_dns
 
@@ -20,32 +20,32 @@ import ./configs/shared_snippets.txt
 		import handler_local_blocky
 		import handler_local_crowdsec
 
-		@docs host "docs.#VAR:general_domain_local:VAR#"
+		@docs host "docs.#VAR: general_domain_local :VAR#"
 		handle @docs {
 			import default_local_reverse_proxy "http://paperless:8000"
 		}
 
-		@feed host "feed.#VAR:general_domain_local:VAR#"
+		@feed host "feed.#VAR: general_domain_local :VAR#"
 		handle @feed {
 			import default_local_reverse_proxy "http://miniflux:8080"
 		}
 
-		@pdf host "pdf.#VAR:general_domain_local:VAR#"
+		@pdf host "pdf.#VAR: general_domain_local :VAR#"
 		handle @pdf {
 			import default_local_reverse_proxy "http://stirling-pdf:8080"
 		}
 
-		@start host "start.#VAR:general_domain_local:VAR#"
+		@start host "start.#VAR: general_domain_local :VAR#"
 		handle @start {
 			import default_local_reverse_proxy "http://homer:8080"
 		}
 
-		@syncthing host "syncthing.#VAR:ansible_hostname:VAR#.#VAR:general_domain_local:VAR#"
+		@syncthing host "syncthing.#VAR: ansible_hostname :VAR#.#VAR: general_domain_local :VAR#"
 		handle @syncthing {
 			import default_local_reverse_proxy "http://syncthing:8384"
 		}
 
-		@wiki host "wiki.#VAR:general_domain_local:VAR#"
+		@wiki host "wiki.#VAR: general_domain_local :VAR#"
 		handle @wiki {
 			import default_local_reverse_proxy "http://wikijs:3000"
 		}

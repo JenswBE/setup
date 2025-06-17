@@ -10,17 +10,17 @@ import ./configs/shared_snippets.txt
 		oauth identity provider keycloak {
 			driver generic
 			realm keycloak
-			client_id "#VAR:app_caddy_security_oidc_client_id:VAR#"
-			client_secret "#VAR:app_caddy_security_oidc_client_secret:VAR#"
+			client_id "#VAR: app_caddy_security_oidc_client_id :VAR#"
+			client_secret "#VAR: app_caddy_security_oidc_client_secret :VAR#"
 			scopes openid email profile
-			metadata_url "#VAR:app_caddy_security_oidc_issuer_url:VAR#/.well-known/openid-configuration"
+			metadata_url "#VAR: app_caddy_security_oidc_issuer_url :VAR#/.well-known/openid-configuration"
 		}
 
 		authentication portal portal_local {
 			crypto default token lifetime 604800 # 7 days (60 * 60 * 24 * 7)
-			crypto key sign-verify "#VAR:app_caddy_security_jwt_secret:VAR#"
+			crypto key sign-verify "#VAR: app_caddy_security_jwt_secret :VAR#"
 			enable identity provider keycloak
-			cookie domain "#VAR:general_domain_local:VAR#"
+			cookie domain "#VAR: general_domain_local :VAR#"
 		}
 	}
 }
@@ -29,7 +29,7 @@ import ./configs/shared_snippets.txt
 http:// {
 }
 
-"*.#VAR:general_domain_local:VAR#" {
+"*.#VAR: general_domain_local :VAR#" {
 	import logging
 	import tls_acme_dns
 
@@ -39,12 +39,12 @@ http:// {
 		import handler_local_blocky
 		import handler_local_crowdsec
 
-		@portal host "portal.#VAR:general_domain_local:VAR#"
+		@portal host "portal.#VAR: general_domain_local :VAR#"
 		handle @portal {
 			authenticate with portal_local
 		}
 
-		@ups host "ups.#VAR:general_domain_local:VAR#"
+		@ups host "ups.#VAR: general_domain_local :VAR#"
 		handle @ups {
 			import default_local_reverse_proxy "http://peanut:8080"
 		}

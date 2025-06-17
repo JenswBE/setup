@@ -3,8 +3,8 @@
 
 fields_under_root: true
 fields:
-  collector_node_id: "{{ ansible_hostname }}"
-  gl2_source_collector: "{{ ansible_hostname | hash('md5') }}"
+  collector_node_id: "#VAR: ansible_hostname :VAR#"
+  gl2_source_collector: "#VAR: ansible_hostname | hash('md5') :VAR#"
 
 filebeat.inputs:
   - type: journald
@@ -26,5 +26,5 @@ processors:
 
 output.logstash:
   enabled: true
-  hosts: ["{{ jwob_graylog_server_hostname }}:5044"]
+  hosts: ["#VAR: jwob_graylog_server_hostname :VAR#:5044"]
   slow_start: true

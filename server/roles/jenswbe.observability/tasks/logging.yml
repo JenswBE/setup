@@ -21,6 +21,10 @@
         owner: root
         group: root
         mode: "600"
+        block_start_string: "#BLOCK:"
+        block_end_string: ":BLOCK#"
+        variable_start_string: "#VAR:"
+        variable_end_string: ":VAR#"
       notify: Restart filebeat
 
     - name: Ensure filebeat is started and enabled

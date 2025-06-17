@@ -3,4 +3,4 @@ description: Whitelist the IP of my home
 whitelist:
   reason: dont ban home ip
   expression:
-    - evt.Overflow.Alert.Source.IP in LookupHost('heimdall.{{ general_domain_default }}')
+    - "evt.Overflow.Alert.Source.IP in LookupHost('heimdall.#VAR: general_domain_default :VAR#')"
