@@ -845,32 +845,44 @@ services:
     cap_add:
       - SYS_ADMIN # Required for borg mount
     volumes:
-      # Backup locations
-      - "#VAR: general_path_appdata :VAR#/bjoetiek/directus/uploads:/mnt/source/bjoetiek/directus/uploads:z"
-      - "bjoetiek-directus-db-dump:/mnt/source/bjoetiek/directus/dbdump:ro"
+      # === Backup locations ===
+      # Bjoetiek Y
+      - "#VAR: general_path_appdata :VAR#/bjoetiek/directus/uploads:/mnt/source/bjoetiek_y/directus/uploads:z"
+      - "bjoetiek-directus-db-dump:/mnt/source/bjoetiek_y/directus/dbdump:ro"
+      # GoatCounter
       - "#VAR: general_path_appdata :VAR#/goatcounter/db:/mnt/source/goatcounter/db:ro"
+      # Keycloak
       - "keycloak-db-dump:/mnt/source/keycloak/dbdump:ro"
+      # KristofCoenen
       - "#VAR: general_path_appdata :VAR#/kristofcoenen/directus/uploads:/mnt/source/kristofcoenen/directus/uploads:z"
       - "kristofcoenen-directus-db-dump:/mnt/source/kristofcoenen/directus/dbdump:ro"
+      # Miniflux
       - "miniflux-db-dump:/mnt/source/miniflux/dbdump:ro"
+      # Nextcloud
       - "nc-db-dump:/mnt/source/nextcloud/dbdump:ro"
       - "nc-calcardbackup:/mnt/source/nextcloud/calcardbackup:ro"
       - "#VAR: general_path_appdata :VAR#/nextcloud/nextcloud/data:/mnt/source/nextcloud/data:ro"
       - "#VAR: general_path_appdata :VAR#/nextcloud/nextcloud/config:/mnt/source/nextcloud/config:ro"
+      # Paperless
       - "#VAR: general_path_appdata :VAR#/paperless/docs:/mnt/source/paperless/docs:ro"
       - "paperless-db-dump:/mnt/source/paperless/dbdump:ro"
       - "paperless-export:/mnt/source/paperless/export:ro"
+      # Tuinfeest
       - "#VAR: general_path_appdata :VAR#/tuinfeest/directus/uploads:/mnt/source/tuinfeest/directus/uploads:z"
       - "tuinfeest-directus-db-dump:/mnt/source/tuinfeest/directus/dbdump:ro"
+      # Vaultwarden
       - "#VAR: general_path_appdata :VAR#/vaultwarden/data:/mnt/source/vaultwarden/data:ro"
+      # Wiki.js
       - "wikijs-backup:/mnt/source/wikijs/backup:ro"
       - "wikijs-db-dump:/mnt/source/wikijs/dbdump:ro"
+      # WTech
       - "#VAR: general_path_appdata :VAR#/wtech/directus/uploads:/mnt/source/wtech/directus/uploads:z"
       - "wtech-directus-db-dump:/mnt/source/wtech/directus/dbdump:ro"
-      # Config and cache
-      - "./borgmatic/borgmatic.d/config.yaml:/etc/borgmatic.d/config.yaml"
-      - "./borgmatic/ssh/BorgHost:/root/.ssh/BorgHost"
-      - "./borgmatic/ssh/known_hosts:/root/.ssh/known_hosts"
+      # === Config and cache ===
+      - "./borgmatic/common/global.txt:/common/global.yml"
+      - "./borgmatic/common/repo.txt:/common/repo.yml"
+      - "./borgmatic/apps:/etc/borgmatic.d"
+      - "./borgmatic/ssh:/root/.ssh"
       - "#VAR: general_path_appdata :VAR#/borgmatic/borgmatic/config:/root/.config/borg"
       - "#VAR: general_path_appdata :VAR#/borgmatic/borgmatic/cache:/root/.cache/borg"
       - "#VAR: general_path_appdata :VAR#/borgmatic/borgmatic/restore:/mnt/restore"

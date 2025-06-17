@@ -1,0 +1,11 @@
+# Dummy for jinja block {% set app_name = app_path | basename | split('.') | first %}
+
+<<: !include /common/global.yml
+
+source_directories:
+  - "/mnt/source/{{ app_name }}"
+
+repositories:
+  - label: "{{ app_name }}"
+    path: "ssh://{{ app_borgmatic_borgbase_ids[app_name] }}@{{ app_borgmatic_borgbase_ids[app_name] }}.repo.borgbase.com/./repo"
+    <<: !include /common/repo.yml

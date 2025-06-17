@@ -1,0 +1,34 @@
+# Sources
+# source_directories: See app specific config
+
+# General
+verbosity: 1 # Info
+compression: auto,zstd
+archive_name_format: "{hostname}-{now:%Y-%m-%d-%H%M%S}"
+skip_actions:
+  - compact # Repo's are append-only
+
+# Retention
+keep_daily: 7
+keep_weekly: 4
+keep_monthly: 12
+keep_yearly: 2
+
+# Checks
+checks:
+  - name: repository
+    frequency: 1 month
+  - name: archives
+    frequency: 2 weeks
+check_last: 3
+
+# Commands
+commands:
+  - before: everything
+    run: # Ensure correct file permissions
+      - chown root:root -R /root/.ssh
+      - chmod 600 /root/.ssh/*
+
+  - after: everything
+    run: # Restore original permission to allow Ansible deployments
+      - "chown #VAR: ansible_real_user_id :VAR#:#VAR: ansible_real_group_id :VAR# -R /root/.ssh"

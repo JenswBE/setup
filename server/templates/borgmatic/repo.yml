@@ -1,0 +1,4 @@
+encryption: repokey-blake2
+append_only: true
+# label: See app specific config
+# path: See app specific config

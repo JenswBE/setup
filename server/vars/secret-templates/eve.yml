@@ -7,7 +7,8 @@ app_bjoetiek_directus_secret: "" # openssl rand -hex 32
 
 # Borgmatic
 app_borgmatic_borg_passphrase: ""
-app_borgmatic_ssh_host: ""
+app_borgmatic_borgbase_ids:
+  example_app: borgbase_id
 app_borgmatic_ssh_port: ""
 app_borgmatic_ssh_user: ""
 app_borgmatic_ssh_key: |
@@ -15,9 +16,7 @@ app_borgmatic_ssh_key: |
   ...
   -----END OPENSSH PRIVATE KEY-----
 app_borgmatic_ssh_known_hosts: |
-  [HOSTNAME]:PORT,[IP_ADDRESS]:PORT ssh-ed25519 ...
-app_borgmatic_remote_folder: ""
-app_borgmatic_ping_id: "" # Ping ID for healthchecks.io
+  *.repo.borgbase.com ...
 
 # Caddy
 # https://desec.io/tokens
