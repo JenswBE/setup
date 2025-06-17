@@ -131,5 +131,6 @@
   "terminal.integrated.persistentSessionReviveProcess": "never",
   "terminal.integrated.sendKeybindingsToShell": true,
   "workbench.colorTheme": "Dracula Pro",
-  "workbench.startupEditor": "none"
+  "workbench.startupEditor": "none",
+  "terminal.integrated.scrollback": 100000
 }
