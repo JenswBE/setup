@@ -51,3 +51,9 @@
     - name: Include host specific tasks
       ansible.builtin.include_tasks: "tasks/hosts/{{ ansible_hostname }}.yml"
       tags: ["always"]
+
+  handlers:
+    - name: Dracut regenerate
+      become: true
+      changed_when: true
+      ansible.builtin.command: dracut --regenerate-all --force
