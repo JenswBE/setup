@@ -1,1 +1,1 @@
-{{ lookup('ansible.builtin.template', 'blocky.yml') }}
+{{ lookup('ansible.builtin.template', 'blocky.yml', variable_start_string='#VAR:', variable_end_string=':VAR#') }}

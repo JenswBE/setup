@@ -132,6 +132,7 @@ services:
   # =========================
   github-backup:
     <<: *defaults
+    profiles: ["scheduled"]
     image: docker.io/jenswbe/github-backup:latest
     container_name: github-backup
     restart: "no" # Will be called by systemd timer
@@ -143,18 +144,22 @@ services:
 
   borgmatic:
     <<: *defaults
-    image: ghcr.io/borgmatic-collective/borgmatic:2.0
+    profiles: ["scheduled"]
+    build: ./borgmatic
     container_name: borgmatic
     cap_add:
       - SYS_ADMIN # Required for borg mount
     volumes:
-      # Backup locations
-      - "github-backup:/mnt/source/github-backup/backup:ro"
+      # === Backup locations ===
+      # GitHub Backup
+      - "github-backup:/mnt/source/github_backup/backup:ro"
+      # Unifi
       - "unifi-mongodb-dump:/mnt/source/unifi/mongodb:ro"
-      # Config and cache
-      - "./borgmatic/borgmatic.d/config.yaml:/etc/borgmatic.d/config.yaml"
-      - "./borgmatic/ssh/BorgHost:/root/.ssh/BorgHost"
-      - "./borgmatic/ssh/known_hosts:/root/.ssh/known_hosts"
+      # === Config and cache ===
+      - "./borgmatic/common/global.txt:/common/global.yml"
+      - "./borgmatic/common/repo.txt:/common/repo.yml"
+      - "./borgmatic/apps:/etc/borgmatic.d"
+      - "./borgmatic/ssh:/root/.ssh"
       - "#VAR: general_path_appdata :VAR#/borgmatic/borgmatic/config:/root/.config/borg"
       - "#VAR: general_path_appdata :VAR#/borgmatic/borgmatic/cache:/root/.cache/borg"
       - "#VAR: general_path_appdata :VAR#/borgmatic/borgmatic/restore:/mnt/restore"
@@ -162,14 +167,14 @@ services:
       - "/dev/fuse:/dev/fuse" # Required for borg mount
     environment:
       TZ: "#VAR: general_timezone :VAR#"
-      BACKUP_CRON: "0 3 * * *"
+      BACKUP_CRON: "false"
       BORG_PASSPHRASE: "#VAR: app_borgmatic_borg_passphrase :VAR#"
       BORG_HOSTNAME_IS_UNIQUE: "yes" # Automatically removes stale locks
       BORG_HOST_ID: "#VAR: ansible_hostname :VAR#"
     deploy:
       resources:
         limits:
-          cpus: "4"
+          cpus: "#VAR: ansible_processor_nproc :VAR#"
           memory: 4G
 
 #################################################################

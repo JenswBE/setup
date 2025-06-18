@@ -4,4 +4,5 @@ OnFailure=unit-fail-mail@%n.service
 
 [Service]
 Type=exec
-ExecStart={{ docker_path }} compose -f {{ ansible_user_dir }}/deploy/docker-compose.yml up github-backup
+WorkingDirectory={{ ansible_user_dir }}/deploy
+ExecStart={{ docker_path }} compose up github-backup

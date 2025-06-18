@@ -5,6 +5,7 @@
     state: started
     enabled: true
   loop:
+    - borgmatic.timer
     - docker-update-containers.timer
     - github-backup.timer
     - unifi-dump-mongodb.timer

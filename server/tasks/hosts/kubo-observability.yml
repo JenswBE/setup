@@ -5,6 +5,7 @@
     state: started
     enabled: true
   loop:
+    - borgmatic.timer
     - docker-update-containers.timer
     - graylog-dump-mongodb.timer
     - zabbix-dump-db.timer
