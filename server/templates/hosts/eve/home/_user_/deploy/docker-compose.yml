@@ -23,6 +23,7 @@ x-healthcheck-postgres: &healthcheck-postgres
 #################################################################
 #                            SERVICES                           #
 #################################################################
+name: deploy
 services:
   # =========================
   # =         PROXY         =
@@ -240,6 +241,7 @@ services:
 
   isa-rclone:
     <<: *defaults
+    profiles: ["scheduled"]
     image: docker.io/rclone/rclone:latest
     container_name: isa-rclone
     command: "move /data/ nextcloud:#VAR: app_isa_rclone_dav_path :VAR# --delete-empty-src-dirs --verbose"
@@ -823,6 +825,7 @@ services:
   # server/templates/hosts/eve/etc/systemd/system/nextcloud-calcardbackup.service
   nc-calcardbackup:
     <<: *defaults
+    profiles: ["scheduled"]
     image: docker.io/waja/calcardbackup:latest
     container_name: nc-calcardbackup
     networks:
@@ -840,6 +843,7 @@ services:
 
   borgmatic:
     <<: *defaults
+    profiles: ["scheduled"]
     image: ghcr.io/borgmatic-collective/borgmatic:2.0
     container_name: borgmatic
     cap_add:
@@ -890,7 +894,7 @@ services:
       - "/dev/fuse:/dev/fuse" # Required for borg mount
     environment:
       TZ: "#VAR: general_timezone :VAR#"
-      BACKUP_CRON: "0 3 * * *"
+      BACKUP_CRON: "false"
       BORG_PASSPHRASE: "#VAR: app_borgmatic_borg_passphrase :VAR#"
       BORG_HOSTNAME_IS_UNIQUE: "yes" # Automatically removes stale locks
       BORG_HOST_ID: "#VAR: ansible_hostname :VAR#"
