@@ -851,14 +851,14 @@ services:
     volumes:
       # === Backup locations ===
       # Bjoetiek Y
-      - "#VAR: general_path_appdata :VAR#/bjoetiek/directus/uploads:/mnt/source/bjoetiek_y/directus/uploads:z"
+      - "#VAR: general_path_appdata :VAR#/bjoetiek/directus/uploads:/mnt/source/bjoetiek_y/directus/uploads:z,ro"
       - "bjoetiek-directus-db-dump:/mnt/source/bjoetiek_y/directus/dbdump:ro"
       # GoatCounter
       - "#VAR: general_path_appdata :VAR#/goatcounter/db:/mnt/source/goatcounter/db:ro"
       # Keycloak
       - "keycloak-db-dump:/mnt/source/keycloak/dbdump:ro"
       # KristofCoenen
-      - "#VAR: general_path_appdata :VAR#/kristofcoenen/directus/uploads:/mnt/source/kristofcoenen/directus/uploads:z"
+      - "#VAR: general_path_appdata :VAR#/kristofcoenen/directus/uploads:/mnt/source/kristofcoenen/directus/uploads:z,ro"
       - "kristofcoenen-directus-db-dump:/mnt/source/kristofcoenen/directus/dbdump:ro"
       # Miniflux
       - "miniflux-db-dump:/mnt/source/miniflux/dbdump:ro"
@@ -872,7 +872,7 @@ services:
       - "paperless-db-dump:/mnt/source/paperless/dbdump:ro"
       - "paperless-export:/mnt/source/paperless/export:ro"
       # Tuinfeest
-      - "#VAR: general_path_appdata :VAR#/tuinfeest/directus/uploads:/mnt/source/tuinfeest/directus/uploads:z"
+      - "#VAR: general_path_appdata :VAR#/tuinfeest/directus/uploads:/mnt/source/tuinfeest/directus/uploads:z,ro"
       - "tuinfeest-directus-db-dump:/mnt/source/tuinfeest/directus/dbdump:ro"
       # Vaultwarden
       - "#VAR: general_path_appdata :VAR#/vaultwarden/data:/mnt/source/vaultwarden/data:ro"
@@ -880,7 +880,7 @@ services:
       - "wikijs-backup:/mnt/source/wikijs/backup:ro"
       - "wikijs-db-dump:/mnt/source/wikijs/dbdump:ro"
       # WTech
-      - "#VAR: general_path_appdata :VAR#/wtech/directus/uploads:/mnt/source/wtech/directus/uploads:z"
+      - "#VAR: general_path_appdata :VAR#/wtech/directus/uploads:/mnt/source/wtech/directus/uploads:z,ro"
       - "wtech-directus-db-dump:/mnt/source/wtech/directus/dbdump:ro"
       # === Config and cache ===
       - "./borgmatic/common/global.txt:/common/global.yml"

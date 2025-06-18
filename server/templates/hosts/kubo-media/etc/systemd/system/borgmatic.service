@@ -1,0 +1,12 @@
+[Unit]
+Description=Run Borgmatic
+OnFailure=unit-fail-mail@%n.service
+
+[Service]
+Type=exec
+WorkingDirectory={{ ansible_user_dir }}/deploy
+# Ensure latest image is used (image already pulled by docker-update-containers.service)
+# and uses up-to-date docker-compose.yml settings (e.g. mounted volumes)
+ExecStartPre={{ docker_path }} compose up -d borgmatic
+# Execute actual backup
+ExecStart={{ docker_path }} compose exec borgmatic borgmatic

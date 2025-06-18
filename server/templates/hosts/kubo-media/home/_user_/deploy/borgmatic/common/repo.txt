@@ -1,0 +1,1 @@
+{{ lookup('ansible.builtin.template', 'borgmatic/repo.yml', variable_start_string='#VAR:', variable_end_string=':VAR#') }}
