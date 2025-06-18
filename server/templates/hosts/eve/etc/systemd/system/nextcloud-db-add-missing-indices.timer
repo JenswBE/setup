@@ -2,7 +2,7 @@
 Description=Add missing indexes in DB for Nextcloud every night
 
 [Timer]
-OnCalendar=*-*-* 01:00:00
+OnCalendar=01:00
 Persistent=false
 
 [Install]

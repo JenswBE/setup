@@ -2,7 +2,7 @@
 Description=Update Docker containers every night
 
 [Timer]
-OnCalendar=*-*-* {{ var_time }}:00
+OnCalendar={{ var_time }}
 Persistent=false
 
 [Install]

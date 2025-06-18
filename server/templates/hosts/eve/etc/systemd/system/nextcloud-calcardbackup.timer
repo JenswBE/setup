@@ -2,7 +2,7 @@
 Description=Backup all Nextcloud calendars and contacts at 02h00
 
 [Timer]
-OnCalendar=*-*-* 02:15:00
+OnCalendar=02:15
 Persistent=true
 
 [Install]

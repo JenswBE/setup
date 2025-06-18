@@ -41,7 +41,7 @@
         mode: "0644"
         content: |
           [Timer]
-          OnCalendar=*-*-* {{ jwau_autoupdate_reboot_time }}
+          OnCalendar={{ jwau_autoupdate_reboot_time }}
           RandomizedDelaySec=10m
       notify: Reload systemd
 
