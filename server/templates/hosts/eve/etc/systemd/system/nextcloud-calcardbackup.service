@@ -3,4 +3,5 @@ Description=Backup all Nextcloud calendars and contacts
 OnFailure=unit-fail-mail@%n.service
 
 [Service]
+Type=exec
 ExecStart={{ docker_path }} exec nc-calcardbackup sh -c "/opt/calcardbackup/calcardbackup /nextcloud/ --output /backup/ --read-mysql-optionfiles --include-shares --uncompressed --date '_overwrite'"

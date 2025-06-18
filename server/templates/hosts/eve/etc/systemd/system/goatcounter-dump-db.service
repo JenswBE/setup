@@ -3,6 +3,7 @@ Description=Dump GoatCounter DB for backup
 OnFailure=unit-fail-mail@%n.service
 
 [Service]
+Type=exec
 # --dns: We don't reference internal resources and musl libc doesn't use fallback DNS servers.
 #        So, it's safer to use a public DNS resolver by default.
 ExecStart={{ docker_path }} run --rm --pull always --dns 9.9.9.9 -v "{{ general_path_appdata }}/goatcounter/db:/data" alpine sh -c "set -eu; apk add sqlite; sqlite3 /data/goatcounter.sqlite3 '.backup /data/goatcounter.backup.sqlite3'"

@@ -3,4 +3,5 @@ Description=Dump Keycloak DB for backup
 OnFailure=unit-fail-mail@%n.service
 
 [Service]
+Type=exec
 ExecStart={{ docker_path }} exec keycloak-db /bin/sh -c "pg_dump --verbose --format=c --blobs --dbname=keycloak --username=keycloak --no-password --file=/backup/keycloak.pg_dump"

@@ -3,4 +3,5 @@ Description=Nextcloud generate previews
 OnFailure=unit-fail-mail@%n.service
 
 [Service]
+Type=exec
 ExecStart={{ docker_path }} exec --user www-data nextcloud php occ preview:pre-generate

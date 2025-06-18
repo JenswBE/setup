@@ -3,4 +3,5 @@ Description=IMAP Save Attachments
 OnFailure=unit-fail-mail@%n.service
 
 [Service]
-ExecStart={{ docker_path }} compose -f {{ ansible_user_dir }}/deploy/docker-compose.yml up isa-rclone
+Type=exec
+ExecStart={{ docker_path }} compose -f {{ ansible_user_dir }}/deploy/adhoc.yml up isa-rclone
