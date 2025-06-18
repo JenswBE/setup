@@ -20,22 +20,14 @@ Based on https://unix.stackexchange.com/a/230676
 tr -dc A-Za-z0-9 </dev/random | head -c 32; echo
 ```
 
-## Generate Treafik basic auth credentials
-
-```bash
-podman run -it --rm docker.io/library/httpd:2-alpine htpasswd -nBC 10 <USERNAME>
-```
-
 ## Generate rclone password
 
 ```bash
 rclone obscure <PASS>
 ```
 
-## Generate imgproxy key and salt
-
-See https://docs.imgproxy.net/configuration?id=url-signature
+## Generate new ed25519 SSH key for Borgmatic
 
 ```bash
-echo $(xxd -g 2 -l 64 -p /dev/random | tr -d '\n')
+ssh-keygen -t ed25519 -N '' -f borgmatic
 ```

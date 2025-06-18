@@ -6,17 +6,15 @@ app_bjoetiek_directus_key: "" # cat /proc/sys/kernel/random/uuid
 app_bjoetiek_directus_secret: "" # openssl rand -hex 32
 
 # Borgmatic
-app_borgmatic_borg_passphrase: ""
+# See also basics.yml
+app_borgmatic_upload_limit: unlimited
+app_borgmatic_download_limit: unlimited
 app_borgmatic_borgbase_ids:
   example_app: borgbase_id
-app_borgmatic_ssh_port: ""
-app_borgmatic_ssh_user: ""
 app_borgmatic_ssh_key: |
   -----BEGIN OPENSSH PRIVATE KEY-----
   ...
   -----END OPENSSH PRIVATE KEY-----
-app_borgmatic_ssh_known_hosts: |
-  *.repo.borgbase.com ...
 
 # Caddy
 # https://desec.io/tokens

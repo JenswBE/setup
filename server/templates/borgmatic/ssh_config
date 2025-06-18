@@ -1,0 +1,9 @@
+Host *
+    # Rate limiting through ProxyCommand based on
+    # https://github.com/borgbackup/borg/issues/8838#issuecomment-2887242602
+    ProxyCommand
+    {%- if app_borgmatic_upload_limit != "unlimited" +%} pv --quiet --rate-limit {{ app_borgmatic_upload_limit }} | {%- endif %}
+    nc %h %p
+    {%- if app_borgmatic_download_limit != "unlimited" +%} | pv --quiet --rate-limit {{ app_borgmatic_download_limit }}{% endif +%}
+    ServerAliveCountMax 30
+    ServerAliveInterval 10

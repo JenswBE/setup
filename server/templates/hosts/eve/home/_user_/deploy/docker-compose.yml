@@ -844,7 +844,7 @@ services:
   borgmatic:
     <<: *defaults
     profiles: ["scheduled"]
-    image: ghcr.io/borgmatic-collective/borgmatic:2.0
+    build: ./borgmatic
     container_name: borgmatic
     cap_add:
       - SYS_ADMIN # Required for borg mount

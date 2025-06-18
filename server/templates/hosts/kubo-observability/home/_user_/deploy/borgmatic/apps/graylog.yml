@@ -1,0 +1,1 @@
+#VAR: lookup('ansible.builtin.template', 'borgmatic/app.yml', template_vars={"app_path": template_path}) :VAR#

@@ -2,6 +2,12 @@
 app_blocky_zone: |
   ZONE CONTENTS
 
+# Borgmatic
+# See also host specific secret files
+app_borgmatic_borg_passphrase: ""
+app_borgmatic_ssh_known_hosts: |
+  *.repo.borgbase.com ...
+
 # Caddy Security / AuthCrunch
 # Same config should be shared between all Caddy Security/AuthCrunch instances.
 app_caddy_security_jwt_secret: "" # Random string
