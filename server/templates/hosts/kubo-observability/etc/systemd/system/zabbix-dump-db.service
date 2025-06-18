@@ -3,4 +3,5 @@ Description=Dump Zabbix DB for backup
 OnFailure=unit-fail-mail@%n.service
 
 [Service]
+Type=exec
 ExecStart={{ docker_path }} exec zabbix-db /bin/sh -c "pg_dump --verbose --format=c --blobs --dbname=zabbix --username=zabbix --no-password --file=/backup/zabbix.pg_dump"

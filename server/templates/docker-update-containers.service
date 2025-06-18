@@ -3,6 +3,7 @@ Description=Update all Docker containers
 OnFailure=unit-fail-mail@%n.service
 
 [Service]
+Type=exec
 TimeoutSec=15min
 WorkingDirectory={{ ansible_user_dir }}/deploy
 ExecStartPre={{ docker_path }} compose --profile 'scheduled' pull
