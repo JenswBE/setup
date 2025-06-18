@@ -18,6 +18,7 @@
     enabled: true
   loop:
     - bjoetiek-directus-dump-db.timer
+    - borgmatic.timer
     - docker-update-containers.timer
     - goatcounter-dump-db.timer
     - isa-rclone.timer
