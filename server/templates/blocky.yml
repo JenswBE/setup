@@ -5,6 +5,12 @@ bootstrapDns:
       - "149.112.112.112"
       # - "2620:fe::fe"
       # - "2620:fe::9"
+  - upstream: https://dns0.eu/
+    ips:
+      - "193.110.81.0"
+      - "185.253.5.0"
+      # - "2a0f:fc80::"
+      # - "2a0f:fc81::"
 
 upstreams:
   groups:
