@@ -42,14 +42,8 @@ services:
 
       - name: Nextcloud
         subtitle: Eve - Public
-        logo: assets/logos/nextcloud.png
+        logo: https://cdn.jsdelivr.net/gh/selfhst/icons/svg/nextcloud.svg
         url: "https://nextcloud.#VAR: general_domain_default :VAR#"
-        <<: *default
-
-      - name: Nextcloud Media
-        subtitle: Kubo - Public
-        logo: assets/logos/nextcloud.png
-        url: "https://nextcloud-media.#VAR: general_domain_default :VAR#"
         <<: *default
 
       - name: Transmission
