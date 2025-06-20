@@ -5,7 +5,7 @@ verbose: False
 cron: "0 13 * * *"
 
 health_check:
-  url: "https://hc-ping.com/#VAR: app_delic_ping_id :VAR#"
+  url: "#VAR: app_delic_ping_url :VAR#"
 
 notifiers:
   - name: email_technical_en

@@ -25,7 +25,7 @@ jwcs_bouncer_firewall_key: "" # Alphanumeric string
 
 # Dead Link Checker (DeLiC)
 # https://github.com/JenswBE/dead-link-checker
-app_delic_ping_id: ""
+app_delic_ping_url: ""
 
 # IMAP Save attachments
 app_isa_poll_imap_host: "imap.migadu.com"
