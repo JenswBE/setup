@@ -42,3 +42,10 @@
         owner: root
         group: root
         mode: "644"
+
+    - name: Allow systemd lingering
+      ansible.builtin.lineinfile:
+        path: /etc/systemd/logind.conf
+        regexp: "^#?KillExcludeUsers="
+        line: "KillExcludeUsers=root {{ ansible_user_id }}"
+      notify: Restart systemd-logind

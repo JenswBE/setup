@@ -3,3 +3,9 @@
   ansible.builtin.service:
     name: systemd-journald
     state: restarted
+
+- name: Restart systemd-logind
+  become: true
+  ansible.builtin.service:
+    name: systemd-logind
+    state: restarted
