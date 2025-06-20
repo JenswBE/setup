@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Author: Jens Willemsens <jens@jensw.be>
 # License: MIT
