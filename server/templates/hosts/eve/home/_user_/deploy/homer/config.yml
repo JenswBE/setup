@@ -29,38 +29,44 @@ services:
     icon: fas fa-sync
     items:
       - name: Immich
-        subtitle: Kubo - Public
+        subtitle: Public | kubo-media
         logo: https://cdn.jsdelivr.net/gh/selfhst/icons/svg/immich.svg
         url: "https://immich.#VAR: general_domain_default :VAR#"
         <<: *default
 
       - name: Jellyfin
-        subtitle: Kubo - Public
-        logo: https://raw.githubusercontent.com/jellyfin/jellyfin-ux/master/branding/SVG/icon-transparent.svg
+        subtitle: Public | kubo-media
+        logo: https://cdn.jsdelivr.net/gh/selfhst/icons/svg/jellyfin.svg
         url: "https://jellyfin.#VAR: general_domain_default :VAR#"
         <<: *default
 
       - name: Nextcloud
-        subtitle: Eve - Public
+        subtitle: Public | eve
         logo: https://cdn.jsdelivr.net/gh/selfhst/icons/svg/nextcloud.svg
         url: "https://nextcloud.#VAR: general_domain_default :VAR#"
         <<: *default
 
       - name: Transmission
-        subtitle: Kubo - Public
-        logo: https://raw.githubusercontent.com/transmission/transmission/main/web/assets/img/logo.png
+        subtitle: Public | kubo-download
+        logo: https://cdn.jsdelivr.net/gh/selfhst/icons/svg/transmission.svg
         url: "https://torrent.#VAR: general_domain_default :VAR#"
         <<: *default
 
+      - name: TinyMediaManager
+        subtitle: Private | kubo-media
+        logo: https://gitlab.com/tinyMediaManager/tinyMediaManager/-/raw/devel/AppBundler/svg/logo1.svg
+        url: "https://tmm.#VAR: general_domain_local :VAR#"
+        <<: *default
+
       - name: Syncthing Eve
-        subtitle: Eve - Private
-        logo: https://raw.githubusercontent.com/syncthing/syncthing/main/assets/logo-only.svg
+        subtitle: Private | eve
+        logo: https://cdn.jsdelivr.net/gh/selfhst/icons/svg/syncthing.svg
         url: "https://syncthing.eve.#VAR: general_domain_local :VAR#"
         <<: *default
 
       - name: Syncthing Kubo
-        subtitle: Kubo - Private
-        logo: https://raw.githubusercontent.com/syncthing/syncthing/main/assets/logo-only.svg
+        subtitle: Private | kubo-media
+        logo: https://cdn.jsdelivr.net/gh/selfhst/icons/svg/syncthing.svg
         url: "https://syncthing.kubo.#VAR: general_domain_local :VAR#"
         <<: *default
 
@@ -68,103 +74,82 @@ services:
     icon: fas fa-wrench
     items:
       - name: Assets
-        subtitle: Po - Public
-        logo: https://icons.getbootstrap.com/assets/icons/hdd-fill.svg
+        subtitle: Public | po
+        logo: https://cdn.jsdelivr.net/gh/selfhst/icons/svg/dumbassets.svg
         url: "https://assets.#VAR: general_domain_default :VAR#"
         <<: *default
 
       - name: External email generator
-        subtitle: Po - Public
-        logo: https://icons.getbootstrap.com/assets/icons/at.svg
+        subtitle: Public | po
+        logo: https://cdn.jsdelivr.net/gh/selfhst/icons/svg/nextcloud-mail.svg
         url: "https://ext.#VAR: general_domain_default :VAR#"
         <<: *default
 
-      - name: Grafana
-        subtitle: Kubo - Private
-        logo: https://raw.githubusercontent.com/grafana/grafana/main/public/img/grafana_icon.svg
-        url: "https://grafana.#VAR: general_domain_local :VAR#"
+      - name: Home Assistant
+        subtitle: Private | kubo-haos
+        logo: https://cdn.jsdelivr.net/gh/selfhst/icons/svg/home-assistant.svg
+        url: "https://ha.#VAR: general_domain_local :VAR#"
         <<: *default
 
       - name: MiniFlux
-        subtitle: Eve - Private
-        logo: https://raw.githubusercontent.com/miniflux/logo/master/icon.svg
+        subtitle: Private | eve
+        logo: https://cdn.jsdelivr.net/gh/selfhst/icons/svg/miniflux-light.svg
         url: "https://feed.#VAR: general_domain_local :VAR#"
         <<: *default
 
       - name: Paperless
-        subtitle: Eve - Private
+        subtitle: Private | eve
         logo: https://raw.githubusercontent.com/paperless-ngx/paperless-ngx/dev/resources/logo/web/svg/square.svg
         url: "https://docs.#VAR: general_domain_local :VAR#"
         <<: *default
 
       - name: Stirling PDF
-        subtitle: Kubo - Private
+        subtitle: Private | eve
         logo: https://cdn.jsdelivr.net/gh/selfhst/icons/svg/stirling-pdf.svg
         url: "https://pdf.#VAR: general_domain_local :VAR#"
         <<: *default
 
       - name: Vaultwarden
-        subtitle: Eve - Public
+        subtitle: Public | eve
         logo: https://cdn.jsdelivr.net/gh/selfhst/icons/svg/vaultwarden.svg
         url: "https://vault.#VAR: general_domain_default :VAR#"
         <<: *default
 
       - name: Wiki.js
-        subtitle: Eve - Private
+        subtitle: Private | eve
         logo: https://cdn.jsdelivr.net/gh/selfhst/icons/svg/wiki-js.svg
         url: "https://wiki.#VAR: general_domain_local :VAR#"
         <<: *default
 
-  - name: Local
-    icon: fas fa-home
-    items:
-      - name: Home Assistant
-        subtitle: Kubo - Private
-        logo: https://cdn.jsdelivr.net/gh/selfhst/icons/svg/home-assistant.svg
-        url: "https://ha.#VAR: general_domain_local :VAR#"
-        <<: *default
-
-      - name: HA - Zigbee2MQTT
-        subtitle: Kubo - Private
-        logo: https://cdn.jsdelivr.net/gh/selfhst/icons/svg/zigbee2mqtt.svg
-        url: "https://haha-zigbee2mqtt.#VAR: general_domain_local :VAR#"
-        <<: *default
-
-      - name: PeaNUT
-        subtitle: Fiona Main - Private
-        logo: https://raw.githubusercontent.com/Brandawg93/PeaNUT/main/src/app/icon.svg
-        url: "https://ups.#VAR: general_domain_local :VAR#"
-        <<: *default
-
-      - name: TinyMediaManager
-        subtitle: Kubo - Private
-        logo: https://gitlab.com/tinyMediaManager/tinyMediaManager/-/raw/devel/AppBundler/svg/logo1.svg
-        url: "https://tmm.#VAR: general_domain_local :VAR#"
-        <<: *default
-
-      - name: UniFi Controller
-        subtitle: Kubo - Private
-        logo: assets/logos/unifi.png
-        url: "https://unifi.#VAR: general_domain_local :VAR#"
-        <<: *default
-
-  - name: Technical
+  - name: Observability
     icon: fas fa-chart-bar
     items:
+      - name: Grafana
+        subtitle: Private | kubo-observability
+        logo: https://raw.githubusercontent.com/grafana/grafana/main/public/img/grafana_icon.svg
+        url: "https://grafana.#VAR: general_domain_local :VAR#"
+        <<: *default
+
       - name: Graylog
-        subtitle: Kubo - Private
+        subtitle: Private | kubo-observability
         logo: https://raw.githubusercontent.com/get-icon/geticon/master/icons/graylog.svg
         url: "https://logs.#VAR: general_domain_local :VAR#"
         <<: *default
 
       - name: Keycloak
-        subtitle: Eve - Public
+        subtitle: Public | eve
         logo: https://raw.githubusercontent.com/keycloak/keycloak-misc/main/logo/icon.svg
         url: "https://auth.#VAR: general_domain_default :VAR#"
         <<: *default
 
+      - name: PeaNUT
+        subtitle: Private | fiona-private
+        logo: https://raw.githubusercontent.com/Brandawg93/PeaNUT/main/src/app/icon.svg
+        url: "https://ups.#VAR: general_domain_local :VAR#"
+        <<: *default
+
       - name: Zabbix
-        subtitle: Kubo - Private
+        subtitle: Private | kubo-observability
         logo: https://raw.githubusercontent.com/loganmarchione/homelab-svg-assets/main/assets/zabbix.svg
         url: "https://zabbix.#VAR: general_domain_local :VAR#"
         <<: *default
@@ -181,47 +166,52 @@ services:
         url: https://app.uriports.com/
         <<: *default
 
-  - name: Analytics
+  - name: Network
+    icon: fas fa-network-wired
+    items:
+      #VAR: app_homer_services.network | indent( width=6) :VAR#
+
+  - name: GoatCounter
     icon: fas fa-chart-bar
     items:
       - name: Bjoetiek Y
-        subtitle: Eve - Public - GoatCounter
+        subtitle: Public | eve
         logo: https://raw.githubusercontent.com/arp242/goatcounter/master/public/logo.svg
         url: "https://stats.#VAR: general_domain_bjoetiek :VAR#"
         <<: *default
 
       - name: Interwego
-        subtitle: Eve - Public - GoatCounter
+        subtitle: Public | eve
         logo: https://raw.githubusercontent.com/arp242/goatcounter/master/public/logo.svg
         url: "https://stats.#VAR: general_domain_interwego :VAR#"
         <<: *default
 
       - name: Klokracing
-        subtitle: Eve - Public - GoatCounter
+        subtitle: Public | eve
         logo: https://raw.githubusercontent.com/arp242/goatcounter/master/public/logo.svg
         url: "https://stats.#VAR: general_domain_klokracing :VAR#"
         <<: *default
 
       - name: Kristof Coenen
-        subtitle: Eve - Public - GoatCounter
+        subtitle: Public | eve
         logo: https://raw.githubusercontent.com/arp242/goatcounter/master/public/logo.svg
         url: "https://stats.#VAR: general_domain_kristofcoenen :VAR#"
         <<: *default
 
       - name: Spellebel
-        subtitle: Eve - Public - GoatCounter
+        subtitle: Public | eve
         logo: https://raw.githubusercontent.com/arp242/goatcounter/master/public/logo.svg
         url: "https://stats-spellebel.#VAR: general_domain_default :VAR#"
         <<: *default
 
       - name: Tuinfeest Beerse
-        subtitle: Eve - Public - GoatCounter
+        subtitle: Public | eve
         logo: https://raw.githubusercontent.com/arp242/goatcounter/master/public/logo.svg
         url: "https://stats.#VAR: general_domain_tuinfeest :VAR#"
         <<: *default
 
       - name: WTech
-        subtitle: Eve - Public - GoatCounter
+        subtitle: Public | eve
         logo: https://raw.githubusercontent.com/arp242/goatcounter/master/public/logo.svg
         url: "https://stats.#VAR: general_domain_wtech :VAR#"
         <<: *default

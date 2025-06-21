@@ -38,3 +38,16 @@
     - wikijs-dump-db.timer
     - wtech-directus-dump-db.timer
   tags: ["systemd"]
+
+- name: Restart changed Docker services
+  when: "item in jwcd_copy_diff"
+  become: true
+  community.docker.docker_compose_v2:
+    project_src: "{{ ansible_user_dir }}/deploy"
+    services: ["{{ item }}"]
+    state: restarted
+  retries: 3
+  delay: 10
+  tags: ["docker"]
+  loop:
+    - homer

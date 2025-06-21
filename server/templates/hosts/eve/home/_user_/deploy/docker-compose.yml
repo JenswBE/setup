@@ -625,7 +625,6 @@ services:
       - caddy-private
     volumes:
       - "./homer/config.yml:/www/assets/config.yml:ro"
-      - "./homer/logos:/www/assets/logos:ro"
     environment:
       - "TZ=#VAR: general_timezone :VAR#"
 

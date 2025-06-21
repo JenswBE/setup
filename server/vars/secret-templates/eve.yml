@@ -27,6 +27,15 @@ jwcs_bouncer_firewall_key: "" # Alphanumeric string
 # https://github.com/JenswBE/dead-link-checker
 app_delic_ping_url: ""
 
+# Homer
+app_homer_services:
+  network: |
+    - name: ""
+      subtitle: ""
+      logo: ""
+      url: ""
+      <<: *default
+
 # IMAP Save attachments
 app_isa_poll_imap_host: "imap.migadu.com"
 app_isa_poll_imap_user: ""
