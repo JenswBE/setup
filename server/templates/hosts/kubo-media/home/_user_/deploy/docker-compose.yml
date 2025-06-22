@@ -18,7 +18,7 @@ services:
   # =========================
   immich: # Set ML url in settings to http://immich-ml:3003
     <<: *defaults
-    image: ghcr.io/immich-app/immich-server:v1.134.0
+    image: ghcr.io/immich-app/immich-server:v1.135.3
     container_name: immich
     networks:
       - immich
@@ -29,7 +29,10 @@ services:
       REDIS_HOSTNAME: immich-redis
       IMMICH_TELEMETRY_INCLUDE: all
     volumes:
-      - "#VAR: general_path_appdata :VAR#/immich/immich/upload:/usr/src/app/upload"
+      - "#VAR: general_path_appdata :VAR#/immich/immich/data:/usr/src/app/upload"
+      - "/data/important/photos/immich/library:/usr/src/app/upload/library"
+      - "/data/important/photos/immich/upload:/usr/src/app/upload/upload"
+      - "/data/important/photos/archive:/external:ro"
       - /etc/localtime:/etc/localtime:ro
     depends_on:
       immich-redis:
@@ -48,7 +51,7 @@ services:
 
   immich-ml:
     <<: *defaults
-    image: ghcr.io/immich-app/immich-machine-learning:v1.134.0-openvino
+    image: ghcr.io/immich-app/immich-machine-learning:v1.135.3-openvino
     container_name: immich-ml
     networks:
       - immich
@@ -117,7 +120,6 @@ services:
       - "#VAR: hostnames.virbr_nointernet.kubo_media.ipv4 :VAR#:8096:8096"
     volumes:
       - "/data/bulk/media:/media"
-      - "/data/important/Photos:/Photos"
       - "#VAR: general_path_appdata :VAR#/jellyfin/config:/config"
       - "#VAR: general_path_appdata :VAR#/jellyfin/cache:/cache"
     deploy:
@@ -182,9 +184,9 @@ services:
     volumes:
       # === Backup locations ===
       # Photo's
-      - "#VAR: general_path_appdata :VAR#/immich/immich/upload:/mnt/source/photos/immich/upload:ro"
+      - "#VAR: general_path_appdata :VAR#/immich/immich/data:/mnt/source/photos/immich/data:ro"
       - "immich-db-dump:/mnt/source/photos/immich/dbdump:ro"
-      - "/data/important/Photos:/mnt/source/photos/bulk:ro"
+      - "/data/important/photos:/mnt/source/photos/truenas:ro"
       # Music
       - "/data/bulk/media/Music:/mnt/source/music/bulk:ro"
       # === Config and cache ===
