@@ -7,19 +7,7 @@
         grubby --update-kernel=ALL --args="
         iommu=pt
         intel_iommu=on
-        pcie_acs_override=downstream,multifunction
-        initcall_blacklist=sysfb_init
-        video=simplefb:off
-        video=vesafb:off
-        video=efifb:off
-        video=vesa:off
-        disable_vga=1
-        modprobe.blacklist=radeon,nouveau,nvidia,nvidiafb,nvidia-gpu,snd_hda_intel,snd_hda_codec_hdmi,i915
         "
-      # Above is based on https://3os.org/infrastructure/proxmox/gpu-passthrough/igpu-passthrough-to-vm/#proxmox-configuration-for-igpu-full-passthrough
-      # Not sure following args are really needed:
-      #   vfio_iommu_type1.allow_unsafe_interrupts=1
-      #   kvm.ignore_msrs=1
       changed_when: true
       notify: Dracut regenerate
 
