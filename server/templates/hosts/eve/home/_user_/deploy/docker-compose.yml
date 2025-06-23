@@ -802,7 +802,7 @@ services:
     <<: *defaults
     image: docker.io/syncthing/syncthing:1
     container_name: syncthing
-    hostname: "#VAR: ansible_hostname :VAR#"
+    hostname: "#VAR: inventory_hostname :VAR#"
     networks:
       - caddy-private
     ports:
@@ -896,7 +896,7 @@ services:
       BACKUP_CRON: "false"
       BORG_PASSPHRASE: "#VAR: app_borgmatic_borg_passphrase :VAR#"
       BORG_HOSTNAME_IS_UNIQUE: "yes" # Automatically removes stale locks
-      BORG_HOST_ID: "#VAR: ansible_hostname :VAR#"
+      BORG_HOST_ID: "#VAR: inventory_hostname :VAR#"
     deploy:
       resources:
         limits:

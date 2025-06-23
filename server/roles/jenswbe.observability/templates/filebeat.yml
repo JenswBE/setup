@@ -3,8 +3,8 @@
 
 fields_under_root: true
 fields:
-  collector_node_id: "#VAR: ansible_hostname :VAR#"
-  gl2_source_collector: "#VAR: ansible_hostname | hash('md5') :VAR#"
+  collector_node_id: "#VAR: inventory_hostname :VAR#"
+  gl2_source_collector: "#VAR: inventory_hostname | hash('md5') :VAR#"
 
 filebeat.inputs:
   - type: journald

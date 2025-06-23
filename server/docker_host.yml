@@ -71,7 +71,7 @@
       ansible.builtin.include_role:
         name: jenswbe.copy_dir
       vars:
-        jwcd_source_templates_dir: "templates/hosts/{{ ansible_hostname }}/etc/systemd/system"
+        jwcd_source_templates_dir: "templates/hosts/{{ inventory_hostname }}/etc/systemd/system"
         jwcd_destination_dir: "/etc/systemd/system"
         jwcd_privileged: true
         jwcd_destination_mode_files: "644"
@@ -95,7 +95,7 @@
       ansible.builtin.include_role:
         name: jenswbe.copy_dir
       vars:
-        jwcd_source_templates_dir: "templates/hosts/{{ ansible_hostname }}/home/_user_/deploy"
+        jwcd_source_templates_dir: "templates/hosts/{{ inventory_hostname }}/home/_user_/deploy"
         jwcd_destination_dir: "{{ ansible_user_dir }}/deploy"
         jwcd_destination_delete_extra: true
       tags: ["blocky", "docker"]
@@ -112,7 +112,7 @@
       tags: ["blocky", "docker"]
 
     - name: Include host specific tasks
-      ansible.builtin.include_tasks: "tasks/hosts/{{ ansible_hostname }}.yml"
+      ansible.builtin.include_tasks: "tasks/hosts/{{ inventory_hostname }}.yml"
       tags: ["always"]
 
   handlers:

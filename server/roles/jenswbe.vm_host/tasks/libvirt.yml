@@ -1,8 +1,11 @@
 - name: Libvirt - Install packages
   ansible.builtin.package:
     name:
+      - bridge-utils
       - guestfs-tools
-      - libvirt
+      - libvirt-daemon-system
+      - python3-libvirt # Required by Ansible community.libvirt.virt
+      - python3-lxml # Required by Ansible community.libvirt.virt
 
 - name: Libvirt - Enable and start systemd unit
   ansible.builtin.systemd_service:
@@ -10,69 +13,50 @@
     state: started
     enabled: true
 
-# Rocky reserves 75GB for the root partition.
-# Everything else is assigned to the home partition.
-# Therefore, on larger disks, it is better to put VM disks on the home pool instead of the default pool.
-- name: Setup storage pool in home
+- name: Ensure default storage pool exists
   ansible.builtin.include_tasks: libvirt_setup_storage_pool.yml
   vars:
-    pool_name: home
-    pool_path: "/home/libvirt/images"
+    pool_name: default
+    pool_path: /var/lib/libvirt/images
 
-- name: Create bridge
-  community.general.nmcli:
-    type: bridge
-    conn_name: virbr200
-    stp: false
-    method4: auto
-    mac: "{{ ansible_facts[jwvm_bridge_member_interface]['macaddress'] }}"
-    state: present
-
-- name: Add ethernet to bridge
-  community.general.nmcli:
-    conn_name: "virbr200-{{ jwvm_bridge_member_interface }}"
-    type: ethernet
-    slave_type: bridge
-    master: virbr200
-    ifname: "{{ jwvm_bridge_member_interface }}"
-    state: present
-
-- name: Start bridge
-  community.general.nmcli:
-    conn_name: virbr200
-    state: up
-
-  # Workaround for bug https://github.com/ansible-collections/community.general/issues/9200
-- name: Check if ethernet is active
-  ansible.builtin.command: "nmcli con show --active {{ jwvm_bridge_member_interface }}"
-  register: nmcli_con_show
-  changed_when: false
-  failed_when: false
-
-- name: Stop ethernet
-  when: jwvm_bridge_member_interface in nmcli_con_show.stdout
-  community.general.nmcli:
-    conn_name: "{{ jwvm_bridge_member_interface }}"
-    state: down
-  async: 30 # Connection will temporary drop
-  poll: 5
-
-- name: Disable ethernet on boot
-  community.general.nmcli:
-    conn_name: "{{ jwvm_bridge_member_interface }}"
-    state: absent
-
-- name: Ensure NetworkManager uses bridge instead of dracut configs
+- name: Only keep loopback in main interfaces file
   ansible.builtin.copy:
-    dest: "/etc/NetworkManager/conf.d/00-ignore-nm-initrd-generator.conf"
-    content: |
-      [device-{{ jwvm_bridge_member_interface }}]
-      match-device=interface-name:{{ jwvm_bridge_member_interface }}
-      keep-configuration=no
-      allowed-connections=except:origin:nm-initrd-generator
+    dest: /etc/network/interfaces
     owner: root
     group: root
     mode: "644"
+    content: |
+      # This file describes the network interfaces available on your system
+      # and how to activate them. For more information, see interfaces(5).
+
+      source /etc/network/interfaces.d/*
+
+      # The loopback network interface
+      auto lo
+      iface lo inet loopback
+  notify: Restart networking
+
+- name: Create bridge
+  ansible.builtin.copy:
+    dest: /etc/network/interfaces.d/virbr200
+    owner: root
+    group: root
+    mode: "644"
+    content: |
+      # Managed by Ansible in server/roles/jenswbe.vm_host/tasks/libvirt.yml
+
+      iface {{ jwvm_bridge_member_interface }} inet manual
+
+      auto virbr200
+      iface virbr200 inet dhcp
+          hwaddress ether {{ ansible_facts[jwvm_bridge_member_interface]['macaddress'] }}
+          bridge_ports {{ jwvm_bridge_member_interface }}
+          bridge_stp off
+          bridge_fd 0
+  notify: Restart networking
+
+- name: Flush handlers
+  ansible.builtin.meta: flush_handlers
 
 - name: Drop default network
   community.libvirt.virt_net:

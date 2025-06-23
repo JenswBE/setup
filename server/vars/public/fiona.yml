@@ -1,6 +1,10 @@
+# FIXME: Remove once https://github.com/ansible-collections/community.zabbix/issues/1523 is closed
+zabbix_agent_version_check: false
+zabbix_manage_repo: false
+
 # NBDE
 jwnc_clevis_device: /dev/sda3
-jwnc_clevis_expected_binding: tang '{"url":"http://kubo.{{ general_domain_local }}:7500"}'
+jwnc_clevis_expected_binding: tang '{"url":"http://{{ hostnames.private.kubo.ipv4 }}:7500"}'
 
 # Firewall
 jwfw_zones:

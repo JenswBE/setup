@@ -1,9 +1,6 @@
 {
 	email "#VAR: general_mail_admin :VAR#@#VAR: general_domain_default :VAR#"
 
-	order authenticate before respond
-	order authorize before basicauth
-
 	servers :80 {
 		name http
 	}
@@ -11,18 +8,10 @@
 	servers :443 {
 		name https
 	}
-
-	security {
-		authorization policy policy_local_infra {
-			crypto key verify "#VAR: app_caddy_security_jwt_secret :VAR#"
-			allow roles infra
-			set auth url "https://portal.#VAR: general_domain_local :VAR#/"
-		}
-	}
 }
 
 "*.#VAR: general_domain_local :VAR#",
-"*.#VAR: ansible_hostname :VAR#.#VAR: general_domain_local :VAR#" {
+"*.#VAR: inventory_hostname :VAR#.#VAR: general_domain_local :VAR#" {
 	log {
 		output file /access_logs/caddy.log
 	}
@@ -40,9 +29,8 @@
 		@not_local_ip not remote_ip private_ranges
 		abort @not_local_ip
 
-		@cockpit host "cockpit.#VAR: ansible_hostname :VAR#.#VAR: general_domain_local :VAR#"
+		@cockpit host "cockpit.#VAR: inventory_hostname :VAR#.#VAR: general_domain_local :VAR#"
 		handle @cockpit {
-			authorize with policy_local_infra
 			reverse_proxy "https://localhost:9090" {
 				transport http {
 					tls_insecure_skip_verify

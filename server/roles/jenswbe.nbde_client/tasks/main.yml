@@ -1,25 +1,13 @@
 - name: Setup Clevis
   become: true
-  vars:
-    role_supported_distros:
-      - Rocky
   block:
-    - name: Check if supported distro
-      ansible.builtin.fail:
-        msg: "{{ ansible_distribution }} is not a supported distro for this role. Supported distro's: {{ role_supported_distros }}"
-      when: ansible_distribution not in role_supported_distros
-
     - name: Install Clevis
       register: install_clevis
       ansible.builtin.package:
         name:
           - clevis
-          - clevis-dracut
+          - clevis-initramfs
           - clevis-luks
-
-    - name: Ensure networking is available during early boot
-      ansible.builtin.command: grubby --update-kernel=ALL --args="rd.neednet=1"
-      changed_when: false
 
     - name: Get current bindings
       ansible.builtin.command: clevis luks list -d {{ jwnc_clevis_device }} -s {{ jwnc_clevis_slot }}
@@ -27,6 +15,11 @@
       changed_when: false
       failed_when: false # Command will return exit code 1 when the provided slot doesn't have a binding yet.
 
+    # Seems DNS isn't available in Debian 12 in the init when clevis tries to unlock the drive.
+    # Therefore, hostnames won't work. Use a static IP instead for the tang server!
+    # For more info, see:
+    #  - https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1005963
+    #  - https://github.com/latchset/clevis/issues/413
     - name: Manual configuration of Clevis
       when: jwnc_clevis_expected_binding not in clevis_bindings.stdout
       ansible.builtin.pause:
@@ -42,8 +35,3 @@
           tang-show-keys 7500
 
           PRESS ENTER TO CONFIRM
-
-    - name: Regenerate initramfs
-      when: jwnc_clevis_expected_binding not in clevis_bindings.stdout
-      ansible.builtin.command: dracut -fv --regenerate-all
-      changed_when: false

@@ -16,9 +16,9 @@ jwba_base_packages_rocky:
   - usbutils # Provides lsusb
 
 # smtp-cli
-jwba_from_name: "{{ ansible_hostname }}"
-jwba_from_email: "host.{{ ansible_hostname }}@{{ general_domain_default }}"
-jwba_to_name: "Admin of {{ ansible_hostname }}"
+jwba_from_name: "{{ inventory_hostname }}"
+jwba_from_email: "host.{{ inventory_hostname }}@{{ general_domain_default }}"
+jwba_to_name: "Admin of {{ inventory_hostname }}"
 jwba_to_email: "{{ general_mail_admin }}@{{ general_domain_default }}"
 jwba_server_hostname: "{{ mailjet_host }}"
 jwba_server_port_starttls: "{{ mailjet_port_starttls }}"

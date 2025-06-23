@@ -10,7 +10,7 @@
       when: jwnu_nut_type == 'client_server'
       ansible.builtin.package:
         state: present
-        name: nut
+        name: nut-server
 
     - name: Add the user 'nut' to group 'smtp-cli'
       ansible.builtin.user:
@@ -23,7 +23,7 @@
         name: jenswbe.copy_dir
       vars:
         jwcd_source_templates_dir: "roles/jenswbe.nut/templates/{{ jwnu_nut_type }}"
-        jwcd_destination_dir: /etc/ups
+        jwcd_destination_dir: /etc/nut
         jwcd_privileged: true
         jwcd_destination_mode_files: "640"
         jwcd_destination_mode_dirs: "750"

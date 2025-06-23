@@ -14,7 +14,6 @@
     enabled: true
   loop:
     - cockpit.socket
-    - pmlogger
     - podman
 
 - name: Cockpit - Make proxy aware
@@ -25,17 +24,9 @@
     mode: "644"
     content: |
       [WebService]
-      Origins = https://cockpit.{{ ansible_hostname }}.{{ general_domain_local }} wss://cockpit.{{ ansible_hostname }}.{{ general_domain_local }}
+      Origins = https://cockpit.{{ inventory_hostname }}.{{ general_domain_local }} wss://cockpit.{{ inventory_hostname }}.{{ general_domain_local }}
       ProtocolHeader = X-Forwarded-Proto
   notify: Restart cockpit
-
-- name: Disable direct access to Cockpit # Must go through Caddy
-  ansible.posix.firewalld:
-    service: cockpit
-    state: disabled
-    permanent: true
-    immediate: true
-    offline: true
 
 - name: Ensure cockpit.socket.d override directory exists
   ansible.builtin.file:

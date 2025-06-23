@@ -6,6 +6,9 @@ hostnames:
     fiona_private:
       fqdn: "fiona-private.{{ general_domain_local }}"
       ipv6: false
+    kubo:
+      fqdn: "kubo.{{ general_domain_local }}"
+      ipv6: false
     kubo_observability:
       fqdn: "kubo-observability.{{ general_domain_local }}"
       ipv6: false

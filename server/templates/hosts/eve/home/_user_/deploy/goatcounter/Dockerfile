@@ -14,4 +14,4 @@ RUN mkdir /db
 COPY --from=builder goatcounter /usr/local/bin/goatcounter
 EXPOSE 80
 ENTRYPOINT [ "goatcounter" ]
-CMD [ "serve", "-db", "sqlite+/db/goatcounter.sqlite3", "-listen", ":80", "-tls", "http", "-automigrate", "-email-from", "{{ ansible_hostname }}.goatcounter@{{ general_domain_default }}" ]
+CMD [ "serve", "-db", "sqlite+/db/goatcounter.sqlite3", "-listen", ":80", "-tls", "http", "-automigrate", "-email-from", "{{ inventory_hostname }}.goatcounter@{{ general_domain_default }}" ]

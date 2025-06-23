@@ -1,5 +1,6 @@
 # Observability
 jwob_graylog_server_hostname: "kubo-observability.{{ general_domain_local }}" # Target for rsyslog and Docker logs
+zabbix_agent_install_agent_only: true
 zabbix_server_hostname: "kubo-observability.{{ general_domain_local }}" # Incoming connections will be accepted only from the hosts listed here.
 zabbix_server_version: "7.2"
 

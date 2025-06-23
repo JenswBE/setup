@@ -31,12 +31,6 @@
         - Reload systemd
         - Restart tangd.socket
 
-    - name: Allow Tangd to listen on provided port
-      community.general.seport:
-        ports: "{{ jwns_server_port }}"
-        proto: tcp
-        setype: tangd_port_t
-
     - name: Enable Tang socket on boot
       ansible.builtin.systemd_service:
         name: tangd.socket
