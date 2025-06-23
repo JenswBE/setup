@@ -32,7 +32,7 @@ services:
       - "#VAR: general_path_appdata :VAR#/immich/immich/data:/usr/src/app/upload"
       - "/data/important/photos/immich/library:/usr/src/app/upload/library"
       - "/data/important/photos/immich/upload:/usr/src/app/upload/upload"
-      - "/data/important/photos/archive:/external:ro"
+      - "/data/important/photos/archive:/external/archive:ro"
       - /etc/localtime:/etc/localtime:ro
     depends_on:
       immich-redis:
