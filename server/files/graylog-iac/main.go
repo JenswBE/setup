@@ -69,7 +69,7 @@ func expectedEventDefinitions(inventoryPath string) ([]models.EventDefinition, e
 		defs = append(defs, models.EventDefinition{
 			Title:                   fmt.Sprintf("Missing logs for %s - System", host.hostname),
 			Description:             fmt.Sprintf("We didn't receive any system logs during the day for %s", host.hostname),
-			Query:                   fmt.Sprintf("source:%s AND NOT (_exists_:container_id OR _exists_:filebeat_container_id)", host.hostname),
+			Query:                   fmt.Sprintf("filebeat_collector_node_id:%s AND NOT (_exists_:container_id OR _exists_:filebeat_container_id)", host.hostname),
 			ExecuteEvery:            6 * time.Hour,
 			NotificationGracePeriod: 12 * time.Hour,
 			SearchWithin:            24 * time.Hour,
@@ -80,7 +80,7 @@ func expectedEventDefinitions(inventoryPath string) ([]models.EventDefinition, e
 			defs = append(defs, models.EventDefinition{
 				Title:                   fmt.Sprintf("Missing logs for %s - Docker", host.hostname),
 				Description:             fmt.Sprintf("We didn't receive any Docker logs during the day for %s", host.hostname),
-				Query:                   fmt.Sprintf("source:%s AND (_exists_:container_id OR _exists_:filebeat_container_id)", host.hostname),
+				Query:                   fmt.Sprintf("filebeat_collector_node_id:%s AND (_exists_:container_id OR _exists_:filebeat_container_id)", host.hostname),
 				ExecuteEvery:            6 * time.Hour,
 				NotificationGracePeriod: 12 * time.Hour,
 				SearchWithin:            24 * time.Hour,
