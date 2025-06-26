@@ -1,7 +1,7 @@
 - name: Finalize desktop setup after reboot
   hosts: localhost
   vars_files:
-    - vars.public.yml
+    - public.yml
 
   tasks:
     - name: Enable libvirtd
@@ -10,3 +10,28 @@
         name: libvirtd
         state: started
         enabled: true
+
+    - name: Create development container
+      register: debian_development_create
+      ansible.builtin.command: distrobox-create -Y -i quay.io/toolbx-images/debian-toolbox:12 --name debian-development --additional-flags "--env LC_ALL=C.UTF-8"
+      changed_when: "'already exists' not in debian_development_create.stdout"
+
+    - name: Get development container ID
+      register: debian_development_get_id
+      ansible.builtin.command: "{% raw %}podman inspect --format='{{.Id}}' debian-development{% endraw %}"
+      changed_when: false
+
+    - name: Set development container ID as fact
+      ansible.builtin.set_fact:
+        debian_development_id: "{{ debian_development_get_id.stdout | trim }}"
+
+    - name: Include additional tasks
+      ansible.builtin.include_tasks: "tasks/{{ task_name }}.yml"
+      loop_control:
+        loop_var: task_name
+      loop:
+        - gnome
+        - syncthing
+      vars:
+        extra_dconf_files: ["dark", "terminal", "virt-manager"]
+        keybindings: "{{ [gnome_keybindings.screenshot, gnome_keybindings.development] | flatten }}"

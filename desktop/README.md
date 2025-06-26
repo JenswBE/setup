@@ -60,14 +60,12 @@ sudo reboot
 # Run Ansible - Part 2
 ansible-playbook-host 10-after-reboot.yml
 
-# Setup distrobox
-# See https://github.com/89luca89/distrobox/blob/main/docs/compatibility.md#containers-distros
-distrobox-create -Y -i quay.io/toolbx-images/debian-toolbox:12 --name debian-development --additional-flags "--env LC_ALL=C.UTF-8"
-distrobox-enter debian-development
-
 ###################################
 # BELOW STEPS RUN IN DISTROBOX!!! #
 ###################################
+
+# Enter distrobox
+distrobox-enter debian-development
 
 # Install pipx and Ansible
 sudo apt install -y pipx
