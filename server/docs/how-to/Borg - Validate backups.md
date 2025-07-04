@@ -21,13 +21,18 @@ Services which are backed up:
   - `wikijs-db` (Postgres): DB data
   - `wtech-directus` (Directus): Uploaded content
   - `wtech-directus-db` (Postgres): DB data
-- Kubo
-  - `github-backup` (GitHub Backup): All GitHub repo's
-  - `graylog-mongodb` (MongoDB): DB data
-  - `ha` (Home Assistant): Config files
+- Kubo Media
+  - `immich` (Immich): Uploaded content
   - `immich-db` (Postgres): DB data for Immich
-  - `unifi-mongodb` (MongoDB): DB data
+  - Music (General files): Music files
+  - Photos (General files): Archived photos
+- Kubo Observability
+  - `graylog-mongodb` (MongoDB): DB data
   - `zabbix-db` (Postgres): DB data
+- Kubo Private
+  - `github-backup` (GitHub Backup): All GitHub repo's
+  - `unifi-mongodb` (MongoDB): DB data
+  - `ha` (Home Assistant): Config files => TODO
 
 ## Validations
 
@@ -40,48 +45,83 @@ sudo docker exec borgmatic sh -c 'rm -rf /mnt/restore/*'
 
 # Set env vars
 APPDATA_DIR=/opt/appdata
+
+# Helpers
+borgmatic_mount() {
+  REPO_NAME=${1:?}
+  sudo docker exec borgmatic mkdir -p /mnt/borg
+  sudo docker exec borgmatic borgmatic umount --mount-point /mnt/borg &> /dev/null || true
+  sudo docker exec borgmatic borgmatic mount --repository ${REPO_NAME:?} --archive latest --mount-point /mnt/borg
+}
+
+compare_actual_backup_flat()
+{
+  # Params
+  CONTAINER_ACTUAL=${1:?}
+  PATH_ACTUAL=${2:?}
+  PATH_BACKUP=${3:?}
+
+  # Compare 3 newest files
+  sudo docker exec ${CONTAINER_ACTUAL:?} ls -Alt ${PATH_ACTUAL:?} | head -n 4
+  sudo docker exec borgmatic ls -Alt "/mnt/borg/mnt/source/${PATH_BACKUP:?}" | head -n 4
+}
+
+compare_actual_backup_recursive()
+{
+  # Params
+  CONTAINER_ACTUAL=$1
+  PATH_ACTUAL=$2
+  PATH_BACKUP=$3
+
+  # List size and change date of 3 newest files before today
+  # Since Borgmatic uses BusyBox which doesn't support "newermt", we calculate the minutes since midnight locally.
+  # This ensures a correct comparison. Based on https://stackoverflow.com/a/30374251
+  MINS_SINCE_MIDNIGHT=$(( $(date "+10#%H * 60 + 10#%M") ))
+  EXTRACT_PRINT_LAST_3='sort -nr | head -n 3 | cut -d" " -f2- | tr \\\n \\\0 | xargs -0 ls -lah'
+  sudo docker exec ${CONTAINER_ACTUAL:?} sh -c "find ${PATH_ACTUAL:?} -type f -mmin +${MINS_SINCE_MIDNIGHT:?} -exec stat -c '%Y %n' {} \; | ${EXTRACT_PRINT_LAST_3:?}"
+  sudo docker exec borgmatic sh -c "find /mnt/borg/mnt/source/${PATH_BACKUP:?} -type f -mmin +${MINS_SINCE_MIDNIGHT:?} -exec stat -c '%Y %n' {} \; | ${EXTRACT_PRINT_LAST_3:?}"
+}
 ```
 
 ### Directus
 
-#### Bjoetiek Y
-
 ```bash
-# List 3 newest files in live service.
-sudo docker exec bjoetiek-directus ls -Alt /directus/uploads | head -n 4
+# === Bjoetiek Y ===
+borgmatic_mount bjoetiek_y
+compare_actual_backup_flat bjoetiek-directus /directus/uploads bjoetiek_y/directus/uploads
 
-# Compare against 3 newest files in backup
-sudo docker exec borgmatic ls -Alt /mnt/borg/mnt/source/bjoetiek/directus/uploads | head -n 4
+# === Kristof Coenen ===
+borgmatic_mount kristofcoenen
+compare_actual_backup_flat kristofcoenen-directus /directus/uploads kristofcoenen/directus/uploads
+
+# === Tuinfeest ===
+borgmatic_mount tuinfeest
+compare_actual_backup_flat tuinfeest-directus /directus/uploads tuinfeest/directus/uploads
+
+# === WTech ===
+borgmatic_mount wtech
+compare_actual_backup_flat wtech-directus /directus/uploads wtech/directus/uploads
 ```
 
-#### Kristof Coenen
+### General files
 
 ```bash
-# List 3 newest files in live service.
-sudo docker exec kristofcoenen-directus ls -Alt /directus/uploads | head -n 4
+compare_actual_backup_recursive()
+{
+  # Params
+  PATH_ACTUAL=$1
 
-# Compare against 3 newest files in backup
-sudo docker exec borgmatic ls -Alt /mnt/borg/mnt/source/kristofcoenen/directus/uploads | head -n 4
-```
+  # List size and change date of 3 newest files before today
+  # Since Borgmatic uses BusyBox which doesn't support "newermt", we calculate the minutes since midnight locally.
+  # This ensures a correct comparison. Based on https://stackoverflow.com/a/30374251
+  MINS_SINCE_MIDNIGHT=$(( $(date "+10#%H * 60 + 10#%M") ))
+  sudo find /data/important/photos -type f -mmin +${MINS_SINCE_MIDNIGHT:?} -exec stat -c '%Y %n' {} \; | eval "${EXTRACT_PRINT_LAST_3:?}"
 
-#### Tuinfeest
+  # Compare against files in backup
+  sudo docker exec borgmatic sh -c "find /mnt/borg/mnt/source/photos/truenas -type f -mmin +${MINS_SINCE_MIDNIGHT:?} -exec stat -c '%Y %n' {} \; | ${EXTRACT_PRINT_LAST_3:?}"
+}
 
-```bash
-# List 3 newest files in live service.
-sudo docker exec tuinfeest-directus ls -Alt /directus/uploads | head -n 4
 
-# Compare against 3 newest files in backup
-sudo docker exec borgmatic ls -Alt /mnt/borg/mnt/source/tuinfeest/directus/uploads | head -n 4
-```
-
-#### WTech
-
-```bash
-# List 3 newest files in live service.
-sudo docker exec wtech-directus ls -Alt /directus/uploads | head -n 4
-
-# Compare against 3 newest files in backup
-sudo docker exec borgmatic ls -Alt /mnt/borg/mnt/source/wtech/directus/uploads | head -n 4
 ```
 
 ### GitHub Backup
@@ -127,6 +167,12 @@ sudo docker exec borgmatic ls -ltc /mnt/borg/mnt/source/home-automation/home-ass
 
 ### Immich
 
+```bash
+# === Photos ===
+borgmatic_mount photos
+compare_actual_backup_recursive immich /usr/src/app/upload photos/immich/data # TODO: Check if actually contains pictures
+```
+
 COMPLETE_ME
 
 ### MariaDB
@@ -155,10 +201,10 @@ sudo docker exec borgmatic ls -Alt /mnt/borg/mnt/source/nextcloud/config/config/
 # Since Borgmatic uses BusyBox which doesn't support "newermt", we calculate the minutes since midnight locally.
 # This ensures a correct comparison. Based on https://stackoverflow.com/a/30374251
 MINS_SINCE_MIDNIGHT=$(( $(date "+10#%H * 60 + 10#%M") ))
-sudo docker exec nextcloud sh -c "find data -type f -mmin +${MINS_SINCE_MIDNIGHT:?} -exec stat -c '%Y %n' {} \; | sort -nr | head -n 3 | cut -d' ' -f2- | tr \\\n \\\0 | xargs -0 ls -lah"
+sudo docker exec nextcloud sh -c "find data -type f -mmin +${MINS_SINCE_MIDNIGHT:?} -exec stat -c '%Y %n' {} \; | ${EXTRACT_PRINT_LAST_3:?}"
 
 # Compare against files in backup
-sudo docker exec borgmatic sh -c "find /mnt/borg/mnt/source/nextcloud/data -type f -mmin +${MINS_SINCE_MIDNIGHT:?} -exec stat -c '%Y %n' {} \; | sort -nr | head -n 3 | cut -d' ' -f2- | tr \\\n \\\0 | xargs -0 ls -lah"
+sudo docker exec borgmatic sh -c "find /mnt/borg/mnt/source/nextcloud/data -type f -mmin +${MINS_SINCE_MIDNIGHT:?} -exec stat -c '%Y %n' {} \; | ${EXTRACT_PRINT_LAST_3:?}"
 ```
 
 #### Calendars and contacts
@@ -175,10 +221,10 @@ sudo docker exec borgmatic ls -Alth /mnt/borg/mnt/source/nextcloud/calcardbackup
 # Since Borgmatic uses BusyBox which doesn't support "newermt", we calculate the minutes since midnight locally.
 # This ensures a correct comparison. Based on https://stackoverflow.com/a/30374251
 MINS_SINCE_MIDNIGHT=$(( $(date "+10#%H * 60 + 10#%M") ))
-sudo docker exec paperless sh -c "find /usr/src/paperless/media -type f -mmin +${MINS_SINCE_MIDNIGHT:?} -exec stat -c '%Y %n' {} \; | sort -nr | head -n 3 | cut -d' ' -f2- | tr \\\n \\\0 | xargs -0 ls -lah"
+sudo docker exec paperless sh -c "find /usr/src/paperless/media -type f -mmin +${MINS_SINCE_MIDNIGHT:?} -exec stat -c '%Y %n' {} \; | ${EXTRACT_PRINT_LAST_3:?}"
 
 # Compare against files in backup
-sudo docker exec borgmatic sh -c "find /mnt/borg/mnt/source/paperless/docs -type f -mmin +${MINS_SINCE_MIDNIGHT:?} -exec stat -c '%Y %n' {} \; | sort -nr | head -n 3 | cut -d' ' -f2- | tr \\\n \\\0 | xargs -0 ls -lah"
+sudo docker exec borgmatic sh -c "find /mnt/borg/mnt/source/paperless/docs -type f -mmin +${MINS_SINCE_MIDNIGHT:?} -exec stat -c '%Y %n' {} \; | ${EXTRACT_PRINT_LAST_3:?}"
 ```
 
 ### Plex
@@ -188,14 +234,14 @@ sudo docker exec borgmatic sh -c "find /mnt/borg/mnt/source/paperless/docs -type
 # Since Plex doesn't support "find -newermt", we calculate the minutes since midnight locally.
 # This ensures a correct comparison. Based on https://stackoverflow.com/a/30374251
 MINS_SINCE_MIDNIGHT=$(( $(date "+10#%H * 60 + 10#%M") ))
-sudo docker exec plex sh -c "find /data/Photos -type f -mmin +${MINS_SINCE_MIDNIGHT:?} -exec stat -c '%Y %n' {} \; | sort -nr | head -n 3 | cut -d' ' -f2- | tr \\\n \\\0 | xargs -0 ls -lah"
+sudo docker exec plex sh -c "find /data/Photos -type f -mmin +${MINS_SINCE_MIDNIGHT:?} -exec stat -c '%Y %n' {} \; | ${EXTRACT_PRINT_LAST_3:?}"
 
 # Compare against files in backup
-sudo docker exec borgmatic sh -c "find /mnt/borg/mnt/source/plex/photos -type f -mmin +${MINS_SINCE_MIDNIGHT:?} -exec stat -c '%Y %n' {} \; | sort -nr | head -n 3 | cut -d' ' -f2- | tr \\\n \\\0 | xargs -0 ls -lah"
+sudo docker exec borgmatic sh -c "find /mnt/borg/mnt/source/plex/photos -type f -mmin +${MINS_SINCE_MIDNIGHT:?} -exec stat -c '%Y %n' {} \; | ${EXTRACT_PRINT_LAST_3:?}"
 
 # Repeat the same for music
-sudo docker exec plex sh -c "find /data/media/Music -type f -mmin +${MINS_SINCE_MIDNIGHT:?} -exec stat -c '%Y %n' {} \; | sort -nr | head -n 3 | cut -d' ' -f2- | tr \\\n \\\0 | xargs -0 ls -lah"
-sudo docker exec borgmatic sh -c "find /mnt/borg/mnt/source/plex/music -type f -mmin +${MINS_SINCE_MIDNIGHT:?} -exec stat -c '%Y %n' {} \; | sort -nr | head -n 3 | cut -d' ' -f2- | tr \\\n \\\0 | xargs -0 ls -lah"
+sudo docker exec plex sh -c "find /data/media/Music -type f -mmin +${MINS_SINCE_MIDNIGHT:?} -exec stat -c '%Y %n' {} \; | ${EXTRACT_PRINT_LAST_3:?}"
+sudo docker exec borgmatic sh -c "find /mnt/borg/mnt/source/plex/music -type f -mmin +${MINS_SINCE_MIDNIGHT:?} -exec stat -c '%Y %n' {} \; | ${EXTRACT_PRINT_LAST_3:?}"
 ```
 
 ### Postgres

@@ -8,8 +8,9 @@ sudo docker exec borgmatic borgmatic list
 sudo docker exec borgmatic mkdir -p /mnt/borg
 
 # Mount archive
+REPO=photos
 ARCHIVE=latest
-sudo docker exec borgmatic borgmatic mount --archive ${ARCHIVE:?} --mount-point /mnt/borg
+sudo docker exec borgmatic borgmatic mount --repository ${REPO:?} --archive ${ARCHIVE:?} --mount-point /mnt/borg
 
 # Copy required files to host
 # "docker cp" works as well, but you won't be able to glob without first tarring the files.
