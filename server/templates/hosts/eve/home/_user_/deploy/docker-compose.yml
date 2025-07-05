@@ -867,9 +867,9 @@ services:
       - "#VAR: general_path_appdata :VAR#/nextcloud/nextcloud/data:/mnt/source/nextcloud/data:ro"
       - "#VAR: general_path_appdata :VAR#/nextcloud/nextcloud/config:/mnt/source/nextcloud/config:ro"
       # Paperless
-      - "#VAR: general_path_appdata :VAR#/paperless/docs:/mnt/source/paperless/docs:ro"
-      - "paperless-db-dump:/mnt/source/paperless/dbdump:ro"
-      - "paperless-export:/mnt/source/paperless/export:ro"
+      - "#VAR: general_path_appdata :VAR#/paperless/docs:/mnt/source/documents/docs:ro"
+      - "paperless-db-dump:/mnt/source/documents/dbdump:ro"
+      - "paperless-export:/mnt/source/documents/export:ro"
       # Tuinfeest
       - "#VAR: general_path_appdata :VAR#/tuinfeest/directus/uploads:/mnt/source/tuinfeest/directus/uploads:z,ro"
       - "tuinfeest-directus-db-dump:/mnt/source/tuinfeest/directus/dbdump:ro"

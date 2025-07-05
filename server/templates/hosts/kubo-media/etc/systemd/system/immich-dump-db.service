@@ -4,4 +4,5 @@ OnFailure=unit-fail-mail@%n.service
 
 [Service]
 Type=exec
-ExecStart={{ docker_path }} exec -t immich-db /bin/sh -c 'pg_dumpall --clean --if-exists --username=postgres | gzip > "/backup/immich.pg_dump"'
+ExecStartPre={{ docker_path }} exec -t immich-db /bin/sh -c 'echo "-- Dump started at $(date --rfc-3339=sec)" > /backup/immich.pg_dumpall'
+ExecStart={{ docker_path }} exec -t immich-db /bin/sh -c 'pg_dumpall --clean --if-exists --username=postgres >> /backup/immich.pg_dumpall'
