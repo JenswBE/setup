@@ -46,16 +46,22 @@ services:
         url: "https://nextcloud.#VAR: general_domain_default :VAR#"
         <<: *default
 
+      - name: TinyMediaManager
+        subtitle: Private | kubo-media
+        logo: https://gitlab.com/tinyMediaManager/tinyMediaManager/-/raw/devel/AppBundler/svg/logo1.svg
+        url: "https://tmm.#VAR: general_domain_local :VAR#"
+        <<: *default
+
       - name: Transmission
         subtitle: Public | kubo-download
         logo: https://cdn.jsdelivr.net/gh/selfhst/icons/svg/transmission.svg
         url: "https://torrent.#VAR: general_domain_default :VAR#"
         <<: *default
 
-      - name: TinyMediaManager
-        subtitle: Private | kubo-media
-        logo: https://gitlab.com/tinyMediaManager/tinyMediaManager/-/raw/devel/AppBundler/svg/logo1.svg
-        url: "https://tmm.#VAR: general_domain_local :VAR#"
+      - name: TrueNAS SCALE
+        subtitle: Private | kubo-storage
+        logo: https://cdn.jsdelivr.net/gh/selfhst/icons/svg/truenas-scale.svg
+        url: "https://truenas.#VAR: general_domain_local :VAR#"
         <<: *default
 
       - name: Syncthing Eve
