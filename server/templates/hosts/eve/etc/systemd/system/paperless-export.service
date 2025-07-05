@@ -1,0 +1,7 @@
+[Unit]
+Description=Export Paperless for backup
+OnFailure=unit-fail-mail@%n.service
+
+[Service]
+Type=exec
+ExecStart={{ docker_path }} exec paperless document_exporter /usr/src/paperless/export --compare-checksums --delete --no-progress-bar

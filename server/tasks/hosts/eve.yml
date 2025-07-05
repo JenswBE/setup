@@ -33,6 +33,7 @@
     - nextcloud-preview-generator.timer
     - nextcloud-update-apps.timer
     - paperless-dump-db.timer
+    - paperless-export.timer
     - tuinfeest-directus-dump-db.timer
     - vaultwarden-dump-db.timer
     - wikijs-dump-db.timer

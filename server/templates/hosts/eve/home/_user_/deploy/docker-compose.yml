@@ -191,7 +191,7 @@ services:
     volumes:
       - "#VAR: general_path_appdata :VAR#/wikijs/wikijs/config:/config"
       - "#VAR: general_path_appdata :VAR#/wikijs/wikijs/data:/data"
-      - wikijs-backup:/backup
+      - wikijs-backup:/backup # Configured in "Storage => Local File System"
     environment:
       TZ: "#VAR: general_timezone :VAR#"
       PUID: "#VAR: ansible_real_user_id :VAR#"
@@ -677,7 +677,7 @@ services:
       PAPERLESS_REDIS: redis://paperless-redis:6379
       PAPERLESS_DBHOST: paperless-db
       PAPERLESS_SECRET_KEY: "#VAR: app_paperless_secret_key :VAR#"
-      PAPERLESS_FILENAME_FORMAT: "{created_year}.{created_month}.{created_day} - {correspondent} - {title}"
+      PAPERLESS_FILENAME_FORMAT: "{{created_year}}.{{created_month}}.{{created_day}} - {{correspondent}} - {{title}}"
       PAPERLESS_URL: "https://docs.#VAR: general_domain_local :VAR#"
       PAPERLESS_TASK_WORKERS: "2"
       PAPERLESS_TIKA_ENABLED: "1"

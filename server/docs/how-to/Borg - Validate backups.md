@@ -88,9 +88,7 @@ borgmatic_umount
 
 # === paperless: Files ===
 compare_actual_backup_flat paperless /usr/src/paperless/media/documents/originals documents docs/documents/originals
-borgmatic_mount documents export
-sudo docker exec borgmatic ls -Alt /mnt/borg/mnt/source/documents/export | head -n 20
-borgmatic_umount
+compare_actual_backup_flat paperless /usr/src/paperless/export documents export
 
 # === paperless-db: Postgres DB data ===
 validate_postgres documents dbdump
@@ -112,10 +110,7 @@ sudo docker exec borgmatic ls -ltc /mnt/borg/mnt/source/vaultwarden/data/
 borgmatic_umount
 
 # === wikijs: Data (human readable backup format like Markdown) ===
-# Check if recent files are in export
-borgmatic_mount wikijs backup
-sudo docker exec borgmatic bash -c 'ls -Alth /mnt/borg/mnt/source/wikijs/backup/*'
-borgmatic_umount
+compare_actual_backup_recursive wikijs /backup wikijs backup
 
 # === wikijs-db: Postgres DB data ===
 validate_postgres wikijs dbdump

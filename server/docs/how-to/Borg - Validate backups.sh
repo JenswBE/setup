@@ -28,7 +28,7 @@ compare_actual_backup_flat()
   borgmatic_mount ${BACKUP_APP:?} "${BACKUP_PATH:?}"
 
   # Compare 3 newest files
-  echo "Finding 3 newest files in source \"${ACTUAL_PATH:?}\" ..."
+  echo "Finding 3 newest files for container \"${ACTUAL_CONTAINER:?}\" in source path \"${ACTUAL_PATH:?}\" ..."
   sudo docker exec ${ACTUAL_CONTAINER:?} ls -Alt ${ACTUAL_PATH:?} | head -n 4
   echo "Finding 3 newest files in backup \"${BACKUP_APP:?}/${BACKUP_PATH:?}\" ..."
   sudo docker exec borgmatic ls -Alt "/mnt/borg/mnt/source/${BACKUP_APP:?}/${BACKUP_PATH:?}" | head -n 4
@@ -53,7 +53,7 @@ compare_actual_backup_recursive()
   # This ensures a correct comparison. Based on https://stackoverflow.com/a/30374251
   MINS_SINCE_MIDNIGHT=$(( $(date "+10#%H * 60 + 10#%M") ))
   EXTRACT_PRINT_LAST_3='sort -nr | head -n 3 | cut -d" " -f2- | tr \\\n \\\0 | xargs -0 ls -lah'
-  echo "Finding 3 newest files in source \"${ACTUAL_PATH:?}\" ..."
+  echo "Finding 3 newest files for container \"${ACTUAL_CONTAINER:?}\" in source path \"${ACTUAL_PATH:?}\" ..."
   sudo docker exec ${ACTUAL_CONTAINER:?} sh -c "find ${ACTUAL_PATH:?} -type f -mmin +${MINS_SINCE_MIDNIGHT:?} -exec stat -c '%Y %n' {} \; | ${EXTRACT_PRINT_LAST_3:?}"
   echo "Finding 3 newest files in backup \"${BACKUP_APP:?}/${BACKUP_PATH:?}\" ..."
   sudo docker exec borgmatic sh -c "find /mnt/borg/mnt/source/${BACKUP_APP:?}/${BACKUP_PATH:?} -type f -mmin +${MINS_SINCE_MIDNIGHT:?} -exec stat -c '%Y %n' {} \; | ${EXTRACT_PRINT_LAST_3:?}"
