@@ -200,7 +200,7 @@ services:
     devices:
       - "/dev/fuse:/dev/fuse" # Required for borg mount
     security_opt:
-      - "apparmor:unconfined" # Required for borg mount
+      - "apparmor=unconfined" # Required for borg mount
     environment:
       TZ: "#VAR: general_timezone :VAR#"
       BACKUP_CRON: "false"
