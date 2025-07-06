@@ -3,17 +3,28 @@ APPDATA_DIR=/opt/appdata
 
 # Helpers
 borgmatic_mount() {
-  REPO_NAME=${1:?}
+  BACKUP_APP=${1:?}
   BACKUP_PATH=${2:?}
-  echo "Mounting borg repo \"${REPO_NAME:?}\" with path \"${BACKUP_PATH:?}\" ..."
+  echo "Mounting borg repo \"${BACKUP_APP:?}\" with path \"${BACKUP_PATH:?}\" ..."
   sudo docker exec borgmatic mkdir -p /mnt/borg
-  sudo docker exec borgmatic borgmatic --verbosity '-1' mount --repository ${REPO_NAME:?} --archive latest --mount-point /mnt/borg --path mnt/source/${REPO_NAME:?}/${BACKUP_PATH:?}
+  sudo docker exec borgmatic borgmatic --verbosity '-1' mount --repository ${BACKUP_APP:?} --archive latest --mount-point /mnt/borg --path mnt/source/${BACKUP_APP:?}/${BACKUP_PATH:?}
 }
 
 borgmatic_umount() {
   echo "Unmounting borg repo ..."
   sudo docker exec borgmatic mkdir -p /mnt/borg
   sudo docker exec borgmatic borgmatic --verbosity '-1' umount --mount-point /mnt/borg
+}
+
+borgmatic_extract_file() {
+  # Params
+  BACKUP_APP=${1:?}
+  BACKUP_PATH=${2:?}
+  DESTINATION_DIR=${3:?}
+
+  # Extract file
+  BACKUP_PATH="mnt/source/${BACKUP_APP:?}/${BACKUP_PATH:?}"
+  sudo docker exec borgmatic borgmatic --verbosity '-1' extract --repository "${BACKUP_APP:?}" --archive latest --path "${BACKUP_PATH:?}" --strip-components all --destination "${DESTINATION_DIR:?}"
 }
 
 compare_actual_backup_flat()
@@ -68,21 +79,26 @@ validate_postgres()
   BACKUP_APP=${1:?}
   BACKUP_PATH=${2:?}
 
-  # Mount repo
-  borgmatic_mount ${BACKUP_APP:?} ${BACKUP_PATH:?}
-
-  # Copy all Postgres dumps to the restore point
-  BACKUP_DIR="/mnt/borg/mnt/source/${BACKUP_APP:?}/${BACKUP_PATH:?}/*"
+  # Copy Postgres dump to the restore point
   RESTORE_DIR=/mnt/restore
+  echo "Copying dump from \"${BACKUP_APP:?}/${BACKUP_PATH:?}\" to \"${RESTORE_DIR:?}\" ..."
   sudo docker exec borgmatic sh -c "rm -rf ${RESTORE_DIR:?}/*"
-  echo "Copy dumps from \"${BACKUP_DIR:?}\" to \"/mnt/restore\" ..."
-  sudo docker exec borgmatic sh -c "cp ${BACKUP_DIR:?} ${RESTORE_DIR:?}"
+  borgmatic_extract_file "${BACKUP_APP:?}" "${BACKUP_PATH:?}" "${RESTORE_DIR:?}"
 
   # Check if backup files is correctly created
-  echo "Validating dumps ..."
-  sudo docker run --pull always --rm -v ${APPDATA_DIR:?}/borgmatic/borgmatic/restore:/backup postgres:alpine bash -c 'for f in /backup/*.pg_dump; do echo $f; pg_restore --list $f | head -n 12; echo; done;'
-  sudo docker run --pull always --rm -v ${APPDATA_DIR:?}/borgmatic/borgmatic/restore:/backup postgres:alpine bash -c 'for f in /backup/*.pg_dumpall; do echo $f; head -n4 $f; echo; done;'
+  echo "Validating Postgres dump ..."
+  BACKUP_PATH_EXTENSION="${BACKUP_PATH##*.}"
+  case "${BACKUP_PATH_EXTENSION:?}" in
+    pg_dump)
+      sudo docker run --pull always --rm -v ${APPDATA_DIR:?}/borgmatic/borgmatic/restore:/backup postgres:alpine bash -c 'for f in /backup/*.pg_dump; do echo $f; pg_restore --list $f | head -n 12; echo; done;'
+      ;;
 
-  # Unmount repo
-  borgmatic_umount
+    pg_dumpall)
+      sudo docker run --pull always --rm -v ${APPDATA_DIR:?}/borgmatic/borgmatic/restore:/backup postgres:alpine bash -c 'for f in /backup/*.pg_dumpall; do echo $f; head -n4 $f; echo; done;'
+      ;;
+
+    *)
+      echo "ERROR: Unsupported extension \"${BACKUP_PATH_EXTENSION:?}\""
+      ;;
+  esac
 }
