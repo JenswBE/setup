@@ -1,3 +1,10 @@
+# Docker
+docker_restart_changed_services:
+  - blocky
+  - delic
+  - homer
+  - nginx
+
 # Firewall
 # Ensure to update firewall on cloud provider!
 jwfw_zones:

@@ -86,9 +86,10 @@
 
     - name: Docker login to GHCR
       become: true
-      changed_when: false
-      ansible.builtin.command:
-        cmd: "{{ docker_path }} login -u USERNAME -p {{ docker_ghcr_personal_access_token }} ghcr.io"
+      community.docker.docker_login:
+        registry_url: ghcr.io
+        username: USERNAME
+        password: "{{ docker_ghcr_personal_access_token }}"
       tags: ["docker"]
 
     - name: "Copy templates home/_user_/deploy"
@@ -98,18 +99,19 @@
         jwcd_source_templates_dir: "templates/hosts/{{ inventory_hostname }}/home/_user_/deploy"
         jwcd_destination_dir: "{{ ansible_user_dir }}/deploy"
         jwcd_destination_delete_extra: true
-      tags: ["blocky", "docker"]
+      tags: ["docker"]
 
-    - name: Restart blocky
-      when: "'blocky' in jwcd_copy_diff"
+    - name: Restart changed Docker services
+      when: "item in jwcd_copy_diff"
       become: true
       community.docker.docker_compose_v2:
         project_src: "{{ ansible_user_dir }}/deploy"
-        services: [blocky]
+        services: ["{{ item }}"]
         state: restarted
-      retries: 3 # Restarting all DNS servers at once might break host lookup for GELF
+      retries: 3
       delay: 10
-      tags: ["blocky", "docker"]
+      tags: ["docker"]
+      loop: "{{ docker_restart_changed_services }}"
 
     - name: Include host specific tasks
       ansible.builtin.include_tasks: "tasks/hosts/{{ inventory_hostname }}.yml"

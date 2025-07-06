@@ -1,3 +1,6 @@
+# Docker
+docker_restart_changed_services: []
+
 # Firewall
 jwfw_zones:
   - zone: public # Based on /usr/lib/firewalld/zones/public.xml
