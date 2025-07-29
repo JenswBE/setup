@@ -19,6 +19,7 @@
 
 - name: Ensure Wireguard is restarted on failure
   become: true
+  register: wireguard_dropin_restart
   ansible.builtin.copy:
     dest: /etc/systemd/system/wg-quick@{{ wg_config.name }}.service.d/10-restart_on_failure.conf
     owner: root
@@ -29,8 +30,9 @@
       Restart=on-failure
       RestartSec=5m
 
-- name: Ensure Wireguard is started after Docker
+- name: Ensure Wireguard is started before Docker
   become: true
+  register: wireguard_dropin_docker
   ansible.builtin.copy:
     dest: /etc/systemd/system/wg-quick@{{ wg_config.name }}.service.d/10-start_before_docker.conf
     owner: root
@@ -60,7 +62,8 @@
 # Cannot use a handler as the interface name is dynamic
 - name: Restart Wireguard interface if config was changed # noqa: no-handler
   become: true
-  when: wireguard_config.changed
+  when: wireguard_config.changed or wireguard_dropin_restart.changed or wireguard_dropin_docker.changed
   ansible.builtin.systemd_service:
+    daemon_reload: true
     name: "wg-quick@{{ wg_config.name }}"
     state: restarted
