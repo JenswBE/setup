@@ -5,6 +5,7 @@ linters:
     - cyclop
     - depguard
     - dupl
+    - embeddedstructfieldcheck
     - exhaustruct
     - funlen
     - gochecknoglobals
@@ -17,11 +18,14 @@ linters:
     - mnd
     - nilnil
     - nlreturn
+    - noctx
+    - noinlineerr
     - nonamedreturns
     - tagliatelle
     - testpackage
     - varnamelen
     - wsl
+    - wsl_v5
   settings:
     gosec:
       excludes:
