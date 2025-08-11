@@ -28,10 +28,12 @@
           # Assign new port
           ListenStream={{ jwns_server_port }}
       notify:
-        - Reload systemd
         - Restart tangd.socket
 
     - name: Enable Tang socket on boot
       ansible.builtin.systemd_service:
         name: tangd.socket
         enabled: true
+
+    - name: Flush handlers # Ensures port is changed when showing client instructions
+      ansible.builtin.meta: flush_handlers

@@ -7,11 +7,8 @@
     jwcd_privileged: true
     jwcd_destination_delete_extra: true
 
-- name: Reload systemd # Cannot notify from include_role
-  ansible.builtin.systemd_service:
-    daemon_reload: true
-
 - name: Ensure caddy is started
   ansible.builtin.systemd_service:
+    daemon_reload: true
     name: caddy
     state: started

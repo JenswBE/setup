@@ -43,10 +43,10 @@
           [Timer]
           OnCalendar={{ jwau_autoupdate_reboot_time }}
           RandomizedDelaySec=10m
-      notify: Reload systemd
 
     - name: Enable and start dnf-automatic.timer
       ansible.builtin.systemd_service:
+        daemon_reload: true
         name: dnf-automatic.timer
         state: started
         enabled: true

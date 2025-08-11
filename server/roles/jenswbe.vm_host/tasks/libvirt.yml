@@ -94,10 +94,11 @@
     owner: root
     group: root
     mode: "644"
-  notify: Reload systemd
 
-- name: Flush handlers
-  ansible.builtin.meta: flush_handlers
+- name: Reload systemd
+  become: true
+  ansible.builtin.systemd_service:
+    daemon_reload: true
 
 - name: Enable start-vm-after-nfs@.service
   ansible.builtin.systemd_service:
