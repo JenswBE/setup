@@ -2,14 +2,12 @@
   become: true
   tags: ["setup", "libvirt", "pcie_passthrough"]
   block:
-    - name: Add kernel params
-      ansible.builtin.command: >
-        grubby --update-kernel=ALL --args="
-        iommu=pt
-        intel_iommu=on
-        "
-      changed_when: true
-      notify: Dracut regenerate
+    - name: Set kernel params
+      ansible.builtin.lineinfile:
+        path: /etc/default/grub
+        regexp: "^#?GRUB_CMDLINE_LINUX_DEFAULT="
+        line: GRUB_CMDLINE_LINUX_DEFAULT="quiet iommu=pt intel_iommu=on"
+      notify: GRUB regenerate
 
     - name: Set vfio-pcie module options
       ansible.builtin.copy:
@@ -20,4 +18,16 @@
         content: |
           options vfio-pci ids=8086:43d2
           softdep ahci pre: vfio-pci
-      notify: Dracut regenerate
+      notify: Initramfs regenerate
+
+    - name: Configure libvirt-guests
+      ansible.builtin.lineinfile:
+        path: /etc/default/libvirt-guests
+        regexp: "^#?{{ item.param }}="
+        line: "{{ item.param }}={{ item.value }}"
+      loop:
+        - param: PARALLEL_SHUTDOWN
+          value: "3"
+        - param: SHUTDOWN_TIMEOUT
+          value: "180" # 3 mins
+      notify: Reload systemd

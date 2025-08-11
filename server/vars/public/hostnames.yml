@@ -3,6 +3,9 @@ hostnames:
     eve:
       fqdn: "eve.{{ general_domain_local }}"
       ipv6: false
+    fiona:
+      fqdn: "fiona.{{ general_domain_local }}"
+      ipv6: false
     fiona_private:
       fqdn: "fiona-private.{{ general_domain_local }}"
       ipv6: false

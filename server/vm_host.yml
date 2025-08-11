@@ -53,7 +53,17 @@
       tags: ["always"]
 
   handlers:
-    - name: Dracut regenerate
+    - name: GRUB regenerate
       become: true
       changed_when: true
-      ansible.builtin.command: dracut --regenerate-all --force
+      ansible.builtin.command: update-grub
+
+    - name: Initramfs regenerate
+      become: true
+      changed_when: true
+      ansible.builtin.command: update-initramfs -u
+
+    - name: Reload systemd
+      become: true
+      ansible.builtin.systemd_service:
+        daemon_reload: true

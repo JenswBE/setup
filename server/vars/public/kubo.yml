@@ -1,6 +1,6 @@
 # NBDE
 jwnc_clevis_device: /dev/nvme0n1p3
-jwnc_clevis_expected_binding: tang '{"url":"http://fiona.{{ general_domain_local }}:7500"}'
+jwnc_clevis_expected_binding: tang '{"url":"http://{{ hostnames.private.fiona.ipv4 }}:7500"}'
 
 # Firewall
 jwfw_zones:
@@ -43,7 +43,7 @@ jwfw_zones:
     extra_booleans: []
 
 # VM Host
-jwvm_bridge_member_interface: enp3s0
+jwvm_bridge_member_interface: enp2s0
 jwvm_start_vms_after_nfs:
   - kubo-media
   - kubo-download
