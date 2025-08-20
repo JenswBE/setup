@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"net/url"
 	"time"
@@ -65,7 +66,11 @@ func (c Client) sendRequest(method string, url string, body any, dest any) error
 	if err != nil {
 		return fmt.Errorf("failed to send api request: %w", err)
 	}
-	defer resp.Body.Close()
+	defer func() {
+		if closeErr := resp.Body.Close(); closeErr != nil {
+			log.Println("Failed to close API body: ", closeErr)
+		}
+	}()
 
 	// Parse response
 	bodyBytes, err := io.ReadAll(resp.Body)
