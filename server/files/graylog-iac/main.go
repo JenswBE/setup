@@ -37,6 +37,7 @@ func expectedEventDefinitions(inventoryPath string) ([]models.EventDefinition, e
 				`AND NOT "systemd-udev-settle.service is deprecated. Please fix"`,
 				`AND NOT "The collStats command is deprecated."`,                                             // MongoDB
 				`AND NOT "transport.publish_address was printed as [ip:port] instead of [hostname/ip:port]"`, // ElasticSearch by Graylog
+				`AND NOT "AnyThread deprecated"`,
 			}, " "),
 			ExecuteEvery:            24 * time.Hour,
 			NotificationGracePeriod: time.Hour,
