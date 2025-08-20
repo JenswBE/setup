@@ -1,25 +1,7 @@
 - name: Setup PCIE passthrough
   become: true
-  tags: ["setup", "libvirt", "pcie_passthrough"]
+  tags: ["setup", "libvirt"]
   block:
-    - name: Set kernel params
-      ansible.builtin.lineinfile:
-        path: /etc/default/grub
-        regexp: "^#?GRUB_CMDLINE_LINUX_DEFAULT="
-        line: GRUB_CMDLINE_LINUX_DEFAULT="quiet iommu=pt intel_iommu=on"
-      notify: GRUB regenerate
-
-    - name: Set vfio-pcie module options
-      ansible.builtin.copy:
-        dest: /etc/modprobe.d/vfio-pci.conf
-        owner: root
-        group: root
-        mode: "0644"
-        content: |
-          options vfio-pci ids=8086:43d2
-          softdep ahci pre: vfio-pci
-      notify: Initramfs regenerate
-
     - name: Configure libvirt-guests
       ansible.builtin.lineinfile:
         path: /etc/default/libvirt-guests
