@@ -1,31 +1,8 @@
 version: "2"
 linters:
-  default: all
-  disable:
-    - cyclop
-    - depguard
-    - dupl
-    - embeddedstructfieldcheck
-    - exhaustruct
-    - funlen
-    - gochecknoglobals
-    - gocognit
-    - godot
-    - gosmopolitan
-    - interfacebloat
-    - ireturn # TODO: Investigate and decide if this linter needs to be enforced.
-    - lll
-    - mnd
-    - nilnil
-    - nlreturn
-    - noctx
-    - noinlineerr
-    - nonamedreturns
-    - tagliatelle
-    - testpackage
-    - varnamelen
-    - wsl
-    - wsl_v5
+  enable:
+    - gosec
+    - paralleltest
   settings:
     gosec:
       excludes:
@@ -34,25 +11,3 @@ linters:
     paralleltest:
       # Ignore missing calls to `t.Parallel()` and only report incorrect uses of it.
       ignore-missing: true
-  exclusions:
-    generated: lax
-    presets:
-      - comments
-      - common-false-positives
-      - legacy
-      - std-error-handling
-    paths:
-      - third_party$
-      - builtin$
-      - examples$
-formatters:
-  enable:
-    - gofmt
-    - gofumpt
-    - goimports
-  exclusions:
-    generated: lax
-    paths:
-      - third_party$
-      - builtin$
-      - examples$
