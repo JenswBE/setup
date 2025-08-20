@@ -46,8 +46,6 @@ jobs:
         with:
           working-directory: server/files/network-performance-file-generator
           version: latest
-          args: >-
-            --disable err113,noctx
 
       - name: Run unit tests
         working-directory: server/files/network-performance-file-generator
