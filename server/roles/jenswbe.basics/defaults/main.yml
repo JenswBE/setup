@@ -1,6 +1,6 @@
 jwba_base_packages:
   - bash-completion
-  - htop
+  - btop # htop replacement
   - iftop
   - iotop
   - pv

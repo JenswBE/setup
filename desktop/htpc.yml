@@ -136,7 +136,7 @@
       become: true
       community.general.rpm_ostree_pkg:
         name:
-          - htop
+          - btop # htop replacement
           - input-remapper
 
     - name: Ensure Kodi has access to /var/media

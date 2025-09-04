@@ -33,9 +33,9 @@
       become: true
       community.general.rpm_ostree_pkg:
         name:
+          - btop # htop replacement
           - distrobox
           - gnome-tweaks
-          - htop
           - iftop
           - iotop
           - nextcloud-client
