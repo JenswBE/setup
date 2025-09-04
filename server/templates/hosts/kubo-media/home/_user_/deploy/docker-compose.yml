@@ -29,9 +29,9 @@ services:
       REDIS_HOSTNAME: immich-redis
       IMMICH_TELEMETRY_INCLUDE: all
     volumes:
-      - "#VAR: general_path_appdata :VAR#/immich/immich/data:/usr/src/app/upload"
-      - "/data/important/photos/immich/library:/usr/src/app/upload/library"
-      - "/data/important/photos/immich/upload:/usr/src/app/upload/upload"
+      - "#VAR: general_path_appdata :VAR#/immich/immich/data:/data"
+      - "/data/important/photos/immich/library:/data/library"
+      - "/data/important/photos/immich/upload:/data/upload"
       - "/data/important/photos/archive:/external/archive:ro"
       - /etc/localtime:/etc/localtime:ro
     depends_on:
@@ -88,8 +88,9 @@ services:
 
   immich-db:
     <<: *defaults
-    image: ghcr.io/immich-app/postgres:14-vectorchord0.3.0-pgvectors0.2.0
+    image: ghcr.io/immich-app/postgres:14-vectorchord0.4.3-pgvectors0.2.0
     container_name: immich-db
+    shm_size: 128mb
     networks:
       - immich
     environment:
