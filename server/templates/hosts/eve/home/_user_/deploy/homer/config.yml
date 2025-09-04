@@ -278,3 +278,24 @@ services:
         logo: https://tally.so/images/logo_v2.png
         url: https://tally.so
         <<: *default
+
+  - name: Alternatives
+    icon: fas fa-thumbs-up
+    items:
+      - name: Tweakers
+        subtitle: Weg van big tech
+        logo: https://tweakers.net/ext/i/2000677500.jpeg
+        url: https://tweakers.net/reviews/13200/weg-van-big-tech-tweakers-maken-complete-gids-met-europese-alternatieven.html
+        <<: *default
+
+      - name: European Alternatives
+        subtitle: Tech services
+        logo: https://european-alternatives.eu/apple-touch-icon.png
+        url: https://european-alternatives.eu/
+        <<: *default
+
+      - name: Go European
+        subtitle: General products and services
+        icon: "fas fa-toggle-on"
+        url: https://goeuropean.org
+        <<: *default
