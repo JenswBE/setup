@@ -28,6 +28,7 @@ services:
       DB_PASSWORD: "#VAR: app_immich_db_pass_postgres :VAR#"
       REDIS_HOSTNAME: immich-redis
       IMMICH_TELEMETRY_INCLUDE: all
+      # IMMICH_LOG_LEVEL: debug
     volumes:
       - "#VAR: general_path_appdata :VAR#/immich/immich/data:/data"
       - "/data/important/photos/immich/library:/data/library"
@@ -60,6 +61,8 @@ services:
       DB_HOSTNAME: immich-db
       DB_PASSWORD: "#VAR: app_immich_db_pass_postgres :VAR#"
       REDIS_HOSTNAME: immich-redis
+      MACHINE_LEARNING_DEVICE_IDS: "1" # 0 is QEMU/SPICE GPU, 1 is Intel GVT-g
+      # IMMICH_LOG_LEVEL: debug
     volumes:
       - immich-model-cache:/cache
       - /dev/bus/usb:/dev/bus/usb # For hardware-accelerated machine learning

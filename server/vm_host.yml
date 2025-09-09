@@ -48,11 +48,27 @@
       tags: ["powersavings"]
 
   tasks:
+    - name: Install VM host specific packages
+      ansible.builtin.package:
+        name: intel-gpu-tools
+        state: present
+      tags: ["basics"]
+
     - name: Include host specific tasks
       ansible.builtin.include_tasks: "tasks/hosts/{{ inventory_hostname }}.yml"
       tags: ["always"]
 
   handlers:
+    - name: GRUB regenerate
+      become: true
+      changed_when: true
+      ansible.builtin.command: update-grub
+
+    - name: Initramfs regenerate
+      become: true
+      changed_when: true
+      ansible.builtin.command: update-initramfs -u
+
     - name: Reload systemd
       become: true
       ansible.builtin.systemd_service:

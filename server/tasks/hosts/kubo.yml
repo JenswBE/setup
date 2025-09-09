@@ -1,15 +1,36 @@
+- name: Configure libvirt-guests
+  become: true
+  ansible.builtin.lineinfile:
+    path: /etc/default/libvirt-guests
+    regexp: "^#?{{ item.param }}="
+    line: "{{ item.param }}={{ item.value }}"
+  loop:
+    - param: PARALLEL_SHUTDOWN
+      value: "3"
+    - param: SHUTDOWN_TIMEOUT
+      value: "180" # 3 mins
+  notify: Reload systemd
+  tags: ["setup", "libvirt"]
+
 - name: Setup PCIE passthrough
   become: true
-  tags: ["setup", "libvirt"]
+  tags: ["setup", "libvirt", "pcie_passthrough"]
   block:
-    - name: Configure libvirt-guests
+    - name: Set kernel params
       ansible.builtin.lineinfile:
-        path: /etc/default/libvirt-guests
-        regexp: "^#?{{ item.param }}="
-        line: "{{ item.param }}={{ item.value }}"
-      loop:
-        - param: PARALLEL_SHUTDOWN
-          value: "3"
-        - param: SHUTDOWN_TIMEOUT
-          value: "180" # 3 mins
-      notify: Reload systemd
+        path: /etc/default/grub
+        regexp: "^#?GRUB_CMDLINE_LINUX_DEFAULT="
+        line: GRUB_CMDLINE_LINUX_DEFAULT="quiet iommu=pt intel_iommu=on i915.enable_guc=0 i915.enable_fbc=0 i915.enable_gvt=1"
+      notify: GRUB regenerate
+
+    - name: Load Intel GVT-g dependencies
+      ansible.builtin.copy:
+        dest: /etc/modules-load.d/intel-gvt-g.conf
+        owner: root
+        group: root
+        mode: "0644"
+        content: |
+          kvmgt
+          mdev
+          vfio-iommu-type1
+      notify: Initramfs regenerate
