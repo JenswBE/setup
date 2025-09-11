@@ -123,7 +123,7 @@ services:
     ports:
       - "#VAR: hostnames.virbr_nointernet.kubo_media.ipv4 :VAR#:8096:8096"
     volumes:
-      - "/data/bulk/media:/media"
+      - "/data/bulk/media/media:/media"
       - "#VAR: general_path_appdata :VAR#/jellyfin/config:/config"
       - "#VAR: general_path_appdata :VAR#/jellyfin/cache:/cache"
     deploy:
@@ -146,34 +146,11 @@ services:
       - "22000:22000/udp"
     volumes:
       - "#VAR: general_path_appdata :VAR#/syncthing/config:/var/syncthing"
-      - "/data/bulk/media/Music:/data/music"
+      - "/data/bulk/media/media/music:/data/music"
     environment:
       TZ: "#VAR: general_timezone :VAR#"
       PUID: "#VAR: ansible_real_user_id :VAR#"
       PGID: "#VAR: ansible_real_user_id :VAR#"
-
-  # =========================
-  # =   TINY MEDIA MANAGER  =
-  # =========================
-  tmm:
-    <<: *defaults
-    image: docker.io/tinymediamanager/tinymediamanager:latest
-    container_name: tmm
-    ports:
-      - "#VAR: hostnames.virbr_nointernet.kubo_media.ipv4 :VAR#:4000:4000"
-    volumes:
-      - "/data/bulk/media:/media"
-      - "#VAR: general_path_appdata :VAR#/tmm/data:/data"
-    environment:
-      TZ: "#VAR: general_timezone :VAR#"
-      USER_ID: "#VAR: ansible_real_user_id :VAR#"
-      GROUP_ID: "#VAR: ansible_real_group_id :VAR#"
-      LC_TIME: C.UTF-8
-    deploy:
-      resources:
-        limits:
-          cpus: "2"
-          memory: 2G
 
   # =========================
   # =         BACKUP        =
@@ -192,7 +169,7 @@ services:
       - "immich-db-dump:/mnt/source/photos/immich/dbdump:ro"
       - "/data/important/photos:/mnt/source/photos/truenas:ro"
       # Music
-      - "/data/bulk/media/Music:/mnt/source/music/bulk:ro"
+      - "/data/bulk/media/media/music:/mnt/source/music/bulk:ro"
       # === Config and cache ===
       - "./borgmatic/common/global.txt:/common/global.yml"
       - "./borgmatic/common/repo.txt:/common/repo.yml"
