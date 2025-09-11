@@ -1,0 +1,20 @@
+jwcs_collections_list:
+  - crowdsecurity/caddy
+  - crowdsecurity/http-cve
+  - crowdsecurity/linux # Includes "crowdsecurity/sshd"
+
+jwcs_collections_remove_list: []
+
+jwcs_scenarios_list: []
+
+jwcs_scenarios_remove_list: []
+
+jwcs_parsers_list:
+  - crowdsecurity/whitelists
+  - crowdsecurity/nextcloud-whitelist
+
+jwcs_parsers_remove_list: []
+
+jwcs_postoverflows_list: []
+
+jwcs_postoverflows_remove_list: []

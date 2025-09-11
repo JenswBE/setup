@@ -3,6 +3,7 @@ docker_restart_changed_services:
   - blocky
   - nginx
   - peanut
+jwdh_update_containers_time: "04:30"
 
 # Firewall
 # Ensure to update firewall on cloud provider!

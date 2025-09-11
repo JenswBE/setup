@@ -15,6 +15,4 @@
     # Mounts
     - data-bulk.mount
     - data-important.mount
-    # Timers
-    - docker-update-containers.timer
   tags: ["systemd"]

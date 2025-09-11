@@ -1,0 +1,18 @@
+argument_specs:
+  main:
+    short_description: Basic setup
+    options:
+      # === REQUIRED ===
+      ansible_distribution:
+        type: str
+        required: true
+        choices: # Others exist, but these are supported in the role
+          - Debian
+          - Rocky
+        description: Name of the Linux distribution
+
+      # === OPTIONAL ===
+      jwdh_update_containers_time:
+        type: str
+        required: false
+        description: Approximately time to update all Docker containers in format "hh:mm".

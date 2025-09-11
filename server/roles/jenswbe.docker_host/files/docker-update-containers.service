@@ -1,0 +1,8 @@
+[Unit]
+Description=Update all Docker containers
+OnFailure=unit-fail-mail@%n.service
+
+[Service]
+Type=exec
+TimeoutSec=15min
+ExecStart=/opt/bin/docker-update-containers.sh

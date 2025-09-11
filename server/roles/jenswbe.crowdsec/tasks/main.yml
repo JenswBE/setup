@@ -69,7 +69,7 @@
     - name: CrowdSec - Install collections
       ansible.builtin.command:
         cmd: "cscli collections install {{ item }}"
-      with_items: "{{ cs_collections_list }}"
+      with_items: "{{ jwcs_collections_list }}"
       register: collections_install_result
       changed_when: "'Nothing to do' not in collections_install_result.stdout"
       when: cs_collections_list | length > 0
@@ -77,7 +77,7 @@
     - name: CrowdSec - Remove collections
       ansible.builtin.command:
         cmd: "cscli collections remove {{ item }}"
-      with_items: "{{ cs_collections_remove_list }}"
+      with_items: "{{ jwcs_collections_remove_list }}"
       register: collections_remove_result
       changed_when: "'systemctl reload crowdsec' in collections_remove_result.stderr"
       when: cs_collections_remove_list | length > 0
@@ -86,7 +86,7 @@
     - name: CrowdSec - Install scenarios
       ansible.builtin.command:
         cmd: "cscli scenarios install {{ item }}"
-      with_items: "{{ cs_scenarios_list }}"
+      with_items: "{{ jwcs_scenarios_list }}"
       register: scenarios_install_result
       changed_when: "'Nothing to do' not in scenarios_install_result.stdout"
       when: cs_scenarios_list | length > 0
@@ -94,7 +94,7 @@
     - name: CrowdSec - Remove scenarios
       ansible.builtin.command:
         cmd: "cscli scenarios remove {{ item }}"
-      with_items: "{{ cs_scenarios_remove_list }}"
+      with_items: "{{ jwcs_scenarios_remove_list }}"
       register: scenarios_remove_result
       changed_when: "'systemctl reload crowdsec' in scenarios_remove_result.stderr"
       when: cs_scenarios_remove_list | length > 0
@@ -103,7 +103,7 @@
     - name: CrowdSec - Install parsers
       ansible.builtin.command:
         cmd: "cscli parsers install {{ item }}"
-      with_items: "{{ cs_parsers_list }}"
+      with_items: "{{ jwcs_parsers_list }}"
       register: parsers_install_result
       changed_when: "'Nothing to do' not in parsers_install_result.stdout"
       when: cs_parsers_list | length > 0
@@ -111,7 +111,7 @@
     - name: CrowdSec - Remove parsers
       ansible.builtin.command:
         cmd: "cscli parsers remove {{ item }}"
-      with_items: "{{ cs_parsers_remove_list }}"
+      with_items: "{{ jwcs_parsers_remove_list }}"
       register: parsers_remove_result
       changed_when: "'systemctl reload crowdsec' in parsers_remove_result.stderr"
       when: cs_parsers_remove_list | length > 0
@@ -120,7 +120,7 @@
     - name: CrowdSec - Install postoverflows
       ansible.builtin.command:
         cmd: "cscli postoverflows install {{ item }}"
-      with_items: "{{ cs_postoverflows_list }}"
+      with_items: "{{ jwcs_postoverflows_list }}"
       register: postoverflows_install_result
       changed_when: "'Nothing to do' not in postoverflows_install_result.stdout"
       when: cs_postoverflows_list | length > 0
@@ -128,7 +128,7 @@
     - name: CrowdSec - Remove postoverflows
       ansible.builtin.command:
         cmd: "cscli postoverflows remove {{ item }}"
-      with_items: "{{ cs_postoverflows_remove_list }}"
+      with_items: "{{ jwcs_postoverflows_remove_list }}"
       register: postoverflows_remove_result
       changed_when: "'systemctl reload crowdsec' in postoverflows_remove_result.stderr"
       when: cs_postoverflows_remove_list | length > 0

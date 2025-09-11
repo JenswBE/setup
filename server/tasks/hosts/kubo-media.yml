@@ -17,6 +17,5 @@
     - data-important.mount
     # Timers
     - borgmatic.timer
-    - docker-update-containers.timer
     - immich-dump-db.timer
   tags: ["systemd"]

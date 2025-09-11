@@ -1,0 +1,27 @@
+- name: Setup automatic container updates
+  become: true
+  block:
+    - name: Copy update script
+      ansible.builtin.template:
+        src: docker-update-containers.sh
+        dest: /opt/bin/docker-update-containers.sh
+        mode: "0755"
+
+    - name: Copy update service
+      ansible.builtin.copy:
+        src: files/docker-update-containers.service
+        dest: /etc/systemd/system/docker-update-containers.service
+        mode: "0644"
+
+    - name: Copy update timer
+      ansible.builtin.template:
+        src: docker-update-containers.timer
+        dest: /etc/systemd/system/docker-update-containers.timer
+        mode: "0644"
+
+    - name: Ensure timer is enabled
+      ansible.builtin.systemd_service:
+        daemon_reload: true
+        name: docker-update-containers.timer
+        state: started
+        enabled: true

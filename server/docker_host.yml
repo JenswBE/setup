@@ -52,6 +52,9 @@
               size: 24 # Default is /16
           icc: false
 
+    - role: jenswbe.docker_host
+      tags: ["docker", "docker_host"]
+
     - role: jenswbe.crowdsec
       tags: ["crowdsec"]
 
@@ -68,6 +71,7 @@
 
   tasks:
     - name: Copy systemd system unit templates
+      when: '("templates/hosts/" + inventory_hostname + "/etc/systemd/system") is exists'
       ansible.builtin.include_role:
         name: jenswbe.copy_dir
       vars:

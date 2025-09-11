@@ -1,1 +1,0 @@
-{{ lookup('ansible.builtin.template', 'docker-update-containers.timer', template_vars={"var_time": "04:00"}) }}

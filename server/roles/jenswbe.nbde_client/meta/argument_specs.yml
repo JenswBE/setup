@@ -12,12 +12,12 @@ argument_specs:
 
       jwnc_clevis_device:
         type: str
-        required: false
+        required: true
         description: Device which should be unlocked by Clevis
 
       jwnc_clevis_expected_binding:
         type: str
-        required: false
+        required: true
         description: Expected Tang binding in Clevis
 
       # === OPTIONAL ===
