@@ -52,12 +52,6 @@ services:
         url: "https://tmm.#VAR: general_domain_local :VAR#"
         <<: *default
 
-      - name: Transmission
-        subtitle: Public | kubo-download
-        logo: https://cdn.jsdelivr.net/gh/selfhst/icons/svg/transmission.svg
-        url: "https://torrent.#VAR: general_domain_default :VAR#"
-        <<: *default
-
       - name: TrueNAS SCALE
         subtitle: Private | kubo-storage
         logo: https://cdn.jsdelivr.net/gh/selfhst/icons/svg/truenas-scale.svg

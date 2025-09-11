@@ -40,6 +40,7 @@ services:
     volumes:
       - ./caddy/Caddyfile:/etc/caddy/Caddyfile:ro
       - ./caddy/configs:/etc/caddy/configs:ro
+      - ./caddy/sites:/etc/caddy/sites:ro
       - caddy-access-logs:/access_logs
       - caddy-config:/config
       - caddy-data:/data

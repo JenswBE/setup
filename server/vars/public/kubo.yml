@@ -46,4 +46,3 @@ jwfw_zones:
 jwvm_bridge_member_interface: enp2s0
 jwvm_start_vms_after_nfs:
   - kubo-media
-  - kubo-download

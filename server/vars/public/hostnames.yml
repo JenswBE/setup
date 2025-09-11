@@ -31,9 +31,6 @@ hostnames:
       ipv6: true
 
   virbr_nointernet:
-    kubo_download:
-      fqdn: "kubo-download.virbr-nointernet.{{ general_domain_local }}"
-      ipv6: false
     kubo_media:
       fqdn: "kubo-media.virbr-nointernet.{{ general_domain_local }}"
       ipv6: false

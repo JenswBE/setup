@@ -26,22 +26,4 @@ http:// {
 	import default_public_reverse_proxy "http://kubo-media.virbr-nointernet.#VAR: general_domain_local :VAR#:8096"
 }
 
-"torrent.#VAR: general_domain_default :VAR#" {
-	import default_public_reverse_proxy "http://kubo-download.virbr-nointernet.#VAR: general_domain_local :VAR#:9091"
-	authorize with policy_public_media
-}
-
-# @torrent_system host "torrent-system.#VAR: general_domain_local :VAR#"
-# handle @torrent_system {
-# 	basic_auth {
-# 		"#VAR: app_transmission_system_username :VAR#" "#VAR: app_transmission_system_password | password_hash('blowfish', rounds=10, ident='2y') :VAR#"
-# 	}
-# 	@not_get_metrics {
-# 		not {
-# 			method GET
-# 			path /transmission/web/
-# 		}
-# 	}
-# 	respond @not_get_metrics "403 Forbidden: Only GET /transmission/web/ is allowed" 403
-# 	import default_local_reverse_proxy "http://transmission-vpn:9091"
-# }
+import ./sites/*.Caddyfile

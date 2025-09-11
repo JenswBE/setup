@@ -82,23 +82,6 @@ done
 
 Run `sudo docker compose run --rm paperless createsuperuser`
 
-### Plex
-
-Go to https://app.plex.tv to setup following libraries:
-
-- Films
-  - /data/bulk/media/Movies
-  - /data/bulk/optimized/movies
-  - /data/bulk/media/Nazien
-- TV Series
-  - /data/bulk/media/TV Shows
-  - /data/bulk/optimized/shows
-  - /data/bulk/media/Nazien
-- Foto's
-  - /data/important/Photos
-- Muziek
-  - /data/bulk/media/Music
-
 ### Syncthing
 
 - Settings => General => Set `Device Name`
@@ -106,18 +89,3 @@ Go to https://app.plex.tv to setup following libraries:
 - Settings => GUI => Set `GUI Authentication User`
 - Settings => GUI => Set `GUI Authentication Password`
 - Settings => GUI => Set `GUI Theme` to `Dark`
-
-### Transmission
-
-**Ensure Transmission is stopped!**
-
-Update below keys in `config.json` to match below values.
-
-```json
-{
-  "download-dir": "/downloads/complete",
-  "download-queue-size": 10,
-  "incomplete-dir": "/downloads/incomplete",
-  "incomplete-dir-enabled": true
-}
-```

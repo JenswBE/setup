@@ -1,7 +1,0 @@
-# CrowdSec
-jwcs_bouncer_firewall_key: "" # Alphanumeric string
-
-# Transmission
-# See also "basics.yml"
-app_transmission_wireguard_private_key: ""
-app_transmission_wireguard_addresses: "" # E.g. 10.1.2.3/32
