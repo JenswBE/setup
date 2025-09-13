@@ -1,8 +1,0 @@
-[Unit]
-Description=Enable Virtual Display
-
-[Service]
-ExecStart=/usr/bin/bash /usr/local/sbin/enable-virtual-display.sh
-
-[Install]
-WantedBy=multi-user.target

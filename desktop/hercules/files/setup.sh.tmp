@@ -1,0 +1,18 @@
+#!/bin/bash
+
+set -euo pipefail
+
+sudo mkdir -p /usr/local/bin/
+chmod 755 *.sh
+sudo mv *.sh /usr/local/bin/
+
+sudo mkdir -p /usr/local/lib/firmware/
+chmod 644 edid*.bin
+sudo mv edid*.bin /usr/local/lib/firmware/
+
+mkdir -p ~/.config/systemd/user/
+mv *.service ~/.config/systemd/user/
+systemctl --user daemon-reload
+systemctl --user enable --now ~/.config/systemd/user/clone-displays.service
+
+rm setup.sh.tmp

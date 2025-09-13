@@ -1,0 +1,9 @@
+[Unit]
+Description=Clone virtual and real display
+
+[Service]
+Type=exec
+ExecStart=/usr/local/bin/clone-displays.sh
+
+[Install]
+WantedBy=default.target
