@@ -52,7 +52,7 @@ services:
 
   immich-ml:
     <<: *defaults
-    image: ghcr.io/immich-app/immich-machine-learning:v1.142.0-openvino
+    image: ghcr.io/immich-app/immich-machine-learning:v1.142.1-openvino
     container_name: immich-ml
     networks:
       - immich
