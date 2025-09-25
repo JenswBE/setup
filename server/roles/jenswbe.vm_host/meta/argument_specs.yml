@@ -10,10 +10,10 @@ argument_specs:
           - Debian
         description: Name of the Linux distribution
 
-      jwvm_bridge_member_interface:
+      jwvm_bridge_member_interface_prefix:
         type: str
         required: true
-        description: Name of interface to use as member for bridge "internet"
+        description: Prefix of interface name to use as member for bridge "internet"
 
       # === OPTIONAL ===
       jwvm_start_vms_after_nfs:

@@ -42,8 +42,5 @@ jwfw_zones:
     extra_strings: []
     extra_booleans: []
 
-# VM Host
-jwvm_bridge_member_interface: enp1s0
-
 # Security
 jwau_autoupdate_reboot_time: "03:00"

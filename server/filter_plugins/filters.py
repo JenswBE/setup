@@ -9,8 +9,9 @@ class FilterModule(object):
     def filters(self):
         return {
             'enrich_hostnames': self.enrich_hostnames,
-            'to_caddy_header_values': self.to_caddy_header_values,
+            'get_dict_key_contains': self.get_dict_key_contains,
             'group_names_to_zabbix_templates': self.group_names_to_zabbix_templates,
+            'to_caddy_header_values': self.to_caddy_header_values,
         }
 
     def enrich_hostnames(self, input):
@@ -38,20 +39,22 @@ class FilterModule(object):
             result[ip_type] = type_result
         return result
 
+    def get_dict_key_contains(self, haystack_dict, needle_key):
+        """This function searches for the first dict key in haystack_dict which contains needle_key"""
+        found = []
+        for k, v in haystack_dict.items():
+            if needle_key in k:
+                found.append(k)
+                value = v
 
-    def remove_newlines(self, input):
-        return input.replace("\\n", "")
-
-    def to_caddy_header_values(self, headers, action):
-        match action:
-            case "replace":
-                prefix_sign = ""
-            case "default":
-                prefix_sign = "?"
+        match len(found):
+            case 0:
+                keys = sorted(haystack_dict.keys())
+                raise AnsibleError(f"None of the keys contain '{needle_key}': {', '.join(keys)}")
+            case 1:
+                return value
             case _:
-                raise AnsibleError(f"Param action is missing or has an unsupported value")
-        header_list = [f"{prefix_sign}{header} `{self.remove_newlines(value)}`" for header, value in dict(headers).items()]
-        return "\n".join(header_list)
+                raise AnsibleError(f"Multiple keys contain '{needle_key}': {', '.join(found)}")
 
     def group_names_to_zabbix_templates(self, group_names):
         # Settings
@@ -66,3 +69,17 @@ class FilterModule(object):
             if group_name in group_names:
                 templates.extend(group_templates)
         return templates
+
+    def remove_newlines(self, input):
+        return input.replace("\\n", "")
+
+    def to_caddy_header_values(self, headers, action):
+        match action:
+            case "replace":
+                prefix_sign = ""
+            case "default":
+                prefix_sign = "?"
+            case _:
+                raise AnsibleError(f"Param action is missing or has an unsupported value")
+        header_list = [f"{prefix_sign}{header} `{self.remove_newlines(value)}`" for header, value in dict(headers).items()]
+        return "\n".join(header_list)
