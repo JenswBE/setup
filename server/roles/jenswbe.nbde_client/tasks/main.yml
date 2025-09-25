@@ -6,8 +6,33 @@
       ansible.builtin.package:
         name:
           - clevis
-          - clevis-initramfs
+          - clevis-initramfs # Needed for root disks
           - clevis-luks
+          - clevis-systemd # Needed for non-root disks
+
+    - name: Ensure clevis-luks-askpass.service drop-in directory exists
+      ansible.builtin.file:
+        owner: root
+        group: root
+        mode: "0755"
+        path: /etc/systemd/system/clevis-luks-askpass.service.d
+        state: directory
+
+    - name: Ensure clevis-luks-askpass.service runs after network
+      ansible.builtin.copy:
+        dest: /etc/systemd/system/clevis-luks-askpass.service.d/10-after-network.conf
+        owner: root
+        group: root
+        mode: "0644"
+        content: |
+          [Unit]
+          Wants=network-online.target
+          After=network-online.target
+          Before=libvirt-guests.service
+
+    - name: Reload systemd
+      ansible.builtin.systemd_service:
+        daemon_reload: true
 
     - name: Get current bindings
       ansible.builtin.command: clevis luks list -d {{ jwnc_clevis_device }} -s {{ jwnc_clevis_slot }}
