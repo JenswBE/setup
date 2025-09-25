@@ -1,5 +1,5 @@
 # NBDE
-jwnc_clevis_device: /dev/nvme1n1p3
+jwnc_clevis_device_uuid: 0c452ac8-7412-4d71-bbcf-a61e25203cd1
 jwnc_clevis_expected_binding: tang '{"url":"http://{{ hostnames.private.fiona.ipv4 }}:7500"}'
 
 # Firewall

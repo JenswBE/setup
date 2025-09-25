@@ -1,3 +1,13 @@
+- name: Setup LUKS non-root decrypt
+  ansible.builtin.include_role:
+    name: jenswbe.luks_decrypt
+    apply:
+      tags: ["luks"]
+  vars:
+    jwld_device_uuid: 9208facd-48eb-442a-ae86-31ce58529ced
+    jwld_mapper_name: nvme1n1p1_crypt
+  tags: ["always"]
+
 - name: Configure libvirt-guests
   become: true
   ansible.builtin.lineinfile:

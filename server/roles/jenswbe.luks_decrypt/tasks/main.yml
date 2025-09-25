@@ -1,0 +1,43 @@
+- name: LUKS decrypt
+  become: true
+  block:
+    - name: Check if key file exists
+      ansible.builtin.stat:
+        path: "{{ jwld_key_file_path }}"
+      register: key_file
+
+    - name: Create key file
+      when: not key_file.stat.exists or key_file.stat.size < 512
+      ansible.builtin.shell: |
+        set -euo pipefail
+        mkdir -p /etc/cryptsetup-keys.d/
+        touch {{ jwld_key_file_path }}
+        chown root:root {{ jwld_key_file_path }}
+        chmod 600 {{ jwld_key_file_path }}
+        dd bs=512 count=4 if=/dev/random of={{ jwld_key_file_path }} iflag=fullblock
+      args:
+        executable: /bin/bash
+      changed_when: true
+
+    - name: Check if key can already unlock LUKS volume
+      ansible.builtin.command: cryptsetup luksOpen --key-file {{ jwld_key_file_path }} --test-passphrase '/dev/disk/by-uuid/{{ jwld_device_uuid }}'
+      register: test_key
+      changed_when: false
+      failed_when: false
+
+    - name: Manual registration of LUKS key file
+      when: test_key.rc != 0
+      ansible.builtin.pause:
+        prompt: |
+          # Execute following command to register the key file
+          cryptsetup luksAddKey '/dev/disk/by-uuid/{{ jwld_device_uuid }}' {{ jwld_key_file_path }}
+
+          PRESS ENTER TO CONFIRM
+
+    - name: Ensure LUKS volume is in crypttab
+      community.general.crypttab:
+        name: "{{ jwld_mapper_name }}"
+        backing_device: "UUID={{ jwld_device_uuid }}"
+        password: "{{ jwld_key_file_path }}"
+        opts: luks,discard
+        state: present

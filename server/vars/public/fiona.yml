@@ -3,7 +3,7 @@ zabbix_agent_version_check: false
 zabbix_manage_repo: false
 
 # NBDE
-jwnc_clevis_device: /dev/sda3
+jwnc_clevis_device_uuid: 138a4a51-bb86-4947-88f9-a505478e563f
 jwnc_clevis_expected_binding: tang '{"url":"http://{{ hostnames.private.kubo.ipv4 }}:7500"}'
 
 # Firewall

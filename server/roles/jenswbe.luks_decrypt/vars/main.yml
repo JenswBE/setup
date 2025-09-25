@@ -1,0 +1,3 @@
+jwld_key_file_dir: /etc/cryptsetup-keys.d
+jwld_key_file_name: non-root.key
+jwld_key_file_path: "{{ (jwld_key_file_dir, jwld_key_file_name) | path_join }}"

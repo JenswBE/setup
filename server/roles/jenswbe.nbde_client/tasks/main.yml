@@ -8,34 +8,9 @@
           - clevis
           - clevis-initramfs # Needed for root disks
           - clevis-luks
-          - clevis-systemd # Needed for non-root disks
-
-    - name: Ensure clevis-luks-askpass.service drop-in directory exists
-      ansible.builtin.file:
-        owner: root
-        group: root
-        mode: "0755"
-        path: /etc/systemd/system/clevis-luks-askpass.service.d
-        state: directory
-
-    - name: Ensure clevis-luks-askpass.service runs after network
-      ansible.builtin.copy:
-        dest: /etc/systemd/system/clevis-luks-askpass.service.d/10-after-network.conf
-        owner: root
-        group: root
-        mode: "0644"
-        content: |
-          [Unit]
-          Wants=network-online.target
-          After=network-online.target
-          Before=libvirt-guests.service
-
-    - name: Reload systemd
-      ansible.builtin.systemd_service:
-        daemon_reload: true
 
     - name: Get current bindings
-      ansible.builtin.command: clevis luks list -d {{ jwnc_clevis_device }} -s {{ jwnc_clevis_slot }}
+      ansible.builtin.command: clevis luks list -d '/dev/disk/by-uuid/{{ jwnc_clevis_device_uuid }}' -s {{ jwnc_clevis_slot }}
       register: clevis_bindings
       changed_when: false
       failed_when: false # Command will return exit code 1 when the provided slot doesn't have a binding yet.
@@ -54,7 +29,7 @@
             - Expected: {{ jwnc_clevis_expected_binding }}
 
           # Bind a single Tang server
-          sudo clevis luks bind -d '{{ jwnc_clevis_device }}' -s {{ jwnc_clevis_slot }} {{ jwnc_clevis_expected_binding }}
+          sudo clevis luks bind -d '/dev/disk/by-uuid/{{ jwnc_clevis_device_uuid }}' -s {{ jwnc_clevis_slot }} {{ jwnc_clevis_expected_binding }}
 
           # To verify the printed Tang key, run following on the Tang server(s) (not client!)
           tang-show-keys 7500

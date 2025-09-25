@@ -1,0 +1,21 @@
+argument_specs:
+  main:
+    short_description: Automatic decryption of non-root LUKS devices/partitions.
+    options:
+      # === REQUIRED ===
+      ansible_distribution:
+        type: str
+        required: true
+        choices: # Others exist, but these are supported in the role
+          - Debian
+        description: Name of the Linux distribution
+
+      jwld_device_uuid:
+        type: str
+        required: true
+        description: UUID of the LUKS device/partition which should be unlocked
+
+      jwld_mapper_name:
+        type: str
+        required: true
+        description: Name of the mapper when the LUKS device/partition is unlocked
