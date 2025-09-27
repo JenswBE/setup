@@ -2,6 +2,12 @@
 jwnc_clevis_device_uuid: 0c452ac8-7412-4d71-bbcf-a61e25203cd1
 jwnc_clevis_expected_binding: tang '{"url":"http://{{ hostnames.private.fiona.ipv4 }}:7500"}'
 
+# Network config
+jwnetconf_override_dns:
+  - "{{ hostnames.virbr_nointernet.kubo_private.ipv4 }}"
+  - "{{ hostnames.private.fiona_private.ipv4 }}"
+  - "{{ hostnames.private.eve.ipv4 }}"
+
 # Firewall
 jwfw_zones:
   - zone: public # Based on /usr/lib/firewalld/zones/public.xml
