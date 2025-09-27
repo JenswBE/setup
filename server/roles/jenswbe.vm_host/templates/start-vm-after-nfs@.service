@@ -7,7 +7,7 @@ OnFailure=unit-fail-mail@%n.service
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/bash /usr/local/sbin/start-vm-after-nfs truenas-direct.{{ general_domain_local }} %I
+ExecStart=/usr/bin/bash /usr/local/sbin/start-vm-after-nfs {{ jwvm_start_vms_after_nfs_hostname }} %I
 
 [Install]
 WantedBy=multi-user.target

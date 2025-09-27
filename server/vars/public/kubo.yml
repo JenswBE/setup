@@ -50,4 +50,6 @@ jwfw_zones:
 
 # VM Host
 jwvm_start_vms_after_nfs:
+  - kubo-download
   - kubo-media
+jwvm_start_vms_after_nfs_hostname: "kubo-storage.virbr-nointernet.{{ general_domain_local }}"

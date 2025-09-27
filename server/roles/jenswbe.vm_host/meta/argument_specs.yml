@@ -20,3 +20,7 @@ argument_specs:
         type: list
         elements: str
         description: List of VM names to start once NFS is available
+
+      jwvm_start_vms_after_nfs_hostname:
+        type: str
+        description: Hostname to watch for NFS availability
