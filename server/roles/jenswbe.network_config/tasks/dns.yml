@@ -1,0 +1,32 @@
+# Based on https://wiki.debian.org/resolv.conf
+
+- name: Configure DNS
+  become: true
+  block:
+    - name: Install systemd-resolved
+      ansible.builtin.package:
+        name:
+          - systemd-resolved
+      notify:
+        - Reboot
+
+    - name: Ensure systemd-resolved is enabled and running
+      become: true
+      ansible.builtin.systemd_service:
+        name: systemd-resolved
+        enabled: true
+      notify:
+        - Reboot
+
+    - name: Setup NSS config
+      ansible.builtin.lineinfile:
+        path: /etc/nsswitch.conf
+        regexp: "^hosts:"
+        line: "hosts:          mymachines resolve [!UNAVAIL=return] files dns myhostname"
+
+    - name: Ensure systemd-resolved uses stub mode
+      ansible.builtin.file:
+        state: link
+        src: ../run/systemd/resolve/stub-resolv.conf
+        dest: /etc/resolv.conf
+        force: true

@@ -1,1 +1,5 @@
+jwnetconf_dhcp_fallback_prefixes:
+  - en
+
 jwnetconf_interfaces: []
+jwnetconf_override_dns: []

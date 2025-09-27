@@ -40,5 +40,6 @@ jwfw_zones:
 # Network config
 jwnetconf_interfaces:
   - name: enp7s0
+    priority: 10
     type: static
     cidr_address: "{{ hostnames.virbr_nointernet.kubo_public.ipv4 }}/24"

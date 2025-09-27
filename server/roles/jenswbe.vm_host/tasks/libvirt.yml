@@ -19,49 +19,6 @@
     pool_name: default
     pool_path: /var/lib/libvirt/images
 
-- name: Only keep loopback in main interfaces file
-  ansible.builtin.copy:
-    dest: /etc/network/interfaces
-    owner: root
-    group: root
-    mode: "644"
-    content: |
-      # This file describes the network interfaces available on your system
-      # and how to activate them. For more information, see interfaces(5).
-
-      source /etc/network/interfaces.d/*
-
-      # The loopback network interface
-      auto lo
-      iface lo inet loopback
-  notify: Restart networking
-
-- name: Create bridge
-  ansible.builtin.copy:
-    dest: /etc/network/interfaces.d/virbr200
-    owner: root
-    group: root
-    mode: "644"
-    content: |
-      # Managed by Ansible in server/roles/jenswbe.vm_host/tasks/libvirt.yml
-      # Based on https://www.beer.org/blog/index.php/2018/01/11/linux-add-a-usb-network-interface-to-a-bridge/
-
-      rename /{{ jwvm_bridge_member_interface_prefix }}*={{ jwvm_bridge_member_interface_prefix }}
-
-      auto virbr200
-      iface virbr200 inet dhcp
-          hwaddress ether {{ (ansible_facts | get_dict_key_contains(jwvm_bridge_member_interface_prefix))['macaddress'] }}
-          bridge_ports {{ jwvm_bridge_member_interface_prefix }}
-          bridge_stp off
-          bridge_fd 0
-          bridge_waitport 0
-
-      auto {{ jwvm_bridge_member_interface_prefix }}
-      allow-hotplug {{ jwvm_bridge_member_interface_prefix }}
-      iface {{ jwvm_bridge_member_interface_prefix }} inet manual
-          up bash -c 'brctl addif virbr200 {{ jwvm_bridge_member_interface_prefix }} || true'
-  notify: Restart networking
-
 - name: Flush handlers
   ansible.builtin.meta: flush_handlers
 
@@ -78,10 +35,8 @@
   loop:
     - name: nointernet
       prefix: "100"
-    - name: lan
-      prefix: "200"
     - name: nat
-      prefix: "210"
+      prefix: "200"
 
 - name: Copy helper scripts
   ansible.builtin.copy:

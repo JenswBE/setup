@@ -1,0 +1,21 @@
+{{ ansible_managed | comment }}
+# Role: jenswbe.network_config
+
+[Match]
+Name={{ item.name }}{% if item.name_is_wildcard_prefix %}*{% endif +%}
+
+[Network]
+{% if item.type == "static" %}
+Address={{ item.cidr_address }}
+Gateway={{ item.cidr_address | ansible.utils.ipaddr('1') }}
+{% else %}
+DHCP=yes
+{% endif %}
+{% for dns_ip in jwnetconf_override_dns %}
+DNS={{ dns_ip }}
+{% endfor %}
+
+{% if jwnetconf_override_dns %}
+[DHCPv4]
+UseDNS=no
+{% endif %}

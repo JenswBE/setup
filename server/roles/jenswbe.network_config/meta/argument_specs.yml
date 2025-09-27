@@ -11,6 +11,9 @@ argument_specs:
         description: Name of the Linux distribution
 
       # === OPTIONAL ===
+      jwnetconf_dhcp_fallback_prefixes:
+        type: list
+        elements: str
       jwnetconf_interfaces:
         type: list
         elements: dict
@@ -22,6 +25,14 @@ argument_specs:
             type: str
             required: true
             description: Name of the interface
+          name_is_wildcard_prefix:
+            type: bool
+            required: false
+            description: When set, a wildcard will be appended after the name
+          priority:
+            type: int
+            required: true
+            description: The priority of the network config. First matching config is used.
           type:
             type: str
             required: true
@@ -31,3 +42,8 @@ argument_specs:
           cidr_address:
             type: str
             # required: See "required_if"
+      jwnetconf_override_dns:
+        type: list
+        elements: str
+        required: false
+        description: Use these DNS IP's instead of the DHCP provided ones

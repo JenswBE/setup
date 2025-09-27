@@ -6,6 +6,12 @@ zabbix_manage_repo: false
 jwnc_clevis_device_uuid: 138a4a51-bb86-4947-88f9-a505478e563f
 jwnc_clevis_expected_binding: tang '{"url":"http://{{ hostnames.private.kubo.ipv4 }}:7500"}'
 
+# Network config
+jwnetconf_override_dns:
+  - "{{ hostnames.virbr_nointernet.fiona_private.ipv4 }}"
+  - "{{ hostnames.private.kubo_private.ipv4 }}"
+  - "{{ hostnames.private.eve.ipv4 }}"
+
 # Firewall
 jwfw_zones:
   - zone: public # Based on /usr/lib/firewalld/zones/public.xml

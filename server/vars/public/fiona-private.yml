@@ -42,3 +42,10 @@ jwfw_zones:
         protos: [tcp]
     extra_strings: []
     extra_booleans: []
+
+# Network config
+jwnetconf_interfaces:
+  - name: enp7s0
+    priority: 10
+    type: static
+    cidr_address: "{{ hostnames.virbr_nointernet.fiona_private.ipv4 }}/24"

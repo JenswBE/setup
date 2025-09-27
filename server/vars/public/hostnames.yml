@@ -31,6 +31,9 @@ hostnames:
       ipv6: true
 
   virbr_nointernet:
+    fiona_private:
+      fqdn: "fiona-private.virbr-nointernet.{{ general_domain_local }}"
+      ipv6: false
     kubo_download:
       fqdn: "kubo-download.virbr-nointernet.{{ general_domain_local }}"
       ipv6: false

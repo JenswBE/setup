@@ -26,6 +26,9 @@
     - role: jenswbe.nbde_client
       tags: ["nbde", "nbde_client"]
 
+    - role: jenswbe.network_config
+      tags: ["network_config"]
+
     - role: jenswbe.vm_host
       tags: ["vm_host"]
 

@@ -1,6 +1,0 @@
-<network>
-    <name>lan</name>
-    <uuid>4f642e43-3e00-45b1-a906-632e312a58c0</uuid>
-    <forward mode="bridge" />
-    <bridge name="virbr200" />
-</network>

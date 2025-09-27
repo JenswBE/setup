@@ -11,6 +11,7 @@ class FilterModule(object):
             'enrich_hostnames': self.enrich_hostnames,
             'get_dict_key_contains': self.get_dict_key_contains,
             'group_names_to_zabbix_templates': self.group_names_to_zabbix_templates,
+            'netconfig_enrich': self.netconfig_enrich,
             'to_caddy_header_values': self.to_caddy_header_values,
         }
 
@@ -69,6 +70,30 @@ class FilterModule(object):
             if group_name in group_names:
                 templates.extend(group_templates)
         return templates
+
+    def netconfig_derive_filename(self, priority, name, suffix="network"):
+        return f"{priority:02d}-{name}.{suffix}"
+
+    def netconfig_enrich(self, interfaces, dhcp_fallback_prefixes):
+        result = []
+        for interface in interfaces:
+            if not 0 < interface['priority'] < 100:
+                raise AnsibleError(f"Priority of interface '{interface['name']}' must be between 1 and 99 (both including). Got: {to_native(interface['priority'])}")
+
+            interface['filename'] = self.netconfig_derive_filename(interface['priority'], interface['name'])
+            interface['name_is_wildcard_prefix'] = interface.get('name_is_wildcard_prefix', False)
+            interface['override_dns'] = interface.get('override_dns', [])
+
+            result.append(interface)
+        for name in dhcp_fallback_prefixes:
+            result.append({
+                "name": name,
+                "name_is_wildcard_prefix": True,
+                "priority": 99,
+                "filename": self.netconfig_derive_filename(99, name),
+                "type": "dhcp",
+            })
+        return result
 
     def remove_newlines(self, input):
         return input.replace("\\n", "")

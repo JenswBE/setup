@@ -1,31 +1,67 @@
+# Based on https://wiki.debian.org/SystemdNetworkd
+
 - name: Setup network interfaces
   become: true
   block:
-    - name: Create interface files
-      become: true
+    - name: Enrich network configs
+      ansible.builtin.set_fact:
+        jwnetconf_enriched: "{{ jwnetconf_interfaces | netconfig_enrich(jwnetconf_dhcp_fallback_prefixes) }}"
+
+    - name: Expected network configs
+      ansible.builtin.debug:
+        var: jwnetconf_enriched
+
+    - name: Drop ifupdown configs
+      ansible.builtin.file:
+        path: "/etc/network/{{ item }}"
+        state: absent
+      loop:
+        - interfaces
+        - interfaces.d
+      notify:
+        - Initramfs regenerate
+        - Reboot
+
+    - name: Enable systemd-networkd
+      ansible.builtin.systemd_service:
+        name: systemd-networkd
+        enabled: true
+      notify:
+        - Initramfs regenerate
+        - Reboot
+
+    - name: Create network configs
       ansible.builtin.template:
-        src: interface.conf
-        dest: "/etc/network/interfaces.d/{{ item.name }}.conf"
+        src: interface.network
+        dest: "/etc/systemd/network/{{ item.filename }}"
         owner: root
         group: root
         mode: "0644"
-      loop: "{{ jwnetconf_interfaces }}"
-      notify: Restart networking
+      loop: "{{ jwnetconf_enriched }}"
+      notify:
+        - Initramfs regenerate
+        - Restart systemd-networkd
 
     - name: Find orphaned interfaces
-      become: true
       ansible.builtin.find:
-        paths: /etc/network/interfaces.d/
+        paths: /etc/systemd/network/
         file_type: file
         contains: jenswbe.network_config
         read_whole_file: true
-        excludes: "{{ jwnetconf_interfaces | map(attribute='name') | list | product(['.conf']) | map('join') | list }}"
+        excludes: "{{ jwnetconf_enriched | map(attribute='filename') | list }}"
       register: orphaned_interfaces
 
     - name: Remove orphaned interfaces
-      become: true
       ansible.builtin.file:
         name: "{{ item }}"
         state: absent
       loop: "{{ orphaned_interfaces['files'] | map(attribute='path') }}"
-      notify: Restart networking
+      notify:
+        - Initramfs regenerate
+        - Restart systemd-networkd
+
+- name: Configure DNS
+  ansible.builtin.include_tasks: dns.yml
+
+- name: Flush handlers
+  ansible.builtin.meta: flush_handlers

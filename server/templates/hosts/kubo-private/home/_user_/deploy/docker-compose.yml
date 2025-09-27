@@ -68,8 +68,12 @@ services:
     networks:
       - caddy
     ports:
-      - "53:53/tcp" # DNS TCP
-      - "53:53/udp" # DNS UDP
+      - "127.0.0.1:53:53/tcp" # DNS TCP
+      - "127.0.0.1:53:53/udp" # DNS UDP
+      - "#VAR: hostnames.virbr_nointernet.kubo_private.ipv4 :VAR#:53:53/tcp" # DNS TCP
+      - "#VAR: hostnames.virbr_nointernet.kubo_private.ipv4 :VAR#:53:53/udp" # DNS UDP
+      - "#VAR: hostnames.private.kubo_private.ipv4 :VAR#:53:53/tcp" # DNS TCP
+      - "#VAR: hostnames.private.kubo_private.ipv4 :VAR#:53:53/udp" # DNS UDP
     volumes:
       - ./blocky/config.txt:/app/config.yml:ro
 

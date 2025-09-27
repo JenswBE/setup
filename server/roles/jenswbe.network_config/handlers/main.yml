@@ -1,5 +1,14 @@
-- name: Restart networking
+- name: Initramfs regenerate
+  become: true
+  changed_when: true
+  ansible.builtin.command: update-initramfs -u
+
+- name: Reboot
+  become: true
+  ansible.builtin.reboot:
+
+- name: Restart systemd-networkd
   become: true
   ansible.builtin.service:
-    name: networking
+    name: systemd-networkd
     state: restarted
