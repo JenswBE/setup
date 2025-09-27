@@ -2,10 +2,10 @@
     <name>nat</name>
     <uuid>b33bda24-a908-48bc-96b1-e4789ed7b9d9</uuid>
     <forward mode="nat" />
-    <bridge name="virbr210" />
-    <ip address="10.0.210.1" netmask="255.255.255.0">
+    <bridge name="virbr200" />
+    <ip address="10.0.200.1" netmask="255.255.255.0">
         <dhcp>
-            <range start="10.0.210.100" end="10.0.210.200" />
+            <range start="10.0.200.100" end="10.0.200.200" />
         </dhcp>
     </ip>
 </network>
