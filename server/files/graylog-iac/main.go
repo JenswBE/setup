@@ -23,6 +23,7 @@ func expectedEventDefinitions(inventoryPath string) ([]models.EventDefinition, e
 			Description: "Deprecation message found in logs",
 			Query: strings.Join([]string{
 				`deprecat*`,
+				`AND NOT "AnyThread deprecated"`,
 				`AND NOT "the capability attribute has been deprecated"`, // Related to KDUMP
 				`AND NOT "Calling promisify on a function that returns a Promise is likely a mistake"`,
 				`AND NOT "Eavesdropping is deprecated and ignored"`, // Policy to allow eavesdropping in /usr/share/dbus-1/session.conf +33: Eavesdropping is deprecated and ignored
@@ -37,7 +38,7 @@ func expectedEventDefinitions(inventoryPath string) ([]models.EventDefinition, e
 				`AND NOT "systemd-udev-settle.service is deprecated. Please fix"`,
 				`AND NOT "The collStats command is deprecated."`,                                             // MongoDB
 				`AND NOT "transport.publish_address was printed as [ip:port] instead of [hostname/ip:port]"`, // ElasticSearch by Graylog
-				`AND NOT "AnyThread deprecated"`,
+				`AND NOT "xfs_scrub_all"`,
 			}, " "),
 			ExecuteEvery:            24 * time.Hour,
 			NotificationGracePeriod: time.Hour,
@@ -115,7 +116,7 @@ func main() {
 	}
 
 	// Compare event definitions
-	expectedDefs, err := expectedEventDefinitions("../../inventory.yml")
+	expectedDefs, err := expectedEventDefinitions("../../inventory")
 	if err != nil {
 		log.Fatal("Failed to get expected definitions", err)
 	}
