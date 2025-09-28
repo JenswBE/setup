@@ -52,6 +52,7 @@ services:
     volumes:
       - ./caddy/Caddyfile:/etc/caddy/Caddyfile:ro
       - ./caddy/configs:/etc/caddy/configs:ro
+      - ./caddy/routes:/etc/caddy/routes:ro
       - caddy-config:/config
       - caddy-data:/data
     environment:

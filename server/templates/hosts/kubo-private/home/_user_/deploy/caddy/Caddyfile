@@ -45,5 +45,7 @@ import ./configs/shared_snippets.txt
 		handle @unifi {
 			import default_local_reverse_proxy_with_insecure_upstream "https://unifi-network-app:8443"
 		}
+
+		import ./routes/*.Caddyfile
 	}
 }
