@@ -45,9 +45,9 @@
       ansible.builtin.include_vars: secret/basics.yml
 
     - name: Load public host specific vars
-      when: "('vars/public/%s.yml' | format(inventory_hostname)) is exists"
-      ansible.builtin.include_vars: "public/{{ inventory_hostname }}.yml"
+      ansible.builtin.include_vars: "{{ (item | split('vars/'))[1] }}"
+      with_ansible.builtin.fileglob: "{{ ('vars/public/*%s.yml' | format(inventory_hostname)) }}"
 
     - name: Load secret host specific vars
-      when: "('vars/secret/%s.yml' | format(inventory_hostname)) is exists"
-      ansible.builtin.include_vars: "secret/{{ inventory_hostname }}.yml"
+      ansible.builtin.include_vars: "{{ (item | split('vars/'))[1] }}"
+      with_ansible.builtin.fileglob: "{{ ('vars/secret/*%s.yml' | format(inventory_hostname)) }}"
