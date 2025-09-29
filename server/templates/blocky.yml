@@ -20,7 +20,7 @@ upstreams:
 
 customDNS:
   zone: |
-    #VAR: app_blocky_zone | indent( width=4) :VAR#
+    #VAR: app_blocky_zone | indent(width=4) :VAR#
 
 connectIPVersion: v4
 

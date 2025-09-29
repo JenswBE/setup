@@ -46,12 +46,6 @@ services:
         url: "https://nextcloud.#VAR: general_domain_default :VAR#"
         <<: *default
 
-      - name: TinyMediaManager
-        subtitle: Private | kubo-media
-        logo: https://gitlab.com/tinyMediaManager/tinyMediaManager/-/raw/devel/AppBundler/svg/logo1.svg
-        url: "https://tmm.#VAR: general_domain_local :VAR#"
-        <<: *default
-
       - name: TrueNAS SCALE
         subtitle: Private | kubo-storage
         logo: https://cdn.jsdelivr.net/gh/selfhst/icons/svg/truenas-scale.svg
@@ -83,6 +77,12 @@ services:
         subtitle: Public | po
         logo: https://cdn.jsdelivr.net/gh/selfhst/icons/svg/nextcloud-mail.svg
         url: "https://ext.#VAR: general_domain_default :VAR#"
+        <<: *default
+
+      - name: Grocy
+        subtitle: Public | eve
+        logo: https://cdn.jsdelivr.net/gh/selfhst/icons/svg/grocy.svg
+        url: "https://grocy.#VAR: general_domain_default :VAR#"
         <<: *default
 
       - name: Home Assistant
@@ -293,3 +293,7 @@ services:
         icon: "fas fa-toggle-on"
         url: https://goeuropean.org
         <<: *default
+#
+#BLOCK: if app_homer_extra_services is defined :BLOCK#
+#VAR: app_homer_extra_services | indent(width=2, first=True) :VAR#
+#BLOCK: endif :BLOCK#
