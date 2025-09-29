@@ -759,6 +759,22 @@ services:
           memory: 6G
 
   # =========================
+  # =       Grocy       =
+  # =========================
+  grocy:
+    <<: *defaults
+    image: lscr.io/linuxserver/grocy:latest
+    container_name: grocy
+    networks:
+      - caddy-public
+    volumes:
+      - "#VAR: general_path_appdata :VAR#/grocy/config:/config"
+    environment:
+      TZ: "#VAR: general_timezone :VAR#"
+      PUID: "#VAR: ansible_real_user_id :VAR#"
+      PGID: "#VAR: ansible_real_user_id :VAR#"
+
+  # =========================
   # =       PDF tools       =
   # =========================
   stirling-pdf:
@@ -856,6 +872,8 @@ services:
       - "bjoetiek-directus-db-dump:/mnt/source/bjoetiek_y/directus/dbdump:ro"
       # GoatCounter
       - "#VAR: general_path_appdata :VAR#/goatcounter/db:/mnt/source/goatcounter/db:ro"
+      # Grocy
+      - "#VAR: general_path_appdata :VAR#/grocy/config/data:/mnt/source/grocy/data:ro"
       # Keycloak
       - "keycloak-db-dump:/mnt/source/keycloak/dbdump:ro"
       # KristofCoenen

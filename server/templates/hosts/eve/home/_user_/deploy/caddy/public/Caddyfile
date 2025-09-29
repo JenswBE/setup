@@ -55,6 +55,10 @@ http:// {
 	import default_public_reverse_proxy "http://wtech-directus:8055"
 }
 
+"grocy.#VAR: general_domain_default :VAR#" {
+	import default_public_reverse_proxy "http://grocy:80"
+}
+
 "nextcloud.#VAR: general_domain_default :VAR#",
 "bestanden.#VAR: general_domain_tuinfeest :VAR#" {
 	import default_public_reverse_proxy "http://nextcloud"
