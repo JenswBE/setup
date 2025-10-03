@@ -8,7 +8,16 @@
 
 ### Debian
 
-Download latest version from <https://www.debian.org/distrib/netinst>
+1. Download latest version from <https://www.debian.org/distrib/netinst>
+2. Install with following settings:
+   - Bare metal
+     - Partition disks: Guided - use entire disk and set up encrypted LVM
+     - Partition scheme: Separate /var and /srv, swap < 1GB (for servers)
+     - Amount of volume group: 50%
+   - VM
+     - Partition disks: Guided - use entire disk and set up LVM
+     - Partition scheme: Separate /var and /srv, swap < 1GB (for servers)
+     - Amount of volume group: 100%
 
 ### Rocky
 

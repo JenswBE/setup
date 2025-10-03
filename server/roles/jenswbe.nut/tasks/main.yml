@@ -1,3 +1,6 @@
+- name: Include arg spec
+  ansible.builtin.include_tasks: arg_spec.yml
+
 - name: Setup Network UPS Tools (NUT)
   become: true
   block:
@@ -18,11 +21,28 @@
         groups: smtp-cli
         append: true
 
+    - name: Set device group with udev rule
+      when: jwnu_nut_type == 'client_server'
+      ansible.builtin.template:
+        src: client_server/50-ups.rules
+        dest: /etc/udev/rules.d/50-ups.rules
+        owner: root
+        group: root
+        mode: "644"
+        variable_start_string: '#VAR:'
+        variable_end_string: ':VAR#'
+        lstrip_blocks: true
+        trim_blocks: false
+      notify: Reload udev
+
+    - name: Flush handlers # udev rule is needed before NUT/UPS driver
+      ansible.builtin.meta: flush_handlers
+
     - name: Copy NUT config
       ansible.builtin.include_role:
         name: jenswbe.copy_dir
       vars:
-        jwcd_source_templates_dir: "roles/jenswbe.nut/templates/{{ jwnu_nut_type }}"
+        jwcd_source_templates_dir: "roles/jenswbe.nut/templates/{{ jwnu_nut_type }}/nut"
         jwcd_destination_dir: /etc/nut
         jwcd_privileged: true
         jwcd_destination_mode_files: "640"
@@ -71,3 +91,5 @@
     - name: Test upssched-cmd (should receive email)
       ansible.builtin.command: /usr/sbin/upssched-cmd test
       changed_when: false
+      retries: 3 # Server might need some time to settle after reboot
+      delay: 5

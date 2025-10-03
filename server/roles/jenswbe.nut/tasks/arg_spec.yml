@@ -1,0 +1,30 @@
+- name: Validate args
+  ansible.builtin.validate_argument_spec:
+    argument_spec:
+      ansible_distribution:
+        type: str
+        required: true
+        choices: # Others exist, but these are supported in the role
+          - Debian
+        description: Name of the Linux distribution
+
+      jwnu_nut_type:
+        type: str
+        required: true
+        choices:
+          - client_only
+          - client_server
+        description: Type of NUT install
+
+      # === CONDITIONAL OPTIONAL ===
+      jwnu_ups_vendor_id:
+        type: str
+        required: "{{ jwnu_nut_type == 'client_server' }}"
+
+      jwnu_ups_product_id:
+        type: str
+        required: "{{ jwnu_nut_type == 'client_server' }}"
+
+      jwnu_ups_serial:
+        type: str
+        required: "{{ jwnu_nut_type == 'client_server' }}"

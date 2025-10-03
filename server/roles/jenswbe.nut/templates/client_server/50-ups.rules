@@ -1,0 +1,2 @@
+#VAR: ansible_managed | comment :VAR#
+SUBSYSTEM=="usb", ATTR{idVendor}=="#VAR: jwnu_ups_vendor_id :VAR#", ATTR{idProduct}=="#VAR: jwnu_ups_product_id :VAR#", GROUP="nut"

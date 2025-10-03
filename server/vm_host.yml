@@ -52,6 +52,7 @@
 
   tasks:
     - name: Install VM host specific packages
+      become: true
       ansible.builtin.package:
         name: intel-gpu-tools
         state: present

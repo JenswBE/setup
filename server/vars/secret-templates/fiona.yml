@@ -4,3 +4,10 @@ app_caddy_desec_token: ""
 
 # CrowdSec
 jwcs_bouncer_firewall_key: "" # Alphanumeric string
+
+# NUT
+jwnu_nut_type: "client_server"
+jwnu_ups_description: ""
+jwnu_ups_vendor_id: "" # See "lsusb"
+jwnu_ups_product_id: "" # See "lsusb"
+jwnu_ups_serial: ""
