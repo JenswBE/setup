@@ -63,8 +63,11 @@
       zabbix_agent_server: "{{ zabbix_server_hostname }}"
       tags: ["observability"]
 
-    - role: jenswbe.observability
-      tags: ["observability"]
+    - role: jenswbe.monitoring
+      tags: ["monitoring"]
+
+    - role: jenswbe.logging
+      tags: ["logging"]
 
     - role: jenswbe.firewall
       tags: ["firewall"]

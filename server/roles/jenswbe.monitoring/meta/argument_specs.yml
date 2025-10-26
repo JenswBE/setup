@@ -1,6 +1,6 @@
 argument_specs:
   main:
-    short_description: Setup observability (logging and metrics)
+    short_description: Setup monitoring
     options:
       # === REQUIRED ===
       ansible_distribution:
@@ -10,10 +10,5 @@ argument_specs:
           - Debian
           - Rocky
         description: Name of the Linux distribution
-
-      jwob_graylog_server_hostname:
-        type: str
-        required: true
-        description: Hostname of the Graylog server
 
       # === OPTIONAL ===

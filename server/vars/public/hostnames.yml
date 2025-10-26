@@ -40,6 +40,9 @@ hostnames:
     kubo_media:
       fqdn: "kubo-media.virbr-nointernet.{{ general_domain_local }}"
       ipv6: false
+    kubo_observability:
+      fqdn: "kubo-observability.virbr-nointernet.{{ general_domain_local }}"
+      ipv6: false
     kubo_private:
       fqdn: "kubo-private.virbr-nointernet.{{ general_domain_local }}"
       ipv6: false

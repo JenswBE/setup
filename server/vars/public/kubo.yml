@@ -48,6 +48,9 @@ jwfw_zones:
     extra_strings: []
     extra_booleans: []
 
+# Logging
+jwlo_graylog_server_hostname: "kubo-observability.virbr-nointernet.{{ general_domain_local }}"
+
 # VM Host
 jwvm_start_vms_after_nfs:
   - kubo-download

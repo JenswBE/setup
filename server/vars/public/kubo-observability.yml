@@ -40,6 +40,13 @@ jwfw_zones:
     extra_strings: []
     extra_booleans: []
 
+# Network config
+jwnetconf_interfaces:
+  - name: enp8s0
+    priority: 10
+    type: static
+    cidr_address: "{{ hostnames.virbr_nointernet.kubo_observability.ipv4 }}/24"
+
 # Observability
-jwob_graylog_server_hostname: "127.0.0.1" # Target for rsyslog and Docker logs
+jwlo_graylog_server_hostname: "127.0.0.1" # Target for rsyslog and Docker logs
 zabbix_server_hostname: "172.16.0.0/12" # Default Docker subnet - Incoming connections will be accepted only from the hosts listed here.

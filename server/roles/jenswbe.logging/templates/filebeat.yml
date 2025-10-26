@@ -26,5 +26,5 @@ processors:
 
 output.logstash:
   enabled: true
-  hosts: ["#VAR: jwob_graylog_server_hostname :VAR#:5044"]
+  hosts: ["#VAR: jwlo_graylog_server_hostname :VAR#:5044"]
   slow_start: true
