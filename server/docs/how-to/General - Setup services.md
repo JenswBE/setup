@@ -64,14 +64,14 @@ docker exec -u www-data nextcloud php occ config:system:set skeletondirectory --
 docker exec -u www-data nextcloud php occ config:app:set dav system_addressbook_exposed --value=no
 
 # Disable unwanted apps
-export NEXTCLOUD_APPS_DISABLE=firstrunwizard
+export NEXTCLOUD_APPS_DISABLE=comments,firstrunwizard,photos,weather_status
 for NC_APP in ${NEXTCLOUD_APPS_DISABLE};
 do
   docker exec -it -u www-data nextcloud php occ app:disable ${NC_APP}
 done
 
 # Install usefull apps
-export NEXTCLOUD_APPS_INSTALL=apporder,calendar,contacts,groupfolders,maps,notes,photos,previewgenerator,quota_warning,recognize,tasks
+export NEXTCLOUD_APPS_INSTALL=apporder,calendar,contacts,groupfolders,notes,previewgenerator,quota_warning,tasks
 for NC_APP in ${NEXTCLOUD_APPS_INSTALL};
 do
   docker exec -it -u www-data nextcloud php occ app:install ${NC_APP}
