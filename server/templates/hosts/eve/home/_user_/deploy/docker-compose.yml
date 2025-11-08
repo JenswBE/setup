@@ -712,7 +712,7 @@ services:
     container_name: paperless-redis
     # See https://github.com/paperless-ngx/paperless-ngx/blob/main/docker/compose/docker-compose.postgres-tika.yml
     # for recommended version.
-    image: docker.io/library/redis:7
+    image: docker.io/library/redis:8
     networks:
       - paperless
     volumes:
@@ -746,7 +746,7 @@ services:
   paperless-tika:
     <<: *defaults
     container_name: paperless-tika
-    image: ghcr.io/paperless-ngx/tika:latest
+    image: docker.io/apache/tika:latest
     networks:
       - paperless
     environment:
