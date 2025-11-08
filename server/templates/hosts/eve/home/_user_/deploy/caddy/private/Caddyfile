@@ -32,7 +32,7 @@ import ./configs/shared_snippets.txt
 
 		@pdf host "pdf.#VAR: general_domain_local :VAR#"
 		handle @pdf {
-			import default_local_reverse_proxy "http://stirling-pdf:8080"
+			import default_local_reverse_proxy "http://bentopdf:8080"
 		}
 
 		@start host "start.#VAR: general_domain_local :VAR#"

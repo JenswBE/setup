@@ -776,15 +776,14 @@ services:
   # =========================
   # =       PDF tools       =
   # =========================
-  stirling-pdf:
+  bentopdf:
     <<: *defaults
-    image: ghcr.io/stirling-tools/stirling-pdf:latest-ultra-lite
-    container_name: stirling-pdf
+    image: ghcr.io/alam00000/bentopdf-simple:latest
+    container_name: bentopdf
     networks:
       - caddy-private
     environment:
       TZ: "#VAR: general_timezone :VAR#"
-      DOCKER_ENABLE_SECURITY: "false"
 
   # =========================
   # =  NETWORK PERFORMANCE  =
