@@ -527,17 +527,13 @@ services:
   # =========================
   goatcounter:
     <<: *defaults
-    build:
-      context: goatcounter
-      args:
-        - "arch=#VAR: app_goatcounter_arch :VAR#"
-        - "version=#VAR: app_goatcounter_version :VAR#"
+    image: docker.io/arp242/goatcounter:2.6
     container_name: goatcounter
     user: "#VAR: ansible_real_user_id :VAR#"
     networks:
       - caddy-public
     volumes:
-      - "#VAR: general_path_appdata :VAR#/goatcounter/db:/db"
+      - "#VAR: general_path_appdata :VAR#/goatcounter/db:/home/goatcounter/goatcounter-data"
     environment:
       TZ: "#VAR: general_timezone :VAR#"
 

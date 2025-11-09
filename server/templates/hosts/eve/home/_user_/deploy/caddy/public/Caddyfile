@@ -69,35 +69,35 @@ http:// {
 }
 
 "stats.#VAR: general_domain_default :VAR#" {
-	import default_public_reverse_proxy "http://goatcounter"
+	import default_public_reverse_proxy "http://goatcounter:8080"
 }
 
 "stats-spellebel.#VAR: general_domain_default :VAR#" {
-	import default_public_reverse_proxy "http://goatcounter"
+	import default_public_reverse_proxy "http://goatcounter:8080"
 }
 
 "stats.#VAR: general_domain_bjoetiek :VAR#" {
-	import default_public_reverse_proxy "http://goatcounter"
+	import default_public_reverse_proxy "http://goatcounter:8080"
 }
 
 "stats.#VAR: general_domain_interwego :VAR#" {
-	import default_public_reverse_proxy "http://goatcounter"
+	import default_public_reverse_proxy "http://goatcounter:8080"
 }
 
 "stats.#VAR: general_domain_klokracing :VAR#" {
-	import default_public_reverse_proxy "http://goatcounter"
+	import default_public_reverse_proxy "http://goatcounter:8080"
 }
 
 "stats.#VAR: general_domain_kristofcoenen :VAR#" {
-	import default_public_reverse_proxy "http://goatcounter"
+	import default_public_reverse_proxy "http://goatcounter:8080"
 }
 
 "stats.#VAR: general_domain_tuinfeest :VAR#" {
-	import default_public_reverse_proxy "http://goatcounter"
+	import default_public_reverse_proxy "http://goatcounter:8080"
 }
 
 "stats.#VAR: general_domain_wtech :VAR#" {
-	import default_public_reverse_proxy "http://goatcounter"
+	import default_public_reverse_proxy "http://goatcounter:8080"
 }
 
 "vault.#VAR: general_domain_default :VAR#" {
