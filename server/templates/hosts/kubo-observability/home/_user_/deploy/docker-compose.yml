@@ -89,7 +89,7 @@ services:
   # =========================
   graylog:
     <<: *defaults
-    image: docker.io/graylog/graylog:6.3
+    image: docker.io/graylog/graylog:7.0
     container_name: graylog
     entrypoint: /usr/bin/tini -- wait-for-it graylog-elasticsearch:9200 --  /docker-entrypoint.sh
     volumes:
@@ -133,7 +133,7 @@ services:
           cpus: "4"
           memory: 8G
 
-  graylog-elasticsearch:
+  graylog-elasticsearch: # TODO: Switch to https://go2docs.graylog.org/current/downloading_and_installing_graylog/install_graylog_data_node.htm
     <<: [*defaults, *healthcheck-elasticsearch]
     # "We caution you not to install or upgrade to Elasticsearch 7.11 and later! It is not supported."
     # See https://go2docs.graylog.org/current/setting_up_graylog/elasticsearch.htm
@@ -162,9 +162,8 @@ services:
 
   graylog-mongodb:
     <<: [*defaults, *healthcheck-mongo]
-    # MongoDB 6.0 is used at
-    # https://go2docs.graylog.org/current/downloading_and_installing_graylog/docker_installation.htm
-    image: docker.io/library/mongo:6.0
+    # https://go2docs.graylog.org/current/downloading_and_installing_graylog/compatibility_matrix.htm
+    image: docker.io/library/mongo:8.0
     container_name: graylog-mongodb
     environment:
       TZ: "#VAR:general_timezone:VAR#"
