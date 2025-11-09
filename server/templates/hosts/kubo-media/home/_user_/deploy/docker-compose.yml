@@ -18,7 +18,7 @@ services:
   # =========================
   immich: # Set ML url in settings to http://immich-ml:3003
     <<: *defaults
-    image: ghcr.io/immich-app/immich-server:v2.2.3
+    image: ghcr.io/immich-app/immich-server:v2
     container_name: immich
     networks:
       - immich
@@ -52,7 +52,7 @@ services:
 
   immich-ml:
     <<: *defaults
-    image: ghcr.io/immich-app/immich-machine-learning:v2.2.3-openvino
+    image: ghcr.io/immich-app/immich-machine-learning:v2-openvino
     container_name: immich-ml
     networks:
       - immich
