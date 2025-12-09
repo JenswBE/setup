@@ -5,18 +5,16 @@ bootstrapDns:
       - "149.112.112.112"
       # - "2620:fe::fe"
       # - "2620:fe::9"
-  - upstream: https://dns0.eu/
+  - upstream: https://dns.mullvad.net/dns-query
     ips:
-      - "193.110.81.0"
-      - "185.253.5.0"
-      # - "2a0f:fc80::"
-      # - "2a0f:fc81::"
+      - "194.242.2.2"
+      # - "2a07:e340::2"
 
 upstreams:
   groups:
     default:
       - https://dns.quad9.net/dns-query
-      - https://dns0.eu/
+      - https://dns.mullvad.net/dns-query
 
 customDNS:
   zone: |
@@ -29,6 +27,8 @@ blocking:
   denylists:
     base:
       - https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts # adware + malware
+      - https://urlhaus.abuse.ch/downloads/hostfile # Malware based on mullvad/dns-blocklists
+      - https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/wildcard/tif.txt # Malware based on mullvad/dns-blocklists
       - |
         # https://www.security.nl/posting/847704
         # Since we use up-to-date browsers, it is likely not needed anyway
@@ -36,12 +36,14 @@ blocking:
     extra:
       - https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/fakenews-only/hosts
       - https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/gambling-only/hosts
+      - https://raw.githubusercontent.com/mullvad/dns-blocklists/refs/heads/main/output/relay/relay_privacy.txt # Trackers
+      - https://raw.githubusercontent.com/mullvad/dns-blocklists/refs/heads/main/output/relay/relay_adblock.txt # Ads
   clientGroupsBlock:
     default:
-      - minimal
+      - base
       - extra
     192.168.21.1/24: # Unfiltered
-      - minimal
+      - base
 
 ports:
   http: 8080
