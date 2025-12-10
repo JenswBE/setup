@@ -163,7 +163,7 @@ services:
   graylog-mongodb:
     <<: [*defaults, *healthcheck-mongo]
     # https://go2docs.graylog.org/current/downloading_and_installing_graylog/compatibility_matrix.htm
-    image: docker.io/library/mongo:8.0
+    image: docker.io/library/mongo:8.2
     container_name: graylog-mongodb
     environment:
       TZ: "#VAR:general_timezone:VAR#"
