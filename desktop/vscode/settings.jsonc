@@ -2,6 +2,15 @@
   "[css]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
+  "[dockercompose]": {
+    "editor.autoIndent": "advanced",
+    "editor.defaultFormatter": "redhat.vscode-yaml",
+    "editor.insertSpaces": true,
+    "editor.tabSize": 2
+  },
+  "[github-actions-workflow]": {
+    "editor.defaultFormatter": "redhat.vscode-yaml"
+  },
   "[gotmpl]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
@@ -28,8 +37,6 @@
   },
   "ansible.lightspeed.enabled": false,
   "ansible.lightspeed.suggestions.enabled": false,
-  "chat.agent.enabled": false,
-  "chat.commandCenter.enabled": false,
   "diffEditor.ignoreTrimWhitespace": false,
   "diffEditor.maxComputationTime": 0,
   "editor.bracketPairColorization.enabled": true,
@@ -68,6 +75,7 @@
   "git.confirmSync": false,
   "git.discardUntrackedChangesToTrash": false,
   "git.enableSmartCommit": true,
+  "github.copilot.nextEditSuggestions.enabled": true,
   "gitlens.codeLens.enabled": false,
   "gitlens.hovers.currentLine.over": "line",
   "gitlens.hovers.enabled": false,
