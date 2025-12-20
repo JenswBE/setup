@@ -5,6 +5,10 @@ app_caddy_desec_token: ""
 # CrowdSec
 jwcs_bouncer_firewall_key: "" # Alphanumeric string
 
+# Trouw Jens & Gwendolyn
+app_trouwjg_passwords: ""
+app_trouwjg_cookie_secret: ""
+
 # Wireguard
 jwwg_wireguard_interfaces:
   wg0:

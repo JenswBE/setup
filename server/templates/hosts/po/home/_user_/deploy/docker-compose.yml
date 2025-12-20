@@ -101,6 +101,20 @@ services:
       - website-interwego:/data/interwego
       - website-wtech:/data/wtech
 
+  # =========================
+  # =         TROUW         =
+  # =========================
+  trouwjg:
+    <<: *defaults
+    image: ghcr.io/jenswbe/trouwjg.be:main
+    container_name: trouwjg
+    networks:
+      - caddy-public
+    environment:
+      TZ: "#VAR: general_timezone :VAR#"
+      TROUW_PASSWORDS: "#VAR: app_trouwjg_passwords :VAR#"
+      TROUW_COOKIE_SECRET: "#VAR: app_trouwjg_cookie_secret :VAR#"
+
 # #################################################################
 # #                            VOLUMES                            #
 # #################################################################

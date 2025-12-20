@@ -77,3 +77,7 @@ import default_redirect "www.#VAR: general_domain_wtech :VAR#" "#VAR: general_do
 		#VAR: caddy_extra_headers.wtech | to_caddy_header_values("replace") :VAR#
 	}
 }
+
+"#VAR: general_domain_trouwjg :VAR#" {
+	import default_public_reverse_proxy "http://trouwjg:8080"
+}
