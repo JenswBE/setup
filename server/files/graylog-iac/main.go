@@ -44,8 +44,9 @@ func expectedEventDefinitions(inventoryPath string) ([]models.EventDefinition, e
 			NotificationGracePeriod: time.Hour,
 			SearchWithin:            24 * time.Hour,
 			MappedFields: map[string]string{
-				"Message": "source.message",
-				"Host":    "source.source",
+				"Message":   "source.message",
+				"Host":      "source.source",
+				"Container": "source.filebeat_container_name",
 			},
 		},
 		{

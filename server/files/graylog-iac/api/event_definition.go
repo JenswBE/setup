@@ -29,9 +29,14 @@ func (c Client) ListEventDefinitions() ([]models.EventDefinition, error) {
 	return result, nil
 }
 
+type createEventDefinition struct {
+	Entity EventDefinition `json:"entity"`
+}
+
 func (c Client) CreateEventDefinition(def models.EventDefinition) (models.EventDefinition, error) {
 	var resp EventDefinition
-	err := c.post("events/definitions", eventDefinitionFromModel(def), &resp)
+	payload := createEventDefinition{Entity: eventDefinitionFromModel(def)}
+	err := c.post("events/definitions", payload, &resp)
 	if err != nil {
 		return models.EventDefinition{}, fmt.Errorf("failed to create event definition: %w", err)
 	}
