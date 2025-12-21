@@ -527,7 +527,7 @@ services:
   # =========================
   goatcounter:
     <<: *defaults
-    image: docker.io/arp242/goatcounter:2.6
+    image: docker.io/arp242/goatcounter:2.7
     container_name: goatcounter
     user: "#VAR: ansible_real_user_id :VAR#"
     networks:
