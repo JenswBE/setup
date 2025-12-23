@@ -1,3 +1,7 @@
+# FIXME: Remove once https://github.com/ansible-collections/community.zabbix/issues/1523 is closed
+zabbix_agent_version_check: false
+zabbix_manage_repo: false
+
 # Docker
 docker_restart_changed_services:
   - nginx
