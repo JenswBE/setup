@@ -7,13 +7,8 @@ jwba_base_packages:
   - rsync
   - tmux
   - vim
-
-jwba_base_packages_debian:
   - btrfs-progs
   - console-data # Contains keymaps and fonts
-
-jwba_base_packages_rocky:
-  - usbutils # Provides lsusb
 
 # smtp-cli
 jwba_from_name: "{{ inventory_hostname }}"

@@ -22,7 +22,6 @@ argument_specs:
         required: true
         choices: # Others exist, but these are supported in the role
           - Debian
-          - Rocky
         description: Name of the Linux distribution
 
       jwwg_wireguard_interfaces:

@@ -2,16 +2,9 @@
   become: true
   tags: ["setup", "logging"]
   block:
-    - name: Debian - Install filebeat
-      when: ansible_distribution == 'Debian'
+    - name: Install filebeat
       ansible.builtin.apt:
         deb: "https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-8.14.3-{{ arch }}.deb"
-
-    - name: Rocky - Install filebeat
-      when: ansible_distribution == 'Rocky'
-      ansible.builtin.dnf:
-        name: "https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-8.14.3-{{ ansible_architecture }}.rpm"
-        disable_gpg_check: true
 
     - name: Copy filebeat config
       register: filebeat_config

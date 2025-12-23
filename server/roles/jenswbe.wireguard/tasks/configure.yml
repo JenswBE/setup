@@ -43,15 +43,6 @@
       Before=docker.service
     # Systemd reload is not needed as this change only applies after a reboot anyway
 
-  # Without, resolvconf returns "Failed to set DNS configuration: Could not activate remote peer."
-- name: Ensure systemd-resolved is running
-  when: ansible_distribution == 'Rocky'
-  become: true
-  ansible.builtin.systemd_service:
-    name: systemd-resolved
-    enabled: true
-    state: started
-
 - name: Enable Wireguard on boot
   become: true
   ansible.builtin.systemd_service:

@@ -19,15 +19,6 @@
      - Partition scheme: Separate /var and /srv, swap < 1GB (for servers)
      - Amount of volume group: 100%
 
-### Rocky
-
-1. Download latest version from <https://rockylinux.org/download>
-2. Install with following settings:
-   - Software selection = Minimal
-   - Installation Destination = Automatic + Encrypt my data
-   - KDUMP = Disabled
-   - User Creation = Add non-root user
-
 ### VM clone
 
 ```bash
@@ -41,12 +32,7 @@ clone-vm <FROM> <TO>
 # You might have to set "PermitRootLogin yes" in /etc/ssh/sshd_config and restart ssh(d) service
 ssh root@...
 
-# Rocky - Create personal admin user
-PERS_USER=""
-adduser --groups wheel --comment "" ${PERS_USER:?}
-passwd ${PERS_USER:?}
-
-# Debian - Create personal admin user
+# Create personal admin user
 PERS_USER=""
 adduser --comment "" ${PERS_USER:?}
 apt-get install -y sudo
@@ -61,8 +47,8 @@ sudo passwd -l root
 
 ## Setup
 
-Download the latest version of [Debian](https://www.debian.org/distrib/netinst)
-or [Rocky](https://rockylinux.org/download) and install. Next, run following steps:
+Download the latest version of [Debian](https://www.debian.org/distrib/netinst).
+Next, run following steps:
 
 ```bash
 # Set authorized SSH keys
@@ -70,10 +56,7 @@ mkdir -p ~/.ssh
 chmod 700 ~/.ssh
 vi ~/.ssh/authorized_keys
 
-# Rocky - Update system
-sudo dnf upgrade -y
-
-# Update system for Debian
+# Update system
 sudo apt-get update
 sudo apt-get dist-upgrade -y
 

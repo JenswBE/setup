@@ -2,7 +2,6 @@
   hosts: docker_host
   vars:
     playbook_supported_distros:
-      - Rocky
       - Debian
 
   pre_tasks:
@@ -61,7 +60,7 @@
     - role: community.zabbix.zabbix_agent
       zabbix_agent2: true
       zabbix_agent_server: "{{ zabbix_server_hostname }}"
-      tags: ["observability"]
+      tags: ["monitoring"]
 
     - role: jenswbe.monitoring
       tags: ["monitoring"]

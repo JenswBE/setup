@@ -8,7 +8,6 @@ argument_specs:
         required: true
         choices: # Others exist, but these are supported in the role
           - Debian
-          - Rocky
         description: Name of the Linux distribution
 
       # === OPTIONAL ===
@@ -16,19 +15,7 @@ argument_specs:
         type: list
         elements: str
         required: false
-        description: List of base packages applicable to all distro's
-
-      jwba_base_packages_debian:
-        type: list
-        elements: str
-        required: false
-        description: List of base packages applicable only to Debian
-
-      jwba_base_packages_rocky:
-        type: list
-        elements: str
-        required: false
-        description: List of base packages applicable only to Rocky
+        description: List of base packages
 
       jwba_from_name:
         type: str
