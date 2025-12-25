@@ -40,8 +40,11 @@
     - role: jenswbe.monitoring
       tags: ["monitoring"]
 
-    - role: jenswbe.logging
-      tags: ["logging"]
+    - role: grafana.grafana.alloy
+      become: true
+      tags: ["logging", "monitoring"]
+      vars:
+        alloy_config: "{{ lookup('ansible.builtin.template', 'config.alloy', template_vars={'is_docker_host': false}) }}"
 
     - role: jenswbe.crowdsec
       tags: ["crowdsec"]

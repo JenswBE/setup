@@ -18,6 +18,9 @@ app_caddy_security_oidc_client_secret: ""
 # Docker
 docker_ghcr_personal_access_token: ""
 
+# Loki
+app_loki_password: ""
+
 # Mailjet
 mailjet_host: "in-v3.mailjet.com"
 mailjet_port_ssl: "465" # Blocked by Hetzner!

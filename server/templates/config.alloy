@@ -1,0 +1,128 @@
+// =================================
+// =          SYSTEM LOGS          =
+// =================================
+
+// Define relabeling rules for systemd journal logs
+discovery.relabel "logs_journald" {
+	targets = []
+
+	rule {
+		// Set instance label to hostname
+		replacement  = "{{ inventory_hostname}}"
+		target_label = "instance"
+	}
+
+	rule {
+		// Extract systemd unit information into a label
+		source_labels = ["__journal__systemd_unit"]
+		target_label  = "unit"
+	}
+
+	rule {
+		// Extract boot ID information into a label
+		source_labels = ["__journal__boot_id"]
+		target_label  = "boot_id"
+	}
+
+	rule {
+		// Extract transport information into a label
+		source_labels = ["__journal__transport"]
+		target_label  = "transport"
+	}
+
+	rule {
+		// Extract log priority into a level label
+		source_labels = ["__journal_priority_keyword"]
+		target_label  = "level"
+	}
+}
+
+// Collect logs from systemd journal for node_exporter integration
+loki.source.journal "journald" {
+	// Only collect logs from the last 24 hours
+	max_age = "24h0m0s"
+	// Apply relabeling rules to the logs
+	relabel_rules = discovery.relabel.logs_journald.rules
+	// Send logs to the main Loki instance
+	forward_to = [loki.write.main.receiver]
+}
+
+// Define which log files to collect for node_exporter
+local.file_match "var_log" {
+	path_targets = [{
+		// Target localhost for log collection
+		__address__ = "localhost",
+		// Collect standard system logs
+		__path__ = "/var/log/{syslog,messages,*.log}",
+		// Add instance label with hostname
+		instance = "{{ inventory_hostname}}",
+		// Add job label for logs
+		job = "integrations/node_exporter",
+	}]
+}
+
+// Collect logs from files for node_exporter
+loki.source.file "var_log" {
+	// Use targets defined in local.file_match
+	targets = local.file_match.var_log.targets
+	// Send logs to the main Loki instance
+	forward_to = [loki.write.main.receiver]
+}
+
+// {% if is_docker_host %}
+// =================================
+// =          DOCKER LOGS          =
+// =================================
+
+// Discover Docker containers and extract metadata.
+discovery.docker "linux" {
+	host = "unix:///var/run/docker.sock"
+}
+
+// Define a relabeling rule to create a service name from the container name.
+discovery.relabel "logs_docker" {
+	targets = []
+
+	rule {
+		source_labels = ["__meta_docker_container_name"]
+		regex         = "/(.*)"
+		target_label  = "container_name"
+	}
+
+	rule {
+		target_label = "instance"
+		replacement  = "{{ inventory_hostname}}"
+	}
+}
+
+// Configure a loki.source.docker component to collect logs from Docker containers.
+loki.source.docker "default" {
+	host          = "unix:///var/run/docker.sock"
+	targets       = discovery.docker.linux.targets
+	relabel_rules = discovery.relabel.logs_docker.rules
+	forward_to    = [loki.write.main.receiver]
+}
+// {% endif %}
+
+// =================================
+// =             OUTPUT            =
+// =================================
+
+// Define where to send logs for storage
+loki.write "main" {
+	endpoint {
+		url = "https://loki.{{ general_domain_local }}/loki/api/v1/push"
+
+		basic_auth {
+			username = "loki"
+			password = "{{ app_loki_password }}"
+		}
+	}
+}
+
+// =================================
+// =           DEBUGGING           =
+// =================================
+
+// Enable live debugging features (empty config means use defaults)
+// livedebugging{}

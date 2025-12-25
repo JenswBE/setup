@@ -1,0 +1,13 @@
+# yaml-language-server: $schema=https://json.schemastore.org/any.json
+
+apiVersion: 1
+datasources:
+  - uid: ds_loki
+    name: Loki
+    type: loki
+    access: proxy
+    url: http://loki:3100
+    basicAuth: false
+    isDefault: true
+    version: 1
+    editable: false

@@ -85,100 +85,6 @@ services:
       TZ: "#VAR:general_timezone:VAR#"
 
   # =========================
-  # =        GRAYLOG        =
-  # =========================
-  graylog:
-    <<: *defaults
-    image: docker.io/graylog/graylog:7.0
-    container_name: graylog
-    entrypoint: /usr/bin/tini -- wait-for-it graylog-elasticsearch:9200 --  /docker-entrypoint.sh
-    volumes:
-      # WARNING: Graylog expects the data folder been owned by 1100:1100!
-      - "#VAR:general_path_appdata:VAR#/graylog/graylog/config:/usr/share/graylog/config"
-      - "#VAR:general_path_appdata:VAR#/graylog/graylog/journal:/usr/share/graylog/journal"
-    networks:
-      - caddy
-      - graylog
-    ports:
-      - 1514:1514 # Syslog TCP
-      - 1514:1514/udp # Syslog UDP
-      - 5044:5044/tcp # Beats
-      - 12201:12201 # GELF TCP
-      - 12201:12201/udp # GELF UDP
-    environment:
-      TZ: "#VAR:general_timezone:VAR#"
-      GRAYLOG_PASSWORD_SECRET: "#VAR:app_graylog_secret:VAR#"
-      GRAYLOG_ROOT_PASSWORD_SHA2: "#VAR:app_graylog_admin_password | hash('sha256'):VAR#"
-      GRAYLOG_HTTP_EXTERNAL_URI: "https://logs.#VAR:general_domain_local:VAR#/"
-      GRAYLOG_ELASTICSEARCH_HOSTS: http://graylog-elasticsearch:9200
-      GRAYLOG_MONGODB_URI: mongodb://graylog-mongodb/graylog
-      GRAYLOG_TRANSPORT_EMAIL_ENABLED: "true"
-      GRAYLOG_TRANSPORT_EMAIL_HOSTNAME: "#VAR:mailjet_host:VAR#"
-      GRAYLOG_TRANSPORT_EMAIL_PORT: "#VAR:mailjet_port_ssl:VAR#"
-      GRAYLOG_TRANSPORT_EMAIL_USE_SSL: "true"
-      GRAYLOG_TRANSPORT_EMAIL_USE_TLS: "false"
-      GRAYLOG_TRANSPORT_EMAIL_USE_AUTH: "true"
-      GRAYLOG_TRANSPORT_EMAIL_AUTH_USERNAME: "#VAR:mailjet_username:VAR#"
-      GRAYLOG_TRANSPORT_EMAIL_AUTH_PASSWORD: "#VAR:mailjet_password:VAR#"
-      GRAYLOG_TRANSPORT_EMAIL_FROM_EMAIL: graylog@jensw.be
-      GRAYLOG_TRANSPORT_EMAIL_WEB_INTERFACE_URL: "https://logs.#VAR:general_domain_local:VAR#"
-    depends_on:
-      graylog-mongodb:
-        condition: service_healthy
-      graylog-elasticsearch:
-        condition: service_healthy
-    deploy:
-      resources:
-        limits:
-          cpus: "4"
-          memory: 8G
-
-  graylog-elasticsearch: # TODO: Switch to https://go2docs.graylog.org/current/downloading_and_installing_graylog/install_graylog_data_node.htm
-    <<: [*defaults, *healthcheck-elasticsearch]
-    # "We caution you not to install or upgrade to Elasticsearch 7.11 and later! It is not supported."
-    # See https://go2docs.graylog.org/current/setting_up_graylog/elasticsearch.htm
-    image: docker.elastic.co/elasticsearch/elasticsearch-oss:7.10.2
-    container_name: graylog-elasticsearch
-    environment:
-      TZ: "#VAR:general_timezone:VAR#"
-      http.host: "0.0.0.0"
-      transport.host: localhost
-      network.host: "0.0.0.0"
-      ES_JAVA_OPTS: -Dlog4j2.formatMsgNoLookups=true -Xms512m -Xmx512m
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-    networks:
-      - graylog
-    volumes:
-      # WARNING: ElasticSearch expects the data folder been owned by 1000:1000!
-      - "#VAR:general_path_appdata:VAR#/graylog/elasticsearch/data:/usr/share/elasticsearch/data"
-    deploy:
-      resources:
-        limits:
-          cpus: "4"
-          memory: 4G
-
-  graylog-mongodb:
-    <<: [*defaults, *healthcheck-mongo]
-    # https://go2docs.graylog.org/current/downloading_and_installing_graylog/compatibility_matrix.htm
-    image: docker.io/library/mongo:8.0
-    container_name: graylog-mongodb
-    environment:
-      TZ: "#VAR:general_timezone:VAR#"
-    networks:
-      - graylog
-    volumes:
-      - "#VAR:general_path_appdata:VAR#/graylog/mongodb/data:/data/db"
-      - graylog-mongodb-dump:/backup
-    deploy:
-      resources:
-        limits:
-          cpus: "2"
-          memory: 1G
-
-  # =========================
   # =         ZABBIX        =
   # =========================
   zabbix-web:
@@ -346,18 +252,21 @@ services:
   # =========================
   # =        GRAFANA        =
   # =========================
+  # Manual action: Set receiver for default contact point
   grafana:
     <<: *defaults
-    image: docker.io/grafana/grafana-oss
+    image: docker.io/grafana/grafana-oss:latest
     container_name: grafana
     user: "#VAR:ansible_real_user_id:VAR#:#VAR:ansible_real_group_id:VAR#"
     networks:
       - caddy
+      - loki
       - prometheus
     volumes:
       - ./grafana:/provisioning
       - "#VAR:general_path_appdata:VAR#/grafana/data:/var/lib/grafana"
     environment:
+      TZ: "#VAR:general_timezone:VAR#"
       GF_PATHS_PROVISIONING: "/provisioning"
       GF_SERVER_ROOT_URL: "https://grafana.#VAR:general_domain_local:VAR#"
       GF_AUTH_ANONYMOUS_ENABLED: "false"
@@ -377,6 +286,33 @@ services:
       GF_AUTH_GENERIC_OAUTH_TOKEN_URL: "#VAR:app_grafana_oauth2_base_url:VAR#/protocol/openid-connect/token"
       GF_AUTH_GENERIC_OAUTH_API_URL: "#VAR:app_grafana_oauth2_base_url:VAR#/protocol/openid-connect/userinfo"
       GF_AUTH_GENERIC_OAUTH_ROLE_ATTRIBUTE_PATH: "contains(roles[*], 'admin') && 'Admin' || contains(roles[*], 'editor') && 'Editor' || 'Viewer'"
+      GF_SMTP_ENABLED: "true"
+      GF_SMTP_HOST: "#VAR:mailjet_host:VAR#:#VAR:mailjet_port_starttls:VAR#"
+      GF_SMTP_USER: "#VAR:mailjet_username:VAR#"
+      GF_SMTP_PASSWORD: "#VAR:mailjet_password:VAR#"
+      GF_SMTP_FROM_ADDRESS: "grafana.#VAR:inventory_hostname:VAR#@#VAR:general_domain_default:VAR#"
+      GF_SMTP_FROM_NAME: "Grafana on #VAR:inventory_hostname:VAR#"
+      GF_SMTP_STARTTLS_POLICY: "MandatoryStartTLS"
+
+  loki:
+    <<: *defaults
+    image: docker.io/grafana/loki:latest
+    container_name: loki
+    command: -config.file=/loki-config/config.yaml
+    user: "#VAR:ansible_real_user_id:VAR#:#VAR:ansible_real_group_id:VAR#"
+    networks:
+      - caddy
+      - loki
+    environment:
+      TZ: "#VAR:general_timezone:VAR#"
+    volumes:
+      - ./loki:/loki-config:ro
+      - "#VAR:general_path_appdata:VAR#/loki/data:/loki"
+    deploy:
+      resources:
+        limits:
+          cpus: "4"
+          memory: 8G
 
   # =========================
   # =         BACKUP        =
@@ -390,8 +326,6 @@ services:
       - SYS_ADMIN # Required for borg mount
     volumes:
       # === Backup locations ===
-      # Graylog
-      - "graylog-mongodb-dump:/mnt/source/graylog/mongodb:ro"
       # Zabbix
       - "zabbix-db-dump:/mnt/source/zabbix/dbdump:ro"
       # === Config and cache ===
@@ -425,8 +359,8 @@ networks:
   caddy:
     name: caddy
 
-  graylog:
-    name: graylog
+  loki:
+    name: loki
 
   prometheus:
     name: prometheus
@@ -441,5 +375,4 @@ volumes:
   caddy-access-logs:
   caddy-config:
   caddy-data:
-  graylog-mongodb-dump:
   zabbix-db-dump:

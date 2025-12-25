@@ -29,6 +29,14 @@ import ./configs/shared_snippets.txt
 			import default_local_reverse_proxy "http://graylog:9000"
 		}
 
+		@loki host "loki.#VAR: general_domain_local :VAR#"
+		handle @loki {
+			import default_local_reverse_proxy "http://loki:3100"
+			basic_auth {
+				loki #VAR: app_loki_password | password_hash(hashtype='bcrypt') :VAR#
+			}
+		}
+
 		@prometheus host "prometheus.#VAR: general_domain_local :VAR#"
 		handle @prometheus {
 			import default_local_reverse_proxy "http://prometheus:9090"
