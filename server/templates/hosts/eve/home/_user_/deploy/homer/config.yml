@@ -148,12 +148,6 @@ services:
         url: "https://ups.#VAR: general_domain_local :VAR#"
         <<: *default
 
-      - name: Zabbix
-        subtitle: Private | kubo-observability
-        logo: https://raw.githubusercontent.com/loganmarchione/homelab-svg-assets/main/assets/zabbix.svg
-        url: "https://zabbix.#VAR: general_domain_local :VAR#"
-        <<: *default
-
       - name: UptimeRobot
         subtitle: External
         logo: https://uptimerobot.com/assets/images/uptimerobot-logo.svg

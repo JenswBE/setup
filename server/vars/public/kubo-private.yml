@@ -31,7 +31,6 @@ jwfw_zones:
       - https # 443/tcp
       - http3 # 443/udp (QUIC)
       - dhcpv6-client # 546/udp
-      - zabbix-agent # 10050/tcp
     allowed_ports:
       - port: 8080 # UniFi - Device communication
         protos: [tcp]

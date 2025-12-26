@@ -85,128 +85,17 @@ services:
       TZ: "#VAR:general_timezone:VAR#"
 
   # =========================
-  # =         ZABBIX        =
-  # =========================
-  zabbix-web:
-    <<: *defaults
-    image: "docker.io/zabbix/zabbix-web-nginx-pgsql:alpine-#VAR:zabbix_server_version:VAR#-latest"
-    container_name: zabbix-web
-    volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - /etc/timezone:/etc/timezone:ro
-    depends_on:
-      zabbix-server:
-        condition: service_started
-      zabbix-db:
-        condition: service_healthy
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/ping"]
-      interval: 10s
-      timeout: 5s
-      retries: 3
-      start_period: 30s
-    networks:
-      - caddy
-      - zabbix
-    stop_grace_period: 10s
-    sysctls:
-      - net.core.somaxconn=65535
-    environment:
-      TZ: "#VAR:general_timezone:VAR#"
-      DB_SERVER_HOST: zabbix-db
-      POSTGRES_DB: zabbix
-      POSTGRES_USER: zabbix
-      POSTGRES_PASSWORD: "#VAR:app_zabbix_db_pass:VAR#"
-      ZBX_SERVER_HOST: zabbix-server
-      ZBX_SERVER_NAME: Kubo
-    labels:
-      - "com.zabbix.description=Zabbix frontend on Nginx web-server with PostgreSQL database support"
-      - "com.zabbix.company=Zabbix LLC"
-      - "com.zabbix.component=zabbix-frontend"
-      - "com.zabbix.webserver=nginx"
-      - "com.zabbix.dbtype=pgsql"
-      - "com.zabbix.os=alpine"
-    deploy:
-      resources:
-        limits:
-          cpus: "2"
-          memory: 2G
-        reservations:
-          cpus: "0.5"
-          memory: 256M
-
-  zabbix-server:
-    <<: [*defaults, *extra-hosts-docker-host]
-    image: "docker.io/zabbix/zabbix-server-pgsql:alpine-#VAR:zabbix_server_version:VAR#-latest"
-    container_name: zabbix-server
-    environment:
-      TZ: "#VAR:general_timezone:VAR#"
-      DB_SERVER_HOST: zabbix-db
-      POSTGRES_DB: zabbix
-      POSTGRES_USER: zabbix
-      POSTGRES_PASSWORD: "#VAR:app_zabbix_db_pass:VAR#"
-    volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - /etc/timezone:/etc/timezone:ro
-    ulimits:
-      nproc: 65535
-      nofile:
-        soft: 20000
-        hard: 40000
-    depends_on:
-      zabbix-db:
-        condition: service_healthy
-    networks:
-      - zabbix
-    stop_grace_period: 30s
-    sysctls:
-      - net.ipv4.ip_local_port_range=1024 64999
-      - net.ipv4.conf.all.accept_redirects=0
-      - net.ipv4.conf.all.secure_redirects=0
-      - net.ipv4.conf.all.send_redirects=0
-    labels:
-      - "com.zabbix.description=Zabbix server with PostgreSQL database support"
-      - "com.zabbix.company=Zabbix LLC"
-      - "com.zabbix.component=zabbix-server"
-      - "com.zabbix.dbtype=pgsql"
-      - "com.zabbix.os=alpine"
-    deploy:
-      resources:
-        limits:
-          cpus: "2"
-          memory: 2G
-        reservations:
-          cpus: "0.5"
-          memory: 512M
-
-  zabbix-db:
-    <<: [*defaults, *healthcheck-postgres]
-    # https://www.zabbix.com/documentation/current/en/manual/installation/requirements
-    image: docker.io/library/postgres:15-alpine
-    container_name: zabbix-db
-    stop_grace_period: 1m
-    networks:
-      - zabbix
-    volumes:
-      - "#VAR:general_path_appdata:VAR#/zabbix/db:/var/lib/postgresql/data"
-      - "zabbix-db-dump:/backup"
-    environment:
-      TZ: "#VAR:general_timezone:VAR#"
-      POSTGRES_DB: "zabbix"
-      POSTGRES_USER: "zabbix"
-      POSTGRES_PASSWORD: "#VAR:app_zabbix_db_pass:VAR#"
-    deploy:
-      resources:
-        limits:
-          cpus: "2"
-          memory: 1G
-
-  # =========================
   # =       PROMETHEUS      =
   # =========================
   prometheus:
     <<: [*defaults]
     image: quay.io/prometheus/prometheus:latest
+    command:
+      # Default args
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+      # Custom args
+      - "--web.enable-remote-write-receiver"
     container_name: prometheus
     user: "#VAR:ansible_real_user_id:VAR#:#VAR:ansible_real_group_id:VAR#"
     networks:
@@ -326,8 +215,6 @@ services:
       - SYS_ADMIN # Required for borg mount
     volumes:
       # === Backup locations ===
-      # Zabbix
-      - "zabbix-db-dump:/mnt/source/zabbix/dbdump:ro"
       # === Config and cache ===
       - "./borgmatic/common/global.txt:/common/global.yml"
       - "./borgmatic/common/repo.txt:/common/repo.yml"
@@ -365,9 +252,6 @@ networks:
   prometheus:
     name: prometheus
 
-  zabbix:
-    name: zabbix
-
 #################################################################
 #                            VOLUMES                            #
 #################################################################
@@ -375,4 +259,3 @@ volumes:
   caddy-access-logs:
   caddy-config:
   caddy-data:
-  zabbix-db-dump:

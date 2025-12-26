@@ -6,6 +6,4 @@
     enabled: true
   loop:
     - borgmatic.timer
-    - graylog-dump-mongodb.timer
-    - zabbix-dump-db.timer
   tags: ["systemd"]

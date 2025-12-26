@@ -1,6 +1,6 @@
 argument_specs:
   main:
-    short_description: Setup monitoring
+    short_description: Configure observability agent(s)
     options:
       # === REQUIRED ===
       ansible_distribution:
@@ -10,4 +10,7 @@ argument_specs:
           - Debian
         description: Name of the Linux distribution
 
-      # === OPTIONAL ===
+      jwob_with_docker:
+        description: Enable logging and monitoring of Docker containers
+        required: true
+        type: bool

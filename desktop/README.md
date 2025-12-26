@@ -23,6 +23,7 @@ When installing both Windows and Linux on a clean disk:
 ## Setup
 
 > [!IMPORTANT]
+>
 > - The pre-installed Firefox will be replaced with the flatpak version. So, no need to configure it yet.
 > - When asked, don't enable Third Party repo's. Ansible will add the required Flathub repo's.
 
@@ -69,8 +70,9 @@ distrobox-enter debian-development
 
 # Install pipx and Ansible
 sudo apt install -y pipx
-pipx install ansible-core
+pipx install --force ansible-core
 pipx inject ansible-core $(cat requirements.txt | sed 's/\n/ /g' | sed 's/#.*//') # pipx on Debian 12 is too old to support flag "-r"
+pipx install --force ansible-lint
 ansible-galaxy collection install --force -r requirements.yml
 
 # Run playbook

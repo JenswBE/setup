@@ -39,35 +39,12 @@
       when: jwcd_source_templates_dir != ""
       ansible.builtin.include_tasks: render_templates.yml
 
-    - name: Sync local temporary dir to destination - Unprivileged
-      when: not jwcd_privileged
-      ansible.posix.synchronize:
-        src: "{{ local_tmp_dir.path }}/"
-        dest: "{{ jwcd_destination_dir }}"
-        archive: false
-        checksum: true
-        compress: false
-        group: true
-        owner: true
-        perms: true
-        recursive: true
-        rsync_opts:
-          - "--chown={{ jwcd_destination_owner }}:{{ jwcd_destination_group }}"
-          - "--chmod=D{{ jwcd_destination_mode_dirs }},F{{ jwcd_destination_mode_files }}"
-        delete: "{{ jwcd_destination_delete_extra }}"
-      register: rsync_output
-
-    - name: Sync local temporary dir to destination - Privileged
-      when: jwcd_privileged
-      ansible.builtin.include_tasks: sync_privileged.yml
+    - name: Sync local temporary dir to destination
+      ansible.builtin.include_tasks: "sync_{{ 'privileged' if jwcd_privileged else 'unprivileged' }}.yml"
 
     - name: Show rsync logs
       ansible.builtin.debug:
         var: rsync_output.stdout_lines
-
-    - name: Set output facts
-      ansible.builtin.set_fact:
-        jwcd_copy_diff: "{{ rsync_output.msg }}"
 
   always:
     - name: Delete local temporary dir

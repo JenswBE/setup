@@ -10,7 +10,6 @@ class FilterModule(object):
         return {
             'enrich_hostnames': self.enrich_hostnames,
             'get_dict_key_contains': self.get_dict_key_contains,
-            'group_names_to_zabbix_templates': self.group_names_to_zabbix_templates,
             'netconfig_enrich': self.netconfig_enrich,
             'to_caddy_header_values': self.to_caddy_header_values,
         }
@@ -56,20 +55,6 @@ class FilterModule(object):
                 return value
             case _:
                 raise AnsibleError(f"Multiple keys contain '{needle_key}': {', '.join(found)}")
-
-    def group_names_to_zabbix_templates(self, group_names):
-        # Settings
-        templates = ["Linux by Zabbix agent"] # Default templates
-        mapping = {
-            "docker_host": ["Docker by Zabbix agent 2"],
-            "zabbix_server": ["Zabbix server health"],
-        }
-
-        # Add templates
-        for group_name, group_templates in mapping.items():
-            if group_name in group_names:
-                templates.extend(group_templates)
-        return templates
 
     def netconfig_derive_filename(self, priority, name, suffix="network"):
         return f"{priority:02d}-{name}.{suffix}"

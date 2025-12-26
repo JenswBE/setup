@@ -28,6 +28,10 @@
       register: rsync_output
       changed_when: "'[CHANGED]' in rsync_output.stdout"
 
+    - name: Set output facts
+      ansible.builtin.set_fact:
+        jwcd_copy_diff: "{{ rsync_output.stdout }}"
+
   always:
     - name: Delete remote temporary dir
       ansible.builtin.file:

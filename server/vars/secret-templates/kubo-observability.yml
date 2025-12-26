@@ -24,6 +24,3 @@ app_grafana_oauth2_client_secret: ""
 # Graylog
 app_graylog_admin_password: ""
 app_graylog_secret: ""
-
-# Zabbix
-app_zabbix_db_pass: ""

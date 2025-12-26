@@ -1,7 +1,3 @@
-# FIXME: Remove once https://github.com/ansible-collections/community.zabbix/issues/1523 is closed
-zabbix_agent_version_check: false
-zabbix_manage_repo: false
-
 # Docker
 docker_restart_changed_services:
   - nginx
@@ -40,7 +36,6 @@ jwfw_zones:
       - http # 80/tcp
       - https # 443/tcp
       - http3 # 443/udp (QUIC)
-      - zabbix-agent # 10050/tcp
     allowed_ports:
       - port: 6060 # CrowdSec Prometheus
         protos: [tcp]

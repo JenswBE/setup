@@ -29,7 +29,6 @@ jwfw_zones:
       - https # 443/tcp
       - http3 # 443/udp (QUIC)
       - dhcpv6-client # 546/udp
-      - zabbix-agent # 10050/tcp
     allowed_ports:
       - port: 1514 # Graylog - Syslog
         protos: [tcp, udp]
@@ -46,7 +45,3 @@ jwnetconf_interfaces:
     priority: 10
     type: static
     cidr_address: "{{ hostnames.virbr_nointernet.kubo_observability.ipv4 }}/24"
-
-# Observability
-jwlo_graylog_server_hostname: "127.0.0.1" # Target for rsyslog and Docker logs
-zabbix_server_hostname: "172.16.0.0/12" # Default Docker subnet - Incoming connections will be accepted only from the hosts listed here.

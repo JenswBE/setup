@@ -32,19 +32,10 @@
     - role: jenswbe.vm_host
       tags: ["vm_host"]
 
-    - role: community.zabbix.zabbix_agent
-      zabbix_agent2: true
-      zabbix_agent_server: "{{ zabbix_server_hostname }}"
-      tags: ["observability", "zabbix"]
-
-    - role: jenswbe.monitoring
-      tags: ["monitoring"]
-
-    - role: grafana.grafana.alloy
-      become: true
-      tags: ["logging", "monitoring"]
+    - role: jenswbe.observability
+      tags: ["observability", "logging", "monitoring"]
       vars:
-        alloy_config: "{{ lookup('ansible.builtin.template', 'config.alloy', template_vars={'is_docker_host': false}) }}"
+        jwob_with_docker: false
 
     - role: jenswbe.crowdsec
       tags: ["crowdsec"]

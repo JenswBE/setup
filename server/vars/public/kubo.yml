@@ -41,7 +41,6 @@ jwfw_zones:
       - http3 # 443/udp (QUIC)
       - dhcpv6-client # 546/udp
       - syncthing # 21027/udp, 22000/tcp and 22000/udp
-      - zabbix-agent # 10050/tcp
     allowed_ports:
       - port: 7500 # Tang (https://github.com/latchset/tang)
         protos: [tcp]

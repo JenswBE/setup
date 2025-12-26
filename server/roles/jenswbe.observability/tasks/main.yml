@@ -1,0 +1,29 @@
+- name: Copy Alloy config
+  ansible.builtin.include_role:
+    name: jenswbe.copy_dir
+  vars:
+    jwcd_source_templates_dir: "roles/jenswbe.observability/templates"
+    jwcd_destination_dir: /etc/alloy/config.d
+    jwcd_privileged: true
+    jwcd_destination_delete_extra: true
+    jwcd_destination_mode_files: "600"
+    jwcd_destination_mode_dirs: "700"
+    jwcd_destination_owner: alloy # FIXME: User alloy does not exist on first run
+    jwcd_destination_group: alloy # FIXME: Group alloy does not exist on first run
+
+- name: Install Alloy
+  ansible.builtin.include_role:
+    name: grafana.grafana.alloy
+    apply:
+      become: true
+  vars:
+    alloy_env_file_vars:
+      CONFIG_FILE: "/etc/alloy/config.d"
+    alloy_user_groups: "{{ ['docker'] if jwob_with_docker else [] }}"
+
+- name: Restart Alloy
+  become: true
+  ansible.builtin.systemd:
+    name: alloy
+    state: restarted
+  when: "'alloy' in jwcd_copy_diff"

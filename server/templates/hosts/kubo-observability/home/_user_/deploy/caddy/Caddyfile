@@ -41,10 +41,5 @@ import ./configs/shared_snippets.txt
 		handle @prometheus {
 			import default_local_reverse_proxy "http://prometheus:9090"
 		}
-
-		@zabbix host "zabbix.#VAR: general_domain_local :VAR#"
-		handle @zabbix {
-			import default_local_reverse_proxy "http://zabbix-web:8080"
-		}
 	}
 }

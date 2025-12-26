@@ -1,0 +1,32 @@
+// {% if jwob_with_docker %}
+// Discover Docker containers and extract metadata.
+discovery.docker "linux" {
+	host = "unix:///var/run/docker.sock"
+}
+
+// Define a relabeling rule to create a service name from the container name.
+discovery.relabel "logs_docker" {
+	targets = []
+
+	rule {
+		source_labels = ["__meta_docker_container_name"]
+		regex         = "/(.*)"
+		target_label  = "container_name"
+	}
+
+	rule {
+		target_label = "host"
+		replacement  = "{{ inventory_hostname}}"
+	}
+}
+
+// Configure a loki.source.docker component to collect logs from Docker containers.
+loki.source.docker "default" {
+	host          = "unix:///var/run/docker.sock"
+	targets       = discovery.docker.linux.targets
+	relabel_rules = discovery.relabel.logs_docker.rules
+	forward_to    = [loki.write.main.receiver]
+}
+// {% else %}
+// Docker logging disabled
+// {% endif %}

@@ -9,7 +9,7 @@ scrape_configs:
       - targets:
           - "blocky.eve.#VAR: general_domain_local :VAR#"
           - "blocky.fiona.#VAR: general_domain_local :VAR#"
-          - "blocky.kubo.#VAR: general_domain_local :VAR#"
+          - "blocky.kubo-private.#VAR: general_domain_local :VAR#"
 
   - job_name: crowdsec
     scheme: https
@@ -59,7 +59,7 @@ scrape_configs:
       module: [http_for_dns]
     static_configs:
       - targets:
-          - http://eve.#VAR: general_domain_default :VAR#
+          - "http://eve.#VAR: general_domain_default :VAR#"
     relabel_configs:
       - source_labels: [__address__]
         target_label: __param_target
@@ -75,7 +75,7 @@ scrape_configs:
       module: [http_for_dns]
     static_configs:
       - targets:
-          - http://kubo.#VAR: general_domain_default :VAR#
+          - "http://kubo.#VAR: general_domain_default :VAR#"
     relabel_configs:
       - source_labels: [__address__]
         target_label: __param_target
@@ -83,8 +83,3 @@ scrape_configs:
         target_label: instance
       - target_label: __address__
         replacement: "eve.#VAR: general_domain_local :VAR#:9115"
-
-  - job_name: opendtu
-    metrics_path: /api/prometheus/metrics
-    static_configs:
-      - targets: ["opendtu.#VAR: general_domain_local :VAR#"]

@@ -1,0 +1,20 @@
+- name: Sync local temporary dir to destination - Unprivileged
+  ansible.posix.synchronize:
+    src: "{{ local_tmp_dir.path }}/"
+    dest: "{{ jwcd_destination_dir }}"
+    archive: false
+    checksum: true
+    compress: false
+    group: true
+    owner: true
+    perms: true
+    recursive: true
+    rsync_opts:
+      - "--chown={{ jwcd_destination_owner }}:{{ jwcd_destination_group }}"
+      - "--chmod=D{{ jwcd_destination_mode_dirs }},F{{ jwcd_destination_mode_files }}"
+    delete: "{{ jwcd_destination_delete_extra }}"
+  register: rsync_output
+
+- name: Set output facts
+  ansible.builtin.set_fact:
+    jwcd_copy_diff: "{{ rsync_output.msg }}"

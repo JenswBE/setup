@@ -1,7 +1,3 @@
-# FIXME: Remove once https://github.com/ansible-collections/community.zabbix/issues/1523 is closed
-zabbix_agent_version_check: false
-zabbix_manage_repo: false
-
 # NBDE
 jwnc_clevis_device_uuid: 73ae063f-63c1-4060-9b6c-6eaac36c9d51
 jwnc_clevis_expected_binding: tang '{"url":"http://{{ hostnames.private.kubo.ipv4 }}:7500"}'
@@ -41,7 +37,6 @@ jwfw_zones:
       - http3 # 443/udp (QUIC) for Caddy
       - dhcpv6-client # 546/udp
       - nut # 3493/tcp for Network UPS Tools (NUT) server
-      - zabbix-agent # 10050/tcp
     allowed_ports:
       - port: 7500 # Tang (https://github.com/latchset/tang)
         protos: [tcp]

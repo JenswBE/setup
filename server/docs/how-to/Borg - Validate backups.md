@@ -25,9 +25,6 @@ Services which are backed up:
   - `immich`: Uploaded and archived photos
   - `immich-db`: Postgres DB data
   - `jellyfin`: Music files
-- Kubo Observability
-  - `graylog-mongodb` (MongoDB): DB data
-  - `zabbix-db` (Postgres): DB data
 - Kubo Private
   - `github-backup` (GitHub Backup): All GitHub repo's
   - `unifi-mongodb` (MongoDB): DB data
@@ -139,22 +136,8 @@ validate_postgres photos immich/dbdump/immich.pg_dumpall
 compare_actual_backup_recursive jellyfin /media/Music music bulk
 ```
 
-## Kubo Observability
-```bash
-# === graylog-mongodb: MongoDB data ===
-# Copy DB to restore point
-borgmatic_mount graylog mongodb/graylog
-sudo docker exec borgmatic cp /mnt/borg/mnt/source/graylog/mongodb/graylog/traffic.bson /mnt/restore/graylog_traffic.bson
-borgmatic_umount
-
-# Validate if backup contains recent data.
-sudo docker run --rm -v ${APPDATA_DIR:?}/borgmatic/borgmatic/restore:/backup docker.io/library/mongo sh -c "bsondump /backup/graylog_traffic.bson | jq --slurp '.' | jq '.[].bucket.\"\$date\".\"\$numberLong\"' | sort -r | head -n1 | cut -c2-11 | sed '1s/^/@/' | date -f-"
-
-# === zabbix-db: Postgres DB data ===
-validate_postgres zabbix dbdump/zabbix.pg_dump
-```
-
 ## Kubo Private
+
 ```bash
 # === github-backup: All GitHub repo's ===
 # Mount repo

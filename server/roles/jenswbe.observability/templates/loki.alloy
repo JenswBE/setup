@@ -1,0 +1,10 @@
+loki.write "main" {
+	endpoint {
+		url = "https://loki.{{ general_domain_local }}/loki/api/v1/push"
+
+		basic_auth {
+			username = "loki"
+			password = "{{ app_loki_password }}"
+		}
+	}
+}

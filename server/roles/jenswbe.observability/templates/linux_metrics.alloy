@@ -1,0 +1,17 @@
+prometheus.exporter.unix "local" { }
+
+prometheus.scrape "local" {
+	targets         = prometheus.exporter.unix.local.targets
+	forward_to      = [prometheus.relabel.local.receiver]
+	scrape_interval = "10s"
+}
+
+prometheus.relabel "local" {
+	rule {
+		action       = "replace"
+		target_label = "host"
+		replacement  = "{{ inventory_hostname }}"
+	}
+
+	forward_to = [prometheus.remote_write.main.receiver]
+}
