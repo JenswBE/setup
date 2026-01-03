@@ -54,6 +54,7 @@
 (default_reverse_proxy) {
 	import secure_headers
 	reverse_proxy {args[0]}
+	log_append upstream_host {rp.upstream.host}
 }
 
 (default_reverse_proxy_with_insecure_upstream) {
@@ -63,4 +64,5 @@
 			tls_insecure_skip_verify
 		}
 	}
+	log_append upstream_host {rp.upstream.host}
 }
