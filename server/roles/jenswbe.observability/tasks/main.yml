@@ -1,3 +1,21 @@
+- name: Check if alloy is already installed
+  ansible.builtin.command: which alloy
+  register: which_alloy
+  changed_when: false
+  failed_when: false
+
+# Install Alloy with a dummy config.
+# This ensures user and group "alloy" are present before copying the real config files.
+- name: Install Alloy
+  when: which_alloy.rc != 0 # Alloy not yet installed
+  ansible.builtin.include_role:
+    name: grafana.grafana.alloy
+    apply:
+      become: true
+  vars:
+    alloy_config: |
+      // Dummy config for initial install
+
 - name: Copy Alloy config
   ansible.builtin.include_role:
     name: jenswbe.copy_dir
@@ -8,10 +26,10 @@
     jwcd_destination_delete_extra: true
     jwcd_destination_mode_files: "600"
     jwcd_destination_mode_dirs: "700"
-    jwcd_destination_owner: alloy # FIXME: User alloy does not exist on first run
-    jwcd_destination_group: alloy # FIXME: Group alloy does not exist on first run
+    jwcd_destination_owner: alloy
+    jwcd_destination_group: alloy
 
-- name: Install Alloy
+- name: Configure Alloy
   ansible.builtin.include_role:
     name: grafana.grafana.alloy
     apply:
