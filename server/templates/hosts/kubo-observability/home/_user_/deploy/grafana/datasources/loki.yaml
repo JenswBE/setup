@@ -1,8 +1,12 @@
 # yaml-language-server: $schema=https://json.schemastore.org/any.json
 
 apiVersion: 1
+
+# Marks provisioned data sources for deletion if they are no longer in a provisioning file.
+prune: true
+
 datasources:
-  - uid: ds_loki
+  - uid: ds_loki_main
     name: Loki
     type: loki
     access: proxy
