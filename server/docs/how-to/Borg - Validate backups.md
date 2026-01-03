@@ -5,6 +5,7 @@ Services which are backed up:
 - Eve
   - `bjoetiek-directus` (Directus): Uploaded content
   - `bjoetiek-directus-db` (Postgres): DB data
+  - `clementines-db` (CouchDB): DB data ==> TODO
   - `goatcounter` (GoatCounter): SQLite DB
   - `keycloak-db` (Postgres): DB data
   - `kristofcoenen-directus` (Directus): Uploaded content

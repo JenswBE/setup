@@ -103,3 +103,17 @@ http:// {
 "vault.#VAR: general_domain_default :VAR#" {
 	import default_public_reverse_proxy "http://vaultwarden"
 }
+
+"winkel.#VAR: general_domain_default :VAR#" {
+	import logging "winkel.#VAR: general_domain_default :VAR#"
+	handle_path /api/* {
+		import default_public_reverse_proxy "http://clementines-backend:3333"
+	}
+	handle_path /* {
+		import default_public_reverse_proxy "http://clementines-frontend:8100"
+	}
+}
+
+"winkel-db.#VAR: general_domain_default :VAR#" {
+	import default_public_reverse_proxy "http://clementines-db:5984"
+}

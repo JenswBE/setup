@@ -71,6 +71,11 @@ app_nextcloud_apps_install: "contacts,calendar,tasks,notes,groupfolders,quota_wa
 # Paperless
 app_paperless_secret_key: "" # Long random string
 
+# Specifically Clementines
+app_clementines_jwt_secret: "" # Long random string
+app_clementines_db_admin_username: ""
+app_clementines_db_admin_password: "" # Long random string
+
 # Spellebel
 app_spellebel_sentry_dsn: ""
 

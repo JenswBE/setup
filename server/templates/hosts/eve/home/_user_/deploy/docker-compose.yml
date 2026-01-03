@@ -769,6 +769,64 @@ services:
       PUID: "#VAR: ansible_real_user_id :VAR#"
       PGID: "#VAR: ansible_real_user_id :VAR#"
 
+  # ===========================================
+  # =        Specifically Clementines         =
+  # = https://github.com/davideshay/groceries =
+  # ===========================================
+  clementines-frontend:
+    <<: *defaults
+    image: ghcr.io/davideshay/groceries-client:1.1.9
+    container_name: clementines-frontend
+    networks:
+      - caddy-public
+      - clementines
+    volumes:
+      - "./clementines/frontend/groceries-web.conf:/etc/nginx/conf.d/default.conf:ro"
+    environment:
+      DEFAULT_API_URL: "https://winkel.#VAR: general_domain_default :VAR#/api"
+
+  clementines-backend:
+    <<: *defaults
+    image: ghcr.io/davideshay/groceries-server:1.1.9
+    container_name: clementines-backend
+    networks:
+      - caddy-public
+      - clementines
+    depends_on:
+      clementines-db:
+        condition: service_healthy
+    environment:
+      COUCHDB_URL: "https://winkel-db.#VAR: general_domain_default :VAR#"
+      COUCHDB_INTERNAL_URL: http://clementines-db:5984
+      COUCHDB_DATABASE: groceries
+      COUCHDB_HMAC_KEY: "#VAR: app_clementines_jwt_secret :VAR#"
+      COUCHDB_ADMIN_USER: "#VAR: app_clementines_db_admin_username :VAR#"
+      COUCHDB_ADMIN_PASSWORD: "#VAR: app_clementines_db_admin_password :VAR#"
+      ENABLE_SCHEDULING: 1
+      RESOLVE_CONFLICTS_FREQUENCY_MINUTES: 3
+      EXPIRE_JWT_FREQUENCY_MINUTES: 60
+      ACCESS_TOKEN_EXPIRES: 12h
+      REFRESH_TOKEN_EXPIRES: 30d
+      DISABLE_ACCOUNT_CREATION: "true"
+
+  clementines-db:
+    <<: *defaults
+    image: docker.io/library/couchdb:3
+    container_name: clementines-db
+    user: "#VAR: ansible_real_user_id :VAR#:#VAR: ansible_real_group_id :VAR#"
+    networks:
+      - caddy-public
+      - clementines
+    healthcheck:
+      test: curl --fail http://localhost:5984 || exit 1
+      interval: 30s
+      retries: 5
+      start_period: 15s
+      timeout: 10s
+    volumes:
+      - "./clementines/db:/opt/couchdb/etc/local.d"
+      - "#VAR: general_path_appdata :VAR#/clementines/db/data:/opt/couchdb/data"
+
   # =========================
   # =       PDF tools       =
   # =========================
@@ -884,6 +942,8 @@ services:
       - "#VAR: general_path_appdata :VAR#/paperless/docs:/mnt/source/documents/docs:ro"
       - "paperless-db-dump:/mnt/source/documents/dbdump:ro"
       - "paperless-export:/mnt/source/documents/export:ro"
+      # Specifically Clementines
+      - "#VAR: general_path_appdata :VAR#/clementines/db/data:/mnt/source/specifically_clementines/dbdump:ro"
       # Tuinfeest
       - "#VAR: general_path_appdata :VAR#/tuinfeest/directus/uploads:/mnt/source/tuinfeest/directus/uploads:z,ro"
       - "tuinfeest-directus-db-dump:/mnt/source/tuinfeest/directus/dbdump:ro"
@@ -960,6 +1020,9 @@ networks:
 
   caddy-public:
     name: caddy-public
+
+  clementines:
+    name: clementines
 
   keycloak:
     name: keycloak
