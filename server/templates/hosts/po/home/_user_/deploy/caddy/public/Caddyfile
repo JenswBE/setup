@@ -58,7 +58,7 @@ import default_redirect "www.#VAR: general_domain_wtech :VAR#" "#VAR: general_do
 }
 
 "#VAR: general_domain_bjoetiek :VAR#" {
-	import default_static_site_without_reporting "/public/bjoetiek"
+	import default_static_site_with_reporting "/public/bjoetiek"
 	header {
 		#VAR: caddy_extra_headers.bjoetiek | to_caddy_header_values("replace") :VAR#
 	}
