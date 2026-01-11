@@ -143,5 +143,11 @@
   "terminal.integrated.scrollback": 100000,
   "terminal.integrated.sendKeybindingsToShell": true,
   "workbench.colorTheme": "Dracula Pro",
-  "workbench.startupEditor": "none"
+  "workbench.startupEditor": "none",
+  "github.copilot.enable": {
+    "*": true,
+    "plaintext": false,
+    "markdown": true,
+    "scminput": false
+  }
 }
