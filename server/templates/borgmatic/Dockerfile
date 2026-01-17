@@ -1,2 +1,2 @@
-FROM ghcr.io/borgmatic-collective/borgmatic:2.0
+FROM ghcr.io/borgmatic-collective/borgmatic:2.1
 RUN apk add pv
