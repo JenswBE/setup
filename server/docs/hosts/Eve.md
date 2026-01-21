@@ -19,7 +19,6 @@ VPS
 
 - Dump Bjoetiek Directus DB (`templates/hosts/eve/etc/systemd/system/bjoetiek-directus-dump-db.timer`)
 - Dump Goatcounter DB (`templates/hosts/eve/etc/systemd/system/goatcounter-dump-db.timer`)
-- Dump Grocy DB (`templates/hosts/eve/etc/systemd/system/grocy-dump-db.timer`)
 - Dump Keycloak DB (`templates/hosts/eve/etc/systemd/system/keycloak-dump-db.timer`)
 - Dump Kristof Coenen Directus DB (`templates/hosts/eve/etc/systemd/system/kristofcoenen-directus-dump-db.timer`)
 - Dump Miniflux DB (`templates/hosts/kubo/etc/systemd/system/miniflux-dump-db.timer`)

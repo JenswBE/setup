@@ -1,9 +1,0 @@
-[Unit]
-Description=Dump Grocy DB for backup
-OnFailure=unit-fail-mail@%n.service
-
-[Service]
-Type=exec
-# --dns: We don't reference internal resources and musl libc doesn't use fallback DNS servers.
-#        So, it's safer to use a public DNS resolver by default.
-ExecStart={{ docker_path }} run --rm --pull always --dns 9.9.9.9 -v "{{ general_path_appdata }}/grocy/config/data:/data" alpine sh -c "set -eu; apk add sqlite; sqlite3 /data/grocy.db '.backup /data/grocy.backup.sqlite3'"

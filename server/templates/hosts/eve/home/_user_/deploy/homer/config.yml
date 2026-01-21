@@ -79,12 +79,6 @@ services:
         url: "https://ext.#VAR: general_domain_default :VAR#"
         <<: *default
 
-      - name: Grocy
-        subtitle: Public | eve
-        logo: https://cdn.jsdelivr.net/gh/selfhst/icons/svg/grocy.svg
-        url: "https://grocy.#VAR: general_domain_default :VAR#"
-        <<: *default
-
       - name: Home Assistant
         subtitle: Private | kubo-haos
         logo: https://cdn.jsdelivr.net/gh/selfhst/icons/svg/home-assistant.svg

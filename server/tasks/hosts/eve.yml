@@ -20,7 +20,6 @@
     - bjoetiek-directus-dump-db.timer
     - borgmatic.timer
     - goatcounter-dump-db.timer
-    - grocy-dump-db.timer
     - isa-rclone.timer
     - keycloak-dump-db.timer
     - kristofcoenen-directus-dump-db.timer
