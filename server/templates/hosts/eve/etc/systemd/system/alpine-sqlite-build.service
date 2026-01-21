@@ -1,0 +1,7 @@
+[Unit]
+Description=Dump Directus DB for backup
+OnFailure=unit-fail-mail@%n.service
+
+[Service]
+Type=exec
+ExecStart={{ docker_path }} build --pull -t alpine-sqlite:latest --file /etc/systemd/system/alpine-sqlite.Dockerfile /etc/systemd/system

@@ -17,6 +17,7 @@
     state: started
     enabled: true
   loop:
+    - alpine-sqlite-build.timer
     - bjoetiek-directus-dump-db.timer
     - borgmatic.timer
     - goatcounter-dump-db.timer

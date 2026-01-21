@@ -1,0 +1,10 @@
+[Unit]
+Description=Build alpine-sqlite image every night
+
+[Timer]
+OnCalendar=01:00
+Persistent=true
+RandomizedDelaySec=600
+
+[Install]
+WantedBy=timers.target
