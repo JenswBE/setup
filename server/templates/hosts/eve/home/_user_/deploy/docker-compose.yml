@@ -811,6 +811,32 @@ services:
       - "./clementines/db:/opt/couchdb/etc/local.d"
       - "#VAR: general_path_appdata :VAR#/clementines/db/data:/opt/couchdb/data"
 
+  koffan:
+    image: ghcr.io/pansalut/koffan:latest
+    container_name: koffan
+    networks:
+      - caddy-private
+    volumes:
+      - "#VAR: general_path_appdata :VAR#/koffan/koffan/data:/data"
+    environment:
+      APP_ENV: production
+      APP_PASSWORD: "#VAR: app_koffan_app_password :VAR#"
+      PORT: "80"
+      DB_PATH: /data/koffan.db
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "wget",
+          "--no-verbose",
+          "--tries=1",
+          "--spider",
+          "http://127.0.0.1:80/login",
+        ]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+
   # =========================
   # =       PDF tools       =
   # =========================

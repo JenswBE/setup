@@ -30,6 +30,11 @@ import ./configs/shared_snippets.txt
 			import default_local_reverse_proxy "http://miniflux:8080"
 		}
 
+		@koffan host "koffan.#VAR: general_domain_local :VAR#"
+		handle @koffan {
+			import default_local_reverse_proxy "http://koffan:80"
+		}
+
 		@pdf host "pdf.#VAR: general_domain_local :VAR#"
 		handle @pdf {
 			import default_local_reverse_proxy "http://bentopdf:8080"

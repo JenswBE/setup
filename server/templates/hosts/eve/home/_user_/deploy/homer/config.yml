@@ -85,6 +85,12 @@ services:
         url: "https://ha.#VAR: general_domain_local :VAR#"
         <<: *default
 
+      - name: Koffan
+        subtitle: Private | eve
+        logo: https://cdn.jsdelivr.net/gh/selfhst/icons@main/png/koffan.png
+        url: "https://koffan.#VAR: general_domain_local :VAR#"
+        <<: *default
+
       - name: MiniFlux
         subtitle: Private | eve
         logo: https://cdn.jsdelivr.net/gh/selfhst/icons/svg/miniflux-light.svg
@@ -213,6 +219,12 @@ services:
         url: https://expr-lang.org/
         <<: *default
 
+      - name: Quicktype
+        subtitle: Generate code from JSON
+        logo: https://quicktype.io/images/favicon-96.png
+        url: https://app.quicktype.io/
+        <<: *default
+
       - name: Framadate
         subtitle: Date picker (e.g. Doodle/Datumprikker)
         logo: https://framadate.org/abc/img/icons/apple-touch-icon.png
@@ -259,6 +271,12 @@ services:
         subtitle: Forms service (Belgium based)
         logo: https://tally.so/images/logo_v2.png
         url: https://tally.so
+        <<: *default
+
+      - name: Simplify3D guide
+        subtitle: 3D print quality troubleshooting
+        icon: fas fa-cubes
+        url: https://www.simplify3d.com/resources/print-quality-troubleshooting/
         <<: *default
 
   - name: Alternatives

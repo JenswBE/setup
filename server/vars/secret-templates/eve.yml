@@ -47,6 +47,9 @@ app_isa_rclone_dav_path: "/Tuinfeest/Inbox"
 # Keycloak
 app_keycloak_db_pass: ""
 
+# Koffan
+app_koffan_app_password: ""
+
 # Kristof Coenen - Directus
 app_kristofcoenen_directus_admin_email: ""
 app_kristofcoenen_directus_admin_password: ""
