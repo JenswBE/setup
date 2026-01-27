@@ -8,6 +8,7 @@ Services which are backed up:
   - `clementines-db` (CouchDB): DB data ==> TODO
   - `goatcounter` (GoatCounter): SQLite DB
   - `keycloak-db` (Postgres): DB data
+  - `koffan` (Koffan): SQLite DB
   - `kristofcoenen-directus` (Directus): Uploaded content
   - `kristofcoenen-directus-db` (Postgres): DB data
   - `miniflux-db` (Postgres): DB data
@@ -52,10 +53,20 @@ borgmatic_umount
 
 # Validate if backup contains recent site hits.
 # The accuracy of this check depens on the activity on your websites.
-sudo docker run --pull always --rm -v ${APPDATA_DIR:?}/borgmatic/borgmatic/restore:/backup alpine sh -c 'apk add sqlite; sqlite3 --table /backup/goatcounter.sqlite3 "SELECT s.link_domain, max(h.hour) FROM hit_counts h JOIN sites s ON h.site_id = s.site_id GROUP BY s.link_domain;"'
+sudo docker run --pull never --rm -v ${APPDATA_DIR:?}/borgmatic/borgmatic/restore:/backup alpine-sqlite sqlite3 --table /backup/goatcounter.sqlite3 'SELECT s.link_domain, max(h.hour) FROM hit_counts h JOIN sites s ON h.site_id = s.site_id GROUP BY s.link_domain;'
 
 # === keycloak-db: Postgres DB data ===
 validate_postgres keycloak dbdump/keycloak.pg_dump
+
+# === koffan: SQLite DB ===
+# Copy DB to restore point
+borgmatic_mount koffan koffan/data
+sudo docker exec borgmatic cp /mnt/borg/mnt/source/koffan/koffan/data/koffan.backup.sqlite3 /mnt/restore/koffan.sqlite3
+borgmatic_umount
+
+# Validate if backup contains sessions and item history.
+# The accuracy of this check depens on the activity in the application.
+sudo docker run --pull never --rm -v ${APPDATA_DIR:?}/borgmatic/borgmatic/restore:/backup alpine-sqlite sqlite3 --table /backup/koffan.sqlite3 "select max(datetime(expires_at, 'auto')) as last_session_expires from sessions; select max(datetime(last_used_at, 'auto')) as latest_item_used from item_history;"
 
 # === kristofcoenen-directus: Uploaded content ===
 compare_actual_backup_flat kristofcoenen-directus /directus/uploads kristofcoenen directus/uploads

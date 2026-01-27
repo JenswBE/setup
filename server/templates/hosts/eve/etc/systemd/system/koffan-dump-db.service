@@ -1,0 +1,9 @@
+[Unit]
+Description=Dump Koffan DB for backup
+OnFailure=unit-fail-mail@%n.service
+
+[Service]
+Type=exec
+# --dns: We don't reference internal resources and musl libc doesn't use fallback DNS servers.
+#        So, it's safer to use a public DNS resolver by default.
+ExecStart={{ docker_path }} run --rm --pull never --dns 9.9.9.9 -v "{{ general_path_appdata }}/koffan/koffan/data:/data" alpine-sqlite sqlite3 /data/koffan.sqlite3 '.backup /data/koffan.backup.sqlite3'

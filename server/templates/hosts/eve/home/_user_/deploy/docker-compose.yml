@@ -822,7 +822,7 @@ services:
       APP_ENV: production
       APP_PASSWORD: "#VAR: app_koffan_app_password :VAR#"
       PORT: "80"
-      DB_PATH: /data/koffan.db
+      DB_PATH: /data/koffan.sqlite3
     healthcheck:
       test:
         [
@@ -936,6 +936,8 @@ services:
       - "#VAR: general_path_appdata :VAR#/goatcounter/db:/mnt/source/goatcounter/db:ro"
       # Keycloak
       - "keycloak-db-dump:/mnt/source/keycloak/dbdump:ro"
+      # Koffan
+      - "#VAR: general_path_appdata :VAR#/koffan/koffan/data:/mnt/source/koffan/koffan/data:ro"
       # KristofCoenen
       - "#VAR: general_path_appdata :VAR#/kristofcoenen/directus/uploads:/mnt/source/kristofcoenen/directus/uploads:z,ro"
       - "kristofcoenen-directus-db-dump:/mnt/source/kristofcoenen/directus/dbdump:ro"
