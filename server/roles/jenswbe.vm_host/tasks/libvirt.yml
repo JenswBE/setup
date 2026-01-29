@@ -13,11 +13,22 @@
     state: started
     enabled: true
 
+- name: Derive paths
+  ansible.builtin.set_fact:
+    jwvm_dir_vm_images: "{{ [jwvm_dir_base, 'images'] | path_join }}"
+    jwvm_dir_isos: "{{ [jwvm_dir_base, 'isos'] | path_join }}"
+
 - name: Ensure default storage pool exists
   ansible.builtin.include_tasks: libvirt_setup_storage_pool.yml
   vars:
     pool_name: default
-    pool_path: /var/lib/libvirt/images
+    pool_path: "{{ jwvm_dir_vm_images }}"
+
+- name: "Ensure isos dir exists"
+  ansible.builtin.file:
+    state: directory
+    path: "{{ jwvm_dir_isos }}"
+    mode: "0755"
 
 - name: Flush handlers
   ansible.builtin.meta: flush_handlers

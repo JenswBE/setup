@@ -1,3 +1,4 @@
+jwvm_dir_base: "/srv/libvirt"
 jwvm_bridge_member_interface_prefix: enp
 jwvm_start_vms_after_nfs: []
 jwvm_start_vms_after_nfs_hostname: "truenas-direct.{{ general_domain_local }}"

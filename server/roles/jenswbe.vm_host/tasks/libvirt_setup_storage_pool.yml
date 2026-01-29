@@ -4,6 +4,11 @@
     path: "{{ pool_path }}"
     mode: "0711"
 
+- name: "Undefine storage pool (if exists) - {{ pool_name }}"
+  community.libvirt.virt_pool:
+    state: undefined
+    name: "{{ pool_name }}"
+
 - name: "Define storage pool - {{ pool_name }}"
   community.libvirt.virt_pool:
     state: present
