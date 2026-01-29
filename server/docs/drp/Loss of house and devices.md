@@ -6,7 +6,7 @@
 
 ## Prerequisites
 
-- Paper backup of OTP keys at another location, e.g. family house.
+- Paper backup of OTP keys and backup Yubikey at another location, e.g. family house.
 - Server with password vault is still live, e.g. VPS.
 
 ## Steps
