@@ -15,7 +15,8 @@ DHCP=yes
 DNS={{ dns_ip }}
 {% endfor %}
 
-{% if jwnetconf_override_dns %}
 [DHCPv4]
+ClientIdentifier=mac
+{% if jwnetconf_override_dns %}
 UseDNS=no
 {% endif %}
