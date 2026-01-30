@@ -1,0 +1,30 @@
+import ./configs/shared_snippets.txt
+
+# Global
+{
+	import ./configs/shared_global.txt
+
+	security {
+		import ./configs/shared_security.txt
+	}
+}
+
+"*.#VAR: general_domain_local :VAR#",
+"*.#VAR: inventory_hostname :VAR#.#VAR: general_domain_local :VAR#" {
+	import logging
+	import tls_acme_dns
+
+	route {
+		import allow_local_only
+
+		import handler_local_blocky
+		import handler_local_crowdsec
+
+		@git host "git.#VAR: general_domain_local :VAR#"
+		handle @git {
+			import default_local_reverse_proxy "http://forgejo:3000"
+		}
+
+		import ./routes/*.Caddyfile
+	}
+}

@@ -1,9 +1,5 @@
 # Docker
-docker_restart_changed_services:
-  - blocky
-  - nginx
-  - peanut
-jwdh_update_containers_time: "04:30"
+docker_restart_changed_services: []
 
 # Firewall
 # Ensure to update firewall on cloud provider!
@@ -30,19 +26,10 @@ jwfw_zones:
     source_networks: [local_ipv4, local_ipv6]
     allowed_services:
       - ssh # 22/tcp
-      - dns # 53/tcp and 53/udp for Blocky
       - http # 80/tcp
       - https # 443/tcp
       - http3 # 443/udp (QUIC)
       - dhcpv6-client # 546/udp
-      - nut # 3493/tcp for Network UPS Tools (NUT) server
     allowed_ports: []
     extra_strings: []
     extra_booleans: []
-
-# Network config
-jwnetconf_interfaces:
-  - name: enp7s0
-    priority: 10
-    type: static
-    cidr_address: "{{ hostnames.virbr_nointernet.fiona_private.ipv4 }}/24"

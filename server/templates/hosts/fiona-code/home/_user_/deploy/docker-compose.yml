@@ -1,0 +1,121 @@
+#VAR: ansible_managed | comment :VAR#
+
+#################################################################
+#                            DEFAULTS                           #
+#################################################################
+
+x-defaults: &defaults
+  x-dummy: ""
+  # Putting the anchor in this file ensures it's a valid YAML file for Renovate Bot
+  #VAR: lookup('ansible.builtin.file', 'files/docker-compose-defaults.yml',) | indent(width=2) :VAR#
+
+#################################################################
+#                            SERVICES                           #
+#################################################################
+services:
+  # =========================
+  # =         PROXY         =
+  # =========================
+  # Having 2 reverse proxies (1 on host network and 1 on bridge network)
+  # allows to have the real client IP's available inside the bridged
+  # Caddy instance (using PROXY protocol). In case you would only have
+  # a single reverse proxy on the host network, you would loose all the convenience
+  # of using Docker networks.
+  nginx:
+    <<: *defaults
+    image: docker.io/library/nginx:alpine
+    container_name: nginx
+    network_mode: host
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/nginx.conf:ro
+
+  caddy:
+    <<: *defaults
+    build: ./caddy
+    container_name: caddy
+    ports:
+      - 127.0.0.1:2080:80
+      - 127.0.0.1:2443:443
+    networks:
+      - caddy
+    volumes:
+      - ./caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./caddy/configs:/etc/caddy/configs:ro
+      - ./caddy/routes:/etc/caddy/routes:ro
+      - caddy-config:/config
+      - caddy-data:/data
+    environment:
+      TZ: "#VAR: general_timezone :VAR#"
+
+  # =========================
+  # =          GIT          =
+  # =========================
+  forgejo:
+    <<: *defaults
+    image: codeberg.org/forgejo/forgejo:13-rootless
+    container_name: forgejo
+    user: "#VAR: ansible_real_user_id :VAR#:#VAR: ansible_real_group_id :VAR#"
+    environment:
+      USER_UID: "#VAR: ansible_real_user_id :VAR#"
+      USER_GID: "#VAR: ansible_real_group_id :VAR#"
+    restart: always
+    networks:
+      - caddy
+    volumes:
+      - "/etc/localtime:/etc/localtime:ro"
+      - "#VAR: general_path_appdata :VAR#/git/forgejo/data:/var/lib/gitea"
+      - "#VAR: general_path_appdata :VAR#/git/forgejo/config:/etc/gitea"
+    ports:
+      - "2222:2222"
+
+  # =========================
+  # =         BACKUP        =
+  # =========================
+  borgmatic:
+    <<: *defaults
+    profiles: ["scheduled"]
+    build: ./borgmatic
+    container_name: borgmatic
+    cap_add:
+      - SYS_ADMIN # Required for borg mount
+    volumes:
+      # === Backup locations ===
+      # GitHub Backup
+      - "github-backup:/mnt/source/github_backup/backup:ro"
+      # === Config and cache ===
+      - "./borgmatic/common/global.txt:/common/global.yml"
+      - "./borgmatic/common/repo.txt:/common/repo.yml"
+      - "./borgmatic/apps:/etc/borgmatic.d"
+      - "./borgmatic/ssh:/root/.ssh"
+      - "#VAR: general_path_appdata :VAR#/borgmatic/borgmatic/config:/root/.config/borg"
+      - "#VAR: general_path_appdata :VAR#/borgmatic/borgmatic/cache:/root/.cache/borg"
+      - "#VAR: general_path_appdata :VAR#/borgmatic/borgmatic/restore:/mnt/restore"
+    devices:
+      - "/dev/fuse:/dev/fuse" # Required for borg mount
+    security_opt:
+      - "apparmor=unconfined" # Required for borg mount
+    environment:
+      TZ: "#VAR: general_timezone :VAR#"
+      BACKUP_CRON: "false"
+      BORG_PASSPHRASE: "#VAR: app_borgmatic_borg_passphrase :VAR#"
+      BORG_HOSTNAME_IS_UNIQUE: "yes" # Automatically removes stale locks
+      BORG_HOST_ID: "#VAR: inventory_hostname :VAR#"
+    deploy:
+      resources:
+        limits:
+          cpus: "#VAR: ansible_processor_nproc :VAR#"
+          memory: 4G
+
+#################################################################
+#                            NETWORKS                           #
+#################################################################
+networks:
+  caddy:
+    name: caddy
+
+#################################################################
+#                            VOLUMES                            #
+#################################################################
+volumes:
+  caddy-config:
+  caddy-data:
