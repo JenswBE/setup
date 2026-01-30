@@ -6,15 +6,13 @@ set -euo pipefail
 
 # Update Docker containers
 cd '{{ ansible_user_dir }}/deploy'
-docker compose --profile 'scheduled' pull || update_failed=1
-docker compose --profile 'scheduled' build --pull || update_failed=1
-docker compose up -d || update_failed=1
+docker compose --profile 'scheduled' pull || exit_status=1
+docker compose --profile 'scheduled' build --pull || exit_status=1
+docker compose up -d || exit_status=1
 
-if [ ${update_failed:-0} -eq 0 ]
-then
-    echo "Update successful. Pruning unused images ..."
-    docker image prune -f
-    docker buildx prune -f
-else
-    echo "Update failed. Please check"
-fi
+# Prune unused Docker resources
+docker image prune -f || exit_status=1
+docker buildx prune -f || exit_status=1
+
+# Exit with status
+exit ${exit_status:-0}
