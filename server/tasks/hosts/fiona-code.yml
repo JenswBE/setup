@@ -1,1 +1,11 @@
-# Stub, since file must exist
+- name: Enable systemd timers and mounts
+  become: true
+  ansible.builtin.systemd_service:
+    name: "{{ item }}"
+    state: started
+    enabled: true
+  loop:
+    - alpine-sqlite-build.timer
+    - borgmatic.timer
+    - forgejo-dump-db.timer
+  tags: ["systemd"]

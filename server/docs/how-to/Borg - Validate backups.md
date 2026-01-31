@@ -23,6 +23,8 @@ Services which are backed up:
   - `wikijs-db` (Postgres): DB data
   - `wtech-directus` (Directus): Uploaded content
   - `wtech-directus-db` (Postgres): DB data
+- Fiona Code
+  - `git` (Forgejo): SQLite DB and config files
 - Kubo Media
   - `immich`: Uploaded and archived photos
   - `immich-db`: Postgres DB data
@@ -129,6 +131,20 @@ compare_actual_backup_flat wtech-directus /directus/uploads wtech directus/uploa
 
 # === wtech-directus-db: Postgres DB data ===
 validate_postgres wtech directus/dbdump/wtech-directus.pg_dump
+```
+
+## Fiona Code
+
+```bash
+# === git: SQLite DB ===
+# Copy DB to restore point
+borgmatic_mount git forgejo/data
+sudo docker exec borgmatic cp /mnt/borg/mnt/source/git/forgejo/data/data/forgejo.backup.sqlite3 /mnt/restore/git.sqlite3
+borgmatic_umount
+
+# Validate if backup contains recent SSH key usage.
+# The accuracy of this check depens on the activity in the application.
+sudo docker run --pull never --rm -v ${APPDATA_DIR:?}/borgmatic/borgmatic/restore:/backup alpine-sqlite sqlite3 --table /backup/git.sqlite3 "select datetime(max(updated_unix), 'auto') as last_ssh_key_usage from public_key;"
 ```
 
 ## Kubo Media

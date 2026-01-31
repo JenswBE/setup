@@ -1,0 +1,10 @@
+[Unit]
+Description=Dump Forgejo DB every night for backup
+
+[Timer]
+OnCalendar=02:00
+Persistent=true
+RandomizedDelaySec=600
+
+[Install]
+WantedBy=timers.target

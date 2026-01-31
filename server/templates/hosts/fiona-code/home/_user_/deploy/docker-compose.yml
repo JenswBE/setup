@@ -58,7 +58,21 @@ services:
     environment:
       USER_UID: "#VAR: ansible_real_user_id :VAR#"
       USER_GID: "#VAR: ansible_real_group_id :VAR#"
-    restart: always
+      FORGEJO__database__DB_TYPE: sqlite3
+      FORGEJO__database__PATH: data/forgejo.sqlite3
+      FORGEJO__mailer__ENABLED: "true"
+      FORGEJO__mailer__SMTP_ADDR: "#VAR: mailjet_host :VAR#"
+      FORGEJO__mailer__SMTP_PORT: "#VAR: mailjet_port_starttls :VAR#"
+      FORGEJO__mailer__USER: "#VAR: mailjet_username :VAR#"
+      FORGEJO__mailer__PASSWD: "#VAR: mailjet_password :VAR#"
+      FORGEJO__mailer__FROM: "Forgejo on #VAR:inventory_hostname:VAR# <forgejo.#VAR:inventory_hostname:VAR#@#VAR:general_domain_default:VAR#>"
+      FORGEJO__server__SSH_DOMAIN: git-jens
+      FORGEJO__server__SSH_PORT: "22"
+      # Based on https://forgejo.org/docs/next/admin/setup/recommendations/#cacheadapter
+      FORGEJO__cache__ADAPTER: twoqueue
+      FORGEJO__cache__HOST: '{"size":100, "recent_ratio":0.25, "ghost_ratio":0.5}'
+      # Based on https://forgejo.org/docs/next/admin/setup/recommendations/#databasedb_type
+      FORGEJO__database__SQLITE_JOURNAL_MODE: WAL
     networks:
       - caddy
     volumes:
@@ -80,8 +94,9 @@ services:
       - SYS_ADMIN # Required for borg mount
     volumes:
       # === Backup locations ===
-      # GitHub Backup
-      - "github-backup:/mnt/source/github_backup/backup:ro"
+      # Forgejo
+      - "#VAR: general_path_appdata :VAR#/git/forgejo/config:/mnt/source/git/forgejo/config:z,ro"
+      - "#VAR: general_path_appdata :VAR#/git/forgejo/data:/mnt/source/git/forgejo/data:z,ro"
       # === Config and cache ===
       - "./borgmatic/common/global.txt:/common/global.yml"
       - "./borgmatic/common/repo.txt:/common/repo.yml"
