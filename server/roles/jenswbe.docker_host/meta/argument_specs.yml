@@ -1,6 +1,6 @@
 argument_specs:
   main:
-    short_description: Basic setup
+    short_description: Additional Docker configuration
     options:
       # === REQUIRED ===
       ansible_distribution:

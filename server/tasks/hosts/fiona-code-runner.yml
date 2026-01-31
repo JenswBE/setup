@@ -1,0 +1,24 @@
+- name: Configure runner prerequisites
+  # Based on https://forgejo.org/docs/latest/admin/actions/runner-installation/#oci-image-installation
+  tags: ["runner"]
+  block:
+    - name: Derive runner data dir
+      ansible.builtin.set_fact:
+        runner_data_dir: "{{ general_path_appdata }}/runner/runner/data"
+
+    - name: Ensure runner data dir exists
+      become: true
+      ansible.builtin.file:
+        state: directory
+        path: "{{ runner_data_dir }}"
+        mode: "0750"
+        owner: "{{ ansible_real_user_id }}"
+        group: "{{ ansible_real_group_id }}"
+
+    - name: Ensure runner cache dir exists
+      ansible.builtin.file:
+        state: directory
+        path: "{{ runner_data_dir }}/.cache"
+        mode: "2755" # With SGID
+        owner: "{{ ansible_real_user_id }}"
+        group: "{{ ansible_real_group_id }}"

@@ -1,0 +1,32 @@
+# Docker
+docker_restart_changed_services: []
+
+# Firewall
+# Ensure to update firewall on cloud provider!
+jwfw_zones:
+  - zone: public # Based on /usr/lib/firewalld/zones/public.xml
+    interfaces: []
+    source_networks: []
+    allowed_services:
+      - ssh # 22/tcp
+      - dhcpv6-client # 546/udp
+    allowed_ports: []
+    extra_strings:
+      - key: short
+        value: Public
+      - key: description
+        value: >-
+          For use in public areas.
+          You do not trust the other computers on networks to not harm your computer.
+          Only selected incoming connections are accepted.
+    extra_booleans: [forward]
+
+  - zone: local
+    interfaces: []
+    source_networks: [local_ipv4, local_ipv6]
+    allowed_services:
+      - ssh # 22/tcp
+      - dhcpv6-client # 546/udp
+    allowed_ports: []
+    extra_strings: []
+    extra_booleans: []

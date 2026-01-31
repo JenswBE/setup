@@ -1,0 +1,47 @@
+#VAR: ansible_managed | comment :VAR#
+
+#################################################################
+#                            DEFAULTS                           #
+#################################################################
+
+x-defaults: &defaults
+  x-dummy: ""
+  # Putting the anchor in this file ensures it's a valid YAML file for Renovate Bot
+  #VAR: lookup('ansible.builtin.file', 'files/docker-compose-defaults.yml',) | indent(width=2) :VAR#
+
+#################################################################
+#                            SERVICES                           #
+#################################################################
+services:
+  # =========================
+  # =         RUNNER        =
+  # =========================
+  # Based on https://forgejo.org/docs/latest/admin/actions/runner-installation/#oci-image-installation
+  docker-in-docker:
+    <<: *defaults
+    image: docker:dind
+    container_name: docker_dind
+    privileged: "true"
+    command: ["dockerd", "-H", "tcp://0.0.0.0:2375", "--tls=false"]
+
+  runner:
+    <<: *defaults
+    image: data.forgejo.org/forgejo/runner:11
+    container_name: runner
+    hostname: "#VAR: inventory_hostname :VAR#"
+    links:
+      - docker-in-docker
+    depends_on:
+      docker-in-docker:
+        condition: service_started
+    environment:
+      DOCKER_HOST: tcp://docker-in-docker:2375
+    # User without root privileges, but with access to `./data`.
+    user: "#VAR: ansible_real_user_id :VAR#:#VAR: ansible_real_group_id :VAR#"
+    volumes:
+      - "#VAR: runner_data_dir :VAR#:/data"
+    # MANUAL CONFIG NEEDED!
+    # See instructions at https://forgejo.org/docs/latest/admin/actions/runner-installation/#oci-image-installation
+    # command: '/bin/sh -c "while : ; do sleep 1 ; done ;"' # INITIAL SETUP
+    command: '/bin/sh -c "sleep 5; forgejo-runner daemon --config config.yml"' # NORMAL OPERATION
+    # Sleep 5 allows the docker-in-docker service to start up before the forgejo-runner daemon is started.
