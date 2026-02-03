@@ -69,6 +69,7 @@ services:
       FORGEJO__server__SSH_DOMAIN: git-jens
       FORGEJO__server__SSH_PORT: "22"
       FORGEJO__service__DISABLE_REGISTRATION: "true"
+      FORGEJO__service__ENABLE_NOTIFY_MAIL: "true"
       # Based on https://forgejo.org/docs/next/admin/setup/recommendations/#cacheadapter
       FORGEJO__cache__ADAPTER: twoqueue
       FORGEJO__cache__HOST: '{"size":100, "recent_ratio":0.25, "ghost_ratio":0.5}'
