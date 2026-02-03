@@ -17,12 +17,18 @@ services:
   # =         RUNNER        =
   # =========================
   # Based on https://forgejo.org/docs/latest/admin/actions/runner-installation/#oci-image-installation
+  #      and https://code.forgejo.org/forgejo/runner/src/branch/main/examples/docker-compose/compose-forgejo-and-runner.yml
   docker-in-docker:
     <<: *defaults
-    image: docker:dind
+    image: data.forgejo.org/oci/docker:dind
     container_name: docker_dind
+    hostname: docker # Must set hostname as TLS certificates are only valid for docker or localhost
     privileged: "true"
-    command: ["dockerd", "-H", "tcp://0.0.0.0:2375", "--tls=false"]
+    environment:
+      DOCKER_TLS_CERTDIR: /certs
+      DOCKER_HOST: docker-in-docker
+    volumes:
+      - docker-certs:/certs
 
   runner:
     <<: *defaults
@@ -35,13 +41,22 @@ services:
       docker-in-docker:
         condition: service_started
     environment:
-      DOCKER_HOST: tcp://docker-in-docker:2375
+      DOCKER_HOST: tcp://docker:2376
+      DOCKER_CERT_PATH: /certs/client
+      DOCKER_TLS_VERIFY: "1"
     # User without root privileges, but with access to `./data`.
     user: "#VAR: ansible_real_user_id :VAR#:#VAR: ansible_real_group_id :VAR#"
     volumes:
+      - docker-certs:/certs
       - "#VAR: runner_data_dir :VAR#:/data"
     # MANUAL CONFIG NEEDED!
     # See instructions at https://forgejo.org/docs/latest/admin/actions/runner-installation/#oci-image-installation
     # command: '/bin/sh -c "while : ; do sleep 1 ; done ;"' # INITIAL SETUP
     command: '/bin/sh -c "sleep 5; forgejo-runner daemon --config config.yml"' # NORMAL OPERATION
     # Sleep 5 allows the docker-in-docker service to start up before the forgejo-runner daemon is started.
+
+# #################################################################
+# #                            VOLUMES                            #
+# #################################################################
+volumes:
+  docker-certs:

@@ -15,6 +15,14 @@
         owner: "{{ ansible_real_user_id }}"
         group: "{{ ansible_real_group_id }}"
 
+    - name: Ensure runner config exists
+      ansible.builtin.template:
+        src: "hosts/{{ inventory_hostname }}/runner-config.yml"
+        dest: "{{ [runner_data_dir, 'config.yml'] | path_join }}"
+        owner: "{{ ansible_real_user_id }}"
+        group: "{{ ansible_real_group_id }}"
+        mode: "0644"
+
     - name: Ensure runner cache dir exists
       ansible.builtin.file:
         state: directory
