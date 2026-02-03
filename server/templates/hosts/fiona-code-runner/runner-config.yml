@@ -31,7 +31,7 @@ runner:
     DOCKER_HOST: tcp://docker:2376
     DOCKER_TLS_VERIFY: 1
     DOCKER_CERT_PATH: /certs/client
-    FORGEJO_SERVER_HOST: "git.{{ general_domain_local }}"
+    FORGEJO_SERVER_HOSTNAME: "git.{{ general_domain_local }}"
   # Extra environment variables to run jobs from a file.
   # It will be ignored if it's empty or the file doesn't exist.
   env_file: .env
