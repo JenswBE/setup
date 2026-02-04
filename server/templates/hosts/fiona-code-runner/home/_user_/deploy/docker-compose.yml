@@ -18,6 +18,8 @@ services:
   # =========================
   # Based on https://forgejo.org/docs/latest/admin/actions/runner-installation/#oci-image-installation
   #      and https://code.forgejo.org/forgejo/runner/src/branch/main/examples/docker-compose/compose-forgejo-and-runner.yml
+  #
+  # To debug: DOCKER_TLS_VERIFY=1 DOCKER_CERT_PATH=/certs/client DOCKER_HOST=localhost:2376 docker run --rm -it --network=host alpine /bin/ash
   docker-in-docker:
     <<: *defaults
     image: data.forgejo.org/oci/docker:dind
@@ -27,6 +29,8 @@ services:
     environment:
       DOCKER_TLS_CERTDIR: /certs
       DOCKER_HOST: docker-in-docker
+    networks:
+      - dind
     volumes:
       - docker-certs:/certs
 
@@ -35,8 +39,6 @@ services:
     image: data.forgejo.org/forgejo/runner:11
     container_name: runner
     hostname: "#VAR: inventory_hostname :VAR#"
-    links:
-      - docker-in-docker
     depends_on:
       docker-in-docker:
         condition: service_started
@@ -46,6 +48,8 @@ services:
       DOCKER_TLS_VERIFY: "1"
     # User without root privileges, but with access to `./data`.
     user: "#VAR: ansible_real_user_id :VAR#:#VAR: ansible_real_group_id :VAR#"
+    networks:
+      - dind
     volumes:
       - docker-certs:/certs
       - "#VAR: runner_data_dir :VAR#:/data"
@@ -54,6 +58,13 @@ services:
     # command: '/bin/sh -c "while : ; do sleep 1 ; done ;"' # INITIAL SETUP
     command: '/bin/sh -c "sleep 5; forgejo-runner daemon --config config.yml"' # NORMAL OPERATION
     # Sleep 5 allows the docker-in-docker service to start up before the forgejo-runner daemon is started.
+
+#################################################################
+#                            NETWORKS                           #
+#################################################################
+networks:
+  dind:
+    name: dind
 
 # #################################################################
 # #                            VOLUMES                            #
