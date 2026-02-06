@@ -190,7 +190,7 @@ container:
   # The specified socket is mounted within the job container at /var/run/docker.sock
   docker_host: "-"
   # Pull docker image(s) even if already present
-  force_pull: false
+  force_pull: true
   # Rebuild local docker image(s) even if already present
   force_rebuild: false
 
