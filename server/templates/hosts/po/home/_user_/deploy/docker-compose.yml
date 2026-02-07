@@ -106,7 +106,7 @@ services:
   # =========================
   trouwjg:
     <<: *defaults
-    image: ghcr.io/jenswbe/trouwjg.be:main
+    image: "git.#VAR: general_domain_local :VAR#/jens/trouwjg.be:latest"
     container_name: trouwjg
     networks:
       - caddy-public
