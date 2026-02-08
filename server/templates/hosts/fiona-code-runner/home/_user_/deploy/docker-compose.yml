@@ -36,7 +36,7 @@ services:
 
   runner:
     <<: *defaults
-    image: data.forgejo.org/forgejo/runner:11
+    image: data.forgejo.org/forgejo/runner:12
     container_name: runner
     hostname: "#VAR: inventory_hostname :VAR#"
     depends_on:
