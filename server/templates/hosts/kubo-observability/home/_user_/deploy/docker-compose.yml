@@ -203,42 +203,6 @@ services:
           cpus: "4"
           memory: 8G
 
-  # =========================
-  # =         BACKUP        =
-  # =========================
-  borgmatic:
-    <<: *defaults
-    profiles: ["scheduled"]
-    build: ./borgmatic
-    container_name: borgmatic
-    cap_add:
-      - SYS_ADMIN # Required for borg mount
-    volumes:
-      # === Backup locations ===
-      # === Config and cache ===
-      - "./borgmatic/common/global.txt:/common/global.yml"
-      - "./borgmatic/common/repo.txt:/common/repo.yml"
-      - "./borgmatic/apps:/etc/borgmatic.d"
-      - "./borgmatic/ssh:/root/.ssh"
-      - "#VAR: general_path_appdata :VAR#/borgmatic/borgmatic/config:/root/.config/borg"
-      - "#VAR: general_path_appdata :VAR#/borgmatic/borgmatic/cache:/root/.cache/borg"
-      - "#VAR: general_path_appdata :VAR#/borgmatic/borgmatic/restore:/mnt/restore"
-    devices:
-      - "/dev/fuse:/dev/fuse" # Required for borg mount
-    security_opt:
-      - "apparmor=unconfined" # Required for borg mount
-    environment:
-      TZ: "#VAR: general_timezone :VAR#"
-      BACKUP_CRON: "false"
-      BORG_PASSPHRASE: "#VAR: app_borgmatic_borg_passphrase :VAR#"
-      BORG_HOSTNAME_IS_UNIQUE: "yes" # Automatically removes stale locks
-      BORG_HOST_ID: "#VAR: inventory_hostname :VAR#"
-    deploy:
-      resources:
-        limits:
-          cpus: "#VAR: ansible_processor_nproc :VAR#"
-          memory: 4G
-
 #################################################################
 #                            NETWORKS                           #
 #################################################################

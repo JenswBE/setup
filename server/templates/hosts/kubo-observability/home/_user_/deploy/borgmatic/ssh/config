@@ -1,1 +1,0 @@
-{{ lookup('ansible.builtin.template', 'borgmatic/ssh_config') }}
