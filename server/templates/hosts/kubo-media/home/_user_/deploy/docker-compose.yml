@@ -137,7 +137,7 @@ services:
   # =========================
   syncthing:
     <<: *defaults
-    image: docker.io/syncthing/syncthing:1
+    image: docker.io/syncthing/syncthing:2
     container_name: syncthing
     hostname: "#VAR: inventory_hostname :VAR#"
     ports:
