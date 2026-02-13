@@ -108,7 +108,7 @@ services:
   nc-db:
     <<: *defaults
     # See recommended version https://docs.nextcloud.com/server/32/admin_manual/installation/system_requirements.html
-    image: docker.io/library/mariadb:10.11
+    image: docker.io/library/mariadb:12.2
     container_name: nc-db
     command: --transaction-isolation=READ-COMMITTED --log-bin=ROW --innodb-read-only-compressed=OFF
     networks:
