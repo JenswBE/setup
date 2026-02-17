@@ -1,3 +1,6 @@
+# Disable history
+set +o history
+
 # Set env vars
 APPDATA_DIR=/opt/appdata
 
@@ -102,3 +105,6 @@ validate_postgres()
       ;;
   esac
 }
+
+# Re-enable history
+set -o history

@@ -24,7 +24,9 @@ Services which are backed up:
   - `wtech-directus` (Directus): Uploaded content
   - `wtech-directus-db` (Postgres): DB data
 - Fiona Code
-  - `git` (Forgejo): SQLite DB and config files
+  - `git` (Forgejo): SQLite DB, config files and source code
+- Kubo HA
+  - `ha` (Home Assistant): Config files => TODO
 - Kubo Media
   - `immich`: Uploaded and archived photos
   - `immich-db`: Postgres DB data
@@ -32,7 +34,6 @@ Services which are backed up:
 - Kubo Private
   - `github-backup` (GitHub Backup): All GitHub repo's
   - `unifi-mongodb` (MongoDB): DB data
-  - `ha` (Home Assistant): Config files => TODO
 
 ## Prepare
 
@@ -47,10 +48,13 @@ compare_actual_backup_flat bjoetiek-directus /directus/uploads bjoetiek_y direct
 # === bjoetiek-directus-db: Postgres DB data ===
 validate_postgres bjoetiek_y directus/dbdump/bjoetiek-directus.pg_dump
 
+# === clementines-db: CouchDB ===
+TODO
+
 # === goatcounter: SQLite DB ===
 # Copy DB to restore point
 borgmatic_mount goatcounter db
-sudo docker exec borgmatic cp /mnt/borg/mnt/source/goatcounter/db/goatcounter.backup.sqlite3 /mnt/restore/goatcounter.sqlite3
+sudo docker exec borgmatic cp /mnt/borg/mnt/source/goatcounter/db/db.backup.sqlite3 /mnt/restore/goatcounter.sqlite3
 borgmatic_umount
 
 # Validate if backup contains recent site hits.
@@ -94,7 +98,7 @@ borgmatic_umount
 compare_actual_backup_recursive nextcloud /var/www/html/data nextcloud data
 # Calendars and addressbooks
 borgmatic_mount nextcloud calcardbackup
-sudo docker exec borgmatic ls -Alth /mnt/borg/mnt/source/nextcloud/calcardbackup/calcardbackup_overwrite | head -n 20
+sudo docker exec borgmatic ls -AlSh /mnt/borg/mnt/source/nextcloud/calcardbackup/calcardbackup_overwrite | head -n 20
 borgmatic_umount
 
 # === paperless: Files ===
@@ -145,7 +149,13 @@ borgmatic_umount
 # Validate if backup contains recent SSH key usage.
 # The accuracy of this check depens on the activity in the application.
 sudo docker run --pull never --rm -v ${APPDATA_DIR:?}/borgmatic/borgmatic/restore:/backup alpine-sqlite sqlite3 --table /backup/git.sqlite3 "select datetime(max(updated_unix), 'auto') as last_ssh_key_usage from public_key;"
+
+TODO SOURCE CODE
 ```
+
+## Kubo HA
+
+TODO
 
 ## Kubo Media
 
