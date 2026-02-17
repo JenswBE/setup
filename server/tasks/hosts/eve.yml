@@ -23,6 +23,7 @@
     - goatcounter-dump-db.timer
     - isa-rclone.timer
     - keycloak-dump-db.timer
+    - koffan-dump-db.timer
     - kristofcoenen-directus-dump-db.timer
     - miniflux-dump-db.timer
     - miniflux-reset-feed-errors.timer
