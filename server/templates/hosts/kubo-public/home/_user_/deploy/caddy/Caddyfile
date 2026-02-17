@@ -13,11 +13,6 @@ import ./configs/shared_snippets.txt
 http:// {
 }
 
-"dtu.#VAR: general_domain_default :VAR#" {
-	import default_public_reverse_proxy "http://opendtu.#VAR: general_domain_local :VAR#"
-	authorize with policy_public_sun
-}
-
 "immich.#VAR: general_domain_default :VAR#" {
 	import default_public_reverse_proxy "http://kubo-media.virbr-nointernet.#VAR: general_domain_local :VAR#:2283"
 }
