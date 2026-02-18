@@ -9,4 +9,12 @@ WorkingDirectory={{ ansible_user_dir }}/deploy
 # and uses up-to-date docker-compose.yml settings (e.g. mounted volumes)
 ExecStartPre={{ docker_path }} compose up -d nc-calcardbackup
 # Run calcardbackup
-ExecStart={{ docker_path }} exec nc-calcardbackup sh -c "/opt/calcardbackup/calcardbackup /nextcloud/ --output /backup/ --read-mysql-optionfiles --include-shares --uncompressed --date '_overwrite'"
+#   --output: Output directory
+#   --read-mysql-optionfiles: Read MySQL credentials from option files
+#   --include-shares: Backup shared addressbooks/calendars too, but only once
+#   --backup-deck-boards: Also backup Deck boards as JSON files
+#   --uncompressed: Do not compress backup folder (already compressed by BorgBackup)
+#   --remove: Remove old backups, keep only the last 7
+# Note: "--backup-deck-boards" is not supported as the "occ" binary is not accessible from the container.
+#       However, this is a non-issue as the whole Nextcloud DB is backed up anyway.
+ExecStart={{ docker_path }} exec nc-calcardbackup sh -c "/opt/calcardbackup/calcardbackup /nextcloud/ --output /backup/ --read-mysql-optionfiles --include-shares --uncompressed --remove 7"

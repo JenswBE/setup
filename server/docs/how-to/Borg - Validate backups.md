@@ -54,7 +54,7 @@ TODO
 # === goatcounter: SQLite DB ===
 # Copy DB to restore point
 borgmatic_mount goatcounter db
-sudo docker exec borgmatic cp /mnt/borg/mnt/source/goatcounter/db/db.backup.sqlite3 /mnt/restore/goatcounter.sqlite3
+sudo docker exec borgmatic bash -c 'DB_PATH=/mnt/borg/mnt/source/goatcounter/db/db.backup.sqlite3; ls -l $DB_PATH; cp $DB_PATH /mnt/restore/goatcounter.sqlite3'
 borgmatic_umount
 
 # Validate if backup contains recent site hits.
@@ -67,7 +67,7 @@ validate_postgres keycloak dbdump/keycloak.pg_dump
 # === koffan: SQLite DB ===
 # Copy DB to restore point
 borgmatic_mount koffan koffan/data
-sudo docker exec borgmatic cp /mnt/borg/mnt/source/koffan/koffan/data/koffan.backup.sqlite3 /mnt/restore/koffan.sqlite3
+sudo docker exec borgmatic bash -c 'DB_PATH=/mnt/borg/mnt/source/koffan/koffan/data/koffan.backup.sqlite3; ls -l $DB_PATH; cp $DB_PATH /mnt/restore/koffan.sqlite3'
 borgmatic_umount
 
 # Validate if backup contains sessions and item history.
@@ -118,7 +118,7 @@ validate_postgres tuinfeest directus/dbdump/tuinfeest-directus.pg_dump
 # Based on https://github.com/dani-garcia/vaultwarden/wiki/Backing-up-your-vault
 # DB (The accuracy of this check depens on how recently a device used Vaultwarden.)
 borgmatic_mount vaultwarden data
-sudo docker exec borgmatic cp /mnt/borg/mnt/source/vaultwarden/data/db.backup.sqlite3 /mnt/restore/vaultwarden.sqlite3
+sudo docker exec borgmatic bash -c 'DB_PATH=/mnt/borg/mnt/source/vaultwarden/data/db.backup.sqlite3; ls -l $DB_PATH; cp $DB_PATH /mnt/restore/vaultwarden.sqlite3'
 sudo docker run --pull always --rm -v ${APPDATA_DIR:?}/borgmatic/borgmatic/restore:/backup alpine sh -c 'apk add sqlite; sqlite3 --table /backup/vaultwarden.sqlite3 "SELECT updated_at, name FROM devices ORDER BY updated_at DESC LIMIT 3;"'
 # Data (Listed entries should be recent)
 sudo docker exec borgmatic ls -ltc /mnt/borg/mnt/source/vaultwarden/data/
@@ -143,7 +143,7 @@ validate_postgres wtech directus/dbdump/wtech-directus.pg_dump
 # === git: SQLite DB ===
 # Copy DB to restore point
 borgmatic_mount git forgejo/data
-sudo docker exec borgmatic cp /mnt/borg/mnt/source/git/forgejo/data/data/forgejo.backup.sqlite3 /mnt/restore/git.sqlite3
+sudo docker exec borgmatic bash -c 'DB_PATH=/mnt/borg/mnt/source/git/forgejo/data/data/forgejo.backup.sqlite3; ls -l $DB_PATH; cp $DB_PATH /mnt/restore/git.sqlite3'
 borgmatic_umount
 
 # Validate if backup contains recent SSH key usage.
@@ -194,8 +194,8 @@ borgmatic_umount
 # === unifi-mongodb: MongoDB data ===
 # Copy DB to restore point
 borgmatic_mount unifi mongodb
-sudo docker exec borgmatic cp /mnt/borg/mnt/source/unifi/mongodb/unifi/unifi/event.bson /mnt/restore/unifi_event.bson
-sudo docker exec borgmatic cp /mnt/borg/mnt/source/unifi/mongodb/unifi_stat/unifi_stat/stat_5minutes.bson /mnt/restore/unifi_stat_5min.bson
+sudo docker exec borgmatic bash -c 'DB_PATH=/mnt/borg/mnt/source/unifi/mongodb/unifi/unifi/event.bson; ls -l $DB_PATH; cp $DB_PATH /mnt/restore/unifi_event.bson'
+sudo docker exec borgmatic bash -c 'DB_PATH=/mnt/borg/mnt/source/unifi/mongodb/unifi_stat/unifi_stat/stat_5minutes.bson; ls -l $DB_PATH; cp $DB_PATH /mnt/restore/unifi_stat_5min.bson'
 borgmatic_umount
 
 # Validate if backup contains recent data.
