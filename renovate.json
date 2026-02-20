@@ -1,4 +1,9 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["github>JenswBE/setup//programming_configs/renovate/default"]
+  "extends": [
+    "github>JenswBE/setup//programming_configs/renovate/default"
+  ],
+  "ignoreDeps": [
+    "data.forgejo.org/forgejo/runner"
+  ]
 }
