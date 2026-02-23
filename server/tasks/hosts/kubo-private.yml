@@ -7,5 +7,6 @@
   loop:
     - borgmatic.timer
     - github-backup.timer
+    - grist-backup.timer
     - unifi-dump-mongodb.timer
   tags: ["systemd"]

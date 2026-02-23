@@ -20,6 +20,10 @@ jwcs_bouncer_firewall_key: "" # Alphanumeric string
 # See https://github.com/JenswBE/github-backup
 app_github_backup_pat: ""
 
+# Grist Backup
+app_grist_backup_doc_id: ""
+app_grist_backup_api_key: ""
+
 # Unifi Network Application
 app_unifi_mongodb_user: ""
 app_unifi_mongodb_password: ""

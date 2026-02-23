@@ -33,6 +33,7 @@ Services which are backed up:
   - `jellyfin`: Music files
 - Kubo Private
   - `github-backup` (GitHub Backup): All GitHub repo's
+  - `grist-backup` (Grist): All Grist data
   - `unifi-mongodb` (MongoDB): DB data
 
 ## Prepare
@@ -189,6 +190,12 @@ sudo docker exec borgmatic apk add git
 sudo docker exec borgmatic sh -c "find /mnt/borg/mnt/source/github_backup/backup -mindepth 1 -maxdepth 1 -type d -exec bash -c 'cd {}; git log -1 --all --date-order --format=\"%cI => \${PWD##*/}\"' \; | sort -r | head -n 3"
 
 # Unmount repo
+borgmatic_umount
+
+# === grist-backup: All Grist data ===
+borgmatic_mount grist_backup backup
+# Data (Listed entries should be recent)
+sudo docker exec borgmatic ls -lh /mnt/borg/mnt/source/grist_backup/backup
 borgmatic_umount
 
 # === unifi-mongodb: MongoDB data ===

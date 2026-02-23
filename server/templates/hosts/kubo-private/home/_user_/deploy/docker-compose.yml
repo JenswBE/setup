@@ -147,6 +147,37 @@ services:
     environment:
       - "TZ=#VAR: general_timezone :VAR#"
 
+  grist-backup:
+    <<: *defaults
+    profiles: ["scheduled"]
+    image: docker.io/curlimages/curl:latest
+    container_name: grist-backup
+    user: "#VAR: ansible_real_user_id :VAR#:#VAR: ansible_real_group_id :VAR#"
+    command:
+      - sh
+      - -c
+      - |
+        set -euo pipefail
+        source /config.env
+        DOWNLOAD_URL="https://docs.getgrist.com/api/docs/$${GRIST_DOC_ID}/download"
+        curl "$${DOWNLOAD_URL}?nohistory=false&template=false" \
+          --fail-with-body --silent \
+          -H "accept: application/x-sqlite3" \
+          -H "Authorization: Bearer $${GRIST_API_KEY}" \
+          -o /backup/grist.grist
+        curl "$${DOWNLOAD_URL}/xlsx" \
+          --fail-with-body --silent \
+          -H "accept: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" \
+          -H "Authorization: Bearer $${GRIST_API_KEY}" \
+          -o /backup/grist.xlsx
+        echo "Grist backup completed successfully"
+    restart: "no" # Will be called by systemd timer
+    volumes:
+      - ./grist-backup/config.env:/config.env:ro
+      - grist-backup:/backup
+    environment:
+      - "TZ=#VAR: general_timezone :VAR#"
+
   borgmatic:
     <<: *defaults
     profiles: ["scheduled"]
@@ -158,6 +189,8 @@ services:
       # === Backup locations ===
       # GitHub Backup
       - "github-backup:/mnt/source/github_backup/backup:ro"
+      # Grist Backup
+      - "grist-backup:/mnt/source/grist_backup/backup:ro"
       # Unifi
       - "unifi-mongodb-dump:/mnt/source/unifi/mongodb:ro"
       # === Config and cache ===
@@ -201,4 +234,5 @@ volumes:
   caddy-config:
   caddy-data:
   github-backup:
+  grist-backup:
   unifi-mongodb-dump:
