@@ -395,7 +395,7 @@ services:
 
   bjoetiek-easyappointments-db:
     <<: [*defaults, *healthcheck-mysql]
-    image: docker.io/library/mysql:8.0
+    image: docker.io/library/mysql:8.4
     container_name: bjoetiek-easyappointments-db
     networks:
       - bjoetiek-easyappointments
