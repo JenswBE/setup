@@ -5,6 +5,12 @@ app_bjoetiek_directus_github_token: ""
 app_bjoetiek_directus_key: "" # cat /proc/sys/kernel/random/uuid
 app_bjoetiek_directus_secret: "" # openssl rand -hex 32
 
+# Bjoetiek - EasyAppointments
+# See https://easyappointments.org/documentation/google-calendar-sync/
+app_bjoetiek_easyappointments_db_password: ""
+app_bjoetiek_easyappointments_google_client_id: ""
+app_bjoetiek_easyappointments_google_client_secret: ""
+
 # Borgmatic
 # See also basics.yml
 app_borgmatic_upload_limit: unlimited
