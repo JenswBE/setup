@@ -1,0 +1,10 @@
+[Unit]
+Description=Run the sync command for Bjoetiek EasyAppointments each hour
+
+[Timer]
+OnCalendar=hourly
+Persistent=false
+RandomizedDelaySec=600
+
+[Install]
+WantedBy=timers.target

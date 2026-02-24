@@ -19,6 +19,7 @@
   loop:
     - alpine-sqlite-build.timer
     - bjoetiek-directus-dump-db.timer
+    - bjoetiek-easyappointments-sync.timer
     - borgmatic.timer
     - goatcounter-dump-db.timer
     - isa-rclone.timer

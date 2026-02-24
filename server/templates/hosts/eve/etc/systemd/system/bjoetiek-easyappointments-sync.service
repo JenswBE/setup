@@ -1,0 +1,7 @@
+[Unit]
+Description=Run the sync command for Bjoetiek EasyAppointments
+OnFailure=unit-fail-mail@%n.service
+
+[Service]
+Type=exec
+ExecStart={{ docker_path }} exec bjoetiek-easyappointments php index.php console sync
