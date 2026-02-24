@@ -362,7 +362,7 @@ services:
 
   bjoetiek-easyappointments:
     <<: *defaults
-    image: docker.io/alextselegidis/easyappointments:latest
+    build: ./bjoetiek/easyappointments
     container_name: bjoetiek-easyappointments
     networks:
       - caddy-public
