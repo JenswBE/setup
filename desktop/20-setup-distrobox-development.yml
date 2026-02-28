@@ -1,7 +1,7 @@
 - name: Setup Development distrobox (run inside)
   hosts: localhost
   vars_files:
-    - vars.public.yml
+    - public.yml
 
   pre_tasks:
     - name: Check if inside distrobox
@@ -11,6 +11,7 @@
 
   tasks:
     - name: Ensure common tools are installed
+      become: true
       ansible.builtin.package:
         name:
           - dnsutils # Provides "dig"
