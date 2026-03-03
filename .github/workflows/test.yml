@@ -37,6 +37,7 @@ jobs:
         with:
           check-latest: true
           go-version: ${{ env.GO_VERSION }}
+          cache-dependency-path: "**/go.sum"
 
       - name: Pull common linter configs
         run: wget -O .golangci.yml https://raw.githubusercontent.com/JenswBE/setup/main/programming_configs/golang/.golangci.yml
