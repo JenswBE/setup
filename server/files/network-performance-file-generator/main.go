@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -57,7 +58,7 @@ func handleRequest(w http.ResponseWriter, r *http.Request) {
 	sizeMB, err := parseSizeParam(r.URL.Query().Get("size_mb"), DefaultSizeMB)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		_, err := w.Write([]byte(err.Error()))
+		_, err := w.Write([]byte(err.Error())) //#nosec G705 Custom errors without the input value
 		if err != nil {
 			slog.Warn("Failed to write error response", "error", err)
 		}
@@ -76,18 +77,19 @@ func handleRequest(w http.ResponseWriter, r *http.Request) {
 }
 
 func parseSizeParam(input string, defaultValue int) (int, error) {
+	input = strings.TrimSpace(input)
 	if input == "" {
 		return defaultValue, nil
 	}
 
 	value, err := strconv.Atoi(input)
 	if err != nil {
-		slog.Warn("Unable to parse value of param", "param", SizeMBParam, "value", input, "error", err)
+		slog.Warn("Unable to parse value of param as number", "param", SizeMBParam)
 		return 0, fmt.Errorf("unable to parse provided value for param %s as integer", SizeMBParam)
 	}
 
 	if value <= 0 {
-		slog.Warn("Value of param must be a positive integer", "param", SizeMBParam, "value", input)
+		slog.Warn("Value of param must be a positive integer", "param", SizeMBParam, "value", value) //#nosec G706 Value already parsed as int
 		return 0, fmt.Errorf("value for param %s must be a positive integer", SizeMBParam)
 	}
 
