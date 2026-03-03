@@ -370,6 +370,8 @@ services:
     depends_on:
       bjoetiek-easyappointments-db:
         condition: service_healthy
+    volumes:
+      - bjoetiek-easyappointments-backup:/backup
     environment:
       BASE_URL: "https://boekingen.#VAR: general_domain_bjoetiek :VAR#"
       DEBUG_MODE: TRUE
@@ -401,6 +403,7 @@ services:
       - bjoetiek-easyappointments
     volumes:
       - "#VAR: general_path_appdata :VAR#/bjoetiek/easyappointments/mysql/data:/var/lib/mysql"
+      - bjoetiek-easyappointments-db-dump:/backup
     environment:
       TZ: "#VAR: general_timezone :VAR#"
       MYSQL_DATABASE: easyappointments
@@ -993,9 +996,12 @@ services:
       - SYS_ADMIN # Required for borg mount
     volumes:
       # === Backup locations ===
-      # Bjoetiek Y
+      # Bjoetiek Y - Directus
       - "#VAR: general_path_appdata :VAR#/bjoetiek/directus/uploads:/mnt/source/bjoetiek_y/directus/uploads:z,ro"
       - "bjoetiek-directus-db-dump:/mnt/source/bjoetiek_y/directus/dbdump:ro"
+      # Bjoetiek Y - EasyAppointments
+      - "bjoetiek-easyappointments-backup:/mnt/source/bjoetiek_y/easyappointments/backup:ro"
+      - "bjoetiek-easyappointments-db-dump:/mnt/source/bjoetiek_y/easyappointments/db:ro"
       # GoatCounter
       - "#VAR: general_path_appdata :VAR#/goatcounter/db:/mnt/source/goatcounter/db:ro"
       # Keycloak
@@ -1058,6 +1064,8 @@ services:
 # #################################################################
 volumes:
   bjoetiek-directus-db-dump:
+  bjoetiek-easyappointments-backup:
+  bjoetiek-easyappointments-db-dump:
   caddy-private-config:
   caddy-private-data:
   caddy-public-access-logs:

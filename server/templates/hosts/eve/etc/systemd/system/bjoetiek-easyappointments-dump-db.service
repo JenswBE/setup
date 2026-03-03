@@ -1,0 +1,7 @@
+[Unit]
+Description=Dump Bjoetiek EasyAppointments DB for backup
+OnFailure=unit-fail-mail@%n.service
+
+[Service]
+Type=exec
+ExecStart={{ docker_path }} exec bjoetiek-easyappointments-db sh -c "mysqldump --all-databases -u root -p$${MYSQL_ROOT_PASSWORD} > /backup/bjoetiek-easyappointments.sqldump"

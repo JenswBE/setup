@@ -5,6 +5,8 @@ Services which are backed up:
 - Eve
   - `bjoetiek-directus` (Directus): Uploaded content
   - `bjoetiek-directus-db` (Postgres): DB data
+  - `bjoetiek-easyappointments` (EasyAppointments): Built-in backup
+  - `bjoetiek-easyappointments-db` (MySQL): DB data
   - `clementines-db` (CouchDB): DB data ==> TODO
   - `goatcounter` (GoatCounter): SQLite DB
   - `keycloak-db` (Postgres): DB data
@@ -48,6 +50,19 @@ compare_actual_backup_flat bjoetiek-directus /directus/uploads bjoetiek_y direct
 
 # === bjoetiek-directus-db: Postgres DB data ===
 validate_postgres bjoetiek_y directus/dbdump/bjoetiek-directus.pg_dump
+
+# === bjoetiek-easyappointments: Built-in backup ===
+borgmatic_mount bjoetiek_y easyappointments
+sudo docker exec borgmatic bash -c 'ls -l /mnt/borg/mnt/source/bjoetiek_y/easyappointments/backup/*.gz'
+sudo docker exec borgmatic bash -c 'cat /mnt/borg/mnt/source/bjoetiek_y/easyappointments/backup/*.gz' | gunzip - | grep -F ea_appointments | tail -n 3
+echo "Number of tables:"
+sudo docker exec borgmatic bash -c 'cat /mnt/borg/mnt/source/bjoetiek_y/easyappointments/backup/*.gz' | gunzip - | grep -F 'CREATE TABLE' | wc -l
+borgmatic_umount
+
+# === bjoetiek-easyappointments-db: MySQL DB dump ===
+borgmatic_mount bjoetiek_y easyappointments
+sudo docker exec borgmatic find /mnt/borg/mnt/source/bjoetiek_y/easyappointments/db -name "*.sqldump" -exec echo {} \; -exec tail -n1 {} \; -exec echo Number of tables: \; -exec bash -c "grep -F 'CREATE TABLE' {} | wc -l" \;
+borgmatic_umount
 
 # === clementines-db: CouchDB ===
 TODO

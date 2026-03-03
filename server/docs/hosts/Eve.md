@@ -9,6 +9,7 @@ VPS
 - Every 5 mins: Nextcloud cron.php (`templates/hosts/eve/etc/systemd/system/nextcloud-cron.timer`)
 - Every 10 mins: Nextcloud generate previews (`templates/hosts/eve/etc/systemd/system/nextcloud-preview-generator.timer`)
 - Every 15 mins: IMAP Save Attachments (`templates/hosts/eve/etc/systemd/system/isa-rclone.timer`)
+- Every hour: Sync Google Calendar to Bjoetiek EasyAppointments (`templates/hosts/eve/etc/systemd/system/bjoetiek-easyappointments-sync`)
 
 ### 01:00 Daily application jobs
 
@@ -18,6 +19,8 @@ VPS
 ### 02:00 Prepare backup
 
 - Dump Bjoetiek Directus DB (`templates/hosts/eve/etc/systemd/system/bjoetiek-directus-dump-db.timer`)
+- Built-in Bjoetiek EasyAppointments backup (`templates/hosts/eve/etc/systemd/system/bjoetiek-easyappointments-backup.timer`)
+- Dump Bjoetiek EasyAppointments DB (`templates/hosts/eve/etc/systemd/system/bjoetiek-easyappointments-dump-db.timer`)
 - Dump Goatcounter DB (`templates/hosts/eve/etc/systemd/system/goatcounter-dump-db.timer`)
 - Dump Keycloak DB (`templates/hosts/eve/etc/systemd/system/keycloak-dump-db.timer`)
 - Dump Kristof Coenen Directus DB (`templates/hosts/eve/etc/systemd/system/kristofcoenen-directus-dump-db.timer`)

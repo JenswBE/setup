@@ -1,0 +1,8 @@
+[Unit]
+Description=Create Bjoetiek EasyAppointments backup
+OnFailure=unit-fail-mail@%n.service
+
+[Service]
+Type=exec
+ExecStartPre=-{{ docker_path }} exec bjoetiek-easyappointments bash -c "rm /backup/*"
+ExecStart={{ docker_path }} exec bjoetiek-easyappointments php index.php console backup /backup

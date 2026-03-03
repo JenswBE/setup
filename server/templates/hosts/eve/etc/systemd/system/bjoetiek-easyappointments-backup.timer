@@ -1,0 +1,10 @@
+[Unit]
+Description=Create Bjoetiek EasyAppointments backup each night
+
+[Timer]
+OnCalendar=02:00
+Persistent=true
+RandomizedDelaySec=600
+
+[Install]
+WantedBy=timers.target
