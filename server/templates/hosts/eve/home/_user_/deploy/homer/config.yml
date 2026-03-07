@@ -85,6 +85,12 @@ services:
         url: "https://ha.#VAR: general_domain_local :VAR#"
         <<: *default
 
+      - name: Keycloak
+        subtitle: Public | eve
+        logo: https://raw.githubusercontent.com/keycloak/keycloak-misc/main/logo/icon.svg
+        url: "https://auth.#VAR: general_domain_default :VAR#"
+        <<: *default
+
       - name: Koffan
         subtitle: Private | eve
         logo: https://cdn.jsdelivr.net/gh/selfhst/icons@main/png/koffan.png
@@ -124,22 +130,16 @@ services:
   - name: Observability
     icon: fas fa-chart-bar
     items:
+      - name: DMARC Report Viewer
+        subtitle: Private | kubo-private
+        logo: https://cdn.jsdelivr.net/gh/selfhst/icons/svg/nextcloud-mail.svg
+        url: "https://dmarc.#VAR: general_domain_local :VAR#"
+        <<: *default
+
       - name: Grafana
         subtitle: Private | kubo-observability
         logo: https://raw.githubusercontent.com/grafana/grafana/main/public/img/grafana_icon.svg
         url: "https://grafana.#VAR: general_domain_local :VAR#"
-        <<: *default
-
-      - name: Graylog
-        subtitle: Private | kubo-observability
-        logo: https://raw.githubusercontent.com/get-icon/geticon/master/icons/graylog.svg
-        url: "https://logs.#VAR: general_domain_local :VAR#"
-        <<: *default
-
-      - name: Keycloak
-        subtitle: Public | eve
-        logo: https://raw.githubusercontent.com/keycloak/keycloak-misc/main/logo/icon.svg
-        url: "https://auth.#VAR: general_domain_default :VAR#"
         <<: *default
 
       - name: PeaNUT

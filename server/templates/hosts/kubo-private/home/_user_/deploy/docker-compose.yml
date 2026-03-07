@@ -132,6 +132,22 @@ services:
           cpus: "2"
           memory: 2G
 
+  # ===========================
+  # =   DMARC REPORT VIEWER   =
+  # ===========================
+  dmarc-report-viewer:
+    <<: *defaults
+    image: ghcr.io/cry-inc/dmarc-report-viewer:latest
+    container_name: dmarc-report-viewer
+    environment:
+      IMAP_HOST: "#VAR: app_dmarcreportviewer_imap_host :VAR#"
+      IMAP_USER: "#VAR: app_dmarcreportviewer_imap_user :VAR#"
+      IMAP_PASSWORD: "#VAR: app_dmarcreportviewer_imap_pass :VAR#"
+      HTTP_SERVER_USER: "#VAR: app_dmarcreportviewer_http_user :VAR#"
+      HTTP_SERVER_PASSWORD: "#VAR: app_dmarcreportviewer_http_pass :VAR#"
+    networks:
+      - caddy
+
   # =========================
   # =         BACKUP        =
   # =========================
@@ -145,7 +161,7 @@ services:
       - ./github-backup/config.yml:/config.yml
       - github-backup:/backup
     environment:
-      - "TZ=#VAR: general_timezone :VAR#"
+      TZ: "#VAR: general_timezone :VAR#"
 
   grist-backup:
     <<: *defaults
@@ -176,7 +192,7 @@ services:
       - ./grist-backup/config.env:/config.env:ro
       - grist-backup:/backup
     environment:
-      - "TZ=#VAR: general_timezone :VAR#"
+      TZ: "#VAR: general_timezone :VAR#"
 
   borgmatic:
     <<: *defaults

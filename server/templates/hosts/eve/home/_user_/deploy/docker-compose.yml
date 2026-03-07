@@ -690,7 +690,7 @@ services:
     volumes:
       - "./homer/config.yml:/www/assets/config.yml:ro"
     environment:
-      - "TZ=#VAR: general_timezone :VAR#"
+      TZ: "#VAR: general_timezone :VAR#"
 
   # =========================
   # =       PAPERLESS       =

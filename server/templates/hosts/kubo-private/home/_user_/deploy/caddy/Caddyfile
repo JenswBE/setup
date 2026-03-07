@@ -21,6 +21,11 @@ import ./configs/shared_snippets.txt
 		import handler_local_blocky
 		import handler_local_crowdsec
 
+		@dmarc host "dmarc.#VAR: general_domain_local :VAR#"
+		handle @dmarc {
+			import default_local_reverse_proxy "http://dmarc-report-viewer:8080"
+		}
+
 		@ha host "ha.#VAR: general_domain_local :VAR#"
 		handle @ha {
 			import default_local_reverse_proxy "http://kubo-haos.virbr-nointernet.#VAR: general_domain_local :VAR#:8123"
