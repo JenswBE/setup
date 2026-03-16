@@ -22,6 +22,7 @@ import ./configs/shared_snippets.txt
 			crypto key sign-verify "#VAR: app_caddy_security_jwt_secret :VAR#"
 			enable identity provider keycloak
 			cookie domain "#VAR: general_domain_default :VAR#"
+			trust login redirect uri domain suffix "#VAR: general_domain_default :VAR#" path prefix /
 		}
 	}
 }
