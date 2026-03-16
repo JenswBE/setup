@@ -1,0 +1,7 @@
+[Unit]
+Description=Dump Jellystat DB for backup
+OnFailure=unit-fail-mail@%n.service
+
+[Service]
+Type=exec
+ExecStart={{ docker_path }} exec jellystat-db /bin/sh -c "pg_dump --verbose --format=c --blobs --dbname=jellystat --username=jellystat --no-password --file=/backup/jellystat.pg_dump"

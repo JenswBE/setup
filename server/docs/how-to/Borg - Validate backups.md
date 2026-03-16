@@ -33,6 +33,8 @@ Services which are backed up:
   - `immich`: Uploaded and archived photos
   - `immich-db`: Postgres DB data
   - `jellyfin`: Music files
+  - `jellystat`: Backup files
+  - `jellystat-db` (Postgres): DB data
 - Kubo Private
   - `github-backup` (GitHub Backup): All GitHub repo's
   - `grist-backup` (Grist): All Grist data
@@ -188,6 +190,12 @@ validate_postgres photos immich/dbdump/immich.pg_dumpall
 
 # === jellyfin: Music files ===
 compare_actual_backup_recursive jellyfin /media/Music music bulk
+
+# === jellystat: Backup data ===
+TODO
+
+# === jellystat-db: Postgres DB data ===
+validate_postgres jellystat dbdump/jellystat.pg_dump
 ```
 
 ## Kubo Private

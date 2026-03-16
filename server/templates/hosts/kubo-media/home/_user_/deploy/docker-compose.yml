@@ -9,10 +9,55 @@ x-defaults: &defaults
   # Putting the anchor in this file ensures it's a valid YAML file for Renovate Bot
   #VAR: lookup('ansible.builtin.file', 'files/docker-compose-defaults.yml',) | indent(width=2) :VAR#
 
+x-healthcheck-postgres: &healthcheck-postgres
+  healthcheck:
+    test:
+      [
+        "CMD-SHELL",
+        "sh -c 'pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}'",
+      ]
+    interval: 30s
+    timeout: 10s
+    retries: 5
+
 #################################################################
 #                            SERVICES                           #
 #################################################################
 services:
+  # =========================
+  # =         PROXY         =
+  # =========================
+  # Having 2 reverse proxies (1 on host network and 1 on bridge network)
+  # allows to have the real client IP's available inside the bridged
+  # Caddy instance (using PROXY protocol). In case you would only have
+  # a single reverse proxy on the host network, you would loose all the convenience
+  # of using Docker networks.
+  nginx:
+    <<: *defaults
+    image: docker.io/library/nginx:alpine
+    container_name: nginx
+    network_mode: host
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/nginx.conf:ro
+
+  caddy:
+    <<: *defaults
+    build: ./caddy
+    container_name: caddy
+    ports:
+      - 127.0.0.1:2080:80
+      - 127.0.0.1:2443:443
+    networks:
+      - caddy
+    volumes:
+      - ./caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./caddy/configs:/etc/caddy/configs:ro
+      - "#VAR: general_path_appdata :VAR#/caddy/access_logs:/access_logs"
+      - "#VAR: general_path_appdata :VAR#/caddy/config:/config"
+      - "#VAR: general_path_appdata :VAR#/caddy/data:/data"
+    environment:
+      TZ: "#VAR:general_timezone:VAR#"
+
   # =========================
   # =        IMMICH         =
   # =========================
@@ -132,6 +177,42 @@ services:
           cpus: "4"
           memory: 4G
 
+  jellystat:
+    <<: *defaults
+    image: docker.io/cyfershepard/jellystat:latest
+    container_name: jellystat
+    networks:
+      - caddy
+      - jellystat
+    depends_on:
+      jellystat-db:
+        condition: service_healthy
+    environment:
+      TZ: "#VAR: general_timezone :VAR#"
+      POSTGRES_USER: jellystat
+      POSTGRES_PASSWORD: "#VAR: app_jellystat_db_pass :VAR#"
+      POSTGRES_IP: jellystat-db
+      POSTGRES_PORT: 5432
+      JWT_SECRET: "#VAR: app_jellystat_jwt_secret :VAR#"
+    volumes:
+      - "#VAR: general_path_appdata :VAR#/jellystat/jellystat/backup:/app/backend/backup-data"
+
+  jellystat-db:
+    <<: [*defaults, *healthcheck-postgres]
+    image: docker.io/library/postgres:15.2
+    container_name: jellystat-db
+    shm_size: 1gb
+    networks:
+      - jellystat
+    volumes:
+      - "#VAR: general_path_appdata :VAR#/jellystat/postgres/data:/var/lib/postgresql/data"
+      - "jellystat-db-dump:/backup"
+    environment:
+      TZ: "#VAR: general_timezone :VAR#"
+      POSTGRES_DB: "jellystat"
+      POSTGRES_USER: "jellystat"
+      POSTGRES_PASSWORD: "#VAR: app_jellystat_db_pass :VAR#"
+
   # =========================
   # =       SYNCTHING       =
   # =========================
@@ -164,6 +245,9 @@ services:
       - SYS_ADMIN # Required for borg mount
     volumes:
       # === Backup locations ===
+      # Jellystat
+      - "#VAR: general_path_appdata :VAR#/jellystat/jellystat/backup:/mnt/source/jellystat/backup:ro"
+      - "jellystat-db-dump:/mnt/source/jellystat/dbdump:ro"
       # Photo's
       - "#VAR: general_path_appdata :VAR#/immich/immich/data:/mnt/source/photos/immich/data:ro"
       - "immich-db-dump:/mnt/source/photos/immich/dbdump:ro"
@@ -198,8 +282,14 @@ services:
 #                            NETWORKS                           #
 #################################################################
 networks:
+  caddy:
+    name: caddy
+
   immich:
     name: immich
+
+  jellystat:
+    name: jellystat
 
 #################################################################
 #                            VOLUMES                            #
@@ -207,3 +297,4 @@ networks:
 volumes:
   immich-db-dump:
   immich-model-cache:
+  jellystat-db-dump:

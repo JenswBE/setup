@@ -40,6 +40,12 @@ services:
         url: "https://jellyfin.#VAR: general_domain_default :VAR#"
         <<: *default
 
+      - name: Jellystat
+        subtitle: Private | kubo-media
+        logo: https://cdn.jsdelivr.net/gh/selfhst/icons/png/jellystat.png
+        url: "https://jellystat.#VAR: general_domain_local :VAR#"
+        <<: *default
+
       - name: Nextcloud
         subtitle: Public | eve
         logo: https://cdn.jsdelivr.net/gh/selfhst/icons/svg/nextcloud.svg

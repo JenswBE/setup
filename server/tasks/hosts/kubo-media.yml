@@ -18,4 +18,5 @@
     # Timers
     - borgmatic.timer
     - immich-dump-db.timer
+    - jellystat-dump-db.timer
   tags: ["systemd"]

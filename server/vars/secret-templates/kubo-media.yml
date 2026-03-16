@@ -14,3 +14,7 @@ jwcs_bouncer_firewall_key: "" # Alphanumeric string
 
 # Immich
 app_immich_db_pass_postgres: ""
+
+# Jellystat
+app_jellystat_db_pass: ""
+app_jellystat_jwt_secret: ""

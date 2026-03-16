@@ -1,0 +1,3 @@
+{{ lookup('ansible.builtin.template', 'caddy/snippets.Caddyfile', variable_start_string='#VAR:', variable_end_string=':VAR#') }}
+
+{{ lookup('ansible.builtin.template', 'caddy/private/snippets.Caddyfile', variable_start_string='#VAR:', variable_end_string=':VAR#') }}
