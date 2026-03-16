@@ -88,6 +88,7 @@ sudo apt install ./code.deb
 rm code.deb
 distrobox-export --app code
 # Start and stop VS Code (ensures below path is created)
+ln -fs "$(pwd)/vscode/argv.json" ~/.vscode/argv.json
 ln -fs "$(pwd)/vscode/settings.jsonc" ~/.config/Code/User/settings.json
 ln -fs "$(pwd)/vscode/keybindings.jsonc" ~/.config/Code/User/keybindings.json
 CMD_CODE_EXT_INSTALL="code --force --install-extension"
