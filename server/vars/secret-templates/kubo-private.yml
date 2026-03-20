@@ -32,5 +32,6 @@ app_grist_backup_doc_id: ""
 app_grist_backup_api_key: ""
 
 # Unifi Network Application
+app_unifi_mongodb_root_password: ""
 app_unifi_mongodb_user: ""
 app_unifi_mongodb_password: ""

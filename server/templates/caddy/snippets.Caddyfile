@@ -53,7 +53,11 @@
 
 (default_reverse_proxy) {
 	import secure_headers
-	reverse_proxy {args[0]}
+	reverse_proxy {args[0]} {
+		header_up X-Forwarded-Proto {scheme}
+		header_up X-Real-IP {remote_host}
+		header_up Host {host}
+	}
 	log_append upstream_host {rp.upstream.host}
 }
 
@@ -63,6 +67,9 @@
 		transport http {
 			tls_insecure_skip_verify
 		}
+		header_up X-Forwarded-Proto {scheme}
+		header_up X-Real-IP {remote_host}
+		header_up Host {host}
 	}
 	log_append upstream_host {rp.upstream.host}
 }
