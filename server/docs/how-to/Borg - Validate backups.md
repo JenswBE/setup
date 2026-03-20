@@ -158,17 +158,23 @@ validate_postgres wtech directus/dbdump/wtech-directus.pg_dump
 ## Fiona Code
 
 ```bash
-# === git: SQLite DB ===
-# Copy DB to restore point
+# === git: Source code and SQLite DB ===
+# List backup source
 borgmatic_mount git forgejo/data
+sudo docker compose exec forgejo /bin/sh -c "find /var/lib/gitea/git/repositories -mindepth 2 -maxdepth 2 -type d -exec sh -c 'cd {}; git log -1 --all --date-order --format=\"%cI => \${PWD##*/}\"' \; | sort -r | head -n 3"
+
+# List backup contents
+sudo docker exec borgmatic apk add git
+sudo docker exec borgmatic git config --system --add safe.directory '*'
+sudo docker exec borgmatic sh -c "find /mnt/borg/mnt/source/git/forgejo/data/git/repositories -mindepth 2 -maxdepth 2 -type d -exec bash -c 'cd {}; git log -1 --all --date-order --format=\"%cI => \${PWD##*/}\"' \; | sort -r | head -n 3"
+
+# Copy DB to restore point
 sudo docker exec borgmatic bash -c 'DB_PATH=/mnt/borg/mnt/source/git/forgejo/data/data/forgejo.backup.sqlite3; ls -l $DB_PATH; cp $DB_PATH /mnt/restore/git.sqlite3'
 borgmatic_umount
 
 # Validate if backup contains recent SSH key usage.
 # The accuracy of this check depens on the activity in the application.
 sudo docker run --pull never --rm -v ${APPDATA_DIR:?}/borgmatic/borgmatic/restore:/backup alpine-sqlite sqlite3 --table /backup/git.sqlite3 "select datetime(max(updated_unix), 'auto') as last_ssh_key_usage from public_key;"
-
-TODO SOURCE CODE
 ```
 
 ## Kubo HA
@@ -180,19 +186,26 @@ TODO
 ```bash
 # === immich: Uploaded and archived photos ===
 # Note: Immich's data folder has submounts. Therefore, the source of the first check might have newer files than the backup.
-compare_actual_backup_recursive immich /usr/src/app/upload photos immich/data
-compare_actual_backup_recursive immich /usr/src/app/upload/library photos truenas/immich/library
-compare_actual_backup_recursive immich /usr/src/app/upload/upload photos truenas/immich/upload
+compare_actual_backup_recursive immich /data photos immich/data
+compare_actual_backup_recursive immich /data/library photos truenas/immich/library
+compare_actual_backup_recursive immich /data/upload photos truenas/immich/upload
 compare_actual_backup_recursive immich /external/archive photos truenas/archive
 
 # === immich-db: Postgres DB data ===
 validate_postgres photos immich/dbdump/immich.pg_dumpall
 
 # === jellyfin: Music files ===
-compare_actual_backup_recursive jellyfin /media/Music music bulk
+compare_actual_backup_recursive jellyfin /media/music music bulk
 
 # === jellystat: Backup data ===
-TODO
+# Mount repo
+borgmatic_mount jellystat backup
+# List backups
+docker compose exec borgmatic bash -c 'ls -lrh /mnt/borg/mnt/source/jellystat/backup | head -n4'
+# List content of latest backup
+docker compose exec borgmatic bash -c 'ls -1r /mnt/borg/mnt/source/jellystat/backup/* | head -n1 | tr \\n \\0 | xargs -0 head -c 500; echo'
+# Unmount repo
+borgmatic_umount
 
 # === jellystat-db: Postgres DB data ===
 validate_postgres jellystat dbdump/jellystat.pg_dump
@@ -224,11 +237,13 @@ borgmatic_umount
 # === unifi-mongodb: MongoDB data ===
 # Copy DB to restore point
 borgmatic_mount unifi mongodb
-sudo docker exec borgmatic bash -c 'DB_PATH=/mnt/borg/mnt/source/unifi/mongodb/unifi/unifi/event.bson; ls -l $DB_PATH; cp $DB_PATH /mnt/restore/unifi_event.bson'
+sudo docker exec borgmatic bash -c 'DB_PATH=/mnt/borg/mnt/source/unifi/mongodb/unifi/unifi/alert.bson; ls -l $DB_PATH; cp $DB_PATH /mnt/restore/unifi_alert.bson'
 sudo docker exec borgmatic bash -c 'DB_PATH=/mnt/borg/mnt/source/unifi/mongodb/unifi_stat/unifi_stat/stat_5minutes.bson; ls -l $DB_PATH; cp $DB_PATH /mnt/restore/unifi_stat_5min.bson'
+# Currently there is no useful data in unifi_audit
+sudo docker exec borgmatic bash -c 'ls -lhS /mnt/borg/mnt/source/unifi/mongodb/unifi_audit/unifi_audit/*.bson'
 borgmatic_umount
 
 # Validate if backup contains recent data.
-sudo docker run --rm -v ${APPDATA_DIR:?}/borgmatic/borgmatic/restore:/backup docker.io/library/mongo sh -c "bsondump /backup/unifi_event.bson | jq --slurp '.' | jq '.[].datetime.\"\$date\".\"\$numberLong\"' | sort -r | head -n1 | cut -c2-11 | sed '1s/^/@/' | date -f-"
+sudo docker run --rm -v ${APPDATA_DIR:?}/borgmatic/borgmatic/restore:/backup docker.io/library/mongo sh -c "bsondump /backup/unifi_alert.bson | jq --slurp '.' | jq '.[].datetime.\"\$date\".\"\$numberLong\"' | sort -r | head -n1 | cut -c2-11 | sed '1s/^/@/' | date -f-"
 sudo docker run --rm -v ${APPDATA_DIR:?}/borgmatic/borgmatic/restore:/backup docker.io/library/mongo sh -c "bsondump /backup/unifi_stat_5min.bson | jq --slurp '.' | jq '.[].datetime.\"\$date\".\"\$numberLong\"' | sort -r | head -n1 | cut -c2-11 | sed '1s/^/@/' | date -f-"
 ```
