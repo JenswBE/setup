@@ -215,7 +215,7 @@ services:
     environment:
       TZ: "#VAR: general_timezone :VAR#"
       PUID: "#VAR: ansible_real_user_id :VAR#"
-      PGID: "#VAR: ansible_real_user_id :VAR#"
+      PGID: "#VAR: ansible_real_group_id :VAR#"
       DB_TYPE: postgres
       DB_HOST: wikijs-db
       DB_PORT: 5432
@@ -298,6 +298,7 @@ services:
     <<: *defaults
     image: docker.io/jenswbe/dead-link-checker:latest
     container_name: delic
+    user: "#VAR: ansible_real_user_id :VAR#:#VAR: ansible_real_group_id :VAR#"
     volumes:
       - "./delic/config.yml:/config.yml:ro,z"
     environment:
@@ -596,7 +597,7 @@ services:
     <<: *defaults
     image: docker.io/arp242/goatcounter:2.7
     container_name: goatcounter
-    user: "#VAR: ansible_real_user_id :VAR#"
+    user: "#VAR: ansible_real_user_id :VAR#:#VAR: ansible_real_group_id :VAR#"
     networks:
       - caddy-public
     volumes:
@@ -660,6 +661,7 @@ services:
     <<: *defaults
     image: docker.io/vaultwarden/server:latest
     container_name: vaultwarden
+    user: "#VAR: ansible_real_user_id :VAR#:#VAR: ansible_real_group_id :VAR#"
     networks:
       - caddy-public
     environment:
@@ -684,7 +686,7 @@ services:
     <<: *defaults
     image: docker.io/b4bz/homer:latest
     container_name: homer
-    user: "#VAR: ansible_real_user_id :VAR#"
+    user: "#VAR: ansible_real_user_id :VAR#:#VAR: ansible_real_group_id :VAR#"
     networks:
       - caddy-private
     volumes:
@@ -962,7 +964,7 @@ services:
     environment:
       TZ: "#VAR: general_timezone :VAR#"
       PUID: "#VAR: ansible_real_user_id :VAR#"
-      PGID: "#VAR: ansible_real_user_id :VAR#"
+      PGID: "#VAR: ansible_real_group_id :VAR#"
 
   # =========================
   # =         BACKUP        =
