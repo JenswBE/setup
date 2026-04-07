@@ -667,6 +667,7 @@ services:
     environment:
       TZ: "#VAR: general_timezone :VAR#"
       DOMAIN: "https://vault.#VAR: general_domain_default :VAR#"
+      INVITATIONS_ALLOWED: "false"
       PASSWORD_HINTS_ALLOWED: "false"
       SIGNUPS_ALLOWED: "false"
       SMTP_HOST: "#VAR: mailjet_host :VAR#"
