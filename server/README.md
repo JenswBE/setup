@@ -11,13 +11,15 @@
 1. Download latest version from <https://www.debian.org/distrib/netinst>
 2. Install with following settings:
    - Bare metal
-     - Partition disks: Guided - use entire disk and set up encrypted LVM
+     - Partition disks: Guided - use entire disk and set up encrypted LVM => Add backup passphrase!!!
      - Partition scheme: Separate /var and /srv, swap < 1GB (for servers)
      - Amount of volume group: 50%
    - VM
-     - Partition disks: Guided - use entire disk and set up LVM
-     - Partition scheme: Separate /var and /srv, swap < 1GB (for servers)
-     - Amount of volume group: 100%
+     1. At boot menu of installer => Advanced options => Graphical automated install
+     2. Provide URL to preseed file
+     3. Wait for the install to finish
+     4. Set CPU cores to 4
+     5. After restarting the VM, update the password and authorize SSH keys
 
 ### VM clone
 
