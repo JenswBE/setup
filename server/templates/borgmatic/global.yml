@@ -31,4 +31,4 @@ commands:
 
   - after: everything
     run: # Restore original permission to allow Ansible deployments
-      - "chown #VAR: ansible_real_user_id :VAR#:#VAR: ansible_real_group_id :VAR# -R /root/.ssh"
+      - "chown #VAR: ansible_facts['real_user_id'] :VAR#:#VAR: ansible_facts['real_group_id'] :VAR# -R /root/.ssh"

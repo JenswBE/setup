@@ -12,15 +12,15 @@
         state: directory
         path: "{{ runner_data_dir }}"
         mode: "0750"
-        owner: "{{ ansible_real_user_id }}"
-        group: "{{ ansible_real_group_id }}"
+        owner: "{{ ansible_facts['real_user_id'] }}"
+        group: "{{ ansible_facts['real_group_id'] }}"
 
     - name: Ensure runner config exists
       ansible.builtin.template:
         src: "hosts/{{ inventory_hostname }}/runner-config.yml"
         dest: "{{ [runner_data_dir, 'config.yml'] | path_join }}"
-        owner: "{{ ansible_real_user_id }}"
-        group: "{{ ansible_real_group_id }}"
+        owner: "{{ ansible_facts['real_user_id'] }}"
+        group: "{{ ansible_facts['real_group_id'] }}"
         mode: "0644"
 
     - name: Ensure runner cache dir exists
@@ -28,5 +28,5 @@
         state: directory
         path: "{{ runner_data_dir }}/.cache"
         mode: "2755" # With SGID
-        owner: "{{ ansible_real_user_id }}"
-        group: "{{ ansible_real_group_id }}"
+        owner: "{{ ansible_facts['real_user_id'] }}"
+        group: "{{ ansible_facts['real_group_id'] }}"

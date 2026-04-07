@@ -47,7 +47,7 @@ services:
       DOCKER_CERT_PATH: /certs/client
       DOCKER_TLS_VERIFY: "1"
     # User without root privileges, but with access to `./data`.
-    user: "#VAR: ansible_real_user_id :VAR#:#VAR: ansible_real_group_id :VAR#"
+    user: "#VAR: ansible_facts['real_user_id'] :VAR#:#VAR: ansible_facts['real_group_id'] :VAR#"
     networks:
       - dind
     volumes:

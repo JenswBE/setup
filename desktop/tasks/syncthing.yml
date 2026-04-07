@@ -46,8 +46,8 @@
       PublishPort=22000:22000
       Environment=TZ={{ current_timezone.stdout | trim }}
       UserNS=keep-id
-      Environment=PUID={{ ansible_real_user_id }}
-      Environment=PGID={{ ansible_real_group_id }}
+      Environment=PUID={{ ansible_facts['real_user_id'] }}
+      Environment=PGID={{ ansible_facts['real_group_id'] }}
 
       [Install]
       # Start by default on boot

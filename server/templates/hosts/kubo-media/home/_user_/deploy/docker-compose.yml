@@ -158,7 +158,7 @@ services:
     <<: *defaults
     image: docker.io/jellyfin/jellyfin:latest
     container_name: jellyfin
-    user: "#VAR: ansible_real_user_id :VAR#:#VAR: ansible_real_group_id :VAR#"
+    user: "#VAR: ansible_facts['real_user_id'] :VAR#:#VAR: ansible_facts['real_group_id'] :VAR#"
     # # See https://jellyfin.org/docs/general/administration/hardware-acceleration/intel#configure-with-linux-virtualization
     # group_add: # By id as these may not exist within the container. Needed to provide permissions to the QSV/VA-API Devices
     #   - "105" # Group "render"
@@ -230,8 +230,8 @@ services:
       - "/data/bulk/media/media/music:/data/music"
     environment:
       TZ: "#VAR: general_timezone :VAR#"
-      PUID: "#VAR: ansible_real_user_id :VAR#"
-      PGID: "#VAR: ansible_real_user_id :VAR#"
+      PUID: "#VAR: ansible_facts['real_user_id'] :VAR#"
+      PGID: "#VAR: ansible_facts['real_user_id'] :VAR#"
 
   # =========================
   # =         BACKUP        =

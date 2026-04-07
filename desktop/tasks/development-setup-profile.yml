@@ -39,8 +39,8 @@
     passphrase: "{{ ssh_key_passphrase.user_input | trim }}"
     comment: "GitHub {{ profile_name }} on {{ ansible_hostname | capitalize }}"
     regenerate: never
-    owner: "{{ ansible_real_user_id }}"
-    group: "{{ ansible_real_group_id }}"
+    owner: "{{ ansible_facts['real_user_id'] }}"
+    group: "{{ ansible_facts['real_group_id'] }}"
     mode: "600"
 
 - name: Confirm SSH pubkey setup on GitHub

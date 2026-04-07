@@ -65,7 +65,7 @@ services:
     <<: *defaults
     image: ghcr.io/0xerr0r/blocky:latest
     container_name: blocky
-    user: "#VAR: ansible_real_user_id :VAR#:#VAR: ansible_real_group_id :VAR#"
+    user: "#VAR: ansible_facts['real_user_id'] :VAR#:#VAR: ansible_facts['real_group_id'] :VAR#"
     networks:
       - caddy
     ports:
@@ -175,7 +175,7 @@ services:
     profiles: ["scheduled"]
     image: docker.io/curlimages/curl:latest
     container_name: grist-backup
-    user: "#VAR: ansible_real_user_id :VAR#:#VAR: ansible_real_group_id :VAR#"
+    user: "#VAR: ansible_facts['real_user_id'] :VAR#:#VAR: ansible_facts['real_group_id'] :VAR#"
     command:
       - sh
       - -c

@@ -54,10 +54,10 @@ services:
     <<: *defaults
     image: codeberg.org/forgejo/forgejo:14-rootless
     container_name: forgejo
-    user: "#VAR: ansible_real_user_id :VAR#:#VAR: ansible_real_group_id :VAR#"
+    user: "#VAR: ansible_facts['real_user_id'] :VAR#:#VAR: ansible_facts['real_group_id'] :VAR#"
     environment:
-      USER_UID: "#VAR: ansible_real_user_id :VAR#"
-      USER_GID: "#VAR: ansible_real_group_id :VAR#"
+      USER_UID: "#VAR: ansible_facts['real_user_id'] :VAR#"
+      USER_GID: "#VAR: ansible_facts['real_group_id'] :VAR#"
       FORGEJO__database__DB_TYPE: sqlite3
       FORGEJO__database__PATH: data/forgejo.sqlite3
       FORGEJO__mailer__ENABLED: "true"

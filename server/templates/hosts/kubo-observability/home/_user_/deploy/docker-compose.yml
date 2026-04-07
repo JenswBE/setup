@@ -60,7 +60,7 @@ services:
       # Custom args
       - "--web.enable-remote-write-receiver"
     container_name: prometheus
-    user: "#VAR:ansible_real_user_id:VAR#:#VAR:ansible_real_group_id:VAR#"
+    user: "#VAR:ansible_facts['real_user_id']:VAR#:#VAR:ansible_facts['real_group_id']:VAR#"
     networks:
       - caddy
       - prometheus
@@ -109,7 +109,7 @@ services:
     <<: *defaults
     image: docker.io/grafana/grafana-oss:latest
     container_name: grafana
-    user: "#VAR:ansible_real_user_id:VAR#:#VAR:ansible_real_group_id:VAR#"
+    user: "#VAR:ansible_facts['real_user_id']:VAR#:#VAR:ansible_facts['real_group_id']:VAR#"
     networks:
       - caddy
       - loki
@@ -151,7 +151,7 @@ services:
     image: docker.io/grafana/loki:latest
     container_name: loki
     command: -config.file=/loki-config/config.yaml
-    user: "#VAR:ansible_real_user_id:VAR#:#VAR:ansible_real_group_id:VAR#"
+    user: "#VAR:ansible_facts['real_user_id']:VAR#:#VAR:ansible_facts['real_group_id']:VAR#"
     networks:
       - caddy
       - loki
