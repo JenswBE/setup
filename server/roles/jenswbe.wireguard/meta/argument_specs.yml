@@ -17,13 +17,6 @@ argument_specs:
     short_description: Configure Wireguard
     options:
       # === REQUIRED ===
-      ansible_distribution:
-        type: str
-        required: true
-        choices: # Others exist, but these are supported in the role
-          - Debian
-        description: Name of the Linux distribution
-
       jwwg_wireguard_interfaces:
         description: List of Wireguard interfaces to configure
         required: true

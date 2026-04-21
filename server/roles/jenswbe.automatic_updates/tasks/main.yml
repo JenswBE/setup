@@ -1,3 +1,8 @@
+- name: Assert distribution is supported
+  ansible.builtin.assert:
+    that: ansible_facts['distribution'] in ['Debian']
+    fail_msg: "{{ ansible_facts['distribution'] }} is not a supported distro for this role. Supported distros: Debian"
+
 - name: Setup automatic updates
   become: true
   block:
