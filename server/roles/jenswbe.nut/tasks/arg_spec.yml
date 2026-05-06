@@ -1,13 +1,7 @@
 - name: Validate args
   ansible.builtin.validate_argument_spec:
     argument_spec:
-      ansible_distribution:
-        type: str
-        required: true
-        choices: # Others exist, but these are supported in the role
-          - Debian
-        description: Name of the Linux distribution
-
+      # === REQUIRED ===
       jwnu_nut_type:
         type: str
         required: true

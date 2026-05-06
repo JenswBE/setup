@@ -3,13 +3,13 @@
   block:
     - name: Check if supported distro
       ansible.builtin.fail:
-        msg: "{{ ansible_distribution }} is not a supported distro for this playbook. Supported distro's: {{ playbook_supported_distros }}"
-      when: ansible_distribution not in playbook_supported_distros
+        msg: "{{ ansible_facts['distribution'] }} is not a supported distro for this playbook. Supported distro's: {{ playbook_supported_distros }}"
+      when: ansible_facts['distribution'] not in playbook_supported_distros
 
     - name: Derive facts
       ansible.builtin.set_fact:
-        ansible_distribution_lowercase: "{{ ansible_distribution | lower }}"
-        ansible_os_family_lowercase: "{{ ansible_os_family | lower }}"
+        ansible_distribution_lowercase: "{{ ansible_facts['distribution'] | lower }}"
+        ansible_os_family_lowercase: "{{ ansible_facts['os_family'] | lower }}"
         arch_map:
           i386: "i386"
           x86_64: "amd64"
@@ -19,7 +19,7 @@
 
     - name: Set arch in Golang format
       ansible.builtin.set_fact:
-        arch: "{{ arch_map[ansible_architecture] }}"
+        arch: "{{ arch_map[ansible_facts['architecture']] }}"
       tags: ["always"]
 
     - name: Load domain vars

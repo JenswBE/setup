@@ -52,7 +52,7 @@
 
 - name: "{{ profile_name }} - Configure SSH"
   community.general.ssh_config:
-    user: "{{ ansible_user_id }}"
+    user: "{{ ansible_facts['user_id'] }}"
     host: "github-{{ profile_name_lowercase }}"
     hostname: github.com
     remote_user: git

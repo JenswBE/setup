@@ -47,5 +47,5 @@
       ansible.builtin.lineinfile:
         path: /etc/systemd/logind.conf
         regexp: "^#?KillExcludeUsers="
-        line: "KillExcludeUsers=root {{ ansible_user_id }}"
+        line: "KillExcludeUsers=root {{ ansible_facts['user_id'] }}"
       notify: Restart systemd-logind
