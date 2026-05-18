@@ -1,4 +1,3 @@
 import default_authorization_public "family"
 import default_authorization_public "infra"
 import default_authorization_public "media"
-import default_authorization_public "sun"
