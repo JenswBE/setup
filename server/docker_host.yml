@@ -101,7 +101,7 @@
         name: jenswbe.copy_dir
       vars:
         jwcd_source_templates_dir: "templates/hosts/{{ inventory_hostname }}/home/_user_/deploy"
-        jwcd_destination_dir: "{{ ansible_user_dir }}/deploy"
+        jwcd_destination_dir: "{{ ansible_facts['user_dir'] }}/deploy"
         jwcd_destination_delete_extra: true
       tags: ["docker"]
 
@@ -109,7 +109,7 @@
       when: "item in jwcd_copy_diff"
       become: true
       community.docker.docker_compose_v2:
-        project_src: "{{ ansible_user_dir }}/deploy"
+        project_src: "{{ ansible_facts['user_dir'] }}/deploy"
         services: ["{{ item }}"]
         state: restarted
       retries: 3

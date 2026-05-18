@@ -48,7 +48,7 @@
 
     - name: Setup Bash config
       ansible.builtin.lineinfile:
-        path: "{{ ansible_user_dir }}/.bashrc"
+        path: "{{ ansible_facts['user_dir'] }}/.bashrc"
         regexp: "^export {{ item.param }}="
         line: "export {{ item.param }}={{ item.value }}"
       loop:
@@ -75,14 +75,14 @@
     - name: Ensure local bin directory exists
       ansible.builtin.file:
         state: directory
-        path: "{{ ansible_user_dir }}/.local/bin"
+        path: "{{ ansible_facts['user_dir'] }}/.local/bin"
         mode: "0750"
 
     - name: Link scripts
       ansible.builtin.file:
         state: link
         src: "{{ item.src }}"
-        dest: "{{ ansible_user_dir }}/.local/bin/{{ item.path | basename }}"
+        dest: "{{ ansible_facts['user_dir'] }}/.local/bin/{{ item.path | basename }}"
       with_community.general.filetree: scripts/
 
     - name: Add Flatpak remote for Flathub

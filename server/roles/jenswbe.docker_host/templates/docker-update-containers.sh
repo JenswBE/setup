@@ -5,7 +5,7 @@
 set -euo pipefail
 
 # Update Docker containers
-cd '{{ ansible_user_dir }}/deploy'
+cd '{{ ansible_facts["user_dir"] }}/deploy'
 docker compose --profile 'scheduled' pull || exit_status=1
 docker compose --profile 'scheduled' build --pull || exit_status=1
 docker compose up -d || exit_status=1
