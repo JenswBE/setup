@@ -3,27 +3,6 @@ import ./configs/shared_snippets.txt
 # Global
 {
 	import ./configs/shared_global.txt
-
-	security {
-		import ./configs/shared_security.txt
-
-		oauth identity provider keycloak {
-			driver generic
-			realm keycloak
-			client_id "#VAR: app_caddy_security_oidc_client_id :VAR#"
-			client_secret "#VAR: app_caddy_security_oidc_client_secret :VAR#"
-			scopes openid email profile
-			metadata_url "#VAR: app_caddy_security_oidc_issuer_url :VAR#/.well-known/openid-configuration"
-		}
-
-		authentication portal portal_local {
-			crypto default token lifetime 604800 # 7 days (60 * 60 * 24 * 7)
-			crypto key sign-verify "#VAR: app_caddy_security_jwt_secret :VAR#"
-			enable identity provider keycloak
-			cookie domain "#VAR: general_domain_local :VAR#"
-			trust login redirect uri domain suffix "#VAR: general_domain_local :VAR#" path prefix /
-		}
-	}
 }
 
 # Needed to force apply proxy_protocol listener wrapper to HTTP connections
