@@ -1,0 +1,10 @@
+[Unit]
+Description=Prune Docker-in-Docker
+
+[Timer]
+OnCalendar=22:00
+RandomizedDelaySec=15m
+Persistent=true
+
+[Install]
+WantedBy=timers.target
