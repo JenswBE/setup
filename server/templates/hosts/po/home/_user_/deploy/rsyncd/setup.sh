@@ -19,7 +19,7 @@ for U in $USERS; do
     _SSH_KEY_TARGET="/etc/authorized_keys/${_NAME}"
 
     echo ">> Configuring SSH key for user ${_NAME} in path ${_SSH_KEY_TARGET}."
-    echo -n "command=\"/usr/bin/rrsync /data/${_NAME}\" " > "${_SSH_KEY_TARGET}"
+    echo -n "no-agent-forwarding,no-port-forwarding,no-pty,no-X11-forwarding,command=\"/usr/bin/rrsync /data/${_NAME}\" " > "${_SSH_KEY_TARGET}"
     cat "${_SSH_KEY_SOURCE}" >> "${_SSH_KEY_TARGET}"
     chown ${_UID}:${_GID} "${_SSH_KEY_TARGET}"
 done
