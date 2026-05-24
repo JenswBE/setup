@@ -12,6 +12,9 @@ hostnames:
     kubo:
       fqdn: "kubo.{{ general_domain_local }}"
       ipv6: false
+    kubo_download:
+      fqdn: "kubo-download.{{ general_domain_local }}"
+      ipv6: false
     kubo_observability:
       fqdn: "kubo-observability.{{ general_domain_local }}"
       ipv6: false
