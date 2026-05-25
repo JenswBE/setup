@@ -5,4 +5,4 @@ OnFailure=unit-fail-mail@%n.service
 [Service]
 Type=exec
 WorkingDirectory={{ ansible_facts['user_dir'] }}/deploy
-ExecStart={{ docker_path }} exec -it -e DOCKER_HOST=unix://var/run/docker.sock docker_dind docker system prune --all --force --volumes
+ExecStart={{ docker_path }} exec -e DOCKER_HOST=unix://var/run/docker.sock docker_dind docker system prune --all --force --volumes
