@@ -1,6 +1,10 @@
 # Caddy
+app_caddy_assets_basic_auth_username: ""
+app_caddy_assets_basic_auth_password: ""
 # https://desec.io/tokens
 app_caddy_desec_token: ""
+app_caddy_family_trees_basic_auth_username: ""
+app_caddy_family_trees_basic_auth_password: ""
 
 # CrowdSec
 jwcs_bouncer_firewall_key: "" # Alphanumeric string

@@ -4,6 +4,7 @@ import socket
 
 from ansible.errors import AnsibleError
 from ansible.module_utils.common.text.converters import to_native
+from argon2 import PasswordHasher
 
 class FilterModule(object):
     def filters(self):
@@ -11,6 +12,7 @@ class FilterModule(object):
             'enrich_hostnames': self.enrich_hostnames,
             'get_dict_key_contains': self.get_dict_key_contains,
             'netconfig_enrich': self.netconfig_enrich,
+            'password_hash_argon2id': self.password_hash_argon2id,
             'to_caddy_header_values': self.to_caddy_header_values,
         }
 
@@ -79,6 +81,10 @@ class FilterModule(object):
                 "type": "dhcp",
             })
         return result
+
+    def password_hash_argon2id(self, input):
+        ph = PasswordHasher()
+        return ph.hash(input)
 
     def remove_newlines(self, input):
         return input.replace("\\n", "")

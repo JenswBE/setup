@@ -5,11 +5,6 @@ import ./configs/shared_snippets.txt
 	import ./configs/shared_global.txt
 }
 
-"portal.#VAR: general_domain_default :VAR#" {
-	import logging
-	authenticate with portal_public
-}
-
 # Needed to force apply proxy_protocol listener wrapper to HTTP connections
 http:// {
 }
