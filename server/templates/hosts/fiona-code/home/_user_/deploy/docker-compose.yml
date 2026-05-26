@@ -52,7 +52,7 @@ services:
   # =========================
   forgejo:
     <<: *defaults
-    image: codeberg.org/forgejo/forgejo:14-rootless
+    image: codeberg.org/forgejo/forgejo:15-rootless
     container_name: forgejo
     user: "#VAR: ansible_facts['real_user_id'] :VAR#:#VAR: ansible_facts['real_group_id'] :VAR#"
     environment:
