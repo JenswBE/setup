@@ -37,8 +37,8 @@ sites:
 
   - url: https://klokracing.be
     ignored_links:
-      - ^https://lambrettascooters.com # Known issue with TLS chain. Company is informed.
-      - ^https://www.yamahamotorsports.com/scooter # Page returns content, but with status 404.
+      - ^https://www.vespa.com/be_NL # Always returns 403 Forbidden, but works fine in browser.
+      - ^https://www.piaggio.com/be_NL/ # Always returns 403 Forbidden, but works fine in browser.
     notify:
       - email_technical_en
 
@@ -56,7 +56,6 @@ sites:
     notify:
       - email_technical_en
     ignored_links:
-      - ^https://tefrent-official.be/ # Returns 500 for DeLiC, but works fine in browser.
       - ^https://www.instagram.com/tuinfeest_beerse # Returns 429 - Too Many Requests.
 
   - url: https://w-technieken.be
