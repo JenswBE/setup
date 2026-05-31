@@ -45,7 +45,3 @@ VPS
 ### System tasks
 
 - 05:00 Update and restart (unattended updates)
-
-### Other tasks
-
-- 13:00 Dead link checker (DeLiC): Check sites for dead links (`templates/hosts/eve/home/_user_/eve/delic/config.yml`)

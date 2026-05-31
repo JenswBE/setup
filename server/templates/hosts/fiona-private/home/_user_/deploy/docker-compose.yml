@@ -87,6 +87,20 @@ services:
     environment:
       TZ: "#VAR: general_timezone :VAR#"
 
+  # ===========================================================================
+  # =   DEAD LINK CHECKER                                                     =
+  # =   https://github.com/JenswBE/python-dead-link-checker                   =
+  # ===========================================================================
+  delic:
+    <<: *defaults
+    image: docker.io/jenswbe/dead-link-checker:latest
+    container_name: delic
+    user: "#VAR: ansible_facts['real_user_id'] :VAR#:#VAR: ansible_facts['real_group_id'] :VAR#"
+    volumes:
+      - "./delic/config.yml:/config.yml:ro,z"
+    environment:
+      TZ: "#VAR: general_timezone :VAR#"
+
 #################################################################
 #                            NETWORKS                           #
 #################################################################

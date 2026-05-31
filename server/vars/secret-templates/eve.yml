@@ -26,10 +26,6 @@ app_caddy_desec_token: ""
 # CrowdSec
 jwcs_bouncer_firewall_key: "" # Alphanumeric string
 
-# Dead Link Checker (DeLiC)
-# https://github.com/JenswBE/dead-link-checker
-app_delic_ping_url: ""
-
 # Homer
 app_homer_services:
   network: |
