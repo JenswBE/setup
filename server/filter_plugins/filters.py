@@ -5,6 +5,7 @@ import socket
 from ansible.errors import AnsibleError
 from ansible.module_utils.common.text.converters import to_native
 from argon2 import PasswordHasher
+import bcrypt
 
 class FilterModule(object):
     def filters(self):
@@ -13,6 +14,7 @@ class FilterModule(object):
             'get_dict_key_contains': self.get_dict_key_contains,
             'netconfig_enrich': self.netconfig_enrich,
             'password_hash_argon2id': self.password_hash_argon2id,
+            'password_hash_bcrypt': self.password_hash_bcrypt,
             'to_caddy_header_values': self.to_caddy_header_values,
         }
 
@@ -85,6 +87,9 @@ class FilterModule(object):
     def password_hash_argon2id(self, input):
         ph = PasswordHasher()
         return ph.hash(input)
+
+    def password_hash_bcrypt(self, input):
+        return bcrypt.hashpw(to_native(input).encode(), bcrypt.gensalt())
 
     def remove_newlines(self, input):
         return input.replace("\\n", "")

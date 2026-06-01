@@ -75,7 +75,7 @@ Without this option, the playbook will fail.
 # Install Ansible and Python requirements
 sudo apt install pipx
 pipx install ansible-core
-pipx inject ansible-core $(cat requirements.txt | sed 's/\n/ /g' | sed 's/#.*//') # pipx on Debian 12 is too old to support flag "-r"
+pipx inject -r requirements.txt ansible-core
 
 # Install roles and collections
 ansible-galaxy role install --force -r requirements.yml

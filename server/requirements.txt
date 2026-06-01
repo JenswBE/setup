@@ -1,3 +1,4 @@
 argon2-cffi # Required by custom filter password_hash_argon2id
+bcrypt # Required by custom filter password_hash_bcrypt
 github3.py # Required by module community.general.github_release
 netaddr # Required by filter ansible.utils.ipaddr

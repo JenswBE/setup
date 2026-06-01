@@ -29,7 +29,7 @@ import ./configs/shared_snippets.txt
 		handle @loki {
 			import default_local_reverse_proxy "http://loki:3100"
 			basic_auth {
-				loki #VAR: app_loki_password | password_hash(hashtype='bcrypt') :VAR#
+				loki #VAR: app_loki_password | password_hash_bcrypt :VAR#
 			}
 		}
 
