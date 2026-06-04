@@ -42,7 +42,7 @@
   vars:
     alloy_env_file_vars:
       CONFIG_FILE: "/etc/alloy/config.d"
-    alloy_user_groups: "{{ ['docker'] if jwob_with_docker else [] }}"
+    alloy_user_groups: "{{ ['adm'] + (['docker'] if jwob_with_docker else [])  }}"
 
 - name: Restart Alloy
   become: true
