@@ -2,6 +2,12 @@ argument_specs:
   main:
     short_description: Configure observability agent(s)
     options:
+      # === OPTIONAL ===
+      jwob_loki_hostname:
+        description: Hostname of the Loki server
+        required: false
+        type: str
+
       # === REQUIRED ===
       jwob_with_docker:
         description: Enable logging and monitoring of Docker containers

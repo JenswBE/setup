@@ -25,7 +25,7 @@ import ./configs/shared_snippets.txt
 			import default_local_reverse_proxy "http://graylog:9000"
 		}
 
-		@loki host "loki.#VAR: general_domain_local :VAR#"
+		@loki host "loki.#VAR: general_domain_local :VAR#" "loki-virbr-nointernet.#VAR: general_domain_local :VAR#"
 		handle @loki {
 			import default_local_reverse_proxy "http://loki:3100"
 			basic_auth {

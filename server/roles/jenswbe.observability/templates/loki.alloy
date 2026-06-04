@@ -1,6 +1,6 @@
 loki.write "main" {
 	endpoint {
-		url = "https://loki.{{ general_domain_local }}/loki/api/v1/push"
+		url = "https://{{ jwob_loki_hostname }}/loki/api/v1/push"
 
 		basic_auth {
 			username = "loki"

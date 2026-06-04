@@ -1,0 +1,1 @@
+jwob_loki_hostname: "loki.{{ general_domain_local }}"
