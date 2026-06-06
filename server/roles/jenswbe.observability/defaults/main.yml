@@ -1,1 +1,2 @@
 jwob_loki_hostname: "loki.{{ general_domain_local }}"
+jwob_prometheus_hostname: "prometheus.{{ general_domain_local }}"

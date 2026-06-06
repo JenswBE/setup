@@ -1,5 +1,5 @@
 prometheus.remote_write "main" {
 	endpoint {
-		url = "https://prometheus.{{ general_domain_local }}/api/v1/write"
+		url = "https://{{ jwob_prometheus_hostname }}/api/v1/write"
 	}
 }

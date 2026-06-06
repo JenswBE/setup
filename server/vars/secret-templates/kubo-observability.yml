@@ -20,7 +20,3 @@ jwcs_bouncer_firewall_key: "" # Alphanumeric string
 app_grafana_oauth2_base_url: ""
 app_grafana_oauth2_client_id: ""
 app_grafana_oauth2_client_secret: ""
-
-# Graylog
-app_graylog_admin_password: ""
-app_graylog_secret: ""

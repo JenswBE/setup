@@ -2,14 +2,19 @@ argument_specs:
   main:
     short_description: Configure observability agent(s)
     options:
+      # === REQUIRED ===
+      jwob_with_docker:
+        description: Enable logging and monitoring of Docker containers
+        required: true
+        type: bool
+
       # === OPTIONAL ===
       jwob_loki_hostname:
         description: Hostname of the Loki server
         required: false
         type: str
 
-      # === REQUIRED ===
-      jwob_with_docker:
-        description: Enable logging and monitoring of Docker containers
-        required: true
-        type: bool
+      jwob_prometheus_hostname:
+        description: Hostname of the Prometheus server
+        required: false
+        type: str

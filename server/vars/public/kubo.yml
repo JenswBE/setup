@@ -49,9 +49,7 @@ jwfw_zones:
 
 # Observability
 jwob_loki_hostname: "loki-virbr-nointernet.{{ general_domain_local }}"
-
-# Logging
-jwlo_graylog_server_hostname: "kubo-observability.virbr-nointernet.{{ general_domain_local }}"
+jwob_prometheus_hostname: "prometheus-virbr-nointernet.{{ general_domain_local }}"
 
 # VM Host
 jwvm_start_vms_after_nfs:
