@@ -19,9 +19,7 @@ jwfw_zones:
       - dhcpv6-client # 546/udp
       - syncthing # 21027/udp, 22000/tcp and 22000/udp
       - wireguard # 51820/udp
-    allowed_ports:
-      - port: 8477 # Rsyncd over SSH
-        protos: [tcp]
+    allowed_ports: []
     extra_strings:
       - key: short
         value: Public
@@ -37,6 +35,7 @@ jwfw_zones:
     source_networks: []
     allowed_services:
       - ssh # 22/tcp
+      - dns # 53/tcp and 53/udp for Blocky
       - http # 80/tcp
       - https # 443/tcp
       - http3 # 443/udp (QUIC)

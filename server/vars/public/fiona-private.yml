@@ -26,7 +26,8 @@ jwfw_zones:
     extra_booleans: [forward]
 
   - zone: local
-    interfaces: []
+    interfaces:
+      - enp7s0
     source_networks: [local_ipv4, local_ipv6]
     allowed_services:
       - ssh # 22/tcp
