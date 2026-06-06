@@ -3,9 +3,9 @@
   "groups": [
     {
       "orgId": 1,
-      "name": "System",
-      "folder": "Missing logs",
-      "interval": "1h",
+      "name": "Missing logs",
+      "folder": "Resources",
+      "interval": "5m",
       "rules": [
         //BLOCK: for host in (groups['all'] | difference(groups['ungrouped'] | sort) ) :BLOCK//
         {
@@ -125,7 +125,8 @@
           "labels": {},
           "isPaused": false,
           "notification_settings": {
-            "receiver": "grafana-default-email"
+            "receiver": "grafana-default-email",
+            "repeat_interval": "24h"
           }
         } //BLOCK: if not loop.last :BLOCK//,//BLOCK: endif :BLOCK//
         //BLOCK: endfor :BLOCK//
