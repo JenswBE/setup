@@ -4,7 +4,7 @@
     {
       "orgId": 1,
       "name": "Missing logs",
-      "folder": "Resources",
+      "folder": "Logs",
       "interval": "5m",
       "rules": [
         //BLOCK: for host in (groups['all'] | difference(groups['ungrouped'] | sort) ) :BLOCK//

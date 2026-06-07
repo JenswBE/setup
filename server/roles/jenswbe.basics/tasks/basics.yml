@@ -49,3 +49,15 @@
         regexp: "^#?KillExcludeUsers="
         line: "KillExcludeUsers=root {{ ansible_facts['user_id'] }}"
       notify: Restart systemd-logind
+
+    - name: Check if PAM sshd config exists
+      ansible.builtin.stat:
+        path: /etc/pam.d/sshd
+      register: pam_sshd_stat
+
+    - name: Remove deprecated user_readenv from PAM sshd config
+      when: pam_sshd_stat.stat.exists
+      ansible.builtin.replace:
+        path: /etc/pam.d/sshd
+        regexp: '\s+user_readenv=1'
+        replace: ""
