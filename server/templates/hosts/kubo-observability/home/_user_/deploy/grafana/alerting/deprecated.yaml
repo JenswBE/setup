@@ -36,6 +36,26 @@ groups:
                 # Related to xfs_scrub_all
                 != "DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC)."
 
+                # Related to MySQL
+                != "The syntax '--skip-host-cache' is deprecated and will be removed in a future release"
+
+                # Related to Paperless
+                != "CPendingDeprecationWarning"
+
+                # Related to DinD on code-runner
+                != "ignoreDeprecationWarnings"
+                != "msg=\"loading plugin\" id=io.containerd.warning.v1.deprecations"
+
+                # Related to MongoDB
+                != "wiredTigerConcurrentReadTransactions"
+                != "wiredTigerConcurrentWriteTransactions"
+                != "Use of deprecated server parameter 'sslMode', please use 'tlsMode' instead."
+                != "oplogSamplingLogIntervalSeconds"
+                != "internalQueryCacheSize"
+
+                # Related to NUT
+                != "systemd-udev-settle.service is deprecated. Please fix nut-driver@apc.service not to pull it in."
+
                 # DELETE ME: Fixed, but included to prevent re-reports:
                 != "pam_env(sshd:session): deprecated reading of user environment enabled"
                 != "NEKO_WEBRTC_NAT1TO1"
