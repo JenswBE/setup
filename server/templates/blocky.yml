@@ -1,11 +1,11 @@
 bootstrapDns:
-  - upstream: https://dns.quad9.net/dns-query
+  - upstream: tcp-tls:dns.quad9.net
     ips:
       - "9.9.9.9"
       - "149.112.112.112"
       # - "2620:fe::fe"
       # - "2620:fe::9"
-  - upstream: https://dns.mullvad.net/dns-query
+  - upstream: tcp-tls:dns.mullvad.net
     ips:
       - "194.242.2.2"
       # - "2a07:e340::2"
@@ -13,8 +13,8 @@ bootstrapDns:
 upstreams:
   groups:
     default:
-      - https://dns.quad9.net/dns-query
-      - https://dns.mullvad.net/dns-query
+      - tcp-tls:dns.quad9.net
+      - tcp-tls:dns.mullvad.net
 
 customDNS:
   zone: |
