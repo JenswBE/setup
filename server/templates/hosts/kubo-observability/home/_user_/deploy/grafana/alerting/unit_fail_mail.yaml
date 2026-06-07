@@ -17,7 +17,7 @@ groups:
             datasourceUid: ds_loki_main
             model:
               editorMode: code
-              expr: sum(count_over_time({unit=~"unit-fail-mail.+"} |~ "(?i)error" [5m]))
+              expr: sum by (msg)(count_over_time({unit=~"unit-fail-mail.+"} |~ "(?i)error" [5m]))
               instant: true
               intervalMs: 1000
               maxDataPoints: 43200

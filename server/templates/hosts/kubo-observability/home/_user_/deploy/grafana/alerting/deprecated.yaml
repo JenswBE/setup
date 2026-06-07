@@ -19,7 +19,7 @@ groups:
               editorMode: code
               expr: |
                 # Exclude all logs from Loki and Grafana as they often include below query, resulting to false positives
-                sum(count_over_time({host=~".+",container_name!="loki",container_name!="grafana"}
+                sum by (msg)(count_over_time({host=~".+",container_name!="loki",container_name!="grafana"}
                 # Select all logs containing "deprecat" case-insensitive
                 |~ "(?i)deprecat"
 
