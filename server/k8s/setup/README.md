@@ -67,12 +67,15 @@ helm install argocd argo/argo-cd -f values/argocd-public.yml --create-namespace 
 kubectl -n argo get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
 
 # Configure public app-of-apps
+kubectl config set-context --current --namespace=argo
 argocd app create root-public \
+    --core \
     --dest-namespace argo \
     --dest-server https://kubernetes.default.svc \
     --repo https://github.com/JenswBE/setup.git \
-    --path gitops/root
-    --revision
+    --path server/k8s/gitops/root \
+    --revision app-of-apps
+argocd app sync root-public --core
 ```
 
 ## Based on
