@@ -73,7 +73,7 @@ argocd app create root-public \
     --dest-namespace argo \
     --dest-server https://kubernetes.default.svc \
     --repo https://github.com/JenswBE/setup.git \
-    --path server/k8s/gitops/root \
+    --path server/k8s/gitops/root-public \
     --revision app-of-apps
 argocd app sync root-public --core
 ```
