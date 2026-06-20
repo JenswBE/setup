@@ -1,0 +1,25 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cert-manager
+  namespace: "{{ .Release.Namespace }}"
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    namespace: cert-manager
+    server: {{ .Values.spec.destination.server }}
+  project: default
+  source:
+    chart: cert-manager
+    repoURL: oci://quay.io/jetstack/charts/cert-manager
+    targetRevision: v1.20.2
+    helm:
+      valuesObject:
+        crds:
+          enabled: true
+  syncPolicy:
+    automated:
+      prune: true
+    syncOptions:
+    - CreateNamespace=true

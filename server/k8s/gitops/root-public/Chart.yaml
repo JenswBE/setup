@@ -1,0 +1,6 @@
+apiVersion: v2
+name: root-public
+description: Root chart for public app-of-apps GitOps setup
+type: application
+version: 1.0.0
+appVersion: 1.0.0
