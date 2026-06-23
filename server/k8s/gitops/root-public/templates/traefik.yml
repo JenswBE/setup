@@ -22,6 +22,11 @@ spec:
         service:
           spec:
             type: NodePort
+        ports:
+          web:
+            nodePort: 80
+          websecure:
+            nodePort: 443
   syncPolicy:
     automated:
       prune: true
