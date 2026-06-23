@@ -26,6 +26,8 @@ spec:
             hostPort: 443
         service:
           enabled: false # Exposed through host ports
+        updateStrategy:
+          type: Recreate # Unable to use RollingUpdate due to host ports
   syncPolicy:
     automated:
       prune: true
