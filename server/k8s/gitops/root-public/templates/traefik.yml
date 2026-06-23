@@ -28,6 +28,7 @@ spec:
           enabled: false # Exposed through host ports
         updateStrategy:
           type: Recreate # Unable to use RollingUpdate due to host ports
+          rollingUpdate: {}
   syncPolicy:
     automated:
       prune: true
