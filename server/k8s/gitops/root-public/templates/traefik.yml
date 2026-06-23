@@ -19,6 +19,9 @@ spec:
         providers:
           kubernetesGateway:
             enabled: true
+        service:
+          spec:
+            type: NodePort
   syncPolicy:
     automated:
       prune: true
