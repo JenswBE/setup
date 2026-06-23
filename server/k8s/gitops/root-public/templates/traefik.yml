@@ -19,14 +19,13 @@ spec:
         providers:
           kubernetesGateway:
             enabled: true
-        service:
-          spec:
-            type: NodePort
         ports:
           web:
             hostPort: 80
           websecure:
             hostPort: 443
+        service:
+          enabled: false # Exposed through host ports
   syncPolicy:
     automated:
       prune: true
