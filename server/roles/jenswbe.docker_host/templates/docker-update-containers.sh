@@ -1,18 +1,28 @@
 #!/bin/bash
-# Error logic based on https://stackoverflow.com/a/44708091
 
 # Bash strict mode (http://redsymbol.net/articles/unofficial-bash-strict-mode/)
 set -euo pipefail
 
 # Update Docker containers
 cd '{{ ansible_facts["user_dir"] }}/deploy'
-docker compose --profile 'scheduled' pull || exit_status=1
-docker compose --profile 'scheduled' build --pull || exit_status=1
-docker compose up -d || exit_status=1
+ec_pull=0;  docker compose --profile 'scheduled' pull         || ec_pull=$?
+ec_build=0; docker compose --profile 'scheduled' build --pull || ec_build=$?
+ec_up=0;    docker compose up -d                              || ec_up=$?
 
 # Prune unused Docker resources
-docker image prune -f || exit_status=1
-docker buildx prune -f || exit_status=1
+ec_image_prune=0;  docker image prune -f  || ec_image_prune=$?
+ec_buildx_prune=0; docker buildx prune -f || ec_buildx_prune=$?
 
-# Exit with status
-exit ${exit_status:-0}
+# Print overview
+cat << EOF
+
+=== Exit codes overview ===
+docker compose pull: $ec_pull
+docker compose build: $ec_build
+docker compose up: $ec_up
+docker image prune: $ec_image_prune
+docker buildx prune: $ec_buildx_prune
+EOF
+
+# Exit with 1 if any step failed
+exit $(( ec_pull != 0 || ec_build != 0 || ec_up != 0 || ec_image_prune != 0 || ec_buildx_prune != 0 ))
