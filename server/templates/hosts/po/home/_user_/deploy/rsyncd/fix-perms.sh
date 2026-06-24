@@ -4,7 +4,7 @@
 set -euo pipefail
 
 # Fix permissions of mounted data volumes
-USERS=$(echo $SSH_USERS | tr "," "\n")
+USERS=$(echo "$SSH_USERS" | tr "," "\n")
 for U in $USERS; do
     IFS=':' read -ra UA <<< "$U"
     _NAME=${UA[0]}
@@ -12,5 +12,5 @@ for U in $USERS; do
     _GID=${UA[2]}
 
     echo ">> Chown /data/${_NAME} to user ${_NAME} (${_UID}:${_GID})."
-    chown -R ${_UID}:${_GID} "/data/${_NAME}"
+    chown -R "${_UID}:${_GID}" "/data/${_NAME}"
 done

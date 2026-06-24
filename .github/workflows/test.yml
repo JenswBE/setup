@@ -51,3 +51,14 @@ jobs:
       - name: Run unit tests
         working-directory: server/files/network-performance-file-generator
         run: go test main.go main_test.go
+
+  shellcheck:
+    name: ShellCheck
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v6
+
+      - name: Run ShellCheck
+        run: |
+          bash shellcheck.sh

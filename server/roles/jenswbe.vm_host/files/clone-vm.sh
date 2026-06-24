@@ -17,7 +17,7 @@ function get_vm_state(){
 # Init
 echo "Cloning VM ${VM_FROM} to ${VM_TO} ..."
 VM_FROM_STATE=$(get_vm_state "${VM_FROM}")
-VM_FROM_DISK=$(virsh domblklist ${VM_FROM} | grep -F vda | sed -E 's/.+ //')
+VM_FROM_DISK=$(virsh domblklist "${VM_FROM}" | grep -F vda | sed -E 's/.+ //')
 POOL_PATH=$(dirname "${VM_FROM_DISK}")
 VM_TO_DISK="${POOL_PATH}/${VM_TO}.qcow2"
 echo "Input disk:  ${VM_FROM_DISK}"

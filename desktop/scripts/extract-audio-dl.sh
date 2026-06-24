@@ -12,4 +12,4 @@
 #
 # === Optional ===
 # --audio-format mp3: Forces the output to mp3
-yt-dlp --ignore-errors --format bestaudio --extract-audio $@
+yt-dlp --ignore-errors --format bestaudio --extract-audio "$@"

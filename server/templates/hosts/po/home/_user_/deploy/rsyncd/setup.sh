@@ -9,7 +9,7 @@ echo ">> Updating SSH port to ${SSH_PORT}"
 echo "set /files/etc/ssh/sshd_config/Port ${SSH_PORT}" | augtool -s 1> /dev/null
 
 # Setup authorized_keys files
-USERS=$(echo $SSH_USERS | tr "," "\n")
+USERS=$(echo "$SSH_USERS" | tr "," "\n")
 for U in $USERS; do
     IFS=':' read -ra UA <<< "$U"
     _NAME=${UA[0]}
@@ -21,7 +21,7 @@ for U in $USERS; do
     echo ">> Configuring SSH key for user ${_NAME} in path ${_SSH_KEY_TARGET}."
     echo -n "no-agent-forwarding,no-port-forwarding,no-pty,no-X11-forwarding,command=\"/usr/bin/rrsync /data/${_NAME}\" " > "${_SSH_KEY_TARGET}"
     cat "${_SSH_KEY_SOURCE}" >> "${_SSH_KEY_TARGET}"
-    chown ${_UID}:${_GID} "${_SSH_KEY_TARGET}"
+    chown "${_UID}:${_GID}" "${_SSH_KEY_TARGET}"
 done
 
 # Correct permissions of /etc/entrypoint.d
