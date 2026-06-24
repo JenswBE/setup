@@ -12,23 +12,16 @@ spec:
   project: default
   source:
     chart: traefik
-    repoURL: oci://ghcr.io/traefik/helm/traefik
+    repoURL: https://traefik.github.io/charts
     targetRevision: 41.0.0
     helm:
       valuesObject:
         providers:
           kubernetesGateway:
             enabled: true
-        ports:
-          web:
-            hostPort: 80
-          websecure:
-            hostPort: 443
         service:
-          enabled: false # Exposed through host ports
-        updateStrategy:
-          type: Recreate # Unable to use RollingUpdate due to host ports
-          rollingUpdate: {}
+          spec:
+            externalTrafficPolicy: Local
   syncPolicy:
     automated:
       prune: true

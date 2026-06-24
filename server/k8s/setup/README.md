@@ -44,7 +44,7 @@ sudo tar xzvfC cilium-linux-${CLI_ARCH}.tar.gz /usr/local/bin
 rm cilium-linux-${CLI_ARCH}.tar.gz{,.sha256sum}
 
 # Install Cilium on k0s
-cilium install
+cilium install --set bgpControlPlane.enabled=true
 
 # Wait for the install to finish
 cilium status --wait
