@@ -22,6 +22,40 @@ spec:
         service:
           spec:
             externalTrafficPolicy: Local
+        gateway:
+          listeners:
+            web:
+              port: 8000
+              hostname: "*.jensw.eu"
+              protocol: HTTP
+              namespacePolicy:
+                from: All
+            websecure:
+              port: 8443
+              hostname: "*.jensw.eu"
+              protocol: HTTPS
+              namespacePolicy:
+                from: All
+              mode: Terminate
+              certificateRefs:
+                - name: tls-jensw-eu
+            web-host:
+              port: 8000
+              hostname: "*.fiona-k8s.jensw.eu"
+              protocol: HTTP
+              namespacePolicy:
+                from: All
+            websecure-host:
+              port: 8443
+              hostname: "*.fiona-k8s.jensw.eu"
+              protocol: HTTPS
+              namespacePolicy:
+                from: All
+              mode: Terminate
+              certificateRefs:
+                - name: tls-fiona-k8s-jensw-eu
+        api:
+          insecure: true
   syncPolicy:
     automated:
       prune: true

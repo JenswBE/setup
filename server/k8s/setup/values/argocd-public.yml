@@ -22,3 +22,4 @@ configs:
   params:
     create: true
     controller.diff.server.side: "true"
+    server.insecure: "true" # TLS termination handled by Gateway API
