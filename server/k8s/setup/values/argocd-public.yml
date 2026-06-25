@@ -7,7 +7,7 @@
 global:
   # -- Default domain used by all components
   ## Used for ingresses, certificates, SSO, notifications, etc.
-  domain: argocd.example.com
+  domain: argocd.fiona-k8s.jensw.eu
 
 ## Argo Configs
 configs:
