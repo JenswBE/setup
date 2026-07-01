@@ -83,7 +83,7 @@ services:
   # ===========================
   unifi-network-app:
     <<: *defaults
-    image: lscr.io/linuxserver/unifi-network-application:latest
+    image: ghcr.io/linuxserver/unifi-network-application:latest
     container_name: unifi-network-app
     environment:
       TZ: "#VAR: general_timezone :VAR#"

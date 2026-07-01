@@ -200,7 +200,7 @@ services:
   # ====================================
   wikijs:
     <<: *defaults
-    image: lscr.io/linuxserver/wikijs:latest
+    image: ghcr.io/linuxserver/wikijs:latest
     container_name: wikijs
     networks:
       - caddy-private

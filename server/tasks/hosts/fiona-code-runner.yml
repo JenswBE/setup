@@ -1,11 +1,12 @@
+- name: Derive runner data dir
+  ansible.builtin.set_fact:
+    runner_data_dir: "{{ general_path_appdata }}/runner/runner/data"
+  tags: ["docker","runner"]
+
 - name: Configure runner prerequisites
   # Based on https://forgejo.org/docs/latest/admin/actions/runner-installation/#oci-image-installation
   tags: ["runner"]
   block:
-    - name: Derive runner data dir
-      ansible.builtin.set_fact:
-        runner_data_dir: "{{ general_path_appdata }}/runner/runner/data"
-
     - name: Ensure runner data dir exists
       become: true
       ansible.builtin.file:
