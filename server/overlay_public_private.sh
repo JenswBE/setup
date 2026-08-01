@@ -15,3 +15,6 @@ echo "Lower dirs: ${lower_dirs}"
 echo "Merged dir: ${merged_dir}"
 mkdir -p "${merged_dir}"
 sudo mount -t overlay overlay -o lowerdir="${lower_dirs}" "${merged_dir}"
+
+# Disable exit on error
+set +e

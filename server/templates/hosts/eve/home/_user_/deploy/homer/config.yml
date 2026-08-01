@@ -111,7 +111,7 @@ services:
 
       - name: Paperless
         subtitle: Private | eve
-        logo: https://raw.githubusercontent.com/paperless-ngx/paperless-ngx/dev/resources/logo/web/svg/square.svg
+        logo: https://cdn.jsdelivr.net/gh/selfhst/icons/svg/paperless-ngx-light.svg
         url: "https://docs.#VAR: general_domain_local :VAR#"
         <<: *default
 
