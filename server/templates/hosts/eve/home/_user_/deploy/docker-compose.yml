@@ -715,7 +715,10 @@ services:
       TZ: "#VAR: general_timezone :VAR#"
       USERMAP_UID: "#VAR: ansible_facts['real_user_id'] :VAR#"
       USERMAP_GID: "#VAR: ansible_facts['real_group_id'] :VAR#"
-      PAPERLESS_TIME_ZONE: "#VAR: general_timezone :VAR#"
+      PAPERLESS_CONSUMER_DELETE_DUPLICATES: "true"
+      PAPERLESS_ENABLE_UPDATE_CHECK: "false"
+      PAPERLESS_DBHOST: paperless-db
+      PAPERLESS_FILENAME_FORMAT: "{{created_year}}.{{created_month}}.{{created_day}} - {{correspondent}} - {{title}}"
       PAPERLESS_OCR_LANGUAGE: nld+eng
       PAPERLESS_OCR_LANGUAGES: eng nld
       # See:
@@ -726,16 +729,14 @@ services:
           "continue_on_soft_render_error": true,
           "invalidate_digital_signatures": true
         }
-      PAPERLESS_ENABLE_UPDATE_CHECK: "false"
       PAPERLESS_REDIS: redis://paperless-redis:6379
-      PAPERLESS_DBHOST: paperless-db
       PAPERLESS_SECRET_KEY: "#VAR: app_paperless_secret_key :VAR#"
-      PAPERLESS_FILENAME_FORMAT: "{{created_year}}.{{created_month}}.{{created_day}} - {{correspondent}} - {{title}}"
-      PAPERLESS_URL: "https://docs.#VAR: general_domain_local :VAR#"
       PAPERLESS_TASK_WORKERS: "2"
       PAPERLESS_TIKA_ENABLED: "1"
-      PAPERLESS_TIKA_GOTENBERG_ENDPOINT: http://paperless-gotenberg:3000
       PAPERLESS_TIKA_ENDPOINT: http://paperless-tika:9998
+      PAPERLESS_TIKA_GOTENBERG_ENDPOINT: http://paperless-gotenberg:3000
+      PAPERLESS_TIME_ZONE: "#VAR: general_timezone :VAR#"
+      PAPERLESS_URL: "https://docs.#VAR: general_domain_local :VAR#"
     deploy:
       resources:
         limits:
