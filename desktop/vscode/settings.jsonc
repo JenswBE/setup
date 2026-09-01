@@ -37,6 +37,12 @@
   },
   "ansible.lightspeed.enabled": false,
   "ansible.lightspeed.suggestions.enabled": false,
+  "chat.tools.terminal.autoApprove": {
+    "/^cargo build 2>&1 \\| head -80$/": {
+      "approve": true,
+      "matchCommandLine": true
+    }
+  },
   "chat.viewSessions.orientation": "stacked",
   "diffEditor.ignoreTrimWhitespace": false,
   "diffEditor.maxComputationTime": 0,
@@ -83,8 +89,6 @@
     "scminput": false
   },
   "github.copilot.nextEditSuggestions.enabled": true,
-  "gitlens.ai.model": "vscode",
-  "gitlens.ai.vscode.model": "copilot:gpt-4.1",
   "gitlens.codeLens.enabled": false,
   "gitlens.hovers.currentLine.over": "line",
   "gitlens.hovers.enabled": false,
