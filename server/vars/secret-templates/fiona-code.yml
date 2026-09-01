@@ -1,3 +1,14 @@
+# Borgmatic
+# See also basics.yml
+app_borgmatic_upload_limit: 2M
+app_borgmatic_download_limit: 8M
+app_borgmatic_borgbase_ids:
+  example_app: borgbase_id
+app_borgmatic_ssh_key: |
+  -----BEGIN OPENSSH PRIVATE KEY-----
+  ...
+  -----END OPENSSH PRIVATE KEY-----
+
 # Caddy
 # https://desec.io/tokens
 app_caddy_desec_token: ""
