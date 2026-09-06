@@ -1,7 +1,8 @@
 FROM quay.io/panubo/sshd:latest
 
 # Add dependencies
-RUN apk add rrsync
+# Upgrade rsync is required to ensure rsync and rrsync stay in sync
+RUN apk add --no-cache --upgrade rsync rrsync
 
 # Setup SSH users
 ARG SSH_USERS
