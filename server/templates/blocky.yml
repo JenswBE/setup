@@ -5,16 +5,18 @@ bootstrapDns:
       - "149.112.112.112"
       # - "2620:fe::fe"
       # - "2620:fe::9"
-  - upstream: tcp-tls:dns.mullvad.net
+  - upstream: tcp-tls:dot.sb
     ips:
-      - "194.242.2.2"
-      # - "2a07:e340::2"
+      - "185.222.222.222"
+      - "45.11.45.11"
+      # - "2a09::"
+      # - "2a11::"
 
 upstreams:
   groups:
     default:
       - tcp-tls:dns.quad9.net
-      - tcp-tls:dns.mullvad.net
+      - tcp-tls:dot.sb
 
 customDNS:
   zone: |
