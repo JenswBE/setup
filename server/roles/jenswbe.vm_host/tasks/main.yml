@@ -6,11 +6,11 @@
 - name: VM host
   become: true
   block:
-    - name: "Include tasks for {{ subtask }}"
+    - name: Include tasks
       ansible.builtin.include_tasks: "{{ subtask | lower }}.yml"
       loop_control:
         loop_var: subtask
       loop:
         - Libvirt
         - Cockpit
-        - Caddy
+        - Podman

@@ -1,0 +1,7 @@
+[Unit]
+Description=Podman system prune
+OnFailure=unit-fail-mail@%n.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/podman system prune --force

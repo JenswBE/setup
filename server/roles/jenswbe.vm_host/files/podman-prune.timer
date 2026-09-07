@@ -1,0 +1,8 @@
+[Unit]
+Description=Weekly podman system prune
+
+[Timer]
+OnCalendar=Mon *-*-* 06:00:00
+
+[Install]
+WantedBy=timers.target
