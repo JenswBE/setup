@@ -7,7 +7,6 @@ Services which are backed up:
   - `bjoetiek-directus-db` (Postgres): DB data
   - `bjoetiek-easyappointments` (EasyAppointments): Built-in backup
   - `bjoetiek-easyappointments-db` (MySQL): DB data
-  - `clementines-db` (CouchDB): DB data ==> TODO
   - `goatcounter` (GoatCounter): SQLite DB
   - `keycloak-db` (Postgres): DB data
   - `koffan` (Koffan): SQLite DB
@@ -65,9 +64,6 @@ borgmatic_umount
 borgmatic_mount bjoetiek_y easyappointments
 sudo docker exec borgmatic find /mnt/borg/mnt/source/bjoetiek_y/easyappointments/db -name "*.sqldump" -exec echo {} \; -exec tail -n1 {} \; -exec echo Number of tables: \; -exec bash -c "grep -F 'CREATE TABLE' {} | wc -l" \;
 borgmatic_umount
-
-# === clementines-db: CouchDB ===
-TODO
 
 # === goatcounter: SQLite DB ===
 # Copy DB to restore point
