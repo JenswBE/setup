@@ -221,8 +221,9 @@ services:
     image: docker.io/syncthing/syncthing:2
     container_name: syncthing
     hostname: "#VAR: inventory_hostname :VAR#"
+    networks:
+      - caddy
     ports:
-      - "#VAR: hostnames.virbr_nointernet.kubo_media.ipv4 :VAR#:8384:8384"
       - "22000:22000"
       - "22000:22000/udp"
     volumes:

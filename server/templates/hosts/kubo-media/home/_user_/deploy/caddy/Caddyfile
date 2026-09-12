@@ -17,5 +17,10 @@ import ./configs/shared_snippets.txt
 		handle @jellystat {
 			import default_local_reverse_proxy "http://jellystat:3000"
 		}
+
+		@syncthing host "syncthing.#VAR: inventory_hostname :VAR#.#VAR: general_domain_local :VAR#"
+		handle @syncthing {
+			import default_local_reverse_proxy "http://syncthing:8384"
+		}
 	}
 }

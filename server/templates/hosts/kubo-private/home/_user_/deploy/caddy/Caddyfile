@@ -27,11 +27,6 @@ import ./configs/shared_snippets.txt
 			import default_local_reverse_proxy "http://kubo-haos.virbr-nointernet.#VAR: general_domain_local :VAR#:8123"
 		}
 
-		@syncthing host "syncthing.kubo.#VAR: general_domain_local :VAR#" # Consider renaming to syncthing.kubo-media
-		handle @syncthing {
-			import default_local_reverse_proxy "http://kubo-media.virbr-nointernet.#VAR: general_domain_local :VAR#:8384"
-		}
-
 		@truenas host "truenas.#VAR: general_domain_local :VAR#"
 		handle @truenas {
 			import default_local_reverse_proxy "http://kubo-storage.virbr-nointernet.#VAR: general_domain_local :VAR#"
