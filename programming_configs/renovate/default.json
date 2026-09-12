@@ -12,6 +12,17 @@
   },
   "packageRules": [
     {
+      "matchDatasources": [
+        "docker"
+      ],
+      "matchPackageNames": [
+        // Postgres requires a manual upgrade
+        // and are not exposed publicly anyway.
+        "postgres"
+      ],
+      "enabled": false
+    },
+    {
       "matchUpdateTypes": [
         "patch"
       ],
