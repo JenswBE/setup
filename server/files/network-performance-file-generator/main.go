@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"errors"
 	"flag"
 	"fmt"
 	"io"
@@ -50,7 +51,10 @@ func run() error {
 		Handler:           http.HandlerFunc(handleRequest),
 	}
 	err := server.ListenAndServe()
-	return fmt.Errorf("failed to start HTTP server: %w", err)
+	if !errors.Is(err, http.ErrServerClosed) {
+		return fmt.Errorf("failed to start HTTP server: %w", err)
+	}
+	return nil
 }
 
 func handleRequest(w http.ResponseWriter, r *http.Request) {
