@@ -52,7 +52,7 @@ services:
   # =========================
   forgejo:
     <<: *defaults
-    image: codeberg.org/forgejo/forgejo:14-rootless
+    image: codeberg.org/forgejo/forgejo:16-rootless
     container_name: forgejo
     user: "#VAR: ansible_facts['real_user_id'] :VAR#:#VAR: ansible_facts['real_group_id'] :VAR#"
     environment:
@@ -80,7 +80,6 @@ services:
     volumes:
       - "/etc/localtime:/etc/localtime:ro"
       - "#VAR: general_path_appdata :VAR#/git/forgejo/data:/var/lib/gitea"
-      - "#VAR: general_path_appdata :VAR#/git/forgejo/config:/etc/gitea"
     ports:
       - "2222:2222"
 
@@ -97,7 +96,6 @@ services:
     volumes:
       # === Backup locations ===
       # Forgejo
-      - "#VAR: general_path_appdata :VAR#/git/forgejo/config:/mnt/source/git/forgejo/config:z,ro"
       - "#VAR: general_path_appdata :VAR#/git/forgejo/data:/mnt/source/git/forgejo/data:z,ro"
       # === Config and cache ===
       - "./borgmatic/common/global.txt:/common/global.yml"
