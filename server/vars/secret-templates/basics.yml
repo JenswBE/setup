@@ -39,11 +39,12 @@ network_local_ipv6: "" # E.g. 1111:2b:3c:4d::/56
 
 # Network UPS Tools (NUT)
 # See https://networkupstools.org/docs/man/upsd.users.html
-app_nut_server_ip: "" # Internal DNS server is not connected to UPS
-app_nut_users:
+jwnu_nut_server_ip: "" # Internal DNS server is not connected to UPS
+jwnu_nut_users:
   <USERNAME>:
     password: ""
     upsmon: "primary"
+    actions: ["SET"]
 
 # OAuth2 Proxy
 # Same config should be shared between all OAuth2 Proxy instances.

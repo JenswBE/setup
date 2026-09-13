@@ -1,3 +1,8 @@
+- name: Include NUT role
+  ansible.builtin.import_role:
+    name: jenswbe.nut
+  tags: ["nut"]
+
 - name: Setup LUKS non-root decrypt
   ansible.builtin.include_role:
     name: jenswbe.luks_decrypt

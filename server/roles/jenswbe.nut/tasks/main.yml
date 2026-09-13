@@ -51,8 +51,8 @@
         jwcd_destination_group: nut
 
     - name: Copy upssched-cmd
-      ansible.builtin.copy:
-        src: files/upssched-cmd/cmd.py
+      ansible.builtin.template:
+        src: upssched-cmd/cmd.py
         dest: /usr/sbin/upssched-cmd
         owner: root
         group: nut

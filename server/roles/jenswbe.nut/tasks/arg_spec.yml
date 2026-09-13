@@ -10,7 +10,30 @@
           - client_server
         description: Type of NUT install
 
+      jwnu_nut_users:
+        type: dict
+        required: false
+        description: Dictionary of NUT users with password, upsmon role, and actions. See https://networkupstools.org/docs/man/upsd.users.html for details.
+        suboptions:
+          password:
+            type: str
+            required: true
+            description: Password for the NUT user
+          upsmon:
+            type: str
+            required: true
+            description: upsmon role (e.g. primary)
+          actions:
+            type: list
+            elements: str
+            required: false
+            description: List of allowed upsmon actions (e.g., SET, FSD)
+
       # === CONDITIONAL OPTIONAL ===
+      jwnu_nut_server_ip:
+        type: str
+        required: "{{ jwnu_nut_type == 'client_only' }}"
+
       jwnu_ups_vendor_id:
         type: str
         required: "{{ jwnu_nut_type == 'client_server' }}"

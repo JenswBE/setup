@@ -5,7 +5,7 @@ import io
 import subprocess
 import sys
 
-UPS_NAME = 'apc'
+UPS_NAME = 'apc@{{ jwnu_nut_server_ip if jwnu_nut_type == "client_only" else "localhost" }}'
 SMTP_HOSTNAME = 'in-v3.mailjet.com'
 PATH_SMTP_CLI_CONFIG = '/opt/smtp-cli/smtp-cli.conf'
 

@@ -8,6 +8,9 @@ jwnetconf_override_dns:
   - "{{ hostnames.private.fiona_private.ipv4 }}"
   - "{{ hostnames.private.eve.ipv4 }}"
 
+# NUT
+jwnu_nut_type: "client_only"
+
 # Firewall
 jwfw_zones:
   - zone: public # Based on /usr/lib/firewalld/zones/public.xml

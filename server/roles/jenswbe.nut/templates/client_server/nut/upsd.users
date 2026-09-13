@@ -1,6 +1,6 @@
 # See https://networkupstools.org/docs/man/upsd.users.html
 
-{%- for username, user in app_nut_users.items() %}
+{%- for username, user in jwnu_nut_users.items() %}
 [{{ username }}]
 password = {{ user.password }}
 upsmon {{ user.upsmon }}
