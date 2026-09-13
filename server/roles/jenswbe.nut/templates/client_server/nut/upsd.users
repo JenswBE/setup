@@ -1,7 +1,10 @@
 # See https://networkupstools.org/docs/man/upsd.users.html
 
-{% for user in app_nut_users %}
-[{{ user }}]
-  password = {{ app_nut_users[user].password }}
-  upsmon {{ app_nut_users[user].upsmon }}
+{%- for username, user in app_nut_users.items() %}
+[{{ username }}]
+password = {{ user.password }}
+upsmon {{ user.upsmon }}
+{% for action in user.actions -%}
+actions = {{ action }}
+{%- endfor %}
 {% endfor %}
