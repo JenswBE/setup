@@ -19,11 +19,6 @@ http:// {
 		import handler_local_blocky
 		import handler_local_crowdsec
 
-		@portal host "portal.#VAR: general_domain_local :VAR#"
-		handle @portal {
-			authenticate with portal_local
-		}
-
 		@ups host "ups.#VAR: general_domain_local :VAR#"
 		handle @ups {
 			import default_local_reverse_proxy "http://peanut:8080"
