@@ -115,9 +115,9 @@ services:
         url: "https://docs.#VAR: general_domain_local :VAR#"
         <<: *default
 
-      - name: Stirling PDF
+      - name: BentoPDF
         subtitle: Private | eve
-        logo: https://cdn.jsdelivr.net/gh/selfhst/icons/svg/stirling-pdf.svg
+        logo: https://cdn.jsdelivr.net/gh/selfhst/icons/svg/bentopdf.svg
         url: "https://pdf.#VAR: general_domain_local :VAR#"
         <<: *default
 
