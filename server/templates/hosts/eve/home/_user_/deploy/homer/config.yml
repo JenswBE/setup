@@ -148,12 +148,6 @@ services:
         url: "https://grafana.#VAR: general_domain_local :VAR#"
         <<: *default
 
-      - name: PeaNUT
-        subtitle: Private | fiona-private
-        logo: https://raw.githubusercontent.com/Brandawg93/PeaNUT/main/src/app/icon.svg
-        url: "https://ups.#VAR: general_domain_local :VAR#"
-        <<: *default
-
       - name: UptimeRobot
         subtitle: External
         logo: https://uptimerobot.com/assets/images/uptimerobot-logo.svg

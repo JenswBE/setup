@@ -18,10 +18,5 @@ http:// {
 
 		import handler_local_blocky
 		import handler_local_crowdsec
-
-		@ups host "ups.#VAR: general_domain_local :VAR#"
-		handle @ups {
-			import default_local_reverse_proxy "http://peanut:8080"
-		}
 	}
 }

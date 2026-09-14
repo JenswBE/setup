@@ -73,20 +73,6 @@ services:
     volumes:
       - ./blocky/config.txt:/app/config.yml:ro
 
-  # =========================
-  # =         PEANUT        =
-  # =========================
-  peanut:
-    <<: [*defaults, *extra-docker-host]
-    image: docker.io/brandawg93/peanut:latest
-    container_name: peanut
-    networks:
-      - caddy
-    volumes:
-      - ./peanut/settings.yml:/config/settings.yml
-    environment:
-      TZ: "#VAR: general_timezone :VAR#"
-
   # ===========================================================================
   # =   DEAD LINK CHECKER                                                     =
   # =   https://github.com/JenswBE/python-dead-link-checker                   =
