@@ -2,6 +2,10 @@
 
 Services which are backed up:
 
+- TODO
+  - `ha` (Home Assistant): Config files => TODO: Not yet implemented yet. Maybe mount SMB on kubo-private and use borgmatic.
+- Adhoc
+  - TrueNAS: Follow instructions in the `setup-encrypted` repo to create a backup
 - Eve
   - `bjoetiek-directus` (Directus): Uploaded content
   - `bjoetiek-directus-db` (Postgres): DB data
@@ -26,8 +30,6 @@ Services which are backed up:
   - `wtech-directus-db` (Postgres): DB data
 - Fiona Code
   - `git` (Forgejo): SQLite DB, config files and source code
-- Kubo HA
-  - `ha` (Home Assistant): Config files => TODO
 - Kubo Media
   - `immich`: Uploaded and archived photos
   - `immich-db`: Postgres DB data
@@ -112,7 +114,9 @@ borgmatic_umount
 compare_actual_backup_recursive nextcloud /var/www/html/data nextcloud data
 # Calendars and addressbooks
 borgmatic_mount nextcloud calcardbackup
-sudo docker exec borgmatic ls -AlSh /mnt/borg/mnt/source/nextcloud/calcardbackup/calcardbackup_overwrite | head -n 20
+sudo docker exec borgmatic ls -AlSh /mnt/borg/mnt/source/nextcloud/calcardbackup
+LATEST_DIR=$(sudo docker exec borgmatic ls -1t /mnt/borg/mnt/source/nextcloud/calcardbackup | head -n 1)
+sudo docker exec borgmatic ls -AlSh "/mnt/borg/mnt/source/nextcloud/calcardbackup/${LATEST_DIR:?}" | head -n 10
 borgmatic_umount
 
 # === paperless: Files ===
@@ -197,9 +201,9 @@ compare_actual_backup_recursive jellyfin /media/music music bulk
 # Mount repo
 borgmatic_mount jellystat backup
 # List backups
-docker compose exec borgmatic bash -c 'ls -lrh /mnt/borg/mnt/source/jellystat/backup | head -n4'
+sudo docker compose exec borgmatic bash -c 'ls -lrh /mnt/borg/mnt/source/jellystat/backup | head -n4'
 # List content of latest backup
-docker compose exec borgmatic bash -c 'ls -1r /mnt/borg/mnt/source/jellystat/backup/* | head -n1 | tr \\n \\0 | xargs -0 head -c 500; echo'
+sudo docker compose exec borgmatic bash -c 'ls -1r /mnt/borg/mnt/source/jellystat/backup/* | head -n1 | tr \\n \\0 | xargs -0 head -c 500; echo'
 # Unmount repo
 borgmatic_umount
 
@@ -215,7 +219,9 @@ validate_postgres jellystat dbdump/jellystat.pg_dump
 borgmatic_mount github_backup backup
 
 # List backup source
-sudo docker compose run -it --entrypoint "/bin/sh -c" github-backup "/usr/bin/find /backup -mindepth 1 -maxdepth 1 -type d -exec sh -c 'cd {}; git log -1 --all --date-order --format=\"%cI => \${PWD##*/}\"' \; | sort -r | head -n 3"
+# github-backup doesn't have a shell. So, directly checking the volume.
+GITHUB_BACKUP_VOLUME_PATH=$(sudo docker volume inspect deploy_github-backup | jq -r '.[0].Mountpoint')
+sudo /usr/bin/find "${GITHUB_BACKUP_VOLUME_PATH:?}" -mindepth 1 -maxdepth 1 -type d -exec sh -c 'cd {}; git log -1 --all --date-order --format="%cI => ${PWD##*/}"' \; | sort -r | head -n 3
 
 # List backup contents
 sudo docker exec borgmatic apk add git
@@ -240,6 +246,6 @@ sudo docker exec borgmatic bash -c 'ls -lhS /mnt/borg/mnt/source/unifi/mongodb/u
 borgmatic_umount
 
 # Validate if backup contains recent data.
-sudo docker run --rm -v ${APPDATA_DIR:?}/borgmatic/borgmatic/restore:/backup docker.io/library/mongo sh -c "bsondump /backup/unifi_alert.bson | jq --slurp '.' | jq '.[].datetime.\"\$date\".\"\$numberLong\"' | sort -r | head -n1 | cut -c2-11 | sed '1s/^/@/' | date -f-"
+sudo docker run --rm -v ${APPDATA_DIR:?}/borgmatic/borgmatic/restore:/backup docker.io/library/mongo sh -c "bsondump /backup/unifi_alert.bson | jq --slurp '.' | jq '.[].time.\"\$numberLong\"' | sort -r | head -n1 | cut -c2-11 | sed '1s/^/@/' | date -f-"
 sudo docker run --rm -v ${APPDATA_DIR:?}/borgmatic/borgmatic/restore:/backup docker.io/library/mongo sh -c "bsondump /backup/unifi_stat_5min.bson | jq --slurp '.' | jq '.[].datetime.\"\$date\".\"\$numberLong\"' | sort -r | head -n1 | cut -c2-11 | sed '1s/^/@/' | date -f-"
 ```

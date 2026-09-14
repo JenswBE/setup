@@ -12,6 +12,7 @@ sudo firewall-cmd --list-all
 sudo firewall-cmd --get-active-zones
 sudo firewall-cmd --list-all --zone local
 sudo firewall-cmd --list-all --zone docker
+sudo firewall-cmd --list-all --zone libvirt
 ```
 
 ### Check logs
