@@ -25,6 +25,14 @@ jobs:
         working-directory: server/roles/jenswbe.nut/templates/upssched-cmd
         run: python3 -m unittest
 
+      - name: Install dependencies for server/filter_plugins
+        working-directory: server
+        run: pip install ansible-core -r requirements.txt
+
+      - name: Run unit tests for server/filter_plugins
+        working-directory: server/filter_plugins
+        run: python3 -m unittest
+
   golang-tests:
     name: Test Golang code
     runs-on: ubuntu-latest

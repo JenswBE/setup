@@ -1,0 +1,9 @@
+{{ ansible_managed | comment }}
+# Role: jenswbe.network_config
+
+[NetDev]
+Name={{ item.bridge_name }}
+Kind=bridge
+
+[Bridge]
+STP=no

@@ -1,0 +1,8 @@
+{{ ansible_managed | comment }}
+# Role: jenswbe.network_config
+
+[Match]
+Name={{ item.vlan_name }}
+
+[Network]
+Bridge={{ item.bridge_name }}

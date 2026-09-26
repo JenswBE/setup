@@ -1,10 +1,17 @@
-- name: Cockpit - Install packages
-  ansible.builtin.package:
+- name: Cockpit - Install packages without recommends
+  ansible.builtin.apt:
     name:
-      - cockpit
+      - cockpit # Recommendation cockpit-networkmanager installs NetworkManager while we use systemd-networkd
+    install_recommends: false
+    update_cache: true
+
+- name: Cockpit - Install packages with recommends
+  ansible.builtin.apt:
+    name:
       - cockpit-machines
       - cockpit-pcp
       - cockpit-podman
+      - cockpit-storaged
       - podman
 
 - name: Cockpit - Enable and start systemd units

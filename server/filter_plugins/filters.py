@@ -13,6 +13,7 @@ class FilterModule(object):
             'enrich_hostnames': self.enrich_hostnames,
             'get_dict_key_contains': self.get_dict_key_contains,
             'netconfig_enrich': self.netconfig_enrich,
+            'netconfig_enrich_vlans': self.netconfig_enrich_vlans,
             'password_hash_argon2id': self.password_hash_argon2id,
             'password_hash_bcrypt': self.password_hash_bcrypt,
             'to_caddy_header_values': self.to_caddy_header_values,
@@ -72,6 +73,8 @@ class FilterModule(object):
             interface['filename'] = self.netconfig_derive_filename(interface['priority'], interface['name'])
             interface['name_is_wildcard_prefix'] = interface.get('name_is_wildcard_prefix', False)
             interface['override_dns'] = interface.get('override_dns', [])
+            interface['vlans'] = interface.get('vlans', {})
+            interface['vlan_names'] = [f"{interface['name']}.{vlan_id}" for vlan_id in interface['vlans']]
 
             result.append(interface)
         for name in dhcp_fallback_prefixes:
@@ -81,7 +84,28 @@ class FilterModule(object):
                 "priority": 99,
                 "filename": self.netconfig_derive_filename(99, name),
                 "type": "dhcp",
+                "vlans": {},
+                "vlan_names": [],
             })
+        return result
+
+    def netconfig_enrich_vlans(self, interfaces):
+        """interfaces is jwnetconf_interfaces; each interface may have a 'vlans' map of vlan id -> {suffix}"""
+        result = []
+        for interface in interfaces:
+            for vlan_id, vlan in interface.get('vlans', {}).items():
+                name = f"{vlan_id}{vlan['suffix']}"
+                bridge_name = f"br-{name}"
+                result.append({
+                    "interface": interface['name'],
+                    "vlan_id": vlan_id,
+                    "vlan_name": f"{interface['name']}.{vlan_id}",
+                    "bridge_name": bridge_name,
+                    "vlan_netdev_filename": self.netconfig_derive_filename(20, f"vlan-{name}", "netdev"),
+                    "vlan_network_filename": self.netconfig_derive_filename(21, f"vlan-{name}", "network"),
+                    "bridge_netdev_filename": self.netconfig_derive_filename(30, bridge_name, "netdev"),
+                    "bridge_network_filename": self.netconfig_derive_filename(31, bridge_name, "network"),
+                })
         return result
 
     def password_hash_argon2id(self, input):

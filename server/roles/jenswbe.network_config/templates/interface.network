@@ -3,20 +3,34 @@
 
 [Match]
 Name={{ item.name }}{% if item.name_is_wildcard_prefix %}*{% endif +%}
+{% if item.type == "none" %}
+
+[Link]
+RequiredForOnline=no
+{% endif %}
 
 [Network]
 {% if item.type == "static" %}
 Address={{ item.cidr_address }}
 Gateway={{ item.cidr_address | ansible.utils.ipaddr('1') }}
+{% elif item.type == "none" %}
+DHCP=no
 {% else %}
 DHCP=yes
 {% endif %}
+{% if item.type != "none" %}
 {% for dns_ip in jwnetconf_override_dns %}
 DNS={{ dns_ip }}
 {% endfor %}
+{% endif %}
+{% for vlan_name in item.vlan_names | default([]) %}
+VLAN={{ vlan_name }}
+{% endfor %}
+{% if item.type != "none" %}
 
 [DHCPv4]
 ClientIdentifier=mac
 {% if jwnetconf_override_dns %}
 UseDNS=no
+{% endif %}
 {% endif %}

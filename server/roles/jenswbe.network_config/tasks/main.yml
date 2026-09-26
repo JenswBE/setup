@@ -11,10 +11,15 @@
     - name: Enrich network configs
       ansible.builtin.set_fact:
         jwnetconf_enriched: "{{ jwnetconf_interfaces | netconfig_enrich(jwnetconf_dhcp_fallback_prefixes) }}"
+        jwnetconf_vlans_enriched: "{{ jwnetconf_interfaces | netconfig_enrich_vlans }}"
 
     - name: Expected network configs
       ansible.builtin.debug:
         var: jwnetconf_enriched
+
+    - name: Expected VLAN configs
+      ansible.builtin.debug:
+        var: jwnetconf_vlans_enriched
 
     - name: Drop ifupdown configs
       ansible.builtin.file:
@@ -47,13 +52,66 @@
         - Initramfs regenerate
         - Restart systemd-networkd
 
+    - name: Create VLAN netdev configs
+      ansible.builtin.template:
+        src: vlan.netdev
+        dest: "/etc/systemd/network/{{ item.vlan_netdev_filename }}"
+        owner: root
+        group: root
+        mode: "0644"
+      loop: "{{ jwnetconf_vlans_enriched }}"
+      notify:
+        - Initramfs regenerate
+        - Restart systemd-networkd
+
+    - name: Create VLAN network configs
+      ansible.builtin.template:
+        src: vlan.network
+        dest: "/etc/systemd/network/{{ item.vlan_network_filename }}"
+        owner: root
+        group: root
+        mode: "0644"
+      loop: "{{ jwnetconf_vlans_enriched }}"
+      notify:
+        - Initramfs regenerate
+        - Restart systemd-networkd
+
+    - name: Create VLAN bridge netdev configs
+      ansible.builtin.template:
+        src: bridge.netdev
+        dest: "/etc/systemd/network/{{ item.bridge_netdev_filename }}"
+        owner: root
+        group: root
+        mode: "0644"
+      loop: "{{ jwnetconf_vlans_enriched }}"
+      notify:
+        - Initramfs regenerate
+        - Restart systemd-networkd
+
+    - name: Create VLAN bridge network configs
+      ansible.builtin.template:
+        src: bridge.network
+        dest: "/etc/systemd/network/{{ item.bridge_network_filename }}"
+        owner: root
+        group: root
+        mode: "0644"
+      loop: "{{ jwnetconf_vlans_enriched }}"
+      notify:
+        - Initramfs regenerate
+        - Restart systemd-networkd
+
     - name: Find orphaned interfaces
       ansible.builtin.find:
         paths: /etc/systemd/network/
         file_type: file
-        contains: jenswbe.network_config
-        read_whole_file: true
-        excludes: "{{ jwnetconf_enriched | map(attribute='filename') | list }}"
+        excludes: >-
+          {{
+            (jwnetconf_enriched | map(attribute='filename') | list)
+            + (jwnetconf_vlans_enriched | map(attribute='vlan_netdev_filename') | list)
+            + (jwnetconf_vlans_enriched | map(attribute='vlan_network_filename') | list)
+            + (jwnetconf_vlans_enriched | map(attribute='bridge_netdev_filename') | list)
+            + (jwnetconf_vlans_enriched | map(attribute='bridge_network_filename') | list)
+          }}
       register: orphaned_interfaces
 
     - name: Remove orphaned interfaces

@@ -1,0 +1,9 @@
+{{ ansible_managed | comment }}
+# Role: jenswbe.network_config
+
+[NetDev]
+Name={{ item.vlan_name }}
+Kind=vlan
+
+[VLAN]
+Id={{ item.vlan_id }}

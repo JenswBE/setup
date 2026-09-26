@@ -1,0 +1,8 @@
+{{ ansible_managed | comment }}
+# Role: jenswbe.network_config
+
+[Match]
+Name={{ item.bridge_name }}
+
+[Network]
+ConfigureWithoutCarrier=yes

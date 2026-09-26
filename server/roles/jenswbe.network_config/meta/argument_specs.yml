@@ -31,9 +31,17 @@ argument_specs:
             choices:
               - dhcp
               - static
+              - none
           cidr_address:
             type: str
             # required: See "required_if"
+          vlans:
+            type: dict
+            required: false
+            description: >-
+              Map of VLAN id to a dict with key "suffix". For each VLAN, a VLAN interface and a
+              bridge on top of it are created, and a "VLAN=" entry is added to this interface.
+              e.g. {11: {"suffix": "wifi"}}
       jwnetconf_override_dns:
         type: list
         elements: str
