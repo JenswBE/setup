@@ -98,7 +98,6 @@ services:
   # =       NEXTCLOUD       =
   # =========================
   # Also used by:
-  #   - Bjoetiek: EasyAppointments calendar
   #   - Tuinfeest Beerse: Shared storage + imap save attachments
   nextcloud:
     <<: *defaults
@@ -128,8 +127,8 @@ services:
 
   nc-db:
     <<: *defaults
-    # See recommended version https://docs.nextcloud.com/server/32/admin_manual/installation/system_requirements.html
-    image: docker.io/library/mariadb:10.11
+    # See recommended version https://docs.nextcloud.com/server/35/admin_manual/installation/system_requirements.html
+    image: docker.io/library/mariadb:12.3
     container_name: nc-db
     command: --transaction-isolation=READ-COMMITTED --log-bin=ROW --innodb-read-only-compressed=OFF
     networks:
