@@ -3,6 +3,15 @@ jwnc_clevis_device_uuid: 73ae063f-63c1-4060-9b6c-6eaac36c9d51
 jwnc_clevis_expected_binding: tang '{"url":"http://{{ hostnames.private.kubo.ipv4 }}:7500"}'
 
 # Network config
+jwnetconf_interfaces:
+  - name: enp2s0
+    priority: 10
+    type: none
+    vlans:
+      11:
+        suffix: wifi
+      50:
+        suffix: srv
 jwnetconf_override_dns:
   - "{{ hostnames.virbr_nointernet.fiona_private.ipv4 }}"
   - "{{ hostnames.private.kubo_private.ipv4 }}"
