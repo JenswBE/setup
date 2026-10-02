@@ -9,8 +9,6 @@ Services which are backed up:
 - Eve
   - `bjoetiek-directus` (Directus): Uploaded content
   - `bjoetiek-directus-db` (Postgres): DB data
-  - `bjoetiek-easyappointments` (EasyAppointments): Built-in backup
-  - `bjoetiek-easyappointments-db` (MySQL): DB data
   - `goatcounter` (GoatCounter): SQLite DB
   - `keycloak-db` (Postgres): DB data
   - `koffan` (Koffan): SQLite DB
@@ -39,7 +37,6 @@ Services which are backed up:
 - Kubo Private
   - `github-backup` (GitHub Backup): All GitHub repo's
   - `grist-backup` (Grist): All Grist data
-  - `unifi-mongodb` (MongoDB): DB data
 
 ## Prepare
 
@@ -53,19 +50,6 @@ compare_actual_backup_flat bjoetiek-directus /directus/uploads bjoetiek_y direct
 
 # === bjoetiek-directus-db: Postgres DB data ===
 validate_postgres bjoetiek_y directus/dbdump/bjoetiek-directus.pg_dump
-
-# === bjoetiek-easyappointments: Built-in backup ===
-borgmatic_mount bjoetiek_y easyappointments
-sudo docker exec borgmatic bash -c 'ls -l /mnt/borg/mnt/source/bjoetiek_y/easyappointments/backup/*.gz'
-sudo docker exec borgmatic bash -c 'cat /mnt/borg/mnt/source/bjoetiek_y/easyappointments/backup/*.gz' | gunzip - | grep -F ea_appointments | tail -n 3
-echo "Number of tables:"
-sudo docker exec borgmatic bash -c 'cat /mnt/borg/mnt/source/bjoetiek_y/easyappointments/backup/*.gz' | gunzip - | grep -F 'CREATE TABLE' | wc -l
-borgmatic_umount
-
-# === bjoetiek-easyappointments-db: MySQL DB dump ===
-borgmatic_mount bjoetiek_y easyappointments
-sudo docker exec borgmatic find /mnt/borg/mnt/source/bjoetiek_y/easyappointments/db -name "*.sqldump" -exec echo {} \; -exec tail -n1 {} \; -exec echo Number of tables: \; -exec bash -c "grep -F 'CREATE TABLE' {} | wc -l" \;
-borgmatic_umount
 
 # === goatcounter: SQLite DB ===
 # Copy DB to restore point
@@ -235,17 +219,3 @@ borgmatic_mount grist_backup backup
 # Data (Listed entries should be recent)
 sudo docker exec borgmatic ls -lh /mnt/borg/mnt/source/grist_backup/backup
 borgmatic_umount
-
-# === unifi-mongodb: MongoDB data ===
-# Copy DB to restore point
-borgmatic_mount unifi mongodb
-sudo docker exec borgmatic bash -c 'DB_PATH=/mnt/borg/mnt/source/unifi/mongodb/unifi/unifi/alert.bson; ls -l $DB_PATH; cp $DB_PATH /mnt/restore/unifi_alert.bson'
-sudo docker exec borgmatic bash -c 'DB_PATH=/mnt/borg/mnt/source/unifi/mongodb/unifi_stat/unifi_stat/stat_5minutes.bson; ls -l $DB_PATH; cp $DB_PATH /mnt/restore/unifi_stat_5min.bson'
-# Currently there is no useful data in unifi_audit
-sudo docker exec borgmatic bash -c 'ls -lhS /mnt/borg/mnt/source/unifi/mongodb/unifi_audit/unifi_audit/*.bson'
-borgmatic_umount
-
-# Validate if backup contains recent data.
-sudo docker run --rm -v ${APPDATA_DIR:?}/borgmatic/borgmatic/restore:/backup docker.io/library/mongo sh -c "bsondump /backup/unifi_alert.bson | jq --slurp '.' | jq '.[].time.\"\$numberLong\"' | sort -r | head -n1 | cut -c2-11 | sed '1s/^/@/' | date -f-"
-sudo docker run --rm -v ${APPDATA_DIR:?}/borgmatic/borgmatic/restore:/backup docker.io/library/mongo sh -c "bsondump /backup/unifi_stat_5min.bson | jq --slurp '.' | jq '.[].datetime.\"\$date\".\"\$numberLong\"' | sort -r | head -n1 | cut -c2-11 | sed '1s/^/@/' | date -f-"
-```

@@ -5,9 +5,6 @@ app_bjoetiek_directus_github_token: ""
 app_bjoetiek_directus_key: "" # cat /proc/sys/kernel/random/uuid
 app_bjoetiek_directus_secret: "" # openssl rand -hex 32
 
-# Bjoetiek - EasyAppointments
-app_bjoetiek_easyappointments_db_password: ""
-
 # Borgmatic
 # See also basics.yml
 app_borgmatic_upload_limit: unlimited

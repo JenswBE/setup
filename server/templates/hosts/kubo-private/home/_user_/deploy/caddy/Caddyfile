@@ -32,11 +32,6 @@ import ./configs/shared_snippets.txt
 			import default_local_reverse_proxy "http://kubo-storage.virbr-nointernet.#VAR: general_domain_local :VAR#"
 		}
 
-		@unifi host "unifi.#VAR: general_domain_local :VAR#"
-		handle @unifi {
-			import default_local_reverse_proxy_with_insecure_upstream "https://unifi-network-app:8443"
-		}
-
 		import ./routes/*.Caddyfile
 	}
 }

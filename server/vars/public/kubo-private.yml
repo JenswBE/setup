@@ -32,9 +32,7 @@ jwfw_zones:
       - https # 443/tcp
       - http3 # 443/udp (QUIC)
       - dhcpv6-client # 546/udp
-    allowed_ports:
-      - port: 8080 # UniFi - Device communication
-        protos: [tcp]
+    allowed_ports: []
     extra_strings: []
     extra_booleans: []
 

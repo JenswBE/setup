@@ -79,67 +79,6 @@ services:
       - ./blocky/config.txt:/app/config.yml:ro
 
   # ===========================
-  # =    UNIFI NETWORK APP    =
-  # ===========================
-  unifi-network-app:
-    <<: *defaults
-    image: ghcr.io/linuxserver/unifi-network-application:latest
-    container_name: unifi-network-app
-    environment:
-      TZ: "#VAR: general_timezone :VAR#"
-      PUID: "1000"
-      PGID: "1000"
-      MEM_LIMIT: "1024"
-      MEM_STARTUP: "1024"
-      MONGO_HOST: unifi-mongodb
-      MONGO_PORT: "27017"
-      MONGO_AUTHSOURCE: admin
-      MONGO_USER: "#VAR: app_unifi_mongodb_user :VAR#"
-      MONGO_PASS: "#VAR: app_unifi_mongodb_password :VAR#"
-      MONGO_DBNAME: unifi
-    volumes:
-      - "#VAR: general_path_appdata :VAR#/unifi/network-app/config:/config"
-    ports:
-      - "10001:10001/udp" # Required for AP discovery
-      - "8080:8080" # Required for device communication
-    networks:
-      - caddy
-      - unifi
-    depends_on:
-      unifi-mongodb:
-        condition: service_healthy
-    deploy:
-      resources:
-        limits:
-          cpus: "2"
-          memory: 2G
-
-  unifi-mongodb: # NOTE: MongoDB 5.0+ requires AVX!
-    <<: [*defaults, *healthcheck-mongo]
-    # "Version 9.0 and newer supports up to MongoDB 8.0 and Java 17/21."
-    # See "UniFi Network Application" release notes at https://www.ui.com/download/releases/network-server
-    build: ./unifi/mongodb
-    container_name: unifi-mongodb
-    environment:
-      TZ: "#VAR: general_timezone :VAR#"
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: "#VAR: app_unifi_mongodb_root_password :VAR#"
-      MONGO_USER: "#VAR: app_unifi_mongodb_user :VAR#"
-      MONGO_PASS: "#VAR: app_unifi_mongodb_password :VAR#"
-      MONGO_DBNAME: unifi
-      MONGO_AUTHSOURCE: admin
-    networks:
-      - unifi
-    volumes:
-      - "#VAR: general_path_appdata :VAR#/unifi/mongodb/data:/data/db"
-      - unifi-mongodb-dump:/backup
-    deploy:
-      resources:
-        limits:
-          cpus: "2"
-          memory: 2G
-
-  # ===========================
   # =   DMARC REPORT VIEWER   =
   # ===========================
   dmarc-report-viewer:
@@ -214,8 +153,6 @@ services:
       - "github-backup:/mnt/source/github_backup/backup:ro"
       # Grist Backup
       - "grist-backup:/mnt/source/grist_backup/backup:ro"
-      # Unifi
-      - "unifi-mongodb-dump:/mnt/source/unifi/mongodb:ro"
       # === Config and cache ===
       - "./borgmatic/common/global.txt:/common/global.yml"
       - "./borgmatic/common/repo.txt:/common/repo.yml"
@@ -247,9 +184,6 @@ networks:
   caddy:
     name: caddy
 
-  unifi:
-    name: unifi
-
 #################################################################
 #                            VOLUMES                            #
 #################################################################
@@ -258,4 +192,3 @@ volumes:
   caddy-data:
   github-backup:
   grist-backup:
-  unifi-mongodb-dump:

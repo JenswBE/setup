@@ -349,52 +349,6 @@ services:
       POSTGRES_USER: directus
       POSTGRES_PASSWORD: directus
 
-  bjoetiek-easyappointments:
-    <<: *defaults
-    build: ./bjoetiek/easyappointments
-    container_name: bjoetiek-easyappointments
-    networks:
-      - caddy-public
-      - bjoetiek-easyappointments
-    depends_on:
-      bjoetiek-easyappointments-db:
-        condition: service_healthy
-    volumes:
-      - bjoetiek-easyappointments-backup:/backup
-    environment:
-      BASE_URL: "https://boekingen.#VAR: general_domain_bjoetiek :VAR#"
-      DEBUG_MODE: TRUE
-      DB_HOST: bjoetiek-easyappointments-db
-      DB_NAME: easyappointments
-      DB_USERNAME: root
-      DB_PASSWORD: "#VAR: app_bjoetiek_easyappointments_db_password :VAR#"
-      MAIL_PROTOCOL: mail
-      # MAIL_PROTOCOL: smtp # Email sending temporary disabled
-      MAIL_SMTP_DEBUG: "0"
-      MAIL_SMTP_AUTH: "1"
-      MAIL_SMTP_HOST: "#VAR: mailjet_host :VAR#"
-      MAIL_SMTP_USER: "#VAR: mailjet_username :VAR#"
-      MAIL_SMTP_PASS: "#VAR: mailjet_password :VAR#"
-      MAIL_SMTP_CRYPTO: tls # tls = STARTTLS; ssl = implicit SSL
-      MAIL_SMTP_PORT: "#VAR: mailjet_port_starttls :VAR#"
-      MAIL_FROM_ADDRESS: "boekingen@#VAR: general_domain_bjoetiek :VAR#"
-      MAIL_FROM_NAME: Boekingen - Bjoetiek Y
-      MAIL_REPLY_TO_ADDRESS: "info@#VAR: general_domain_bjoetiek :VAR#"
-
-  bjoetiek-easyappointments-db:
-    <<: [*defaults, *healthcheck-mysql]
-    image: docker.io/library/mysql:8.0
-    container_name: bjoetiek-easyappointments-db
-    networks:
-      - bjoetiek-easyappointments
-    volumes:
-      - "#VAR: general_path_appdata :VAR#/bjoetiek/easyappointments/mysql/data:/var/lib/mysql"
-      - bjoetiek-easyappointments-db-dump:/backup
-    environment:
-      TZ: "#VAR: general_timezone :VAR#"
-      MYSQL_DATABASE: easyappointments
-      MYSQL_ROOT_PASSWORD: "#VAR: app_bjoetiek_easyappointments_db_password :VAR#"
-
   # =========================
   # =    KRISTOF COENEN     =
   # =========================
@@ -934,9 +888,6 @@ services:
       # Bjoetiek Y - Directus
       - "#VAR: general_path_appdata :VAR#/bjoetiek/directus/uploads:/mnt/source/bjoetiek_y/directus/uploads:z,ro"
       - "bjoetiek-directus-db-dump:/mnt/source/bjoetiek_y/directus/dbdump:ro"
-      # Bjoetiek Y - EasyAppointments
-      - "bjoetiek-easyappointments-backup:/mnt/source/bjoetiek_y/easyappointments/backup:ro"
-      - "bjoetiek-easyappointments-db-dump:/mnt/source/bjoetiek_y/easyappointments/db:ro"
       # GoatCounter
       - "#VAR: general_path_appdata :VAR#/goatcounter/db:/mnt/source/goatcounter/db:ro"
       # Keycloak
@@ -997,8 +948,6 @@ services:
 # #################################################################
 volumes:
   bjoetiek-directus-db-dump:
-  bjoetiek-easyappointments-backup:
-  bjoetiek-easyappointments-db-dump:
   caddy-private-config:
   caddy-private-data:
   caddy-public-access-logs:
@@ -1025,9 +974,6 @@ volumes:
 networks:
   bjoetiek-directus:
     name: bjoetiek-directus
-
-  bjoetiek-easyappointments:
-    name: bjoetiek-easyappointments
 
   backup-nc-db:
     name: backup-nc-db

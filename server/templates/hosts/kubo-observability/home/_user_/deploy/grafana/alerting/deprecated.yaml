@@ -26,9 +26,6 @@ groups:
                 # General ignores
                 != "(Use `node --trace-deprecation ...` to show where the warning was created)"
 
-                # Related to Unifi Network App
-                != "WARNING: A terminally deprecated method in sun.misc.Unsafe has been called"
-
                 # Related to WikiJS
                 != "[DEP0174] DeprecationWarning: Calling promisify on a function that returns a Promise is likely a mistake."
                 != "[DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead."

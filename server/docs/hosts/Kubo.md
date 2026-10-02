@@ -14,7 +14,6 @@ Home NAS
 
 ### 02:00 Prepare backup
 
-- Dump Unifi DB (`templates/hosts/fiona/etc/systemd/system/unifi-dump-mongodb.timer`)
 - GitHub Backup (`templates/hosts/kubo/etc/systemd/system/github-backup.timer`)
 
 ### 03:00 Perform backup
