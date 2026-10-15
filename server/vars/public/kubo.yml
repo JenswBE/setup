@@ -8,6 +8,8 @@ jwnetconf_interfaces:
     priority: 10
     type: none
     vlans:
+      30:
+        suffix: iot
       50:
         suffix: srv
 jwnetconf_override_dns:
