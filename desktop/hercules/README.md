@@ -58,4 +58,19 @@ sudo pacman -S --noconfirm --needed cachyos-gaming-meta cachyos-gaming-applicati
 sudo pacman -S --noconfirm --needed krfb kscreen jq sunshine
 WAYLAND_DISPLAY=wayland-0 sunshine
 # Connect to Sunshine using SSH port forwarding -> Configuration -> Advanced -> Force a Specific Capture Method = KWin Screencast
+
+# => Setup AI tools
+# Install packages
+sudo pacman -S --noconfirm --needed llama-cpp nvtop ollama
+# Install Hugging Face CLI
+curl -LsSf https://hf.co/cli/install.sh | bash
+hf auth login # Use access token with preset "Read-Only"
+# Download models
+mkdir -p ~/AI/models
+hf download JetBrains/Mellum2.1-12B-A2.5B-Thinking-GGUF Mellum2.1-12B-A2.5B-Thinking-Q4_K_M.gguf --local-dir ~/AI/models
+hf download JetBrains/Mellum2.1-12B-A2.5B-Thinking-GGUF Mellum2.1-12B-A2.5B-Thinking-Q6_K.gguf --local-dir ~/AI/models
+hf download ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF Qwen3.8-27B-GSQ-RCO-IQ3_XXS.gguf --local-dir ~/AI/models
+hf download ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF Qwen3.8-27B-GSQ-RCO-IQ3_S.gguf --local-dir ~/AI/models
+# Run example
+llama-server --host 127.0.0.1 --port 8080 -m ~/AI/models/Mellum2.1-12B-A2.5B-Thinking-Q4_K_M.gguf
 ```
