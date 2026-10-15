@@ -26,6 +26,10 @@ connectIPVersion: v4
 
 blocking:
   blockType: zeroIP
+  allowlists:
+    local:
+      - |
+        *.#VAR: general_domain_local :VAR#
   denylists:
     base:
       - https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts # adware + malware
@@ -45,6 +49,14 @@ blocking:
       - base
       - extra
     192.168.21.1/24: # Unfiltered
+      - base
+    192.168.30.1/24: # IoT
+      - local
+    192.168.30.10/32: # IoT
+      - base
+    192.168.30.70/32: # IoT
+      - base
+    192.168.30.101/32: # IoT
       - base
 
 ports:
