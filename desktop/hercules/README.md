@@ -1,26 +1,61 @@
-Based on https://gist.github.com/iamthenuggetman/6d0884954653940596d463a48b2f459c
+# CachyOS
 
-# On local machine
-scp files/* 192.168.20.124:
+This machine is a hybrid AI workstation and remote gaming rig.
 
-# On Bazzite
+## Setup
 
 ```bash
-# Setup clevis/tang
-sudo rpm-ostree kargs --append-if-missing="rd.neednet=1"
-sudo rpm-ostree install clevis clevis-luks clevis-dracut
-sudo rpm-ostree initramfs --enable
+# => Install CachyOS
 
-sudo reboot
+# => Enable SSH
+sudo systemctl enable --now sshd
+sudo ufw disable # We don't need firewall on this machine
+nano .ssh/authorized_keys # Set authorized keys
 
-# LUKS_DEVICE
-# 1. Get UUID from /etc/crypttab
-# 2. Value = /dev/disk/by-uuid/<UUID>
-IP_FIONA=$(dig +short fiona.jensw.eu)
-IP_KUBO=$(dig +short kubo.jensw.eu)
-sudo clevis luks bind -d ${LUKS_DEVICE:?} sss "{\"t\":1,\"pins\":{\"tang\":[{\"url\":\"http://${IP_FIONA:?}:7500\"},{\"url\":\"http://${IP_KUBO:?}:7500\"}]}}"
+# => Install base tools
+sudo pacman -S --noconfirm --needed paru
 
-sudo bash setup.sh
+# => Disable automatic suspension and screen lock
+kwriteconfig6 --file powerdevilrc --group AC --group SuspendAndShutdown --key AutoSuspendAction 0 --type uint --notify
+kwriteconfig6 --file kscreenlockerrc --group Daemon --key Autolock false --type bool --notify
 
-sudo rpm-ostree kargs --append-if-missing="firmware_class.path=/usr/local/lib/firmware drm.edid_firmware=DP-1:edid-dell-g2724d.bin video=DP-1:e"
+# => Create a clean install snapshot
+# Based on https://wiki.cachyos.org/configuration/btrfs_snapshots/#snapper-cli
+sudo snapper create --type single --description "Clean install" --userdata "important=yes"
+sudo snapper list
+
+# => Setup Clevis with Tang SSS
+# Based on https://wiki.archlinux.org/title/Clevis
+# Install dependencies
+sudo pacman -S --noconfirm --needed clevis
+paru mkinitcpio-systemd-extras
+# Bind Clevis to Tang SSS
+bash # ensure we're in Bash
+fiona_ip=$(dig +short fiona.jensw.eu)
+kubo_ip=$(dig +short kubo.jensw.eu)
+clevis_cfg=$(printf '{"t":1,"pins":{"tang":[{"url":"http://%s:7500"},{"url":"http://%s:7500"}]}}' "$fiona_ip" "$kubo_ip")
+echo "${clevis_cfg}"
+sudo clevis luks bind -d /dev/nvme0n1p2 sss "${clevis_cfg}"
+# Ensure interfaces get an IP using DHCP at boot
+sudo tee /etc/systemd/network/20-initramfs-dhcp.network > /dev/null <<EOF
+[Match]
+Name=*
+
+[Network]
+DHCP=yes
+EOF
+# Add the systemd Clevis hooks
+sudo nano /etc/mkinitcpio.conf
+# HOOKS=(... sd-network sd-clevis sd-encrypt ...)
+# Regenerate the initramfs
+sudo limine-mkinitcpio
+
+# => Install gaming related packages
+sudo pacman -S --noconfirm --needed cachyos-gaming-meta cachyos-gaming-applications
+
+# => Setup remote gaming
+# Based on https://github.com/TheBrigandier/cachyos-sunshine-virt-display
+sudo pacman -S --noconfirm --needed krfb kscreen jq sunshine
+WAYLAND_DISPLAY=wayland-0 sunshine
+# Connect to Sunshine using SSH port forwarding -> Configuration -> Advanced -> Force a Specific Capture Method = KWin Screencast
 ```
