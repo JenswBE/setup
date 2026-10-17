@@ -13,7 +13,18 @@ sudo ufw disable # We don't need firewall on this machine
 nano .ssh/authorized_keys # Set authorized keys
 
 # => Install base tools
-sudo pacman -S --noconfirm --needed paru
+#    - paru: AUR helper
+#    - rocm-smi-lib: Requirement to print GPU stats in btop
+sudo pacman -S --noconfirm --needed paru rocm-smi-lib
+
+# => Enable automatic login (required by Sunshine)
+sudo mkdir -p /etc/plasmalogin.conf.d
+sudo tee /etc/plasmalogin.conf.d/zzz-autologin.conf >/dev/null <<EOF
+[Autologin]
+User=$USER
+Session=plasma
+Relogin=false
+EOF
 
 # => Disable automatic suspension and screen lock
 kwriteconfig6 --file powerdevilrc --group AC --group SuspendAndShutdown --key AutoSuspendAction 0 --type uint --notify
@@ -73,12 +84,24 @@ hf download JetBrains/Mellum2.1-12B-A2.5B-Thinking-GGUF Mellum2.1-12B-A2.5B-Thin
 hf download ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF Qwen3.8-27B-GSQ-RCO-IQ3_XXS.gguf --local-dir ~/AI/models
 hf download ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF Qwen3.8-27B-GSQ-RCO-IQ3_S.gguf --local-dir ~/AI/models
 # Run example
-llama-server --host 0.0.0.0 --port 8080 --models-dir ~/AI/models --models-max 1 --metrics --slots --n-gpu-layers all
+llama-server --host 0.0.0.0 --port 8080 --models-dir ~/AI/models --models-max 1 --metrics --slots --parallel 1 --n-gpu-layers all --ctx-size 262144
+```
+
+### Configure OpenCode
+
+Note: This is to be executed on your development machine. This can be another machine than the AI inference server.
+
+```bash
 # Configure OpenCode
 mkdir -p ~/.config/opencode
-cat > ~/.config/opencode/opencode.json <<EOF
+ip=$(dig +short hercules.jensw.eu | head -n1)
+jq \
+  --arg baseURL "http://${ip:?}:8080/v1" \
+  --argjson models "$(curl -fsS http://${ip:?}:8080/v1/models)" \
+  '.provider.hercules.options.baseURL = $baseURL | .provider.hercules.models += ( $models.data | map({key: .id, value: {name: .id}) | from_entries )' \
+  > ~/.config/opencode/opencode.json <<'EOF'
 {
-  "\$schema": "https://opencode.ai/config.json",
+  "$schema": "https://opencode.ai/config.json",
   "agent": {
     "build": {
       "temperature": 0.2,
@@ -98,8 +121,7 @@ cat > ~/.config/opencode/opencode.json <<EOF
       "npm": "@ai-sdk/openai-compatible",
       "name": "Hercules",
       "options": {
-        "apiKey": "none",
-        "baseURL": "http://$(dig +short hercules.jensw.eu):8080/v1"
+        "apiKey": "none"
       },
       "models": {
         "strata": {
@@ -108,13 +130,13 @@ cat > ~/.config/opencode/opencode.json <<EOF
             "context": 65536,
             "output": 16384
           }
-        },
-        "Mellum2.1-12B-A2.5B-Thinking-Q6_K": {
-          "name": "Mellum2.1-12B-A2.5B-Thinking-Q6_K"
         }
       }
     }
   }
 }
 EOF
+
+# Install skills
+git clone https://github.com/samber/cc-skills-golang.git ~/.agents/skills/cc-skills-golang # Golang
 ```
