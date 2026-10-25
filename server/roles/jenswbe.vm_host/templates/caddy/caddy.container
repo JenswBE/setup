@@ -2,7 +2,7 @@
 Description=Caddy
 
 [Container]
-Image=caddy.build
+Image=git.jensw.eu/jens/app-caddy:latest
 ContainerName=caddy
 AutoUpdate=registry
 Volume=caddy-data.volume:/data
