@@ -35,6 +35,8 @@
     jwcd_destination_dir: /etc/containers/systemd/caddy
     jwcd_privileged: true
     jwcd_destination_delete_extra: true
+    jwcd_destination_owner: "65532"
+    jwcd_destination_group: "65532"
 
 - name: Caddy - Ensure caddy is started
   ansible.builtin.systemd_service:

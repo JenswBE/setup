@@ -7,6 +7,7 @@ ContainerName=caddy
 AutoUpdate=registry
 Volume=caddy-data.volume:/data
 Volume=caddy-config.volume:/config
+Volume=caddy-access-logs.volume:/access_logs
 Volume={{ (jwcd_destination_dir, "Caddyfile") | path_join }}:/etc/caddy/Caddyfile:ro,Z
 PublishPort=80:80
 PublishPort=443:443
