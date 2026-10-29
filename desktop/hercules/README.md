@@ -67,8 +67,12 @@ sudo pacman -S --noconfirm --needed cachyos-gaming-meta cachyos-gaming-applicati
 # => Setup remote gaming
 # Based on https://github.com/TheBrigandier/cachyos-sunshine-virt-display
 sudo pacman -S --noconfirm --needed krfb kscreen jq sunshine
-WAYLAND_DISPLAY=wayland-0 sunshine
-# Connect to Sunshine using SSH port forwarding -> Configuration -> Advanced -> Force a Specific Capture Method = KWin Screencast
+ln -sf /usr/share/applications/dev.lizardbyte.app.Sunshine.kwin.desktop ~/.config/autostart/sunshine.desktop
+
+# => Setup Docker
+sudo pacman -S --noconfirm --needed docker docker-compose containerd
+sudo usermod -aG docker $USER
+sudo systemctl enable --now docker
 
 # => Setup AI tools
 # Install packages
@@ -84,7 +88,9 @@ hf download JetBrains/Mellum2.1-12B-A2.5B-Thinking-GGUF Mellum2.1-12B-A2.5B-Thin
 hf download ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF Qwen3.8-27B-GSQ-RCO-IQ3_XXS.gguf --local-dir ~/AI/models
 hf download ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF Qwen3.8-27B-GSQ-RCO-IQ3_S.gguf --local-dir ~/AI/models
 # Run example
-llama-server --host 0.0.0.0 --port 8080 --models-dir ~/AI/models --models-max 1 --metrics --slots --parallel 1 --n-gpu-layers all --ctx-size 262144
+llama-b11669/llama-server --host 0.0.0.0 --port 8080 --models-dir ~/AI/models --models-max 1 --metrics --slots --parallel 1 --n-gpu-layers all --ctx-size 262144 --context-shift --flash-attn on
+# Install Hermes
+curl -fsSL https://hermes-agent.nousresearch.com/install.sh | bash
 ```
 
 ### Configure OpenCode
@@ -139,4 +145,9 @@ EOF
 
 # Install skills
 git clone https://github.com/samber/cc-skills-golang.git ~/.agents/skills/cc-skills-golang # Golang
+
+# Run Hermes
+docker run -it --rm -v ~/.hermes:/opt/data docker.io/nousresearch/hermes-agent
+
+docker run -it --rm -v ~/.hermes:/opt/data --name hermes -p 8642:8642 -p 9119:9119 -e HERMES_DASHBOARD=1 docker.io/nousresearch/hermes-agent gateway run
 ```
