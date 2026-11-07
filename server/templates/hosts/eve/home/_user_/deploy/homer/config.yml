@@ -85,12 +85,6 @@ services:
         url: "https://ext.#VAR: general_domain_default :VAR#"
         <<: *default
 
-      - name: Home Assistant
-        subtitle: Private | kubo-haos
-        logo: https://cdn.jsdelivr.net/gh/selfhst/icons/svg/home-assistant.svg
-        url: "https://ha.#VAR: general_domain_local :VAR#"
-        <<: *default
-
       - name: Keycloak
         subtitle: Public | eve
         logo: https://raw.githubusercontent.com/keycloak/keycloak-misc/main/logo/icon.svg
@@ -163,7 +157,12 @@ services:
   - name: Network
     icon: fas fa-network-wired
     items:
-      #VAR: app_homer_services.network | indent( width=6) :VAR#
+      #VAR: app_homer_services.network | indent(width=6) :VAR#
+
+  - name: Smart home
+    icon: fas fa-home
+    items:
+      #VAR: app_homer_services.smart_home | indent(width=6) :VAR#
 
   - name: GoatCounter
     icon: fas fa-chart-bar
@@ -257,7 +256,7 @@ services:
 
       - name: QElectroTech
         subtitle: Electric diagram/drawing
-        logo: https://raw.githubusercontent.com/qelectrotech/qelectrotech-source-mirror/master/ico/128x128/diagram.png
+        logo: https://raw.githubusercontent.com/qelectrotech/qelectrotech-source-mirror/master/ico/256x256/qet.png
         url: https://qelectrotech.org/
         <<: *default
 
