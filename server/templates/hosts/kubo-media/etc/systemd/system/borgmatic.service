@@ -1,6 +1,6 @@
 [Unit]
 Description=Run Borgmatic
-OnFailure=unit-fail-mail@%n.service
+# OnFailure: Not set due to many temporary failures due to BorgBases concurrency limit
 
 [Service]
 Type=exec
