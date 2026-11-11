@@ -43,8 +43,7 @@ git clone https://github.com/JenswBE/setup.git ${SETUP_DIR:?}
 cd ${SETUP_DIR:?}/desktop
 
 # Install Ansible
-pipx install --suffix='-host' ansible-core
-pipx inject -r requirements.txt ansible-core-host
+uv tool install --with-requirements requirements.txt ansible-core
 
 # Install collections
 ansible-galaxy-host collection install --force -r requirements.yml
