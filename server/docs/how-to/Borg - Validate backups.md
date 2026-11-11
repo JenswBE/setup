@@ -22,8 +22,7 @@ Services which are backed up:
   - `tuinfeest-directus` (Directus): Uploaded content
   - `tuinfeest-directus-db` (Postgres): DB data
   - `vaultwarden` (Vaultwarden): SQLite DB and data
-  - `wikijs` (Wiki.js): Data (human readable backup format like Markdown)
-  - `wikijs-db` (Postgres): DB data
+  - `silverbullet` (Silverbullet): Markdown files and assets
   - `wtech-directus` (Directus): Uploaded content
   - `wtech-directus-db` (Postgres): DB data
 - Fiona Code
@@ -110,6 +109,9 @@ compare_actual_backup_flat paperless /usr/src/paperless/export documents export
 # === paperless-db: Postgres DB data ===
 validate_postgres documents dbdump/paperless.pg_dump
 
+# === silverbullet: Markdown files and assets ===
+compare_actual_backup_recursive silverbullet /data knowledge_base silverbullet/data
+
 # === tuinfeest-directus: Uploaded content ===
 compare_actual_backup_flat tuinfeest-directus /directus/uploads tuinfeest directus/uploads
 
@@ -125,12 +127,6 @@ sudo docker run --pull always --rm -v ${APPDATA_DIR:?}/borgmatic/borgmatic/resto
 # Data (Listed entries should be recent)
 sudo docker exec borgmatic ls -ltc /mnt/borg/mnt/source/vaultwarden/data/
 borgmatic_umount
-
-# === wikijs: Data (human readable backup format like Markdown) ===
-compare_actual_backup_recursive wikijs /backup wikijs backup
-
-# === wikijs-db: Postgres DB data ===
-validate_postgres wikijs dbdump/wikijs.pg_dump
 
 # === wtech-directus: Uploaded content ===
 compare_actual_backup_flat wtech-directus /directus/uploads wtech directus/uploads

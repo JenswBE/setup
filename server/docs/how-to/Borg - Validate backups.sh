@@ -72,9 +72,9 @@ compare_actual_backup_recursive()
   MINS_SINCE_MIDNIGHT=$(( $(date "+10#%H * 60 + 10#%M") ))
   EXTRACT_PRINT_LAST_3='sort -nr | head -n 3 | cut -d" " -f2- | tr \\\n \\\0 | xargs -0 ls -lah'
   echo "Finding 3 newest files for container \"${ACTUAL_CONTAINER:?}\" in source path \"${ACTUAL_PATH:?}\" ..."
-  sudo docker exec "${ACTUAL_CONTAINER:?}" sh -c "find ${ACTUAL_PATH:?} -type f -mmin +${MINS_SINCE_MIDNIGHT:?} -exec stat -c '%Y %n' {} \; | ${EXTRACT_PRINT_LAST_3:?}"
+  sudo docker exec "${ACTUAL_CONTAINER:?}" sh -c "find ${ACTUAL_PATH:?} -type d -name .git -prune -o -type f -mmin +${MINS_SINCE_MIDNIGHT:?} -exec stat -c '%Y %n' {} \; | ${EXTRACT_PRINT_LAST_3:?}"
   echo "Finding 3 newest files in backup \"${BACKUP_APP:?}/${BACKUP_PATH:?}\" ..."
-  sudo docker exec borgmatic sh -c "find /mnt/borg/mnt/source/${BACKUP_APP:?}/${BACKUP_PATH:?} -type f -mmin +${MINS_SINCE_MIDNIGHT:?} -exec stat -c '%Y %n' {} \; | ${EXTRACT_PRINT_LAST_3:?}"
+  sudo docker exec borgmatic sh -c "find /mnt/borg/mnt/source/${BACKUP_APP:?}/${BACKUP_PATH:?} -type d -name .git -prune -o -type f -mmin +${MINS_SINCE_MIDNIGHT:?} -exec stat -c '%Y %n' {} \; | ${EXTRACT_PRINT_LAST_3:?}"
 
   # Unmount repo
   borgmatic_umount

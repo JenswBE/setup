@@ -193,56 +193,22 @@ services:
       POSTGRES_USER: "miniflux"
       POSTGRES_PASSWORD: "#VAR: app_miniflux_db_pass :VAR#"
 
-  # ====================================
-  # =              WIKI.JS             =
-  # = https://github.com/requarks/wiki =
-  # ====================================
-  wikijs:
+  # ==================================================
+  # =                  SILVERBULLET                  =
+  # = https://github.com/silverbulletmd/silverbullet =
+  # ==================================================
+  silverbullet:
     <<: *defaults
-    image: ghcr.io/linuxserver/wikijs:latest
-    container_name: wikijs
+    image: ghcr.io/silverbulletmd/silverbullet@sha256:7e24c16d31a3f4b4a4832ed64ec585e605a1e275b7c35917d385176f0b40415c # 2.12.1-slim
+    container_name: silverbullet
     networks:
       - caddy-private
-      - wikijs
-    depends_on:
-      wikijs-db:
-        condition: service_healthy
     volumes:
-      - "#VAR: general_path_appdata :VAR#/wikijs/wikijs/config:/config"
-      - "#VAR: general_path_appdata :VAR#/wikijs/wikijs/data:/data"
-      - wikijs-backup:/backup # Configured in "Storage => Local File System"
+      - "#VAR: general_path_appdata :VAR#/silverbullet/silverbullet/data:/data"
     environment:
       TZ: "#VAR: general_timezone :VAR#"
       PUID: "#VAR: ansible_facts['real_user_id'] :VAR#"
       PGID: "#VAR: ansible_facts['real_group_id'] :VAR#"
-      DB_TYPE: postgres
-      DB_HOST: wikijs-db
-      DB_PORT: 5432
-      DB_USER: wikijs
-      DB_PASS: "#VAR: app_wikijs_db_pass :VAR#"
-      DB_NAME: wikijs
-    deploy:
-      resources:
-        limits:
-          cpus: "4"
-          memory: 2G
-
-  wikijs-db:
-    <<: [*defaults, *healthcheck-postgres]
-    # Wiki.js supports PostgreSQL 9.5 or later and recommends latest version
-    # https://docs.requarks.io/install/requirements
-    image: docker.io/library/postgres:16-alpine
-    container_name: wikijs-db
-    networks:
-      - wikijs
-    volumes:
-      - "#VAR: general_path_appdata :VAR#/wikijs/postgres/data:/var/lib/postgresql/data"
-      - wikijs-db-dump:/backup
-    environment:
-      TZ: "#VAR: general_timezone :VAR#"
-      POSTGRES_DB: wikijs
-      POSTGRES_USER: wikijs
-      POSTGRES_PASSWORD: "#VAR: app_wikijs_db_pass :VAR#"
 
   # =========================
   # = IMAP SAVE ATTACHMENTS =
@@ -847,7 +813,7 @@ services:
     volumes:
       - "#VAR: general_path_appdata :VAR#/syncthing/config:/var/syncthing"
       - "#VAR: general_path_appdata :VAR#/paperless/docs/documents/originals:/data/paperless"
-      - "wikijs-backup:/data/wikijs"
+      - "#VAR: general_path_appdata :VAR#/silverbullet/silverbullet/data/spaces:/data/silverbullet"
     environment:
       TZ: "#VAR: general_timezone :VAR#"
       PUID: "#VAR: ansible_facts['real_user_id'] :VAR#"
@@ -892,6 +858,8 @@ services:
       - "#VAR: general_path_appdata :VAR#/goatcounter/db:/mnt/source/goatcounter/db:ro"
       # Keycloak
       - "keycloak-db-dump:/mnt/source/keycloak/dbdump:ro"
+      # Knowledge base
+      - "#VAR: general_path_appdata :VAR#/silverbullet/silverbullet/data:/mnt/source/knowledge_base/silverbullet/data:ro"
       # Koffan
       - "#VAR: general_path_appdata :VAR#/koffan/koffan/data:/mnt/source/koffan/koffan/data:ro"
       # KristofCoenen
@@ -913,9 +881,6 @@ services:
       - "tuinfeest-directus-db-dump:/mnt/source/tuinfeest/directus/dbdump:ro"
       # Vaultwarden
       - "#VAR: general_path_appdata :VAR#/vaultwarden/data:/mnt/source/vaultwarden/data:ro"
-      # Wiki.js
-      - "wikijs-backup:/mnt/source/wikijs/backup:ro"
-      - "wikijs-db-dump:/mnt/source/wikijs/dbdump:ro"
       # WTech
       - "#VAR: general_path_appdata :VAR#/wtech/directus/uploads:/mnt/source/wtech/directus/uploads:z,ro"
       - "wtech-directus-db-dump:/mnt/source/wtech/directus/dbdump:ro"
@@ -964,8 +929,6 @@ volumes:
   paperless-export:
   paperless-redis-data:
   tuinfeest-directus-db-dump:
-  wikijs-backup:
-  wikijs-db-dump:
   wtech-directus-db-dump:
 
 # #################################################################
@@ -1002,9 +965,6 @@ networks:
 
   tuinfeest-directus:
     name: tuinfeest-directus
-
-  wikijs:
-    name: wikijs
 
   wtech-directus:
     name: wtech-directus

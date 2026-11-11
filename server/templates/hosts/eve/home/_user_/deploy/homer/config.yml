@@ -121,10 +121,10 @@ services:
         url: "https://vault.#VAR: general_domain_default :VAR#"
         <<: *default
 
-      - name: Wiki.js
+      - name: Silverbullet
         subtitle: Private | eve
-        logo: https://cdn.jsdelivr.net/gh/selfhst/icons/svg/wiki-js.svg
-        url: "https://wiki.#VAR: general_domain_local :VAR#"
+        logo: https://cdn.jsdelivr.net/gh/selfhst/icons@main/png/silverbullet.png
+        url: "https://kb.#VAR: general_domain_local :VAR#"
         <<: *default
 
   - name: Observability

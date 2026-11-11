@@ -26,10 +26,6 @@ groups:
                 # General ignores
                 != "(Use `node --trace-deprecation ...` to show where the warning was created)"
 
-                # Related to WikiJS
-                != "[DEP0174] DeprecationWarning: Calling promisify on a function that returns a Promise is likely a mistake."
-                != "[DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead."
-
                 # Related to xfs_scrub_all
                 != "DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC)."
 

@@ -37,6 +37,5 @@
     - paperless-export.timer
     - tuinfeest-directus-dump-db.timer
     - vaultwarden-dump-db.timer
-    - wikijs-dump-db.timer
     - wtech-directus-dump-db.timer
   tags: ["systemd"]

@@ -71,9 +71,6 @@ app_tuinfeest_directus_github_token: ""
 app_tuinfeest_directus_key: "" # cat /proc/sys/kernel/random/uuid
 app_tuinfeest_directus_secret: "" # openssl rand -hex 32
 
-# Wiki.js
-app_wikijs_db_pass: ""
-
 # Wireguard
 jwwg_wireguard_interfaces:
   wg0:

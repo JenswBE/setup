@@ -26,6 +26,11 @@ import ./configs/shared_snippets.txt
 			import default_local_reverse_proxy "http://miniflux:8080"
 		}
 
+		@kb host "kb.#VAR: general_domain_local :VAR#"
+		handle @kb {
+			import default_local_reverse_proxy "http://silverbullet:3000"
+		}
+
 		@koffan host "koffan.#VAR: general_domain_local :VAR#"
 		handle @koffan {
 			import default_local_reverse_proxy "http://koffan:80"
@@ -44,11 +49,6 @@ import ./configs/shared_snippets.txt
 		@syncthing host "syncthing.#VAR: inventory_hostname :VAR#.#VAR: general_domain_local :VAR#"
 		handle @syncthing {
 			import default_local_reverse_proxy "http://syncthing:8384"
-		}
-
-		@wiki host "wiki.#VAR: general_domain_local :VAR#"
-		handle @wiki {
-			import default_local_reverse_proxy "http://wikijs:3000"
 		}
 	}
 }

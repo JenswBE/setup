@@ -27,7 +27,6 @@ VPS
 - Dump Paperless-ngx DB (`templates/hosts/eve/etc/systemd/system/paperless-dump-db.timer`)
 - Dump Tuinfeest Directus DB (`templates/hosts/eve/etc/systemd/system/tuinfeest-directus-dump-db.timer`)
 - Dump Vaultwarden DB (`templates/hosts/eve/etc/systemd/system/vaultwarden-dump-db.timer`)
-- Dump Wiki.js DB (`templates/hosts/eve/etc/systemd/system/wikijs-dump-db.timer`)
 - Dump WTech Directus DB (`templates/hosts/eve/etc/systemd/system/wtech-directus-dump-db.timer`)
 
 ### 03:00 Perform backup
