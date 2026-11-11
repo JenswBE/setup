@@ -199,7 +199,7 @@ services:
   # ==================================================
   silverbullet:
     <<: *defaults
-    image: ghcr.io/silverbulletmd/silverbullet@sha256:7e24c16d31a3f4b4a4832ed64ec585e605a1e275b7c35917d385176f0b40415c # 2.12.1-slim
+    image: ghcr.io/silverbulletmd/silverbullet@sha256:370a3bf2daa37b7dbba62183085c57d5d43862189ea127e0765646d230561d9d # 2.12.1-slim
     container_name: silverbullet
     networks:
       - caddy-private
