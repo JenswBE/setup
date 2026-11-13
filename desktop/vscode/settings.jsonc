@@ -72,6 +72,7 @@
     "*.timer": "ini",
     "*.txt.jinja2": "jinja",
     "*.volume": "ini",
+    "*.zone": "ini",
     "**/tasks/**/*.yml": "ansible"
   },
   "files.enableTrash": false,
