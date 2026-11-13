@@ -1,0 +1,22 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: local-path-provisioner
+  namespace: "{{ .Release.Namespace }}"
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    namespace: local-path-storage
+    server: {{ .Values.spec.destination.server }}
+  project: default
+  source:
+    repoURL: https://github.com/rancher/local-path-provisioner
+    targetRevision: 49b2be8e26d6d34c9afaa21fa33108d2e82f8955 # v0.0.37
+    path: deploy/chart/local-path-provisioner
+    helm:
+      releaseName: local-path-provisioner
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
