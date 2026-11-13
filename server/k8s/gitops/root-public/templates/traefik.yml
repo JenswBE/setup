@@ -11,9 +11,9 @@ spec:
     server: {{ .Values.spec.destination.server }}
   project: default
   source:
-    chart: traefik
-    repoURL: https://traefik.github.io/charts
-    targetRevision: 41.0.0
+    repoURL: oci://ghcr.io/traefik/helm/traefik
+    targetRevision: sha256:bd20184b7da82f7cbb12ff51aad9529426b879ee622b43e7292ffdfc6071e3a2 # 42.4.0
+    path: "."
     helm:
       valuesObject:
         providers:

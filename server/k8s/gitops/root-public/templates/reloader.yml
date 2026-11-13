@@ -11,8 +11,8 @@ spec:
     server: {{ .Values.spec.destination.server }}
   project: default
   source:
-    chart: reloader
     repoURL: https://stakater.github.io/stakater-charts
+    chart: reloader
     targetRevision: 2.2.20
   syncPolicy:
     automated:

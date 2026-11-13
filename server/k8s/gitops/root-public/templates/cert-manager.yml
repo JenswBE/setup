@@ -11,9 +11,9 @@ spec:
     server: {{ .Values.spec.destination.server }}
   project: default
   source:
-    chart: cert-manager
     repoURL: oci://quay.io/jetstack/charts/cert-manager
-    targetRevision: v1.20.2
+    targetRevision: sha256:88ebe6f16086b2b5f72ae599fe0185f9a344054d18cf045ff3295a94f76b90bf # v1.20.5
+    path: "."
     helm:
       valuesObject:
         crds:
