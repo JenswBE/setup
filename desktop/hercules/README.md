@@ -27,7 +27,8 @@ Relogin=false
 EOF
 
 # => Disable automatic suspension and screen lock
-kwriteconfig6 --file powerdevilrc --group AC --group SuspendAndShutdown --key AutoSuspendAction 0 --type uint --notify
+kwriteconfig6 --file powerdevilrc --group AC --group SuspendAndShutdown --key AutoSuspendAction 0 --type uint --notify # Disable
+kwriteconfig6 --file powerdevilrc --group AC --group SuspendAndShutdown --key PowerButtonAction 8 --type uint --notify # Shutdown
 kwriteconfig6 --file kscreenlockerrc --group Daemon --key Autolock false --type bool --notify
 
 # => Create a clean install snapshot
@@ -89,8 +90,40 @@ hf download ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF Qwen3.8-27B-GSQ-RCO-IQ3_XXS.ggu
 hf download ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF Qwen3.8-27B-GSQ-RCO-IQ3_S.gguf --local-dir ~/AI/models
 # Run example
 llama-b11669/llama-server --host 0.0.0.0 --port 8080 --models-dir ~/AI/models --models-max 1 --metrics --slots --parallel 1 --n-gpu-layers all --ctx-size 262144 --context-shift --flash-attn on
-# Install Hermes
+
+### Hermes
+# Install dependencies
+VERSION=$(curl -Ls -o /dev/null -w %{url_effective} https://github.com/AsamK/signal-cli/releases/latest | sed -e 's/^.*\/v//')
+curl -L -O https://github.com/AsamK/signal-cli/releases/download/v"${VERSION}"/signal-cli-"${VERSION}"-Linux-native.tar.gz
+sudo tar xf signal-cli-"${VERSION}"-Linux-native.tar.gz -C /opt
+sudo ln -sf /opt/signal-cli /usr/local/bin/
+# Install Hermes agent
 curl -fsSL https://hermes-agent.nousresearch.com/install.sh | bash
+# Link to Signal
+signal-cli link -n HermesAgent
+# Configure as daemon
+PHONE_NUMBER="+1234567890" # Replace with your phone number associated with Signal
+SIGNAL_CLI_PORT=8666
+mkdir -p ${HOME:?}/.config/systemd/user
+cat > ${HOME:?}/.config/systemd/user/signal-cli.service <<EOF
+[Unit]
+Description=signal-cli daemon
+After=network.target
+
+[Service]
+ExecStart=signal-cli --account "${PHONE_NUMBER}" daemon --http 127.0.0.1:${SIGNAL_CLI_PORT}
+Restart=always
+
+[Install]
+WantedBy=default.target
+EOF
+systemctl --user daemon-reload
+systemctl --user enable --now signal-cli
+# Configure Hermes
+# See https://hermes-agent.nousresearch.com/docs/user-guide/messaging/signal#manual-configuration
+editor ~/.hermes/.env
+# Restart the Hermes Gateway
+hermes gateway restart --all
 ```
 
 ### Configure OpenCode
