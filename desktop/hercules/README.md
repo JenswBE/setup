@@ -13,9 +13,10 @@ sudo ufw disable # We don't need firewall on this machine
 nano .ssh/authorized_keys # Set authorized keys
 
 # => Install base tools
+#    - localsend: Easily send files and snippets
 #    - paru: AUR helper
 #    - rocm-smi-lib: Requirement to print GPU stats in btop
-sudo pacman -S --noconfirm --needed paru rocm-smi-lib
+sudo pacman -S --noconfirm --needed localsend paru rocm-smi-lib
 
 # => Enable automatic login (required by Sunshine)
 sudo mkdir -p /etc/plasmalogin.conf.d
@@ -55,6 +56,9 @@ Name=*
 
 [Network]
 DHCP=yes
+
+[DHCPv4]
+ClientIdentifier=mac
 EOF
 # Add the systemd Clevis hooks
 sudo nano /etc/mkinitcpio.conf
@@ -84,10 +88,18 @@ curl -LsSf https://hf.co/cli/install.sh | bash
 hf auth login # Use access token with preset "Read-Only"
 # Download models
 mkdir -p ~/AI/models
-hf download JetBrains/Mellum2.1-12B-A2.5B-Thinking-GGUF Mellum2.1-12B-A2.5B-Thinking-Q4_K_M.gguf --local-dir ~/AI/models
-hf download JetBrains/Mellum2.1-12B-A2.5B-Thinking-GGUF Mellum2.1-12B-A2.5B-Thinking-Q6_K.gguf --local-dir ~/AI/models
-hf download ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF Qwen3.8-27B-GSQ-RCO-IQ3_XXS.gguf --local-dir ~/AI/models
-hf download ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF Qwen3.8-27B-GSQ-RCO-IQ3_S.gguf --local-dir ~/AI/models
+hf_dl() { hf download "$1" --local-dir ~/AI/models; }
+hf_dl hf://JetBrains/Mellum2.1-12B-A2.5B-Thinking-GGUF/Mellum2.1-12B-A2.5B-Thinking-Q4_K_M.gguf
+hf_dl hf://JetBrains/Mellum2.1-12B-A2.5B-Thinking-GGUF/Mellum2.1-12B-A2.5B-Thinking-Q6_K.gguf
+hf_dl hf://ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF/Qwen3.8-27B-GSQ-RCO-IQ3_XXS.gguf
+hf_dl hf://ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF/Qwen3.8-27B-GSQ-RCO-IQ3_S.gguf
+hf_dl hf://unsloth/Qwen3.5-9B-GGUF/Qwen3.5-9B-UD-Q6_K_XL.gguf
+hf_dl hf://google/gemma-4-26B-A4B-it-qat-q4_0-gguf/gemma-4-26B_q4_0-it.gguf
+hf_dl hf://google/gemma-4-12B-it-qat-q4_0-gguf/gemma-4-12b-it-qat-q4_0.gguf
+hf_dl hf://bartowski/NousResearch_Hermes-4-14B-GGUF/NousResearch_Hermes-4-14B-Q4_K_M.gguf
+hf_dl hf://bartowski/NousResearch_Hermes-4-14B-GGUF/NousResearch_Hermes-4-14B-Q4_K_L.gguf
+hf_dl hf://bartowski/NousResearch_Hermes-4-14B-GGUF/NousResearch_Hermes-4-14B-Q5_K_M.gguf
+hf_dl hf://bartowski/NousResearch_Hermes-4-14B-GGUF/NousResearch_Hermes-4-14B-Q5_K_L.gguf
 # Run example
 llama-b11669/llama-server --host 0.0.0.0 --port 8080 --models-dir ~/AI/models --models-max 1 --metrics --slots --parallel 1 --n-gpu-layers all --ctx-size 262144 --context-shift --flash-attn on
 
@@ -122,6 +134,19 @@ systemctl --user enable --now signal-cli
 # Configure Hermes
 # See https://hermes-agent.nousresearch.com/docs/user-guide/messaging/signal#manual-configuration
 editor ~/.hermes/.env
+cat >> ~/.hermes/.env <<'EOF'
+# =============================================================================
+# Nextcloud
+# =============================================================================
+NEXTCLOUD_USER=
+NEXTCLOUD_APP_PASS=
+
+# =============================================================================
+# Silverbullet
+# =============================================================================
+SILVERBULLET_USER=
+SILVERBULLET_PASS=
+EOF
 # Restart the Hermes Gateway
 hermes gateway restart --all
 ```
