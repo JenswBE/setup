@@ -10,6 +10,8 @@ jwnetconf_interfaces:
     vlans:
       11:
         suffix: wifi
+      31:
+        suffix: ai
       50:
         suffix: srv
 jwnetconf_override_dns:

@@ -1,7 +1,9 @@
 jwba_base_packages:
   - bash-completion
   - btop # htop replacement
+  - curl
   - ethtool
+  - git
   - iftop
   - iotop
   - pv

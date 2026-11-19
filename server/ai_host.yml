@@ -1,0 +1,30 @@
+- name: Init
+  hosts: ai_host
+  vars:
+    playbook_supported_distros:
+      - Debian
+
+  pre_tasks:
+    - name: Include init tasks
+      ansible.builtin.include_tasks: "tasks/init.yml"
+      tags: ["always"]
+
+  roles:
+    - role: jenswbe.basics
+      tags: ["basics"]
+
+    - role: jenswbe.automatic_updates
+      tags: ["automatic_updates"]
+
+    - role: geerlingguy.security
+      become: true
+      tags: ["gsecurity"]
+
+    - role: jenswbe.network_config
+      tags: ["network_config"]
+
+    - role: jenswbe.powersavings
+      tags: ["powersavings"]
+
+    - role: jenswbe.firewall
+      tags: ["firewall"]

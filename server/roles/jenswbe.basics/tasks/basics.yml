@@ -31,9 +31,10 @@
         value: "10"
 
     - name: Install common base packages
-      ansible.builtin.package:
+      ansible.builtin.apt:
         name: "{{ jwba_base_packages }}"
         state: present
+        update_cache: true
 
     - name: Set HISTCONTROL
       ansible.builtin.template:
