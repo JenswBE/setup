@@ -5,6 +5,15 @@
       ansible.builtin.set_fact:
         ssh_key_path: "{{ ansible_facts['user_dir'] }}/.ssh/id_ed25519"
 
+    - name: Install dependencies
+      become: true
+      ansible.builtin.apt:
+        update_cache: true
+        state: present
+        name:
+         - jq # Required for JSON processing in contribute-data skill
+         - python3-paramiko # Required by module community.general.ssh_config
+
     - name: "Create SSH key pair"
       register: create_ssh_key
       community.crypto.openssh_keypair:
@@ -36,13 +45,6 @@
         group: "{{ ansible_facts['real_group_id'] }}"
         mode: "700"
 
-    - name: Install paramiko on host (required by ssh_config module)
-      become: true
-      ansible.builtin.apt:
-        update_cache: true
-        state: present
-        name: python3-paramiko
-
     - name: Configure SSH host for local git
       community.general.ssh_config:
         ssh_config_file: "{{ ansible_facts['user_dir'] }}/.ssh/config"
@@ -72,3 +74,13 @@
         dest: "{{ ansible_facts['user_dir'] }}/Data/{{ item | basename }}"
         accept_hostkey: true
       loop: "{{ git.git_jens.clone_repos }}"
+
+    - name: Run agent-config setup
+      register: agent_config_setup
+      ansible.builtin.command:
+        cmd: "{{ ansible_facts['user_dir'] }}/Data/agent-config/setup.sh"
+      changed_when: true
+
+    - name: Print agent-config setup output
+      ansible.builtin.debug:
+        var: agent_config_setup.stdout_lines
