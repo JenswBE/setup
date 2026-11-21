@@ -83,22 +83,8 @@ hermes config set providers.hercules.api http://hercules.jensw.eu:8080/v1
 hermes config set providers.hercules.discover_models "true"
 hermes config set providers.hercules.models '[]'
 
-
 # See https://hermes-agent.nousresearch.com/docs/user-guide/messaging/signal#manual-configuration
 editor ~/.hermes/.env
-cat >> ~/.hermes/.env <<'EOF'
-# =============================================================================
-# Nextcloud
-# =============================================================================
-NEXTCLOUD_USER=
-NEXTCLOUD_APP_PASS=
-
-# =============================================================================
-# Silverbullet
-# =============================================================================
-SILVERBULLET_USER=
-SILVERBULLET_PASS=
-EOF
 
 # Restart the Hermes Gateway
 hermes gateway restart --all

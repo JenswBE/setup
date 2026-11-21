@@ -1,0 +1,74 @@
+- name: Host specific tasks
+  tags: ["host_specific"]
+  block:
+    - name: Set facts
+      ansible.builtin.set_fact:
+        ssh_key_path: "{{ ansible_facts['user_dir'] }}/.ssh/id_ed25519"
+
+    - name: "Create SSH key pair"
+      register: create_ssh_key
+      community.crypto.openssh_keypair:
+        path: "{{ ssh_key_path }}"
+        type: ed25519
+        regenerate: never
+        owner: "{{ ansible_facts['real_user_id'] }}"
+        group: "{{ ansible_facts['real_group_id'] }}"
+        mode: "600"
+
+    - name: Read SSH pubkey from host
+      when: create_ssh_key.changed
+      register: ssh_pubkey
+      ansible.builtin.slurp:
+        src: "{{ ssh_key_path + '.pub' }}"
+
+    - name: Confirm SSH pubkey setup
+      when: create_ssh_key.changed
+      ansible.builtin.pause:
+        prompt: |
+          Configure following public key on git:
+          {{ ssh_pubkey.content | b64decode }}
+
+    - name: Create Data directory
+      ansible.builtin.file:
+        path: "{{ ansible_facts['user_dir'] }}/Data"
+        state: directory
+        owner: "{{ ansible_facts['real_user_id'] }}"
+        group: "{{ ansible_facts['real_group_id'] }}"
+        mode: "700"
+
+    - name: Install paramiko on host (required by ssh_config module)
+      become: true
+      ansible.builtin.apt:
+        update_cache: true
+        state: present
+        name: python3-paramiko
+
+    - name: Configure SSH host for local git
+      community.general.ssh_config:
+        ssh_config_file: "{{ ansible_facts['user_dir'] }}/.ssh/config"
+        host: git-jens
+        hostname: "{{ git.git_jens.hostname }}"
+        port: "{{ git.git_jens.port }}"
+        identity_file: "{{ ssh_key_path }}"
+        identities_only: true
+        remote_user: git
+        state: present
+
+    - name: Set git global user name
+      community.general.git_config:
+        name: user.name
+        scope: global
+        value: "{{ inventory_hostname }}"
+
+    - name: Set git global user email
+      community.general.git_config:
+        name: user.email
+        scope: global
+        value: "{{ git.global.user_email }}"
+
+    - name: Clone repositories from local git
+      ansible.builtin.git:
+        repo: "git@git-jens:{{ item }}"
+        dest: "{{ ansible_facts['user_dir'] }}/Data/{{ item | basename }}"
+        accept_hostkey: true
+      loop: "{{ git.git_jens.clone_repos }}"

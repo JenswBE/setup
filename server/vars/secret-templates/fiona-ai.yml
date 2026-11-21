@@ -1,0 +1,8 @@
+git:
+  global:
+    user_email: ""
+  git_jens: # Local git server
+    hostname: ""
+    port: ""
+    clone_repos:
+      - username/repo_name

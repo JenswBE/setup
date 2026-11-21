@@ -28,3 +28,8 @@
 
     - role: jenswbe.firewall
       tags: ["firewall"]
+
+  tasks:
+    - name: Include host specific tasks
+      ansible.builtin.include_tasks: "tasks/hosts/{{ inventory_hostname }}.yml"
+      tags: ["always"]
