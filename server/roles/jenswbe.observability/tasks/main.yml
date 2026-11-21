@@ -42,6 +42,7 @@
   vars:
     alloy_env_file_vars:
       CONFIG_FILE: "/etc/alloy/config.d"
+      CUSTOM_ARGS: "--disable-reporting"
     alloy_user_groups: "{{ ['adm'] + (['docker'] if jwob_with_docker else [])  }}"
 
 - name: Restart Alloy
