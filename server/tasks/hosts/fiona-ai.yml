@@ -84,3 +84,12 @@
     - name: Print agent-config setup output
       ansible.builtin.debug:
         var: agent_config_setup.stdout_lines
+
+    - name: Write Hermes env file
+      no_log: true
+      ansible.builtin.copy:
+        content: "{{ hermes.env }}"
+        dest: "{{ ansible_facts['user_dir'] }}/.hermes/.env"
+        owner: "{{ ansible_facts['real_user_id'] }}"
+        group: "{{ ansible_facts['real_group_id'] }}"
+        mode: "600"

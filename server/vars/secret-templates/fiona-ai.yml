@@ -6,3 +6,7 @@ git:
     port: ""
     clone_repos:
       - username/repo_name
+
+hermes:
+  env: |
+    ...
