@@ -93,3 +93,40 @@
         owner: "{{ ansible_facts['real_user_id'] }}"
         group: "{{ ansible_facts['real_group_id'] }}"
         mode: "600"
+
+    - name: Create systemd user directory
+      ansible.builtin.file:
+        path: "{{ ansible_facts['user_dir'] }}/.config/systemd/user"
+        state: directory
+        owner: "{{ ansible_facts['real_user_id'] }}"
+        group: "{{ ansible_facts['real_group_id'] }}"
+        mode: "755"
+
+    - name: Write QMD daemon systemd user unit
+      register: qmd_unit
+      ansible.builtin.copy:
+        dest: "{{ ansible_facts['user_dir'] }}/.config/systemd/user/qmd-daemon.service"
+        owner: "{{ ansible_facts['real_user_id'] }}"
+        group: "{{ ansible_facts['real_group_id'] }}"
+        mode: "644"
+        content: |
+          [Unit]
+          Description=QMD MCP Daemon
+          After=network.target
+
+          [Service]
+          ExecStart=qmd mcp --http
+          Restart=on-failure
+          RestartSec=10
+          Environment=PATH=/usr/local/bin:/usr/bin:/bin
+
+          [Install]
+          WantedBy=default.target
+
+    - name: Enable and start QMD daemon
+      ansible.builtin.systemd_service:
+        scope: user
+        name: qmd-daemon
+        enabled: true
+        state: started
+        daemon_reload: "{{ qmd_unit.changed }}"

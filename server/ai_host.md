@@ -3,9 +3,23 @@
 Eventually, all setup actions should be automated in Ansible.
 However, documenting here allows to have quick iterations before full automation is implemented.
 
+## General
+
+Run the Ansible playbook using:
+
+```bash
+ansible-playbook ai_host.yml
+```
+
 ## Hermes
 
 ### Install dependencies
+
+#### UV
+
+```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
 
 #### Signal-cli
 
@@ -37,6 +51,33 @@ WantedBy=default.target
 EOF
 systemctl --user daemon-reload
 systemctl --user enable --now signal-cli
+```
+
+#### QMD
+
+See https://hermes-agent.nousresearch.com/docs/user-guide/skills/optional/research/research-qmd
+
+```bash
+# Install NodeJS repo
+curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
+
+# Install NodeJS
+sudo apt update
+sudo apt-get install -y nodejs
+
+# Install QMD
+sudo npm install -g @tobilu/qmd
+
+# Configure collections
+qmd collection add ~/Data/agent-config --name agent-config --mask "**/*.md"
+qmd context add qmd://agent-config "skills and configs related to the Hermes agent"
+qmd collection add ~/Data/assets --name assets --mask "**/*.md,**/*.yml,**/*.yaml"
+qmd context add qmd://assets "computers, components, household items and other assets"
+qmd collection add ~/Data/silverbullet-space-main --name silverbullet-space-main --mask "**/*.md"
+qmd context add qmd://silverbullet-space-main "main knowledge base"
+
+# Generate embeddings
+qmd embed
 ```
 
 ## Setup Hermes
