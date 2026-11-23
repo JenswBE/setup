@@ -4,6 +4,7 @@
 . ~/.cargo/env
 
 # Ensure we are at latest main
+git fetch --prune --all --force --tags
 git switch main
 git pull
 
