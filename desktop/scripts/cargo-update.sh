@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # Source cargo env
+# shellcheck source=/dev/null
 . ~/.cargo/env
 
 # Ensure we are at latest main
